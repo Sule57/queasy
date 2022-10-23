@@ -15,6 +15,7 @@ class _LogInScreenState extends State<LogInScreen> {
     return Scaffold(
       body: Center(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             const TextField(
               decoration: InputDecoration(
