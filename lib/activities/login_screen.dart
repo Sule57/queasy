@@ -32,6 +32,8 @@ class _LogInScreenState extends State<LogInScreen> {
               onPressed: () {
                 // TODO use authentication to check if email and password are correct
 
+                //test
+
                 //This is code from Stanislav to test if Firebase is working
                 // It may be useful
 
