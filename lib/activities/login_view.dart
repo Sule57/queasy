@@ -1,6 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_core/firebase_core.dart';
+
+import 'auth.dart';
 
 class LogInView extends StatefulWidget {
   const LogInView({Key? key}) : super(key: key);
@@ -10,6 +13,23 @@ class LogInView extends StatefulWidget {
 }
 
 class _LogInViewState extends State<LogInView> {
+  String? errorMessage = '';
+
+  final TextEditingController _controllerEmail = TextEditingController();
+  final TextEditingController _controllerPassword = TextEditingController();
+
+  Future<void> signInWithEmailAndPassword() async {
+    try {
+      await Auth().signInWithEmailAndPassword(
+        email: _controllerEmail.text,
+        password: _controllerPassword.text,
+      );
+    } on FirebaseAuthException catch (e) {
+      setState(() {
+        errorMessage = e.message;
+      });
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -17,11 +37,15 @@ class _LogInViewState extends State<LogInView> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const TextField(
+            Text(errorMessage == '' ? '' : 'Humm? $errorMessage'),
+            TextField(
+              controller: _controllerEmail,
               decoration: InputDecoration(
                   labelText: 'Email', hintText: 'yourname@example.com'),
             ),
-            const TextField(
+            TextField(
+              controller: _controllerPassword,
+              obscureText: true,
               decoration: InputDecoration(
                 labelText: 'Enter Password',
                 hintText: 'Password',
@@ -29,38 +53,7 @@ class _LogInViewState extends State<LogInView> {
             ),
             ElevatedButton(
               child: Text('LOGIN'),
-              onPressed: () {
-                // TODO use authentication to check if email and password are correct
-
-                //test
-
-                //This is code from Stanislav to test if Firebase is working
-                // It may be useful
-
-                // final Future<FirebaseApp> _fbApp = Firebase.initializeApp();
-                //
-                // FutureBuilder(
-                //   future: _fbApp,
-                //   builder: (context, snapshot) {
-                //     if (snapshot.hasError) {
-                //       print("Error ${snapshot.error.toString()}");
-                //       return Text("Something went wrong");
-                //     } else if (snapshot.hasData) {
-                //       return MyHomePage(title: "TestFirebasert");
-                //     } else {
-                //       return Center(
-                //         child: CircularProgressIndicator(),
-                //       );
-                //     }
-                //   },
-                // );
-                //
-                // DatabaseReference _testRef =
-                // FirebaseDatabase.instance.reference().child("test");
-                // _testRef.set("Test ${Random().nextInt(100)}");
-
-                // TODO navigate to HomeScreen if authentication is successful
-              },
+              onPressed: signInWithEmailAndPassword,
             ),
           ],
         ),

@@ -1,9 +1,12 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-
+import 'package:queasy/activities/widget_tree.dart';
 import 'constants/app_themes.dart';
 import 'constants/navigation.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
@@ -13,9 +16,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      home: const WidgetTree(),
+      debugShowCheckedModeBanner: false,
       title: 'Qeasy',
       theme: AppThemes().themeData,
-      routes: Navigation(context).routes,
+      //routes: Navigation(context).routes,
     );
   }
 }
