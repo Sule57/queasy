@@ -7,13 +7,29 @@ import 'constants/navigation.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: const FirebaseOptions(
-    apiKey: 'AIzaSyCNGjdJ0j86h8b_Bk7d9ts-hY4JZ7aNWcQ',
-    appId: 'quizzapp-eb0f2',
-    messagingSenderId: '1:17686953226:web:81a053f17c2b317edd0ef3',
-    projectId: '17686953226',
-  ),);
-  runApp(const MyApp());
+  try{
+  await Firebase.initializeApp(
+    options: const FirebaseOptions(
+      apiKey: 'AIzaSyCNGjdJ0j86h8b_Bk7d9ts-hY4JZ7aNWcQ',
+      appId: 'quizzapp-eb0f2',
+      messagingSenderId: '1:17686953226:web:81a053f17c2b317edd0ef3',
+      projectId: '17686953226',
+    ),
+  );
+  runApp(MyApp());
+  }catch(e){
+    print(e.toString());
+    await Firebase.initializeApp(
+      options: const FirebaseOptions(
+        apiKey: 'AIzaSyCNGjdJ0j86h8b_Bk7d9ts-hY4JZ7aNWcQ',
+        appId: 'quizzapp-eb0f2',
+        messagingSenderId: '1:17686953226:web:81a053f17c2b317edd0ef3',
+        projectId: '17686953226',
+      ),
+      name:'qeasy_web_app',
+    );
+    runApp(MyApp());
+  }
 }
 
 class MyApp extends StatelessWidget {
