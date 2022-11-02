@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 enum Categories {
   science,
   history,
@@ -7,4 +9,7 @@ enum Categories {
   entertainment,
 }
 
-class Category {}
+class Category {
+  Categories name;
+  Color color;
+}
