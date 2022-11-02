@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_core/firebase_core.dart';
 
-import 'auth.dart';
+import '../auth.dart';
 
 class LogInView extends StatefulWidget {
   const LogInView({Key? key}) : super(key: key);
@@ -30,6 +30,7 @@ class _LogInViewState extends State<LogInView> {
       });
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

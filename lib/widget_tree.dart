@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:queasy/activities/home_view.dart';
-import 'package:queasy/activities/login_view.dart';
+import 'package:queasy/view/home_view.dart';
+import 'package:queasy/view/login_view.dart';
 
 import 'auth.dart';
 
