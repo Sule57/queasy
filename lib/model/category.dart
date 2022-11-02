@@ -12,4 +12,6 @@ enum Categories {
 class Category {
   Categories name;
   Color color;
+
+  Category(this.name, this.color);
 }
