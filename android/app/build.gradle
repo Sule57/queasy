@@ -47,6 +47,7 @@ android {
         versionName flutterVersionName
         // FIREBASE REQUIRES MINIMUM SDK VERSION 19
         minSdkVersion 19
+        multiDexEnabled true
     }
 
     buildTypes {
