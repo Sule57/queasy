@@ -42,9 +42,11 @@ class _QuizViewState extends State<QuizView> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                ElevatedButton(
-                  onPressed: () {},
-                  child: Text(question.answers[0].text),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {},
+                    child: Text(question.answers[0].text),
+                  ),
                 ),
                 ElevatedButton(
                   onPressed: () {
