@@ -48,24 +48,30 @@ class _QuizViewState extends State<QuizView> {
                     child: Text(question.answers[0].text),
                   ),
                 ),
-                ElevatedButton(
-                  onPressed: () {
-                    // getQuestion("science", "question0");
-                  },
-                  child: Text(question.answers[1].text),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      // getQuestion("science", "question0");
+                    },
+                    child: Text(question.answers[1].text),
+                  ),
                 ),
               ],
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                ElevatedButton(
-                  onPressed: () {},
-                  child: Text(question.answers[2].text),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {},
+                    child: Text(question.answers[2].text),
+                  ),
                 ),
-                ElevatedButton(
-                  onPressed: () {},
-                  child: Text(question.answers[3].text),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {},
+                    child: Text(question.answers[3].text),
+                  ),
                 ),
               ],
             ),
