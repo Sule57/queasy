@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:queasy/view/quiz_view.dart';
 import 'package:queasy/widget_tree.dart';
 
 import 'constants/app_themes.dart';
@@ -38,7 +39,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: const WidgetTree(),
+      home: const QuizView(),
       debugShowCheckedModeBanner: false,
       title: 'Qeasy',
       theme: AppThemes().themeData,

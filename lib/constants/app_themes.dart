@@ -38,7 +38,7 @@ class AppThemes {
     //BUTTONS
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ButtonStyle(
-        textStyle: MaterialStateProperty.all(TextStyle(fontSize: 40)),
+        textStyle: MaterialStateProperty.all(TextStyle(fontSize: 30)),
       ),
     ),
     //TODO fill button themes

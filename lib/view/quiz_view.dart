@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:queasy/controller/quiz_view_controller.dart';
 
 import 'package:queasy/model/answer.dart';
+import 'package:queasy/model/question.dart';
 
 class QuizView extends StatefulWidget {
   const QuizView({Key? key}) : super(key: key);
@@ -10,11 +12,15 @@ class QuizView extends StatefulWidget {
 }
 
 class _QuizViewState extends State<QuizView> {
-  String text = "This is the text of the first question.";
-  Answer answer1 = Answer("Answer 1", true);
-  Answer answer2 = Answer("Answer 2", true);
-  Answer answer3 = Answer("Answer 3", true);
-  Answer answer4 = Answer("Answer 4", true);
+  Question question = Question(
+    'What is the capital of Germany?',
+    [
+      Answer('Berlin', true),
+      Answer('Hamburg', false),
+      Answer('Munich', false),
+      Answer('Frankfurt', false),
+    ],
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +35,7 @@ class _QuizViewState extends State<QuizView> {
             SizedBox(
               width: _width,
               child: Text(
-                text,
+                question.text,
                 style: Theme.of(context).textTheme.headline3,
               ),
             ),
@@ -38,11 +44,13 @@ class _QuizViewState extends State<QuizView> {
               children: [
                 ElevatedButton(
                   onPressed: () {},
-                  child: Text(answer1.text),
+                  child: Text(question.answers[0].text),
                 ),
                 ElevatedButton(
-                  onPressed: () {},
-                  child: Text(answer2.text),
+                  onPressed: () {
+                    // getQuestion("science", "question0");
+                  },
+                  child: Text(question.answers[1].text),
                 ),
               ],
             ),
@@ -51,11 +59,11 @@ class _QuizViewState extends State<QuizView> {
               children: [
                 ElevatedButton(
                   onPressed: () {},
-                  child: Text(answer3.text),
+                  child: Text(question.answers[2].text),
                 ),
                 ElevatedButton(
                   onPressed: () {},
-                  child: Text(answer4.text),
+                  child: Text(question.answers[3].text),
                 ),
               ],
             ),
