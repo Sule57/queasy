@@ -150,6 +150,9 @@ unlinked_spec.ds
 # Coverage
 coverage/
 
+# github
+.github/
+
 # Symbols
 app.*.symbols
 
