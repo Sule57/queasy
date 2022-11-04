@@ -150,8 +150,8 @@ unlinked_spec.ds
 # Coverage
 coverage/
 
-# gitignore
-.gitignore/
+# github
+.github/
 
 # Symbols
 app.*.symbols
