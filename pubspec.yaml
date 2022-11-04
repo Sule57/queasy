@@ -34,6 +34,7 @@ dependencies:
   firebase_core: ^2.1.0
   firebase_auth: ^4.0.2
   firebase_database: ^10.0.2
+  motion_tab_bar_v2: ^0.2.6
   #IT DOESNT WORK FOR THE MOMENT DO NOT ADD IT
   #cloud_firestore: ^4.0.2
 
