@@ -6,7 +6,7 @@ Color green = const Color(0xff9fc490);
 
 class AppThemes {
   ThemeData themeData = ThemeData(
-    //COLORS
+    //COLOR
     colorScheme: ColorScheme.light(
       primary: Color(0xff72479d),
       secondary: orange,
