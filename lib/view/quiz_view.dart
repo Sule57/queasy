@@ -1,81 +1,63 @@
 import 'package:flutter/material.dart';
 
-import 'package:queasy/model/answer.dart';
-import 'package:queasy/model/question.dart';
+import 'package:queasy/view/quiz_view_controller.dart';
+import 'package:queasy/view/widgets/custom_bottom_nav_bar.dart';
 
 class QuizView extends StatefulWidget {
-  const QuizView({Key? key}) : super(key: key);
+  final QuizzViewController controller = QuizzViewController();
+
+  QuizView({Key? key}) : super(key: key);
 
   @override
   State<QuizView> createState() => _QuizViewState();
 }
 
 class _QuizViewState extends State<QuizView> {
-  Question question = Question(
-    'What is the capital of Germany?',
-    [
-      Answer('Berlin', true),
-      Answer('Hamburg', false),
-      Answer('Munich', false),
-      Answer('Frankfurt', false),
-    ],
-  );
+  get controller => widget.controller;
 
   @override
   Widget build(BuildContext context) {
-    double _width = MediaQuery.of(context).size.width;
+    double width = MediaQuery.of(context).size.width;
 
     return Scaffold(
+      bottomNavigationBar: const CustomBottomNavBar(pageTitle: 'Quiz View'),
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             SizedBox(
-              width: _width,
+              width: width,
               child: Text(
-                question.text,
+                controller.getQuestionText(),
                 style: Theme.of(context).textTheme.headline3,
               ),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () {},
-                    child: Text(question.answers[0].text),
-                  ),
-                ),
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () {
-
-                    },
-                    child: Text(question.answers[1].text),
-                  ),
-                ),
+                _answerButton(0),
+                _answerButton(1),
               ],
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () {},
-                    child: Text(question.answers[2].text),
-                  ),
-                ),
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () {},
-                    child: Text(question.answers[3].text),
-                  ),
-                ),
+                _answerButton(2),
+                _answerButton(3),
               ],
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _answerButton(int index) {
+    return Expanded(
+      child: ElevatedButton(
+        onPressed: () {},
+        child: Text(controller.getAnswerText(index)),
       ),
     );
   }

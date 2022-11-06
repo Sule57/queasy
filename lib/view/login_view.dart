@@ -1,10 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_database/firebase_database.dart';
-import 'package:firebase_core/firebase_core.dart';
 
 import '../auth.dart';
-import 'custom_bottom_nav_bar.dart';
 
 class LogInView extends StatefulWidget {
   const LogInView({Key? key}) : super(key: key);

@@ -4,10 +4,13 @@ import 'package:queasy/view/home_view.dart';
 import 'package:queasy/view/leaderboard_view.dart';
 import 'package:queasy/view/profile_view.dart';
 
+import '../quiz_view.dart';
+
 class CustomBottomNavBar extends StatefulWidget {
-  const CustomBottomNavBar({Key? key, required this.pageTitle}) : super(key: key);
-  
   final String pageTitle;
+
+  const CustomBottomNavBar({Key? key, required this.pageTitle})
+      : super(key: key);
 
   @override
   State<CustomBottomNavBar> createState() => _CustomBottomNavBarState();
@@ -15,7 +18,8 @@ class CustomBottomNavBar extends StatefulWidget {
 
 class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
   get pageTitle => widget.pageTitle;
-  
+
+  //TODO remove Quiz View from navBar when normal navigation is implemented
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -31,11 +35,12 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
         ],
       ),
       child: MotionTabBar(
-        labels: const ['Home', 'Leaderboard', 'Profile'],
+        labels: const ['Home', 'Leaderboard', 'Profile', 'Quiz View'],
         icons: const [
           Icons.home_outlined,
           Icons.leaderboard_outlined,
-          Icons.person_outline
+          Icons.person_outline,
+          Icons.question_mark,
         ],
         useSafeArea: true,
 
@@ -69,6 +74,11 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
         // Go to profile view
         Navigator.of(context).push(MaterialPageRoute(
           builder: (context) => const ProfileView(),
+        ));
+        break;
+      case 3:
+        Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) => QuizView(),
         ));
         break;
     }
