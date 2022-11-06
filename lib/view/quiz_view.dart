@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:queasy/controller/quiz_view_controller.dart';
 
 import 'package:queasy/model/answer.dart';
 import 'package:queasy/model/question.dart';
@@ -51,7 +50,7 @@ class _QuizViewState extends State<QuizView> {
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () {
-                      // getQuestion("science", "question0");
+
                     },
                     child: Text(question.answers[1].text),
                   ),
