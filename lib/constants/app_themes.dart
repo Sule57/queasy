@@ -19,8 +19,6 @@ class AppThemes {
       onTertiary: black,
       background: white,
       onBackground: black,
-
-      //TODO fill necessary colors
     ),
 
     //TEXT
@@ -35,32 +33,18 @@ class AppThemes {
         fontWeight: FontWeight.bold,
         color: purple,
       ),
-
-      //TODO fill text themes
     ),
 
     //TEXT FIELD
-    inputDecorationTheme: const InputDecorationTheme(
-        //TODO fill input decoration themes
-        ),
+    inputDecorationTheme: const InputDecorationTheme(),
 
     //BUTTONS
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ButtonStyle(
-        textStyle: MaterialStateProperty.all(TextStyle(fontSize: 30)),
+        textStyle: MaterialStateProperty.all(const TextStyle(fontSize: 30)),
       ),
     ),
-    //TODO fill button themes
-    outlinedButtonTheme: const OutlinedButtonThemeData(
-        style: ButtonStyle(
-            //TODO fill button themes
-            )),
-    textButtonTheme: const TextButtonThemeData(
-        style: ButtonStyle(
-            //TODO fill button themes
-            )),
 
     //OTHER
-    //TODO fill other themes
   );
 }
