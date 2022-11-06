@@ -25,10 +25,15 @@ class AppThemes {
 
     //TEXT
     fontFamily: GoogleFonts.nunito().fontFamily,
-    textTheme: const TextTheme(
-      headline3: TextStyle(
+    textTheme: TextTheme(
+      headline3: const TextStyle(
         fontSize: 30,
         fontWeight: FontWeight.bold,
+      ),
+      caption: TextStyle(
+        fontSize: 14,
+        fontWeight: FontWeight.bold,
+        color: purple,
       ),
 
       //TODO fill text themes

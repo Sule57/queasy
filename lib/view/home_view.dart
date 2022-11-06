@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 
+import 'custom_bottom_nav_bar.dart';
+
 class HomeView extends StatelessWidget {
   const HomeView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
+      bottomNavigationBar: CustomBottomNavBar(pageTitle: 'Home'),
       body: Center(
         child: Align(
           alignment: Alignment.center,

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'custom_bottom_nav_bar.dart';
+
 const List<String> list = <String>['All', 'Art', 'Science', 'Sports'];
 
 class LeaderboardView extends StatefulWidget {
@@ -12,6 +14,12 @@ class _LeaderboardView extends State<LeaderboardView> {
   String dropdownValue = list.first;
   @override
   Widget build(BuildContext context) {
+
+    return const Scaffold(
+      bottomNavigationBar: CustomBottomNavBar(pageTitle: 'Leaderboard'),
+      body: Center(
+        child: Text('Leaderboard View'),
+
     return Scaffold(
       body: CustomScrollView(
         slivers: <Widget>[
