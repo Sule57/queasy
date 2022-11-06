@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:queasy/view/quiz_view_controller.dart';
+import 'package:queasy/controller/quiz_view_controller.dart';
 import 'package:queasy/view/widgets/custom_bottom_nav_bar.dart';
 
 class QuizView extends StatefulWidget {
