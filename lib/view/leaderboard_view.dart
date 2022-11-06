@@ -14,18 +14,13 @@ class _LeaderboardView extends State<LeaderboardView> {
   String dropdownValue = list.first;
   @override
   Widget build(BuildContext context) {
-
-    return const Scaffold(
-      bottomNavigationBar: CustomBottomNavBar(pageTitle: 'Leaderboard'),
-      body: Center(
-        child: Text('Leaderboard View'),
-
     return Scaffold(
+      bottomNavigationBar: const CustomBottomNavBar(pageTitle: 'Leaderboard'),
       body: CustomScrollView(
         slivers: <Widget>[
           SliverAppBar(
             shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
             backgroundColor: const Color(0xFFB366FF),
             pinned: true,
             flexibleSpace: const FlexibleSpaceBar(
@@ -35,7 +30,7 @@ class _LeaderboardView extends State<LeaderboardView> {
                     color: Colors.white,
                     fontSize: 36.0,
                   ) //TextStyle
-              ),
+                  ),
             ),
             actions: [
               DropdownButton<String>(
@@ -65,7 +60,7 @@ class _LeaderboardView extends State<LeaderboardView> {
           ),
           SliverList(
             delegate: SliverChildBuilderDelegate(
-                  (BuildContext context, int index) {
+              (BuildContext context, int index) {
                 return Column(
                   children: <Widget>[
                     const Divider(
@@ -88,17 +83,17 @@ class _LeaderboardView extends State<LeaderboardView> {
                       ),
                       title: index != 0
                           ? const Text(
-                        'username',
-                        style:
-                        TextStyle(color: Colors.black, fontSize: 26),
-                        textAlign: TextAlign.center,
-                      )
+                              'username',
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 26),
+                              textAlign: TextAlign.center,
+                            )
                           : const Text(
-                        'username',
-                        style:
-                        TextStyle(color: Colors.black, fontSize: 26),
-                        textAlign: TextAlign.center,
-                      ),
+                              'username',
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 26),
+                              textAlign: TextAlign.center,
+                            ),
                       //const Icon(Icons.back_hand_outlined),
                       //subtitle: index == 0 ? const Text('username', textAlign: TextAlign.center,style:TextStyle(color: Colors.black, fontSize: 26),): null,
                       trailing: const Text(
