@@ -8,7 +8,7 @@ class Quiz {
   /// @param questions The list of questions in the quiz
   /// @param usedQuestions The list of questions that have already been used
   /// @param firebaseFirestore The instance of the firebase firestore
-  int id, noOfQuestions;
+  int id, noOfQuestions, _currentScore = 0;
   String? creatorUsername;
   static List<Question> _questions = [];
   static List<String> _usedQuestions = [];
@@ -92,6 +92,28 @@ class Quiz {
     Random random = Random();
     int randomNumber = random.nextInt(numOfQuestions);
     return randomNumber;
+  }
+  /// If the answer is correct, the score is incremented by 100
+  /// @param answer The answer that was selected
+  addScore(bool isCorrect) {
+    _currentScore = isCorrect ? _currentScore + 3 : _currentScore;
+  }
+
+  /// Returns the score
+  /// @return The score
+  int getCurrentScore() {
+    return _currentScore;
+  }
+
+  /// Increment the score of the user in the firebase by the score achieved in the current quiz
+  /// @param username The username of the user
+  updateScore (username) {
+    _firebaseFirestore
+        .collection('users')
+        .doc(username)
+        .update({
+      'scores.$category': FieldValue.increment(_currentScore),
+    });
   }
 
   /// Gets the list of questions
