@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:queasy/activities/login_view.dart';
-import 'package:queasy/constants/navigation.dart';
+import 'package:queasy/view/login_view.dart';
 import '../constants/rounded-button.dart';
 
 class RegisterView extends StatelessWidget {
@@ -8,7 +7,6 @@ class RegisterView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
           leading: IconButton(
