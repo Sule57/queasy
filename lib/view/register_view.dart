@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:queasy/view/login_view.dart';
-import '../constants/rounded-button.dart';
+import 'widgets/rounded-button.dart';
 
 class RegisterView extends StatelessWidget {
   const RegisterView({Key? key}) : super(key: key);

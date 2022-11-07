@@ -12,17 +12,21 @@ class RoundedButton extends StatelessWidget {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Container(
-      height: size.height * 0.1,
+      alignment: Alignment.center,
+      height: size.height * 0.05,
       width: size.width * 0.5,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
-        color: Colors.purple,
+        borderRadius: BorderRadius.circular(20),
+        color: Theme.of(context).colorScheme.primary,
       ),
       child: TextButton(
         onPressed: () {},
         child: Text(
           buttonName,
-          style: const TextStyle(color: Colors.white),
+          style: Theme.of(context).textTheme.headline2?.copyWith(
+                color: Theme.of(context).colorScheme.onPrimary,
+                height: 1,
+              ),
         ),
       ),
     );
