@@ -1,31 +1,34 @@
 import 'package:queasy/model/question.dart';
 import 'package:queasy/model/quiz.dart';
 
-class QuizzViewController {
-  Quiz quiz = Quiz(
-    id: 1,
-    noOfQuestions: 5,
-    category: 'Science',
-  );
+class QuizViewController {
+  late Quiz quiz;
   int currentQuestionIndex = 0;
+  int totalQuestions = 10;
   late List<Question> questions;
   late Question question;
+  String category = 'Science';
+  int totalPoints = 0;
 
-  QuizzViewController() {
+  QuizViewController() {
+    initQuiz();
+  }
+
+  void initQuiz() async {
+    quiz = Quiz(
+      id: 1,
+      noOfQuestions: 5,
+      category: 'Science',
+    );
     questions = quiz.getQuestions();
-    if (questions == null) {
-      print('questions is null');
-    }
     question = questions[currentQuestionIndex];
   }
 
   String getQuestionText() {
     return question.getText();
-    // return "";
   }
 
   String getAnswerText(int index) {
     return question.getAnswer(index).getText();
-    // return "";
   }
 }

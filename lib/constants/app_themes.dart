@@ -24,9 +24,23 @@ class AppThemes {
     //TEXT
     fontFamily: GoogleFonts.nunito().fontFamily,
     textTheme: TextTheme(
-      headline3: const TextStyle(
+      headline2: TextStyle(
         fontSize: 30,
         fontWeight: FontWeight.bold,
+        color: black,
+      ),
+      headline3: TextStyle(
+        fontSize: 20,
+        fontWeight: FontWeight.bold,
+        color: black,
+      ),
+      bodyText1: TextStyle(
+        fontSize: 16,
+        color: black,
+      ),
+      bodyText2: TextStyle(
+        fontSize: 14,
+        color: black,
       ),
       caption: TextStyle(
         fontSize: 14,
@@ -39,11 +53,6 @@ class AppThemes {
     inputDecorationTheme: const InputDecorationTheme(),
 
     //BUTTONS
-    elevatedButtonTheme: ElevatedButtonThemeData(
-      style: ButtonStyle(
-        textStyle: MaterialStateProperty.all(const TextStyle(fontSize: 30)),
-      ),
-    ),
 
     //OTHER
   );
