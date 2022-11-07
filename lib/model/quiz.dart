@@ -8,12 +8,12 @@ class Quiz {
   /// @param questions The list of questions in the quiz
   /// @param usedQuestions The list of questions that have already been used
   /// @param firebaseFirestore The instance of the firebase firestore
-  int id, noOfQuestions;
+  int id, noOfQuestions, _currentScore = 0;
   String? creatorUsername;
   static List<Question> _questions = [];
   static List<String> _usedQuestions = [];
   String category;
-  FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+  FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
 
   /// Constructor for the Quiz class (Automatically calls the initialize method)
   /// @param id The id of the quiz
@@ -37,7 +37,7 @@ class Quiz {
         i--;
       } else {
         _usedQuestions.add(questionId);
-        await getQuestion(category, questionId, firebaseFirestore)
+        await getQuestion(category, questionId)
             .then((value) {
           _questions.add(value);
         });
@@ -48,15 +48,14 @@ class Quiz {
   /// Gets a question from the database
   /// @param category The category of the question
   /// @param questionId The id of the question
-  /// @param firebaseFirestore The instance of the firebase firestore
   /// @return The question
   Future<Question> getQuestion(
-      category, questionId, FirebaseFirestore firebaseFirestore) async {
+      category, questionId) async {
     /// The question that will be returned
     Map<String, dynamic>? data;
 
     /// The document reference of the question (Database Access)
-    await firebaseFirestore
+    await _firebaseFirestore
         .collection('categories')
         .doc('public')
         .collection(category)
@@ -83,7 +82,7 @@ class Quiz {
   /// Generates a random number between 0 and the current number of questions in the category for the question ID
   Future<int> randomizer(category) async {
     /// Stores the current number of questions in the category
-    var numOfQuestions = await firebaseFirestore
+    var numOfQuestions = await _firebaseFirestore
         .collection('categories')
         .doc('public')
         .collection(category)
@@ -93,6 +92,28 @@ class Quiz {
     Random random = Random();
     int randomNumber = random.nextInt(numOfQuestions);
     return randomNumber;
+  }
+  /// If the answer is correct, the score is incremented by 100
+  /// @param answer The answer that was selected
+  addScore(bool isCorrect) {
+    _currentScore = isCorrect ? _currentScore + 3 : _currentScore;
+  }
+
+  /// Returns the score
+  /// @return The score
+  int getCurrentScore() {
+    return _currentScore;
+  }
+
+  /// Increment the score of the user in the firebase by the score achieved in the current quiz
+  /// @param username The username of the user
+  updateScore (username) {
+    _firebaseFirestore
+        .collection('users')
+        .doc(username)
+        .update({
+      'scores.$category': FieldValue.increment(_currentScore),
+    });
   }
 
   /// Gets the list of questions
