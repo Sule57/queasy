@@ -35,14 +35,19 @@ class AppThemes {
         fontWeight: FontWeight.bold,
         color: purple,
       ),
+      headline2: TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.w500,
+        color: white,
+      ),
 
       //TODO fill text themes
     ),
 
     //TEXT FIELD
     inputDecorationTheme: const InputDecorationTheme(
-        //TODO fill input decoration themes
-        ),
+      counterStyle: TextStyle(fontSize: 16.0),
+    ),
 
     //BUTTONS
     elevatedButtonTheme: ElevatedButtonThemeData(

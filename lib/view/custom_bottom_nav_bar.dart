@@ -39,7 +39,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
         ],
         useSafeArea: true,
 
-        // initial selected tab should be based on the current page
+        // Initial selected tab should be based on the current page
         initialSelectedTab: pageTitle,
         tabIconColor: Colors.grey,
         tabSelectedColor: Theme.of(context).colorScheme.primary,
@@ -51,6 +51,8 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
     );
   }
 
+  // This function is called when a tab is selected
+  // It navigates to the page corresponding to the selected tab
   void goToAnotherPage(int value) {
     switch (value) {
       case 0:
