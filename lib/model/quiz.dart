@@ -8,7 +8,7 @@ class Quiz {
   /// @param questions The list of questions in the quiz
   /// @param usedQuestions The list of questions that have already been used
   /// @param firebaseFirestore The instance of the firebase firestore
-  int id, noOfQuestions, _currentScore = 0;
+  int id, noOfQuestions;
   String? creatorUsername;
   static List<Question> _questions = [];
   static List<String> _usedQuestions = [];
@@ -37,8 +37,7 @@ class Quiz {
         i--;
       } else {
         _usedQuestions.add(questionId);
-        await getQuestion(category, questionId)
-            .then((value) {
+        await getQuestion(category, questionId).then((value) {
           _questions.add(value);
         });
       }
@@ -49,8 +48,7 @@ class Quiz {
   /// @param category The category of the question
   /// @param questionId The id of the question
   /// @return The question
-  Future<Question> getQuestion(
-      category, questionId) async {
+  Future<Question> getQuestion(category, questionId) async {
     /// The question that will be returned
     Map<String, dynamic>? data;
 
@@ -93,26 +91,12 @@ class Quiz {
     int randomNumber = random.nextInt(numOfQuestions);
     return randomNumber;
   }
-  /// If the answer is correct, the score is incremented by 100
-  /// @param answer The answer that was selected
-  addScore(bool isCorrect) {
-    _currentScore = isCorrect ? _currentScore + 3 : _currentScore;
-  }
-
-  /// Returns the score
-  /// @return The score
-  int getCurrentScore() {
-    return _currentScore;
-  }
 
   /// Increment the score of the user in the firebase by the score achieved in the current quiz
   /// @param username The username of the user
-  updateScore (username) {
-    _firebaseFirestore
-        .collection('users')
-        .doc(username)
-        .update({
-      'scores.$category': FieldValue.increment(_currentScore),
+  void updateScore(String username, int score) {
+    _firebaseFirestore.collection('users').doc(username).update({
+      'scores.$category': FieldValue.increment(score),
     });
   }
 

@@ -43,10 +43,17 @@ class QuizViewBackground extends StatelessWidget {
   }
 }
 
-class QuizViewContent extends StatelessWidget {
+class QuizViewContent extends StatefulWidget {
   final QuizViewController controller;
 
   const QuizViewContent(this.controller, {Key? key}) : super(key: key);
+
+  @override
+  State<QuizViewContent> createState() => _QuizViewContentState();
+}
+
+class _QuizViewContentState extends State<QuizViewContent> {
+  get controller => widget.controller;
 
   Widget categoryTitle(BuildContext context) {
     return Text(
@@ -102,7 +109,11 @@ class QuizViewContent extends StatelessWidget {
           borderRadius: BorderRadius.circular(20),
         ),
         child: ElevatedButton(
-          onPressed: () {},
+          onPressed: () {
+            setState(() {
+              controller.nextQuestion();
+            });
+          },
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.white,
             shape: RoundedRectangleBorder(
