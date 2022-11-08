@@ -95,15 +95,6 @@ class Quiz {
     return randomNumber;
   }
 
-  /// Increment the score of the user in the firebase by the score achieved in the current quiz
-  /// @param username The username of the user
-  void updateScore(String username, int score) {
-    _firebaseFirestore = FirebaseFirestore.instance;
-    _firebaseFirestore.collection('users').doc(username).update({
-      'scores.$category': FieldValue.increment(score),
-    });
-  }
-
   /// Gets the list of questions
   List<Question> getQuestions() {
     return _questions;

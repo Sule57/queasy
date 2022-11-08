@@ -1,5 +1,7 @@
 import 'package:queasy/model/question.dart';
 import 'package:queasy/model/quiz.dart';
+import 'package:queasy/model/user.dart';
+
 
 class QuizViewController {
   late Quiz _quiz;
@@ -7,6 +9,7 @@ class QuizViewController {
   final int _totalQuestions = 10;
   late List<Question> _questions;
   final String _category = 'Science';
+  late User player;
   int _currentScore = 0;
 
   QuizViewController() {
@@ -42,7 +45,7 @@ class QuizViewController {
       _currentQuestionIndex++;
       return true;
     } else {
-      _quiz.updateScore("Savo", _currentScore);
+      player.updateScore("Savo",_category, _currentScore);
       return false;
     }
   }
@@ -52,6 +55,7 @@ class QuizViewController {
   }
 
   /// If the answer is correct, the score is incremented by 100
+  /// If the answer is incorrect, the score is decremented by 1
   /// @param answer The answer that was selected
   void editScore(int answerIndex) {
     bool isCorrect =

@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class User {
   String username;
   String email;
@@ -7,6 +9,7 @@ class User {
   String? profilePicture;
   String? bio;
   int? age;
+  late FirebaseFirestore _firebaseFirestore;
 
   User({
     required this.username,
@@ -20,4 +23,15 @@ class User {
   });
 
   //TODO methods for user data
+
+  /// Increment the score of the user in the firebase by the score achieved in the current quiz
+  /// @param username The username of the user
+  void updateScore(String username, String category, int score) {
+    _firebaseFirestore = FirebaseFirestore.instance;
+    _firebaseFirestore.collection('users')
+        .doc(username)
+        .update({
+      'scores.$category': FieldValue.increment(score),
+    });
+  }
 }
