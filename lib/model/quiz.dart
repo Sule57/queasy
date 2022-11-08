@@ -77,7 +77,6 @@ class Quiz {
       ],
       // category: category,
     );
-    _firebaseFirestore.terminate();
     _firebaseFirestore.clearPersistence();
     return question;
   }
@@ -95,7 +94,6 @@ class Quiz {
 
     Random random = Random();
     int randomNumber = random.nextInt(numOfQuestions);
-    _firebaseFirestore.terminate();
     _firebaseFirestore.clearPersistence();
     return randomNumber;
   }
@@ -121,7 +119,6 @@ class Quiz {
         .update({
       'scores.$category': FieldValue.increment(_currentScore),
     });
-    _firebaseFirestore.terminate();
     _firebaseFirestore.clearPersistence();
   }
 
