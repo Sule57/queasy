@@ -13,7 +13,7 @@ class Quiz {
   static List<Question> _questions = [];
   static List<String> _usedQuestions = [];
   String category;
-  FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
+  late FirebaseFirestore _firebaseFirestore;
 
   /// Constructor for the Quiz class (Automatically calls the initialize method)
   /// @param id The id of the quiz
@@ -51,6 +51,7 @@ class Quiz {
   /// @return The question
   Future<Question> getQuestion(
       category, questionId) async {
+    _firebaseFirestore = FirebaseFirestore.instance;
     /// The question that will be returned
     Map<String, dynamic>? data;
 
@@ -76,11 +77,14 @@ class Quiz {
       ],
       // category: category,
     );
+    _firebaseFirestore.terminate();
+    _firebaseFirestore.clearPersistence();
     return question;
   }
 
   /// Generates a random number between 0 and the current number of questions in the category for the question ID
   Future<int> randomizer(category) async {
+    _firebaseFirestore = FirebaseFirestore.instance;
     /// Stores the current number of questions in the category
     var numOfQuestions = await _firebaseFirestore
         .collection('categories')
@@ -91,6 +95,8 @@ class Quiz {
 
     Random random = Random();
     int randomNumber = random.nextInt(numOfQuestions);
+    _firebaseFirestore.terminate();
+    _firebaseFirestore.clearPersistence();
     return randomNumber;
   }
   /// If the answer is correct, the score is incremented by 100
@@ -108,12 +114,15 @@ class Quiz {
   /// Increment the score of the user in the firebase by the score achieved in the current quiz
   /// @param username The username of the user
   updateScore (username) {
+    _firebaseFirestore = FirebaseFirestore.instance;
     _firebaseFirestore
         .collection('users')
         .doc(username)
         .update({
       'scores.$category': FieldValue.increment(_currentScore),
     });
+    _firebaseFirestore.terminate();
+    _firebaseFirestore.clearPersistence();
   }
 
   /// Gets the list of questions

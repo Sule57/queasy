@@ -14,7 +14,7 @@ class QuizViewController {
     initQuiz();
   }
 
-  void initQuiz() async {
+  void initQuiz() {
     quiz = Quiz(
       id: 1,
       noOfQuestions: 5,
