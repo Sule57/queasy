@@ -13,7 +13,7 @@ class Quiz {
   static List<Question> _questions = [];
   static List<String> _usedQuestions = [];
   String category;
-  FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
+  late FirebaseFirestore _firebaseFirestore;
 
   /// Constructor for the Quiz class (Automatically calls the initialize method)
   /// @param id The id of the quiz
@@ -94,10 +94,12 @@ class Quiz {
 
   /// Increment the score of the user in the firebase by the score achieved in the current quiz
   /// @param username The username of the user
-  void updateScore(String username, int score) {
+  updateScore(String username, int score) {
+    _firebaseFirestore = FirebaseFirestore.instance;
     _firebaseFirestore.collection('users').doc(username).update({
       'scores.$category': FieldValue.increment(score),
     });
+    _firebaseFirestore.clearPersistence();
   }
 
   /// Gets the list of questions
