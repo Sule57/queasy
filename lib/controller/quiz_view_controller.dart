@@ -37,15 +37,29 @@ class QuizViewController {
     return _questions[_currentQuestionIndex].getAnswer(index).getText();
   }
 
-  void nextQuestion() {
+  bool nextQuestion() {
     if (_currentQuestionIndex < _totalQuestions - 1) {
       _currentQuestionIndex++;
+      return true;
+    } else {
+      _quiz.updateScore("Savo", _currentScore);
+      return false;
     }
+  }
+
+  bool isCorrectAnswer(int answerIndex) {
+    return _questions[_currentQuestionIndex].getAnswer(answerIndex).isCorrect();
   }
 
   /// If the answer is correct, the score is incremented by 100
   /// @param answer The answer that was selected
-  void addScore(bool isCorrect) {
-    _currentScore = isCorrect ? _currentScore + 3 : _currentScore;
+  void editScore(int answerIndex) {
+    bool isCorrect =
+        _questions[_currentQuestionIndex].getAnswer(answerIndex).isCorrect();
+    print(isCorrect);
+    _currentScore = isCorrect ? _currentScore + 5 : _currentScore - 1;
+    if (_currentScore < 0) {
+      _currentScore = 0;
+    }
   }
 }

@@ -51,6 +51,7 @@ class Quiz {
   Future<Question> getQuestion(category, questionId) async {
     /// The question that will be returned
     Map<String, dynamic>? data;
+    _firebaseFirestore = FirebaseFirestore.instance;
 
     /// The document reference of the question (Database Access)
     await _firebaseFirestore
@@ -79,6 +80,8 @@ class Quiz {
 
   /// Generates a random number between 0 and the current number of questions in the category for the question ID
   Future<int> randomizer(category) async {
+    _firebaseFirestore = FirebaseFirestore.instance;
+
     /// Stores the current number of questions in the category
     var numOfQuestions = await _firebaseFirestore
         .collection('categories')
@@ -94,12 +97,11 @@ class Quiz {
 
   /// Increment the score of the user in the firebase by the score achieved in the current quiz
   /// @param username The username of the user
-  updateScore(String username, int score) {
+  void updateScore(String username, int score) {
     _firebaseFirestore = FirebaseFirestore.instance;
     _firebaseFirestore.collection('users').doc(username).update({
       'scores.$category': FieldValue.increment(score),
     });
-    _firebaseFirestore.clearPersistence();
   }
 
   /// Gets the list of questions

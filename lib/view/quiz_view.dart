@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:queasy/controller/quiz_view_controller.dart';
+import 'package:queasy/view/statistics_view.dart';
 import 'package:queasy/view/widgets/custom_bottom_nav_bar.dart';
 
 class QuizView extends StatefulWidget {
@@ -86,6 +87,7 @@ class _QuizViewContentState extends State<QuizViewContent> {
     return Container(
       height: height / 5,
       padding: const EdgeInsets.all(20),
+      alignment: Alignment.center,
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.primary,
         borderRadius: BorderRadius.circular(25),
@@ -101,7 +103,7 @@ class _QuizViewContentState extends State<QuizViewContent> {
   }
 
   Widget answerButtons(BuildContext context, double height) {
-    Widget singleAnswerButton(BuildContext context, int index) {
+    Widget singleAnswerButton(BuildContext context, int answerIndex) {
       return Container(
         height: height / 14,
         width: double.infinity,
@@ -111,17 +113,26 @@ class _QuizViewContentState extends State<QuizViewContent> {
         child: ElevatedButton(
           onPressed: () {
             setState(() {
-              controller.nextQuestion();
+              controller.editScore(answerIndex);
+
+              if (!controller.nextQuestion()) {
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => const StatisticsView(),
+                ));
+              }
             });
           },
           style: ElevatedButton.styleFrom(
+            foregroundColor: controller.isCorrectAnswer(answerIndex)
+                ? Colors.green
+                : Colors.red,
             backgroundColor: Colors.white,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20),
             ),
           ),
-          child: Text(controller.getAnswerText(index),
-              textAlign: TextAlign.left,
+          child: Text(controller.getAnswerText(answerIndex),
+              textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodyText1),
         ),
       );
