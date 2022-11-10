@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'custom_bottom_nav_bar.dart';
+import 'widgets/custom_bottom_nav_bar.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView({Key? key}) : super(key: key);

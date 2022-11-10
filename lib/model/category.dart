@@ -1,5 +1,7 @@
 import 'dart:ui';
 
+import 'package:queasy/model/question.dart';
+
 enum Categories {
   science,
   history,
@@ -10,8 +12,9 @@ enum Categories {
 }
 
 class Category {
-  Categories name;
+  List<Question> questions;
   Color color;
 
-  Category(this.name, this.color);
+  Category(this.questions, this.color);
+
 }

@@ -21,7 +21,7 @@ class Navigation {
       '/register': (context) => const RegisterView(),
       '/profile': (context) => const ProfileView(),
       '/statistics': (context) => const StatisticsView(),
-      '/play': (context) => const QuizView(),
+      '/play': (context) => QuizView(),
       '/select-quiz': (context) => const QuizSelectionView(),
       '/select-category': (context) => const CategorySelectionView(),
       '/leaderboard': (context) => const LeaderboardView(),

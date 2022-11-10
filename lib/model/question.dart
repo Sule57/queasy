@@ -1,11 +1,21 @@
-import 'package:queasy/model/category.dart';
-
 import 'answer.dart';
 
 class Question {
   final String text;
   final List<Answer> answers;
-  // Categories category;
+  // String category;
 
-  Question(this.text, this.answers);
+  Question({
+    required this.text,
+    required this.answers,
+    // required this.category,
+  });
+
+  String getText() {
+    return text;
+  }
+
+  Answer getAnswer(int index) {
+    return answers[index];
+  }
 }

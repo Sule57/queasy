@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:queasy/widget_tree.dart';
 
 import 'constants/app_themes.dart';
-import 'constants/navigation.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
