@@ -24,15 +24,15 @@ class AppThemes {
     //TEXT
     fontFamily: GoogleFonts.nunito().fontFamily,
     textTheme: TextTheme(
-      headline2: TextStyle(
-        fontSize: 30,
-        fontWeight: FontWeight.bold,
-        color: black,
-      ),
       headline3: TextStyle(
         fontSize: 20,
         fontWeight: FontWeight.bold,
         color: black,
+      ),
+      headline2: TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.w500,
+        color: white,
       ),
       bodyText1: TextStyle(
         fontSize: 16,
@@ -50,7 +50,9 @@ class AppThemes {
     ),
 
     //TEXT FIELD
-    inputDecorationTheme: const InputDecorationTheme(),
+    inputDecorationTheme: const InputDecorationTheme(
+      counterStyle: TextStyle(fontSize: 16.0),
+    ),
 
     //BUTTONS
 
