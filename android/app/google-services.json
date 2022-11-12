@@ -30,6 +30,13 @@
             {
               "client_id": "17686953226-0c339hh0bdlrsbgau7kffgmkj807kiai.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "17686953226-0dictdama32iud20bvdkq6t57n35t83a.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "de.queasy.queasy"
+              }
             }
           ]
         }
