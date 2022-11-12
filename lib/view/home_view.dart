@@ -7,16 +7,55 @@ class HomeView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      bottomNavigationBar: CustomBottomNavBar(pageTitle: 'Home'),
+    return Scaffold(
+      bottomNavigationBar: const CustomBottomNavBar(pageTitle: 'Home'),
       body: Center(
-        child: Align(
-          alignment: Alignment.center,
-          child: Text(
-            'Login Successful',
-            style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
-          ),
-        ),
+        child: Stack(children: [
+          ///user profile at the top right corner
+          Align(
+              alignment: Alignment.topLeft,
+              child: IconButton(
+                  icon: Container(
+                    height: 66,
+                    width: 66,
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      image: DecorationImage(
+                        fit: BoxFit.fill,
+                        image: NetworkImage(
+                            "https://picsum.photos/500/300?random=1"),
+                      ),
+                    ),
+                  ),
+                  onPressed: () {})),
+          Align(
+            alignment: Alignment.center,
+            child: Column(
+              children: [
+                const Icon(
+                  Icons.home,
+                  size: 200,
+                ),
+                TextButton(
+                  child: const Text("Public Tournaments"),
+                  onPressed: () {},
+                ),
+                TextButton(
+                  child: const Text("Join Quiz"),
+                  onPressed: () {},
+                ),
+                TextButton(
+                  child: const Text("My Quizzes"),
+                  onPressed: () {},
+                ),
+                TextButton(
+                  child: const Text("Leaderboards"),
+                  onPressed: () {},
+                )
+              ],
+            ),
+          )
+        ]),
       ), //text with welcome message,
     );
   }
