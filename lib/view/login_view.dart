@@ -39,13 +39,13 @@ class _LogInViewState extends State<LogInView> {
             Text(errorMessage == '' ? '' : 'Humm? $errorMessage'),
             TextField(
               controller: _controllerEmail,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                   labelText: 'Email', hintText: 'yourname@example.com'),
             ),
             TextField(
               controller: _controllerPassword,
               obscureText: true,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Enter Password',
                 hintText: 'Password',
               ),

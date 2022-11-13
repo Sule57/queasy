@@ -24,8 +24,8 @@ void main() {
   }
 
 
-  testWidgets('Authentication Testing', (WidgetTester tester) async {
-    print('Begin: Authentication Testing');
+  testWidgets('Test login view widgets', (WidgetTester tester) async {
+    print('Begin: Test login view widgets');
 
     await tester.pumpWidget(createWidgetForTesting(child: const LogInView()));
     await tester.pumpAndSettle();
@@ -36,6 +36,7 @@ void main() {
       of: find.text('Email'),
       matching: find.byType(TextField),
     );
+    await tester.tap(emailField);
     await tester.enterText(emailField, "email@domain.de");
 
     // Password
@@ -44,6 +45,7 @@ void main() {
       of: find.text('Password'),
       matching: find.byType(TextField),
     );
+    await tester.tap(passwordField);
     await tester.enterText(emailField, "strengGeheim");
 
     // Tap the login button.
@@ -52,38 +54,11 @@ void main() {
       matching: find.byType(ElevatedButton),
     );
     await tester.tap(loginButton);
-    // wait
-    //await tester.runAsync(() async {
-    // await Future.delayed(Duration(seconds: 10));
-    //});
-    // test successful navigation to home
-    //expect(find.byType(HomeView), findsOneWidget);
+    await tester.pump();
 
-    print('End: Authentication Testing');
+
+    print('End: Test login view widgets');
   });
 
 
-// Define a test. The TestWidgets function also provides a WidgetTester
-// to work with. The WidgetTester allows you to build and interact
-// with widgets in the test environment.
-  /*
-  testWidgets('Test Login with email and password', (tester) async {
-    // Create the widget by telling the tester to build it.
-    await tester.pumpWidget(createWidgetForTesting(child: const LogInView()));
-
-    // Email
-    var emailField = find.text('Email').last;
-    //expect(find.text('Email'), findsOneWidget);
-    await tester.enterText(emailField, 'email@domain.de');
-
-    // pw
-    //final passwordField = find.text('Password').last;
-    //expect(find.text('Password'), findsOneWidget);
-    //await tester.enterText(passwordField, '123');
-    //expect(find.text('123'), findsNothing); // 3 characters shouldn't be allowed
-    //expect(find.text('12'), findsOneWidget);
-
-    //print('End: Test Login with email and password');
-  });
-  */
 }
