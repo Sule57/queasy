@@ -29,7 +29,8 @@ class Quiz {
     initialize();
   }
 
-  /// Initializes the quiz by getting the questions from the database and adding them to the questions list
+  /// Initializes the quiz by getting the questions from the database and adding
+  /// them to the questions list
   void initialize() async {
     for (int i = 0; i < noOfQuestions; i++) {
       String questionId = "question${await randomizer(category)}";
@@ -78,7 +79,8 @@ class Quiz {
     return question;
   }
 
-  /// Generates a random number between 0 and the current number of questions in the category for the question ID
+  /// Generates a random number between 0 and the current number of questions in
+  /// the category for the question ID
   Future<int> randomizer(category) async {
     _firebaseFirestore = FirebaseFirestore.instance;
 
