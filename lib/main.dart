@@ -12,7 +12,7 @@ Future<void> main() async {
       name: 'queasy',
       options: DefaultFirebaseOptions.currentPlatform,
     );
-    runApp(MyApp());
+    runApp(const MyApp());
   } catch (e) {
     print(e.toString());
   }
@@ -26,9 +26,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       home: const WidgetTree(),
       debugShowCheckedModeBanner: false,
-      title: 'Qeasy',
+      title: 'Queasy',
       theme: AppThemes().themeData,
-      //routes: Navigation(context).routes,
     );
   }
 }
