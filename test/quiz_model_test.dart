@@ -1,39 +1,118 @@
-import 'package:flutter/cupertino.dart';
+import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:queasy/model/question.dart';
 import 'package:queasy/model/quiz.dart';
-import 'package:test/test.dart';
 
-void main() async{
-  WidgetsFlutterBinding.ensureInitialized();
-  // try {
-  //   await Firebase.initializeApp(
-  //     options: const FirebaseOptions(
-  //       apiKey: 'AIzaSyCNGjdJ0j86h8b_Bk7d9ts-hY4JZ7aNWcQ',
-  //       appId: 'quizzapp-eb0f2',
-  //       messagingSenderId: '1:17686953226:web:81a053f17c2b317edd0ef3',
-  //       projectId: '17686953226',
-  //     ),
-  //   );
-  //   runApp(MyApp());
-  // } catch (e) {
-  //   print(e.toString());
-  //   await Firebase.initializeApp(
-  //     options: const FirebaseOptions(
-  //       apiKey: 'AIzaSyCNGjdJ0j86h8b_Bk7d9ts-hY4JZ7aNWcQ',
-  //       appId: 'quizzapp-eb0f2',
-  //       messagingSenderId: '1:17686953226:web:81a053f17c2b317edd0ef3',
-  //       projectId: '17686953226',
-  //     ),
-  //     name: 'qeasy_web_app',
-  //   );
-  //   runApp(MyApp());
-  // }
-  late Quiz quiz;
-  test ('Check if quiz initialize works, and call the getter for the questions', () async {
-    // List<Question> _questions = [];
-    // quiz = Quiz(id: 1, noOfQuestions: 5, category: 'Science');
-    // _questions = quiz.getQuestions();
-    // expect(_questions.length, 5);
-    // expect(_questions[0].answers.length, 4);
+/// Main function for testing the [Quiz] class.
+void main() async {
+  final instance = FakeFirebaseFirestore();
+  late List<Question> _questions;
+
+  /// Creates question0 for testing: What is the capital of France?
+  Map<String, dynamic> question0 = {
+    'text': 'What is the capital of France?',
+    'answer1': {'text': 'Paris', 'isCorrect': true},
+    'answer2': {'text': 'London', 'isCorrect': false},
+    'answer3': {'text': 'Berlin', 'isCorrect': false},
+    'answer4': {'text': 'Rome', 'isCorrect': false},
+  };
+  /// Creates question1 for testing: What is the capital of Germany?
+  Map<String, dynamic> question1 = {
+    'text': 'What is the capital of Germany?',
+    'answer1': {'text': 'Paris', 'isCorrect': false},
+    'answer2': {'text': 'London', 'isCorrect': false},
+    'answer3': {'text': 'Berlin', 'isCorrect': true},
+    'answer4': {'text': 'Rome', 'isCorrect': false},
+  };
+  /// Creates question2 for testing: What is the capital of Italy?
+  Map<String, dynamic> question2 = {
+    'text': 'What is the capital of Italy?',
+    'answer1': {'text': 'Paris', 'isCorrect': false},
+    'answer2': {'text': 'London', 'isCorrect': false},
+    'answer3': {'text': 'Berlin', 'isCorrect': false},
+    'answer4': {'text': 'Rome', 'isCorrect': true},
+  };
+  /// Creates question3 for testing: What is the capital of Spain?
+  Map<String, dynamic> question3 = {
+    'text': 'What is the capital of England?',
+    'answer1': {'text': 'Paris', 'isCorrect': false},
+    'answer2': {'text': 'London', 'isCorrect': true},
+    'answer3': {'text': 'Berlin', 'isCorrect': false},
+    'answer4': {'text': 'Rome', 'isCorrect': false},
+  };
+  /// Creates question4 for testing: What is the capital of Spain?
+  Map<String, dynamic> question4 = {
+    'text': 'What is the capital of Spain?',
+    'answer1': {'text': 'Paris', 'isCorrect': false},
+    'answer2': {'text': 'London', 'isCorrect': false},
+    'answer3': {'text': 'Berlin', 'isCorrect': false},
+    'answer4': {'text': 'Rome', 'isCorrect': false},
+  };
+  /// Pushes question0 into the fake firestore database
+  await instance.collection('categories')
+      .doc('public')
+      .collection('testing')
+      .doc('question0').set(question0);
+  /// Pushes question1 into the fake firestore database
+  await instance.collection('categories')
+      .doc('public')
+      .collection('testing')
+      .doc('question1').set(question1);
+  /// Pushes question2 into the fake firestore database
+  await instance.collection('categories')
+      .doc('public')
+      .collection('testing')
+      .doc('question2').set(question2);
+  /// Pushes question3 into the fake firestore database
+  await instance.collection('categories')
+      .doc('public')
+      .collection('testing')
+      .doc('question3').set(question3);
+  /// Pushes question4 into the fake firestore database
+  await instance.collection('categories')
+      .doc('public')
+      .collection('testing')
+      .doc('question4').set(question4);
+
+  /// Initializes the test constructor for the [Quiz] class
+  Quiz quiz = Quiz.test(
+    id: 58,
+    creatorUsername: 'test',
+    noOfQuestions: 5,
+    category: 'testing',
+    firestore: instance,
+  );
+
+  /// Store quiz questions into _questions List for testing
+  _questions = quiz.getQuestions();
+
+
+  /// Testing if the amount of questions int the list is the same as in the constructor
+  test('Quiz should have a question list with 5 questions', () {
+    expect(_questions.length, 5);
+  });
+
+  /// Testing if question0 is in the returned list
+  test('One of the questions should have the text \'What is the capital of France?\'', () {
+    expect(_questions.any((element) => element.text == 'What is the capital of France?'), true);
+  });
+
+  /// Testing if question1 is in the returned list
+  test('One of the questions should have the text \'What is the capital of Germany?\'', () {
+    expect(_questions.any((element) => element.text == 'What is the capital of Germany?'), true);
+  });
+
+  ///  Testing if question2 is in the returned list
+  test('One of the questions should have the text \'What is the capital of Italy?\'', () {
+    expect(_questions.any((element) => element.text == 'What is the capital of Italy?'), true);
+  });
+  /// Testing if question3 is in the returned list
+  test('One of the questions should have the text \'What is the capital of England?\'', () {
+    expect(_questions.any((element) => element.text == 'What is the capital of England?'), true);
+  });
+  /// Testing if question4 is in the returned list
+  test('One of the questions should have the text \'What is the capital of Spain?\'', () {
+    expect(_questions.any((element) => element.text == 'What is the capital of Spain?'), true);
   });
 
 }
