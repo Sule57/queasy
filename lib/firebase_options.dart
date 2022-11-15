@@ -52,7 +52,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '17686953226',
     projectId: 'quizzapp-eb0f2',
     authDomain: 'quizzapp-eb0f2.firebaseapp.com',
-    databaseURL: 'https://quizzapp-eb0f2-default-rtdb.europe-west1.firebasedatabase.app',
+    databaseURL:
+        'https://quizzapp-eb0f2-default-rtdb.europe-west1.firebasedatabase.app',
     storageBucket: 'quizzapp-eb0f2.appspot.com',
     measurementId: 'G-MSF5DXS9QN',
   );
@@ -62,7 +63,8 @@ class DefaultFirebaseOptions {
     appId: '1:17686953226:android:f3224179ba0b743ddd0ef3',
     messagingSenderId: '17686953226',
     projectId: 'quizzapp-eb0f2',
-    databaseURL: 'https://quizzapp-eb0f2-default-rtdb.europe-west1.firebasedatabase.app',
+    databaseURL:
+        'https://quizzapp-eb0f2-default-rtdb.europe-west1.firebasedatabase.app',
     storageBucket: 'quizzapp-eb0f2.appspot.com',
   );
 
@@ -71,9 +73,11 @@ class DefaultFirebaseOptions {
     appId: '1:17686953226:ios:f7e36aea36f9173ddd0ef3',
     messagingSenderId: '17686953226',
     projectId: 'quizzapp-eb0f2',
-    databaseURL: 'https://quizzapp-eb0f2-default-rtdb.europe-west1.firebasedatabase.app',
+    databaseURL:
+        'https://quizzapp-eb0f2-default-rtdb.europe-west1.firebasedatabase.app',
     storageBucket: 'quizzapp-eb0f2.appspot.com',
-    iosClientId: '17686953226-0dictdama32iud20bvdkq6t57n35t83a.apps.googleusercontent.com',
+    iosClientId:
+        '17686953226-0dictdama32iud20bvdkq6t57n35t83a.apps.googleusercontent.com',
     iosBundleId: 'de.queasy.queasy',
   );
 }
