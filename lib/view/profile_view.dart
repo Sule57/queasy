@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:queasy/constants/app_themes.dart';
+import '../controller/profile-view-controller.dart';
 import 'widgets/custom_bottom_nav_bar.dart';
 
 class UserProfile extends StatefulWidget {
-  const UserProfile({super.key});
+  final ProfileViewController controller = ProfileViewController();
+
+  UserProfile({Key? key}) : super(key: key);
 
   ///creates ProfileView class
   @override
@@ -11,6 +14,20 @@ class UserProfile extends StatefulWidget {
 }
 
 class ProfileView extends State<UserProfile> {
+  get controller => widget.controller;
+
+  final List<TextEditingController> textController =
+      List.generate(8, (i) => TextEditingController());
+
+  @override
+  void dispose() {
+    /// Cleans up the controllers when the widget is disposed.
+    for (var element in textController) {
+      element.dispose();
+    }
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,15 +38,16 @@ class ProfileView extends State<UserProfile> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
+                //TO-DO
                 ///profile picture of the user
-                Icon(
-                  Icons.verified_user,
-                  size: 50,
+                IconButton(
+                  icon: Icon(Icons.person),
+                  onPressed: () => {controller.editProfilePic(" ")},
                 ),
 
                 ///username
                 TextButton(
-                  child: Text("Username"),
+                  child: Text(controller.player.username),
 
                   ///opens the dialog when clicked
                   onPressed: () => showAlertDialog(
@@ -40,19 +58,23 @@ class ProfileView extends State<UserProfile> {
                           //position
                           mainAxisSize: MainAxisSize.min,
                           // wrap content in flutter
-                          children: const <Widget>[
-                            ///to ener the new username
+                          children: <Widget>[
+                            ///to enter the new username
                             TextField(
-                              decoration: InputDecoration(
+                              controller: textController[0],
+                              decoration: const InputDecoration(
                                 labelText: 'Enter New Username',
                               ),
                             ),
-                          ])),
+                          ]),
+                      controller.editUsername(textController[0].text)),
                 ),
 
                 ///first name and last name of the user
                 TextButton(
-                  child: Text("first name - last name"),
+                  child: Text(controller.player.firstName +
+                      " " +
+                      controller.player.lastName),
 
                   ///opens the dialog when clicked
                   onPressed: () => showAlertDialog(
@@ -61,26 +83,30 @@ class ProfileView extends State<UserProfile> {
                       Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           mainAxisSize: MainAxisSize.min,
-                          children: const <Widget>[
-                            ///to ener the new firstname
+                          children: <Widget>[
+                            ///to enter the new firstname
                             TextField(
-                              decoration: InputDecoration(
+                              controller: textController[1],
+                              decoration: const InputDecoration(
                                 labelText: 'Enter New Firstname',
                               ),
                             ),
 
-                            ///to ener the new lastname
+                            ///to enter the new lastname
                             TextField(
-                              decoration: InputDecoration(
+                              controller: textController[2],
+                              decoration: const InputDecoration(
                                 labelText: 'Enter New Lastname',
                               ),
                             ),
-                          ])),
+                          ]),
+                      controller.editName(
+                          textController[1].text, textController[2].text)),
                 ),
 
                 ///email of the user
                 TextButton(
-                  child: Text("Email"),
+                  child: Text(controller.player.email),
 
                   ///opens the dialog when clicked
                   onPressed: () => showAlertDialog(
@@ -89,15 +115,17 @@ class ProfileView extends State<UserProfile> {
                       Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           mainAxisSize: MainAxisSize.min,
-                          children: const <Widget>[
+                          children: <Widget>[
                             ///to ener the new email
                             TextField(
-                              decoration: InputDecoration(
+                              controller: textController[3],
+                              decoration: const InputDecoration(
                                 labelText: 'Enter New Email',
                                 hintText: 'yourname@example.com',
                               ),
                             ),
-                          ])),
+                          ]),
+                      controller.editEmail(textController[3].text)),
                 ),
               ]),
           Column(
@@ -106,11 +134,34 @@ class ProfileView extends State<UserProfile> {
               children: <Widget>[
                 ///displays the bio of the user
                 Container(
-                  height: 120.0,
+                  height: 150.0,
                   width: 300.0,
-                  padding: EdgeInsets.fromLTRB(20.0, 40.0, 20.0, 40.0),
+                  padding: const EdgeInsets.fromLTRB(20.0, 40.0, 20.0, 40.0),
                   color: green,
-                  child: Column(children: [Text("Bio"), Text("data")]),
+                  child: Column(children: [
+                    TextButton(
+                      child: const Text("Bio"),
+
+                      ///opens the dialog when clicked
+                      onPressed: () => showAlertDialog(
+                          context,
+                          "email",
+                          Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                ///to ener the new email
+                                TextField(
+                                  controller: textController[4],
+                                  decoration: const InputDecoration(
+                                    labelText: 'Enter New Bio',
+                                  ),
+                                ),
+                              ]),
+                          controller.editEmail(textController[4].text)),
+                    ),
+                    Text(controller.player.bio),
+                  ]),
                 ),
 
                 ///shows statistics when clicked
@@ -130,30 +181,36 @@ class ProfileView extends State<UserProfile> {
                       context,
                       "password",
                       Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          mainAxisSize: MainAxisSize.min,
-                          children: const <Widget>[
-                            ///to enter the old password
-                            TextField(
-                              decoration: InputDecoration(
-                                labelText: 'Enter Password',
-                              ),
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          ///to enter the old password
+                          TextField(
+                            controller: textController[5],
+                            decoration: const InputDecoration(
+                              labelText: 'Enter Password',
                             ),
+                          ),
 
-                            ///to enter the new password
-                            TextField(
-                              decoration: InputDecoration(
-                                labelText: 'Enter New Password',
-                              ),
+                          ///to enter the new password
+                          TextField(
+                            controller: textController[6],
+                            decoration: const InputDecoration(
+                              labelText: 'Enter New Password',
                             ),
+                          ),
 
-                            ///to confirm the new password
-                            TextField(
-                              decoration: InputDecoration(
-                                labelText: 'Confirm New Password',
-                              ),
+                          ///to confirm the new password
+                          TextField(
+                            controller: textController[7],
+                            decoration: const InputDecoration(
+                              labelText: 'Confirm New Password',
                             ),
-                          ])),
+                          ),
+                        ],
+                      ),
+                      controller.editPassword(textController[5].text,
+                          textController[6].text, textController[7].text)),
                 ),
               ]),
           Column(
@@ -163,13 +220,13 @@ class ProfileView extends State<UserProfile> {
               ///button to sign out
               ElevatedButton(
                 child: const Text("Sign out"),
-                onPressed: () {},
+                onPressed: () => controller.signOut,
               ),
 
               ///button to delete the account
               TextButton(
                 child: const Text("Delete Account"),
-                onPressed: () {},
+                onPressed: () => controller.deleteAccount,
               )
             ],
           )
@@ -183,36 +240,39 @@ class ProfileView extends State<UserProfile> {
 ///@param context Build context
 ///@param title Label of the dialog
 ///@param content To provide a column of input text fields to display in the dialog
-showAlertDialog(BuildContext context, String title, Column content) {
-  ///cancel button in case user changes their mind
-  Widget cancelButton = TextButton(
-    child: const Text("Cancel"),
-    onPressed: () {
-      Navigator.pop(context);
-    },
-  );
-
-  ///confirm button for user to submit the new data
-  Widget confirmButton = TextButton(
-    child: const Text("Confirm"),
-    onPressed: () {},
-  );
-
-  ///the alert dialog
-  AlertDialog alert = AlertDialog(
-    title: Text("Update $title"),
-    content: content,
-    actions: [
-      cancelButton,
-      confirmButton,
-    ],
-  );
-
-  ///shows the dialog in the given context
+showAlertDialog(BuildContext context, String title, Column content, edit) {
+  ///creates alert dialog and shows it in the given context
   showDialog(
     context: context,
-    builder: (BuildContext context) {
-      return alert;
+    builder: (context) {
+      return StatefulBuilder(builder: (context, StateSetter setState) {
+        return AlertDialog(
+          title: Text("Update $title"),
+          content: content,
+          actions: [
+            ///cancel button in case user changes their mind
+            TextButton(
+              child: const Text("Cancel"),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+
+            ///confirm button for user to submit the new data
+            TextButton(
+              child: const Text("Confirm"),
+              //TO-DO
+              //problem: value doesn't change
+              onPressed: () {
+                setState(() {
+                  edit;
+                  Navigator.pop(context);
+                });
+              },
+            )
+          ],
+        );
+      });
     },
   );
 }
