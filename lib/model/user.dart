@@ -39,12 +39,12 @@ class User {
 
 
 
-  ///Creates a user instance from json
-  ///Note: the json format must be the following:
-  ///USERNAME: {
+  /// Creates a user instance from json
+  /// Note: the json format must be the following:
+  /// USERNAME: {
   ///   FIELDS: FIELDS
   ///   }
-  ///@param json should be json data
+  /// [json] should be json data
   User.fromJson(Map<String, dynamic> json)
       : username = json.keys.toList()[0],// this is how to get the username
         hashPassword = json[json.keys.toList()[0]]['hashPassword'],
@@ -73,8 +73,9 @@ class User {
   };
 
 
-  ///registers user the following way: creates document with the username and collection with its attributes
-  ///@param firestore database instance
+  /// registers user the following way: creates document with the username and collection with its attributes
+  /// returns true if successful
+  /// [firestore] database instance
   bool registerUser(FirebaseFirestore firestore) {
     try {
       firestore.collection('users').doc(this.username).set(this.toJson());
@@ -86,7 +87,7 @@ class User {
 
 
   /// Increment the score of the user in the firebase by the score achieved in the current quiz
-  /// @param username The username of the user
+  /// [username] The username of the user
   void updateScore(String username, String category, int score) {
     _firebaseFirestore = FirebaseFirestore.instance;
     _firebaseFirestore.collection('users')
