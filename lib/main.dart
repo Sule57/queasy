@@ -1,7 +1,6 @@
-
-
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:queasy/firebase_options.dart';
 import 'package:queasy/widget_tree.dart';
 
 import 'constants/app_themes.dart';
@@ -10,36 +9,12 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   try {
     await Firebase.initializeApp(
-      options: const FirebaseOptions(
-        // this configuration must remain the same
-          apiKey: "AIzaSyCNGjdJ0j86h8b_Bk7d9ts-hY4JZ7aNWcQ",
-          authDomain: "quizzapp-eb0f2.firebaseapp.com",
-          databaseURL: "https://quizzapp-eb0f2-default-rtdb.europe-west1.firebasedatabase.app",
-          projectId: "quizzapp-eb0f2",
-          storageBucket: "quizzapp-eb0f2.appspot.com",
-          messagingSenderId: "17686953226",
-          appId: "1:17686953226:web:81a053f17c2b317edd0ef3",
-          measurementId: "G-MSF5DXS9QN"
-      ),
+      name: 'queasy',
+      options: DefaultFirebaseOptions.currentPlatform,
     );
     runApp(MyApp());
   } catch (e) {
     print(e.toString());
-    await Firebase.initializeApp(
-      options: const FirebaseOptions(
-          apiKey: "AIzaSyCNGjdJ0j86h8b_Bk7d9ts-hY4JZ7aNWcQ",
-          authDomain: "quizzapp-eb0f2.firebaseapp.com",
-          databaseURL:
-          "https://quizzapp-eb0f2-default-rtdb.europe-west1.firebasedatabase.app",
-          projectId: "quizzapp-eb0f2",
-          storageBucket: "quizzapp-eb0f2.appspot.com",
-          messagingSenderId: "17686953226",
-          appId: "1:17686953226:web:81a053f17c2b317edd0ef3",
-          measurementId: "G-MSF5DXS9QN"
-      ),
-      name: 'qeasy_web_app',
-    );
-    runApp(MyApp());
   }
 }
 
