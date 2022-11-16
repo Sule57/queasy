@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-
+import 'package:queasy/view/category_selection_view.dart';
+import 'package:queasy/view/profile_view.dart';
+import 'package:queasy/view/quiz_selection_view.dart';
+import 'package:queasy/view/quiz_view.dart';
 import 'widgets/custom_bottom_nav_bar.dart';
 
 class HomeView extends StatelessWidget {
@@ -7,6 +10,9 @@ class HomeView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ///@param [textController] for getting user input
+    final textController = TextEditingController();
+
     return Scaffold(
       bottomNavigationBar: const CustomBottomNavBar(pageTitle: 'Home'),
       body: Center(
@@ -27,36 +33,86 @@ class HomeView extends StatelessWidget {
                       ),
                     ),
                   ),
-                  onPressed: () {})),
+
+                  ///navigates to profile view when clicked
+                  onPressed: () => Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => ProfileView())))),
           Align(
             alignment: Alignment.center,
             child: Column(
               children: [
+                ///app logo (currently home icon as default)
                 const Icon(
                   Icons.home,
                   size: 200,
                 ),
                 TextButton(
                   child: const Text("Public Tournaments"),
-                  onPressed: () {},
+
+                  ///navigates to categories when clicked
+                  onPressed: () => Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => const CategorySelectionView())),
                 ),
                 TextButton(
                   child: const Text("Join Quiz"),
-                  onPressed: () {},
+
+                  ///opens a dialog for the user to enter a key to be able to enter a quiz
+                  onPressed: () => showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: const Text("Enter key"),
+                          content: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              ///user input
+                              TextField(
+                                  controller: textController,
+                                  decoration: const InputDecoration())
+                            ],
+                          ),
+                          actions: [
+                            ///cancel button
+                            TextButton(
+                                onPressed: () => Navigator.pop(context),
+                                child: const Text("Cancel")),
+                            TextButton(
+
+                                ///join button navigates to a quiz if the entered key is confirmed
+                                onPressed: () => {
+                                      confirmKey(textController.text),
+                                      if (confirmKey(textController.text))
+                                        {
+                                          Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      QuizView()))
+                                        }
+                                      else
+                                        {Navigator.pop(context)}
+                                    },
+                                child: const Text("Join"))
+                          ],
+                        );
+                      }),
                 ),
                 TextButton(
                   child: const Text("My Quizzes"),
-                  onPressed: () {},
+
+                  ///navigates to quiz selection view when clicked
+                  onPressed: () => Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => const QuizSelectionView())),
                 ),
-                TextButton(
-                  child: const Text("Leaderboards"),
-                  onPressed: () {},
-                )
               ],
             ),
           )
         ]),
       ), //text with welcome message,
     );
+  }
+
+  ///confirms whether the entered key is valid (not yet implemented)
+  bool confirmKey(String text) {
+    return false;
   }
 }
