@@ -1,19 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:queasy/view/widgets/rounded-button.dart';
 
+/// This is the register view.
+///
+/// It is the view that the user sees when they are creating an account to
+/// use the app. It shows four fields for the user to fill in, and a button
+/// to sign up. When the registration is over, the user is taken to [HomeView].
+/// It uses colors from [AppThemes].
 class RegisterView extends StatelessWidget {
   const RegisterView({Key? key}) : super(key: key);
 
+  /// Builds the view.
+  ///
+  /// Uses a [Column] to display the logo and name of quiz app on top,
+  /// and the text fields with the sign up button at the bottom. Contains also a
+  /// [Row] with a line divider and a text in the middle, and a final [Row] with
+  /// other available sign up options.
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false, // This avoids the overflow error
+      /// This avoids the overflow error.
+      resizeToAvoidBottomInset: false,
+
+      /// This [Padding] contains a [Column] to display the logo and
+      /// name of the app.
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            // Logo and name
             Padding(
               padding: const EdgeInsets.only(top: 16.0),
               child: SizedBox(
@@ -25,7 +40,9 @@ class RegisterView extends StatelessWidget {
               ),
             ),
 
-            // Container with the text fields and sign up button
+            /// This [Column] displays the text fields and the sign up button,
+            /// so the user can type their information and, if successful, create
+            /// an account.
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
@@ -48,6 +65,8 @@ class RegisterView extends StatelessWidget {
                                 fontSize: 30.0, fontWeight: FontWeight.bold),
                           ),
                         ),
+                        /// Each [TextField] is used to get the user's
+                        /// information.
                         const TextField(
                           decoration: InputDecoration(
                               labelText: 'E-mail',
@@ -70,6 +89,8 @@ class RegisterView extends StatelessWidget {
                             hintText: 'Password',
                           ),
                         ),
+                        /// This [RoundedButton] is used to create a new account
+                        /// to the user.
                         Padding(
                           padding: const EdgeInsets.only(top: 10, bottom: 10),
                           child: RoundedButton(
@@ -85,7 +106,10 @@ class RegisterView extends StatelessWidget {
               ],
             ),
 
-            // Line divider with 'or' text
+            /// The [Row] widgets display line dividers and the
+            /// [Expanded] one shows the 'or' text, so the user can
+            /// also have a different sign up options, rather than typing
+            /// their data manually.
             Row(
               children: <Widget>[
                 Expanded(
@@ -106,7 +130,8 @@ class RegisterView extends StatelessWidget {
               ],
             ),
 
-            // Social media sign up buttons
+            /// Here the user can see different options to create an account.
+            /// This [Row] displays the social media sign up buttons.
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
