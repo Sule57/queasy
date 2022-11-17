@@ -19,29 +19,34 @@ class AppThemes {
       onTertiary: black,
       background: white,
       onBackground: black,
-
-      //TODO fill necessary colors
     ),
 
     //TEXT
     fontFamily: GoogleFonts.nunito().fontFamily,
     textTheme: TextTheme(
-      headline3: const TextStyle(
-        fontSize: 30,
+      headline3: TextStyle(
+        fontSize: 20,
         fontWeight: FontWeight.bold,
-      ),
-      caption: TextStyle(
-        fontSize: 14,
-        fontWeight: FontWeight.bold,
-        color: purple,
+        color: black,
       ),
       headline2: TextStyle(
         fontSize: 16,
         fontWeight: FontWeight.w500,
         color: white,
       ),
-
-      //TODO fill text themes
+      bodyText1: TextStyle(
+        fontSize: 16,
+        color: black,
+      ),
+      bodyText2: TextStyle(
+        fontSize: 14,
+        color: black,
+      ),
+      caption: TextStyle(
+        fontSize: 14,
+        fontWeight: FontWeight.bold,
+        color: purple,
+      ),
     ),
 
     //TEXT FIELD
@@ -50,22 +55,7 @@ class AppThemes {
     ),
 
     //BUTTONS
-    elevatedButtonTheme: ElevatedButtonThemeData(
-      style: ButtonStyle(
-        textStyle: MaterialStateProperty.all(TextStyle(fontSize: 30)),
-      ),
-    ),
-    //TODO fill button themes
-    outlinedButtonTheme: const OutlinedButtonThemeData(
-        style: ButtonStyle(
-            //TODO fill button themes
-            )),
-    textButtonTheme: const TextButtonThemeData(
-        style: ButtonStyle(
-            //TODO fill button themes
-            )),
 
     //OTHER
-    //TODO fill other themes
   );
 }

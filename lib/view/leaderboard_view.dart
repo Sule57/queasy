@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'custom_bottom_nav_bar.dart';
+import 'widgets/custom_bottom_nav_bar.dart';
 
 const List<String> list = <String>['All', 'Art', 'Science', 'Sports'];
 
