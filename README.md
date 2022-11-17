@@ -1,16 +1,9 @@
-# queasy
-...
-Software Project WS2022
+# Queasy
 
-## Getting Started
+A project created in 2022 for the class "Software Project" in Technische Hochschule Ulm.
 
-This project is a starting point for a Flutter application.
+## Description
 
-A few resources to get you started if this is your first Flutter project:
+The project consists of an application in Flutter and Dart used to play quizzes.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Users can play in the public tournament, where they compete with other users for the best score. They can also create their own tournaments, where they can invite their friends to play.
