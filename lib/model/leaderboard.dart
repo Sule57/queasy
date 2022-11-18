@@ -67,6 +67,10 @@ class Leaderboard {
     return _currentPlayer.getScore;
   }
 
+  /// getter for Leaderboard entries
+  List<LeaderboardEntry> getEntries(){
+    return _entries;
+  }
 
   /// Adds a new [LeaderboardEntry] to the existing list of entries. (testing purposes)
   Future<void> _addEntry(LeaderboardEntry entry) async {
