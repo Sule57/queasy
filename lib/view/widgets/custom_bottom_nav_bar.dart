@@ -93,7 +93,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
       case 2:
         /// This takes the user to the [ProfileView].
         Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => const ProfileView(),
+          builder: (context) => UserProfile(),
         ));
         break;
       case 3:

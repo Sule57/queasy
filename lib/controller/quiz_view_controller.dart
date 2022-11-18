@@ -11,7 +11,7 @@ class QuizViewController {
   late Quiz _quiz;
 
   /// The [User] that is currently taking the quiz.
-  late User player;
+  late Profile player;
 
   /// The category of the quiz.
   //TODO
