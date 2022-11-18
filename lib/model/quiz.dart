@@ -5,9 +5,7 @@ import 'package:queasy/model/question.dart';
 import 'answer.dart';
 
 class Quiz {
-  /// @param questions The list of questions in the quiz
-  /// @param usedQuestions The list of questions that have already been used
-  /// @param firebaseFirestore The instance of the firebase firestore
+
   int id, noOfQuestions;
   String? creatorUsername;
   static List<Question> _questions = [];
@@ -15,47 +13,67 @@ class Quiz {
   String category;
   late FirebaseFirestore _firebaseFirestore;
 
-  /// Constructor for the Quiz class (Automatically calls the initialize method)
-  /// @param id The id of the quiz
-  /// @param creatorUsername The username of the creator of the quiz
-  /// @param noOfQuestions The number of questions in the quiz
-  /// @param category The category of the quiz
-  Quiz({
+  /// The default onstructor for the [Quiz] class.
+  ///
+  /// This class takes the given parameters to create an instance of class [Quiz]
+  /// The [id] parameter represents the unique id of the quiz.
+  /// The function initialize will run inside of this constructor taking the parameters [noOfQuestions] and [category] to retrieve the questions from firebase in order to create the quiz.
+  /// The [creatorUsername] parameter represents the username of the creator of the quiz. (PlayerUsername is to be implemented)
+  Quiz.normal({
     required this.id,
     this.creatorUsername,
     required this.noOfQuestions,
     required this.category,
   }) {
-    initialize();
+    _firebaseFirestore = FirebaseFirestore.instance;
+    initialize(_firebaseFirestore);
   }
 
-  /// Initializes the quiz by getting the questions from the database and adding
-  /// them to the questions list
-  void initialize() async {
+  /// The testing constructor for the [Quiz] class.
+  ///
+  /// This class takes the given parameters to create an instance of class [Quiz]
+  /// The [id] parameter represents the unique id of the quiz.
+  /// The function initialize will run inside of this constructor taking the parameters [noOfQuestions] and [category] to retrieve the questions from firebase in order to create the quiz.
+  /// The [creatorUsername] parameter represents the username of the creator of the quiz. (PlayerUsername is to be implemented)
+  /// The [firestore] parameter represents the firestore instance to be used for testing (a.k.a. Mock firebase).
+  /// This constructor is used for testing purposes only.
+  Quiz.test({
+    required this.id,
+    this.creatorUsername,
+    required this.noOfQuestions,
+    required this.category,
+    required FirebaseFirestore firestore,
+}) {
+    initialize(firestore);
+  }
+
+  /// Initializes the quiz
+  ///
+  /// Uses the [firestore] instance to get the questions from the database and adds them to the [_questions] list.
+  void initialize(FirebaseFirestore firestore) async {
     for (int i = 0; i < noOfQuestions; i++) {
-      String questionId = "question${await randomizer(category)}";
+      String questionId = "question${await randomizer(category, firestore)}";
       if (_usedQuestions.contains(questionId)) {
         i--;
       } else {
         _usedQuestions.add(questionId);
-        await getQuestion(category, questionId).then((value) {
+        await getQuestion(category, questionId, firestore).then((value) {
           _questions.add(value);
         });
       }
     }
   }
 
-  /// Gets a question from the database
-  /// @param category The category of the question
-  /// @param questionId The id of the question
-  /// @return The question
-  Future<Question> getQuestion(category, questionId) async {
-    /// The question that will be returned
+  /// Retrives a question from firebase
+  ///
+  /// Firebase is accessed through the [firestore] instance.
+  /// Then the question is retrieved from the database from the given [category] and randomly generated [questionId].
+  /// And lastly the question is returned
+  Future<Question> getQuestion(category, questionId, FirebaseFirestore firestore) async {
     Map<String, dynamic>? data;
-    _firebaseFirestore = FirebaseFirestore.instance;
 
-    /// The document reference of the question (Database Access)
-    await _firebaseFirestore
+    // Access the database and get the question
+    await firestore
         .collection('categories')
         .doc('public')
         .collection(category)
@@ -65,7 +83,7 @@ class Quiz {
       data = doc.data() as Map<String, dynamic>;
     });
 
-    /// The question text & answers stored
+    // Create an instance of Question
     Question question = Question(
       text: data!['text'],
       answers: [
@@ -74,18 +92,18 @@ class Quiz {
         Answer(data!['answer3']['text'], data!['answer3']['isCorrect']),
         Answer(data!['answer4']['text'], data!['answer4']['isCorrect']),
       ],
-      // category: category,
     );
     return question;
   }
 
-  /// Generates a random number between 0 and the current number of questions in
-  /// the category for the question ID
-  Future<int> randomizer(category) async {
-    _firebaseFirestore = FirebaseFirestore.instance;
+  /// Creates a random number between 0 and amount of questions in the category
+  ///
+  /// The database is accessed through the [firestore] instance and the documents
+  /// under the given [category] are counted and the random number is generated
+  Future<int> randomizer(category, FirebaseFirestore firestore) async {
 
     /// Stores the current number of questions in the category
-    var numOfQuestions = await _firebaseFirestore
+    var numOfQuestions = await firestore
         .collection('categories')
         .doc('public')
         .collection(category)
@@ -97,7 +115,7 @@ class Quiz {
     return randomNumber;
   }
 
-  /// Gets the list of questions
+  /// Returns the list of questions generated for a particular quiz so public access can be achieved
   List<Question> getQuestions() {
     return _questions;
   }
