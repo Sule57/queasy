@@ -12,25 +12,41 @@ String? getCurrentUserID() {
 class Profile {
   late FirebaseFirestore _firebaseFirestore;
   String username;
-  String email;
   String hashPassword;
   String? firstName;
   String? lastName;
   String? profilePicture;
   String? bio;
   int? age;
+  String? birthdayMonth;
+  int? birthdayDay;
   //In the database publicScore and private score are stored as collections
   Map<String, dynamic> publicScore = {};
   Map<String, dynamic> privatecScore = {};
   Profile({
     required this.username,
-    required this.email,
     required this.hashPassword,
     this.firstName,
     this.lastName,
     this.profilePicture,
     this.bio,
     this.age,
+    this.birthdayMonth,
+    this.birthdayDay,
+  });
+
+  ///This constructor is used only for unit tests
+  Profile.test({
+    required this.username,
+    required this.hashPassword,
+    this.firstName = '',
+    this.lastName = '',
+    this.profilePicture = '',
+    this.bio = '',
+    this.age = 0,
+    this.birthdayMonth = '',
+    this.birthdayDay = 0,
+    required FirebaseFirestore firestore,
   });
 
   //TODO methods for user data
@@ -38,7 +54,7 @@ class Profile {
   //TODO NOT YET DONE METHOD
   Profile.fromJson(Map<String, dynamic> json)
       : username = json['name'],
-        email = json['email'],
+        // email = json['email'],
         hashPassword = json['hashPassword'];
   // firstName = json['firstName'];
   // lastName = json['lastName'];
@@ -86,9 +102,10 @@ class Profile {
   /// @param [newUsername] - username to change the current username to
   /// @return true - username was updated successfully
   /// @return false - username was not updated successfully
-  bool updateUsername(String currentUsername, String newUsername) {
+  bool updateUsername(
+      String currentUsername, String newUsername, FirebaseFirestore firestore) {
     try {
-      FirebaseFirestore.instance
+      firestore
           .collection('users')
           .doc(currentUsername)
           .update({'username': newUsername});
@@ -103,12 +120,9 @@ class Profile {
   ///@param [newBio] - the new bio information
   ///@return true - bio was updated successfully
   ///@return false - bio was not updated successfully
-  bool updateBio(String username, String newBio) {
+  bool updateBio(String username, String newBio, FirebaseFirestore firestore) {
     try {
-      FirebaseFirestore.instance
-          .collection('users')
-          .doc(username)
-          .update({'bio': newBio});
+      firestore.collection('users').doc(username).update({'bio': newBio});
       return true;
     } catch (e) {
       return false;
@@ -121,9 +135,10 @@ class Profile {
   ///@param [newLastName] - the new lastname
   ///@return true - name was updated successfully
   ///@return false - name was not updated successfully
-  bool updateName(String username, String newFirstName, String newLastName) {
+  bool updateName(String username, String newFirstName, String newLastName,
+      FirebaseFirestore firestore) {
     try {
-      FirebaseFirestore.instance
+      firestore
           .collection('users')
           .doc(username)
           .update({'firstName': newFirstName, 'lastName': newLastName});
@@ -139,12 +154,31 @@ class Profile {
   ///@param [newDay] - the new day of birth
   ///@return true - birthday was updated successfully
   ///@return false - birthday couldn't be updated
-  bool updateBirthday(String username, String newMonth, int newDay) {
+  bool updateBirthday(String username, String newMonth, int newDay,
+      FirebaseFirestore firestore) {
     try {
-      FirebaseFirestore.instance
+      firestore
           .collection('users')
           .doc(username)
           .update({'birthdayMonth': newMonth, 'birthdayDay': newDay});
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  ///updates the Profile Picture of the user in the Firebase Database
+  ///@param [username] - the current username of the user
+  ///@param [newPic] - the new picture
+  ///@return true - picture was updated successfully
+  ///@return false - picture couldn't be updated
+  bool updatePicture(
+      String username, String newPic, FirebaseFirestore firestore) {
+    try {
+      firestore
+          .collection('users')
+          .doc(username)
+          .update({'profilePicture': newPic});
       return true;
     } catch (e) {
       return false;

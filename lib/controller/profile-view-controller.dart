@@ -1,10 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:queasy/model/user.dart';
 
 class ProfileViewController {
   ///@param [player] For now a dummy data used as a user
   final Profile player = Profile(
       username: "Dummy",
-      email: "dummy@gmail.com",
+      // email: "dummy@gmail.com",
       hashPassword: "dummyPassword",
       firstName: "Dummy",
       lastName: "Whatever",
@@ -21,13 +22,14 @@ class ProfileViewController {
   String get bio => player.bio.toString();
   String get firstName => player.firstName.toString();
   String get lastName => player.lastName.toString();
-  String get email => player.email;
+  // String get email => player.email;
   String get profilePicture => player.profilePicture.toString();
   int? get age => player.age;
 
   ///changes the [currentUsername] with the given new [newUsername]
   bool editUsername(String currentUsername, String newUsername) {
-    return player.updateUsername(currentUsername, newUsername);
+    return player.updateUsername(
+        currentUsername, newUsername, FirebaseFirestore.instance);
   }
 
   ///changes the [currentEmail] with the given [newEmail] and confirms it through [password]
@@ -37,17 +39,18 @@ class ProfileViewController {
 
   ///changes the current name with the given [newFirstname] and [newLastname] and requires [username]
   bool editName(String username, String newFirstname, String newLastname) {
-    return player.updateName(username, newFirstname, newLastname);
+    return player.updateName(
+        username, newFirstname, newLastname, FirebaseFirestore.instance);
   }
 
   ///changes the current bio with the given [newBio] and requires [username]
   bool editBio(String username, String newBio) {
-    return player.updateBio(username, newBio);
+    return player.updateBio(username, newBio, FirebaseFirestore.instance);
   }
 
   ///changes the current profile picture with the given [newPic]
-  void editProfilePic(String newPic) {
-    player.profilePicture = newPic;
+  bool editProfilePic(String newPic) {
+    return player.updatePicture(username, newPic, FirebaseFirestore.instance);
   }
 
   ///changes the current password [currentPassword] with the given [newPassword] and confirms it through [email]
