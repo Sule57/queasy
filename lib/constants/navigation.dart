@@ -23,7 +23,7 @@ class Navigation {
       '/statistics': (context) => const StatisticsView(),
       '/play': (context) => QuizView(),
       '/select-quiz': (context) => const QuizSelectionView(),
-      '/select-category': (context) => const CategorySelectionView(),
+      '/select-category': (context) =>  CategorySelectionView(),
       '/leaderboard': (context) => const LeaderboardView(),
     };
   }

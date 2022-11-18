@@ -2,24 +2,64 @@ import 'dart:convert';
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:queasy/model/user.dart';
+// import 'package:test/test.dart';
 
 /// Main function for testing the [Profile] class.
 void main() async {
   final instance = FakeFirebaseFirestore();
+  final user_test = new Profile.test(
+      username: 'TEST21',
+      hashPassword: 'nothashedpassword',
+      firestore: instance);
+  Map<String, dynamic> expectedDumpAfterset = {
+    'username': 'TEST21',
+    'lastName': '',
+    'firstName': '',
+    'hashPassword': 'nothashedpassword',
+    'bio': '',
+    'age': 0,
+    'scores': {},
+    'privateScore': {},
+  };
+
+  ///tests method register() in User model
+  test('Test user registration', () async {
+    final usr = new Profile.test(
+        username: 'TEST21',
+        hashPassword: 'nothashedpassword',
+        firestore: instance);
+    usr.registerUser(instance);
+    Map<String, dynamic> data = json.decode(instance.dump());
+    expect(data['users']["TEST21"], equals(expectedDumpAfterset));
+  });
+
+  /// tests User instance creation from json file
+  test('Test fromJsonConstructor', () async {
+    final usr = new Profile.test(
+        username: 'TEST21',
+        hashPassword: 'nothashedpassword',
+        firestore: instance);
+    usr.registerUser(instance);
+    Map<String, dynamic> data = json.decode(instance.dump());
+
+    final r_user = Profile.fromJson(data['users']["TEST21"]);
+    print(r_user.toString());
+    expect(r_user.toString(), equals(user_test.toString()));
+  });
+
+  ///Tests for Profile Class methods that update database information
   final profile_test = Profile.test(
       username: 'profileTest',
       hashPassword: 'profileTest',
       firestore: instance);
   Map<String, dynamic> expectedDataAfterUpdates = {
-    "testProfileDocID": {
-      'username': 'testProfile',
-      'firstName': 'profile',
-      'lastName': 'test',
-      'profilePicture': 'profile.png',
-      'bio': 'This is the test for the profile class.',
-      'birthdayMonth': 'Jancember',
-      'birthdayDay': 124,
-    }
+    'username': 'testProfile',
+    'firstName': 'profile',
+    'lastName': 'test',
+    'profilePicture': 'profile.png',
+    'bio': 'This is the test for the profile class.',
+    'birthdayMonth': 'Jancember',
+    'birthdayDay': 124,
   };
 
   /// Creates testProfile information for testing
@@ -72,6 +112,6 @@ void main() async {
   /// Testing after all updates that profile information is correct
   test('Profile should match Expected Data', () {
     Map<String, dynamic> data = json.decode(instance.dump());
-    expect(data['users'], equals(expectedDataAfterUpdates));
+    expect(data['users']["testProfileDocID"], equals(expectedDataAfterUpdates));
   });
 }

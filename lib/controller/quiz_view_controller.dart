@@ -39,7 +39,7 @@ class QuizViewController {
   /// It creates a Quiz with a certain number of questions and initializes
   /// the list of questions with the questions from the quiz.
   void initQuiz() {
-    _quiz = Quiz(
+    _quiz = Quiz.normal(
       id: 1,
       noOfQuestions: 5,
       category: 'Science',
