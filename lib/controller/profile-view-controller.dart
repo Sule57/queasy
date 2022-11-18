@@ -2,7 +2,7 @@ import 'package:queasy/model/user.dart';
 
 class ProfileViewController {
   ///@param player For now a dummy data used as a user
-  final User player = User(
+  final Profile player = Profile(
       username: "Dummy",
       email: "dummy@gmail.com",
       hashPassword: "dummyPassword",
@@ -16,7 +16,7 @@ class ProfileViewController {
   ProfileViewController();
 
   ///getter methods for user data
-  User get user => player;
+  Profile get user => player;
   String get username => player.username;
   String get bio => player.bio.toString();
   String get firstName => player.firstName.toString();
