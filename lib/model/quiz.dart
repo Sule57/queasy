@@ -13,12 +13,12 @@ class Quiz {
   String category;
   late FirebaseFirestore _firebaseFirestore;
 
-  /// Creates an instance of type Quiz with the given parameters and runs the initialize() function
+  /// The default onstructor for the [Quiz] class.
   ///
-  /// [id] is the id of the quiz.
-  /// [noOfQuestions] is the number of questions in the quiz.
-  /// [creatorUsername] is the username of the creator of the quiz.
-  /// [category] is the category of the quiz.
+  /// This class takes the given parameters to create an instance of class [Quiz]
+  /// The [id] parameter represents the unique id of the quiz.
+  /// The function initialize will run inside of this constructor taking the parameters [noOfQuestions] and [category] to retrieve the questions from firebase in order to create the quiz.
+  /// The [creatorUsername] parameter represents the username of the creator of the quiz. (PlayerUsername is to be implemented)
   Quiz.normal({
     required this.id,
     this.creatorUsername,
@@ -29,13 +29,14 @@ class Quiz {
     initialize(_firebaseFirestore);
   }
 
-  /// Creates an instance of type Quiz with the given parameters and runs the initialize() function for testing
+  /// The testing constructor for the [Quiz] class.
   ///
-  /// [id] is the id of the quiz.
-  /// [noOfQuestions] is the number of questions in the quiz.
-  /// [creatorUsername] is the username of the creator of the quiz.
-  /// [category] is the category of the quiz.
-  /// [firebaseFirestore] is the instance of type FirebaseFirestore.
+  /// This class takes the given parameters to create an instance of class [Quiz]
+  /// The [id] parameter represents the unique id of the quiz.
+  /// The function initialize will run inside of this constructor taking the parameters [noOfQuestions] and [category] to retrieve the questions from firebase in order to create the quiz.
+  /// The [creatorUsername] parameter represents the username of the creator of the quiz. (PlayerUsername is to be implemented)
+  /// The [firestore] parameter represents the firestore instance to be used for testing (a.k.a. Mock firebase).
+  /// This constructor is used for testing purposes only.
   Quiz.test({
     required this.id,
     this.creatorUsername,
