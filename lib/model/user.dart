@@ -82,8 +82,8 @@ class Profile {
 
   //START OF METHODS FOR PROFILE VIEW
   /// Updates the user's username in the Firebase Database
-  /// @param currentUsername - username of the user who's username to change
-  /// @param newUsername - username to change the current username to
+  /// @param [currentUsername] - username of the user whose username to change
+  /// @param [newUsername] - username to change the current username to
   /// @return true - username was updated successfully
   /// @return false - username was not updated successfully
   bool updateUsername(String currentUsername, String newUsername) {
@@ -98,6 +98,11 @@ class Profile {
     }
   }
 
+  ///updates the bio information of the user in the Firebase Database
+  ///@param [username] - the current username of the user
+  ///@param [newBio] - the new bio information
+  ///@return true - bio was updated successfully
+  ///@return false - bio was not updated successfully
   bool updateBio(String username, String newBio) {
     try {
       FirebaseFirestore.instance
@@ -110,6 +115,12 @@ class Profile {
     }
   }
 
+  ///updates the first and lastname of the user in the Firebase Database
+  ///@param [username] - the current username of the user
+  ///@param [newFirstName] - the new firstname
+  ///@param [newLastName] - the new lastname
+  ///@return true - name was updated successfully
+  ///@return false - name was not updated successfully
   bool updateName(String username, String newFirstName, String newLastName) {
     try {
       FirebaseFirestore.instance
@@ -122,6 +133,12 @@ class Profile {
     }
   }
 
+  ///updates the birthday of the user in the Firebase Database
+  ///@param [username] - the current username of the user
+  ///@param [newMonth] - the new month of birth
+  ///@param [newDay] - the new day of birth
+  ///@return true - birthday was updated successfully
+  ///@return false - birthday couldn't be updated
   bool updateBirthday(String username, String newMonth, int newDay) {
     try {
       FirebaseFirestore.instance
@@ -134,6 +151,12 @@ class Profile {
     }
   }
 
+  ///updates the email of the user in the Firebase Database
+  ///@param [currentEmail] - the current email of the user
+  ///@param [newEmail] - the new email
+  ///@param [password] - the password of the user for authentication
+  ///@return true - email was updated successfully
+  ///@return false - email couldn't be updated
   bool updateEmail(String currentEmail, String newEmail, String password) {
     try {
       FirebaseAuth.instance.authStateChanges().listen((User? user) {
@@ -149,6 +172,12 @@ class Profile {
     }
   }
 
+  ///updates the password of the user in the Firebase Database
+  ///@param [email] - the current username of the user for authentication
+  ///@param [currentPassword] - the current password of the user
+  ///@param [newPassword] - the new password
+  ///@return true - password was updated successfully
+  ///@return false - password couldn't be updated
   bool updatePassword(
       String email, String currentPassword, String newPassword) {
     try {
@@ -165,6 +194,9 @@ class Profile {
     }
   }
 
+  ///signs out the user from the system
+  ///@return true - the user is signed out successfully
+  ///@return false - the user couldn't be signed out
   bool signOut() {
     try {
       FirebaseAuth.instance.signOut();
@@ -174,6 +206,11 @@ class Profile {
     }
   }
 
+  ///deletes the account of the user from the Firebase Database
+  ///@param [email] - the current username of the user needed for confirmation
+  ///@param [password] - the current password of the user needed for confirmation
+  ///@return true - account is deleted successfully
+  ///@return false - account couldn't be deleted
   bool deleteAccount(String email, String password) {
     try {
       FirebaseAuth.instance.authStateChanges().listen((User? user) {

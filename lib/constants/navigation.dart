@@ -19,7 +19,7 @@ class Navigation {
       '/': (context) => const LogInView(),
       '/home': (context) => const HomeView(),
       '/register': (context) => const RegisterView(),
-      '/profile': (context) => const UserProfile(),
+      '/profile': (context) => UserProfile(),
       '/statistics': (context) => const StatisticsView(),
       '/play': (context) => QuizView(),
       '/select-quiz': (context) => const QuizSelectionView(),

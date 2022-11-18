@@ -1,7 +1,7 @@
 import 'package:queasy/model/user.dart';
 
 class ProfileViewController {
-  ///@param player For now a dummy data used as a user
+  ///@param [player] For now a dummy data used as a user
   final Profile player = Profile(
       username: "Dummy",
       email: "dummy@gmail.com",
@@ -25,26 +25,24 @@ class ProfileViewController {
   String get profilePicture => player.profilePicture.toString();
   int? get age => player.age;
 
-  ///changes the current username with the given new [newUsername]
-  void editUsername(String newUsername) {
-    player.username = newUsername;
+  ///changes the [currentUsername] with the given new [newUsername]
+  bool editUsername(String currentUsername, String newUsername) {
+    return player.updateUsername(currentUsername, newUsername);
   }
 
-  ///changes the current email with the given new [newEmail]
-  void editEmail(String newEmail) {
-    player.email = newEmail;
+  ///changes the [currentEmail] with the given [newEmail] and confirms it through [password]
+  bool editEmail(String currentEmail, String newEmail, String password) {
+    return player.updateEmail(currentEmail, newEmail, password);
   }
 
-  ///changes the current name with the given [newFirstname] and [newLastname]
-  void editName(String newFirstname, String newLastname) {
-    player.firstName = newFirstname;
-    player.lastName = newLastname;
-    //return player.lastName.toString();
+  ///changes the current name with the given [newFirstname] and [newLastname] and requires [username]
+  bool editName(String username, String newFirstname, String newLastname) {
+    return player.updateName(username, newFirstname, newLastname);
   }
 
-  ///changes the current bio with the given [newBio]
-  void editBio(String newBio) {
-    player.bio = newBio;
+  ///changes the current bio with the given [newBio] and requires [username]
+  bool editBio(String username, String newBio) {
+    return player.updateBio(username, newBio);
   }
 
   ///changes the current profile picture with the given [newPic]
@@ -52,13 +50,18 @@ class ProfileViewController {
     player.profilePicture = newPic;
   }
 
-  ///changes the current password [oldPassword] with the given [newPassword]
-  void editPassword(
-      String oldPassword, String newPassword, String newPasswordConfirm) {}
+  ///changes the current password [currentPassword] with the given [newPassword] and confirms it through [email]
+  bool editPassword(String currentPassword, String newPassword, String email) {
+    return player.updatePassword(email, currentPassword, newPassword);
+  }
 
-  ///deletes the account
-  void deleteAccount() {}
+  ///deletes the account by confirming it via [email] and [password]
+  bool deleteAccount(String email, String password) {
+    return player.deleteAccount(email, password);
+  }
 
   ///signs out of the account
-  void signOut() {}
+  bool signOut() {
+    return player.signOut();
+  }
 }
