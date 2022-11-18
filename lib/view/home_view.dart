@@ -51,7 +51,7 @@ class HomeView extends StatelessWidget {
 
                   ///navigates to categories when clicked
                   onPressed: () => Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => const CategorySelectionView())),
+                      builder: (context) => CategorySelectionView())),
                 ),
                 TextButton(
                   child: const Text("Join Quiz"),
