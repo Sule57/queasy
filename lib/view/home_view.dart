@@ -41,10 +41,16 @@ class HomeView extends StatelessWidget {
             alignment: Alignment.center,
             child: Column(
               children: [
-                ///app logo (currently home icon as default)
-                const Icon(
-                  Icons.home,
-                  size: 200,
+                ///app logo
+                Padding(
+                  padding: const EdgeInsets.only(top: 1.0, bottom: 7.0),
+                  child: SizedBox(
+                    height: MediaQuery.of(context).size.height / 5,
+                    child: Image.asset(
+                      'lib/assets/images/logo_and_name.png',
+                      fit: BoxFit.cover,
+                    ),
+                  ),
                 ),
                 TextButton(
                   child: const Text("Public Tournaments"),
