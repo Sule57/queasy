@@ -11,7 +11,7 @@ String? getCurrentUserID() {
 
 class Profile {
   late FirebaseFirestore _firebaseFirestore;
-
+  String email;
   String username;
   String hashPassword;
   String? firstName;
@@ -26,6 +26,7 @@ class Profile {
   Map<String, dynamic> privatecScore = {};
   Profile({
     required this.username,
+    required this.email,
     required this.hashPassword,
     this.firstName = '',
     this.lastName = '',
@@ -41,6 +42,7 @@ class Profile {
   ///This constructor is used only for unit tests
   Profile.test({
     required this.username,
+    required this.email,
     required this.hashPassword,
     this.firstName = '',
     this.lastName = '',
@@ -68,6 +70,7 @@ class Profile {
       // age = json[json.keys.toList()[0]]['age'];
       : username = json['username'],
         hashPassword = json['hashPassword'],
+        email = json['email'],
         firstName = json['firstName'],
         lastName = json['lastName'],
         profilePicture = json['profilePicture'],

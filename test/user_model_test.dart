@@ -9,6 +9,7 @@ void main() async {
   final instance = FakeFirebaseFirestore();
   final user_test = new Profile.test(
       username: 'TEST21',
+      email: 'email@test.com',
       hashPassword: 'nothashedpassword',
       firestore: instance);
   Map<String, dynamic> expectedDumpAfterset = {
@@ -26,6 +27,7 @@ void main() async {
   test('Test user registration', () async {
     final usr = new Profile.test(
         username: 'TEST21',
+        email: 'email@test.com',
         hashPassword: 'nothashedpassword',
         firestore: instance);
     usr.registerUser(instance);
@@ -37,6 +39,7 @@ void main() async {
   test('Test fromJsonConstructor', () async {
     final usr = new Profile.test(
         username: 'TEST21',
+        email: 'email@test.com',
         hashPassword: 'nothashedpassword',
         firestore: instance);
     usr.registerUser(instance);
@@ -50,6 +53,7 @@ void main() async {
   ///Tests for Profile Class methods that update database information
   final profile_test = Profile.test(
       username: 'profileTest',
+      email: 'profileEmail@test.com',
       hashPassword: 'profileTest',
       firestore: instance);
   Map<String, dynamic> expectedDataAfterUpdates = {
