@@ -60,14 +60,6 @@ class ProfileView extends State<UserProfile> {
                           mainAxisSize: MainAxisSize.min,
                           // wrap content in flutter
                           children: <Widget>[
-                            ///to enter the current username
-                            TextField(
-                              controller: textController[0],
-                              decoration: const InputDecoration(
-                                labelText: 'Enter current username',
-                              ),
-                            ),
-
                             ///to enter the new username
                             TextField(
                               controller: textController[1],
@@ -77,7 +69,7 @@ class ProfileView extends State<UserProfile> {
                             ),
                           ]),
                       controller.editUsername(
-                          textController[0].text, textController[1].text)),
+                          controller.player.username, textController[1].text)),
                 ),
 
                 ///first name and last name of the user
@@ -94,14 +86,6 @@ class ProfileView extends State<UserProfile> {
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           mainAxisSize: MainAxisSize.min,
                           children: <Widget>[
-                            ///to enter the current username
-                            TextField(
-                              controller: textController[2],
-                              decoration: const InputDecoration(
-                                labelText: 'Enter current username',
-                              ),
-                            ),
-
                             ///to enter the new firstname
                             TextField(
                               controller: textController[3],
@@ -118,7 +102,7 @@ class ProfileView extends State<UserProfile> {
                               ),
                             ),
                           ]),
-                      controller.editName(textController[2].text,
+                      controller.editName(controller.player.username,
                           textController[3].text, textController[4].text)),
                 ),
 
@@ -186,14 +170,6 @@ class ProfileView extends State<UserProfile> {
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               mainAxisSize: MainAxisSize.min,
                               children: <Widget>[
-                                ///to enter the current username
-                                TextField(
-                                  controller: textController[8],
-                                  decoration: const InputDecoration(
-                                    labelText: 'Enter current username',
-                                  ),
-                                ),
-
                                 ///to enter new bio information
                                 TextField(
                                   controller: textController[9],
@@ -202,8 +178,8 @@ class ProfileView extends State<UserProfile> {
                                   ),
                                 ),
                               ]),
-                          controller.editBio(
-                              textController[8].text, textController[9].text)),
+                          controller.editBio(controller.player.username,
+                              textController[9].text)),
                     ),
                     Text(controller.player.bio),
                   ]),
