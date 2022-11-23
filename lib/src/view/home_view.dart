@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:queasy/view/category_selection_view.dart';
-import 'package:queasy/view/profile_view.dart';
-import 'package:queasy/view/quiz_selection_view.dart';
-import 'package:queasy/view/quiz_view.dart';
+import 'package:queasy/src/view/category_selection_view.dart';
+import 'package:queasy/src/view/profile_view.dart';
+import 'package:queasy/src/view/quiz_selection_view.dart';
+import 'package:queasy/src/view/quiz_view.dart';
 import 'widgets/custom_bottom_nav_bar.dart';
 
 class HomeView extends StatelessWidget {

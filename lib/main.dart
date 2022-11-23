@@ -1,10 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:queasy/widget_tree.dart';
+import 'package:queasy/src/view/widgets/widget_tree.dart';
 
 import 'constants/app_themes.dart';
-import 'firebase_options.dart';
+import 'services/firebase_options.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

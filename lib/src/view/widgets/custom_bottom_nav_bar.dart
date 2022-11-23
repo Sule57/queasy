@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:motion_tab_bar_v2/motion-tab-bar.dart';
-import 'package:queasy/view/home_view.dart';
-import 'package:queasy/view/leaderboard_view.dart';
-import 'package:queasy/view/profile_view.dart';
+import 'package:queasy/src/view/home_view.dart';
+import 'package:queasy/src/view/leaderboard_view.dart';
+import 'package:queasy/src/view/profile_view.dart';
 
 import '../quiz_view.dart';
 
@@ -79,18 +79,21 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
   void goToAnotherPage(int value) {
     switch (value) {
       case 0:
+
         /// This takes the user to the [HomeView].
         Navigator.of(context).push(MaterialPageRoute(
           builder: (context) => const HomeView(),
         ));
         break;
       case 1:
+
         /// This takes the user to the [LeaderboardView].
         Navigator.of(context).push(MaterialPageRoute(
           builder: (context) => const LeaderboardView(),
         ));
         break;
       case 2:
+
         /// This takes the user to the [ProfileView].
         Navigator.of(context).push(MaterialPageRoute(
           builder: (context) => UserProfile(),

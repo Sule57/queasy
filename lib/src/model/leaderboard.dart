@@ -1,6 +1,6 @@
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:queasy/model/leaderboard_entry.dart';
+import 'package:queasy/src/model/leaderboard_entry.dart';
 
 /// This is the Model class for the Leaderboard
 ///
@@ -20,15 +20,14 @@ class Leaderboard {
   late final _firebaseFirestore;
 
   /// Collection reference for the leaderboard in the database.
-  late final CollectionReference _collection = _firebaseFirestore.collection('leaderboard');
+  late final CollectionReference _collection =
+      _firebaseFirestore.collection('leaderboard');
 
   /// Document reference for the leaderboard of the given category in the database.
   late final DocumentReference _doc = _collection.doc(_category);
 
   /// Document reference for the combined (All) leaderboard in the database.
   late final DocumentReference _docAll = _collection.doc('All');
-
-
 
   /// Private constructor for [Leaderboard] that deals with initializing the private parameters.
   Leaderboard._create(String category, String username) {
@@ -38,10 +37,9 @@ class Leaderboard {
     _firebaseFirestore = FirebaseFirestore.instance;
   }
 
-
   /// Factory constructor for [Leaderboard] that creates a new [Leaderboard] object.
   /// It calls the private constructor and then waits for the data from the database.
-  static Future<Leaderboard> create(String category, String username) async{
+  static Future<Leaderboard> create(String category, String username) async {
     var leaderboard = Leaderboard._create(category, username);
 
     await leaderboard.getData();
@@ -50,7 +48,8 @@ class Leaderboard {
 
   /// Constructor for [Leaderboard] that creates a new [Leaderboard] object with given parameters.
   /// Used only if we have the List<LeaderboardEntry> [lb] that we want to copy into the new object.
-  Leaderboard.withEntries(List<LeaderboardEntry> lb, this._category, this._currentPlayer) {
+  Leaderboard.withEntries(
+      List<LeaderboardEntry> lb, this._category, this._currentPlayer) {
     _entries = List.from(lb);
     _firebaseFirestore = FirebaseFirestore.instance;
   }
@@ -64,11 +63,13 @@ class Leaderboard {
   }
 
   /// Constructor for [Leaderboard] that creates a new [Leaderboard] object with the Mock database for testing.
-  Leaderboard.test(this._category, String username, this._firebaseFirestore,
-      ) {
+  Leaderboard.test(
+    this._category,
+    String username,
+    this._firebaseFirestore,
+  ) {
     _entries = [];
     _currentPlayer = LeaderboardEntry(username, -1, -1);
-
   }
 
   /// Getter for the [currentUser]'s position in the leaderboard
@@ -86,7 +87,6 @@ class Leaderboard {
     return _entries;
   }
 
-
   /// Adds a new [LeaderboardEntry] to the existing list of entries. (testing purposes)
   Future<void> _addEntry(LeaderboardEntry entry) async {
     _entries.add(entry);
@@ -95,7 +95,11 @@ class Leaderboard {
   /// Prints the [Leaderboard] list entries in the console. (testing purposes)
   void printEntries() {
     for (LeaderboardEntry entry in _entries) {
-      print(entry.getPosition.toString() + ". " + entry.getName + ": " + entry.getScore.toString());
+      print(entry.getPosition.toString() +
+          ". " +
+          entry.getName +
+          ": " +
+          entry.getScore.toString());
     }
   }
 
@@ -106,14 +110,14 @@ class Leaderboard {
   /// In the end, the All leaderboard is also updated in the same way.
   Future<void> updateCurrentUserPoints(int newPoints) async {
     int oldPoints = _currentPlayer.getScore;
-    if(newPoints >= 0) {
+    if (newPoints >= 0) {
       int lowestPoints = 9999999999;
       int lowestPosition = 1;
       // parse through the document and update the positions
-      await _doc.get()
-          .then((DocumentSnapshot documentSnapshot) {
+      await _doc.get().then((DocumentSnapshot documentSnapshot) {
         if (documentSnapshot.exists) {
-          Map<String, dynamic> data = documentSnapshot.data() as Map<String, dynamic>;
+          Map<String, dynamic> data =
+              documentSnapshot.data() as Map<String, dynamic>;
           for (String key in data.keys) {
             if (data[key]['points'] < newPoints + oldPoints &&
                 data[key]['points'] >= oldPoints) {
@@ -124,7 +128,8 @@ class Leaderboard {
                 }
               }, SetOptions(merge: true));
             }
-            if (data[key]['points'] < lowestPoints && data[key]['points'] > newPoints + oldPoints) {
+            if (data[key]['points'] < lowestPoints &&
+                data[key]['points'] > newPoints + oldPoints) {
               lowestPoints = data[key]['points'];
               lowestPosition = data[key]['position'] + 1;
             } else if (data[key]['points'] == newPoints + oldPoints) {
@@ -141,18 +146,18 @@ class Leaderboard {
           'position': lowestPosition
         }
       }, SetOptions(merge: true));
-      _currentPlayer = LeaderboardEntry(_currentPlayer.getName, newPoints + oldPoints, lowestPosition);
-
+      _currentPlayer = LeaderboardEntry(
+          _currentPlayer.getName, newPoints + oldPoints, lowestPosition);
 
       await getData();
-    }else{
+    } else {
       int highestPoints = -9999999999;
       int highestPosition = -9999999999;
 
-      await _doc.get()
-          .then((DocumentSnapshot documentSnapshot) {
+      await _doc.get().then((DocumentSnapshot documentSnapshot) {
         if (documentSnapshot.exists) {
-          Map<String, dynamic> data = documentSnapshot.data() as Map<String, dynamic>;
+          Map<String, dynamic> data =
+              documentSnapshot.data() as Map<String, dynamic>;
           for (String key in data.keys) {
             if (data[key]['points'] >= newPoints + oldPoints &&
                 data[key]['points'] < oldPoints) {
@@ -181,24 +186,24 @@ class Leaderboard {
         }
       }, SetOptions(merge: true));
 
-      _currentPlayer = LeaderboardEntry(_currentPlayer.getName, newPoints + oldPoints, highestPosition);
+      _currentPlayer = LeaderboardEntry(
+          _currentPlayer.getName, newPoints + oldPoints, highestPosition);
       await getData();
     }
     await updateAllLeaderboard(newPoints);
   }
-
 
   /// Updates the All leaderboard in the database with the new points of the current user.
   /// It takes the [newPoints] as a parameter which should be added to the current points of the user and updates the database.
   /// Then it finds the old points of the user in the All leaderboard for later calculations.
   /// There is a difference between positive and negative [newPoints] because the leaderboard is sorted in descending order (based on points).
   /// If the [newPoints] are positive, the user's position in the leaderboard will decrease and vice versa.
-  Future<void> updateAllLeaderboard(int newPoints) async{
+  Future<void> updateAllLeaderboard(int newPoints) async {
     int oldPoints = -9999999999;
-    await _docAll.get()
-        .then((DocumentSnapshot documentSnapshot) {
+    await _docAll.get().then((DocumentSnapshot documentSnapshot) {
       if (documentSnapshot.exists) {
-        Map<String, dynamic> data = documentSnapshot.data() as Map<String, dynamic>;
+        Map<String, dynamic> data =
+            documentSnapshot.data() as Map<String, dynamic>;
         for (String key in data.keys) {
           if (key == _currentPlayer.getName) {
             oldPoints = data[key]['points'];
@@ -207,14 +212,14 @@ class Leaderboard {
         }
       }
     });
-    if(newPoints >= 0) {
+    if (newPoints >= 0) {
       int lowestPoints = 9999999999;
       int lowestPosition = 1;
       // parse through the document and update the positions
-      await _docAll.get()
-          .then((DocumentSnapshot documentSnapshot) {
+      await _docAll.get().then((DocumentSnapshot documentSnapshot) {
         if (documentSnapshot.exists) {
-          Map<String, dynamic> data = documentSnapshot.data() as Map<String, dynamic>;
+          Map<String, dynamic> data =
+              documentSnapshot.data() as Map<String, dynamic>;
           for (String key in data.keys) {
             if (data[key]['points'] < newPoints + oldPoints &&
                 data[key]['points'] >= oldPoints) {
@@ -245,14 +250,14 @@ class Leaderboard {
       }, SetOptions(merge: true));
 
       await getData();
-    }else{
+    } else {
       int highestPoints = -9999999999;
       int highestPosition = -9999999999;
 
-      await _docAll.get()
-          .then((DocumentSnapshot documentSnapshot) {
+      await _docAll.get().then((DocumentSnapshot documentSnapshot) {
         if (documentSnapshot.exists) {
-          Map<String, dynamic> data = documentSnapshot.data() as Map<String, dynamic>;
+          Map<String, dynamic> data =
+              documentSnapshot.data() as Map<String, dynamic>;
           for (String key in data.keys) {
             if (data[key]['points'] >= newPoints + oldPoints &&
                 data[key]['points'] < oldPoints) {
@@ -316,7 +321,10 @@ class Leaderboard {
         entry.getName: {'points': entry.getScore, 'position': entry.getPosition}
       }, SetOptions(merge: true));
       await _docAll.set({
-        entry.getName: {'points': entry.getScore + 355, 'position': entry.getPosition}
+        entry.getName: {
+          'points': entry.getScore + 355,
+          'position': entry.getPosition
+        }
       }, SetOptions(merge: true));
     }
   }
@@ -332,16 +340,16 @@ class Leaderboard {
     int calculatedPosition = -1;
     int calculatedPoints = -1;
     for (String key in data.keys) {
-      entries.add(LeaderboardEntry(key, data[key]['points'], data[key]['position']));
-      if(key == _currentPlayer.getName) {
+      entries.add(
+          LeaderboardEntry(key, data[key]['points'], data[key]['position']));
+      if (key == _currentPlayer.getName) {
         calculatedPosition = data[key]['position'];
         calculatedPoints = data[key]['points'];
       }
     }
-    _currentPlayer = LeaderboardEntry(_currentPlayer.getName, calculatedPoints, calculatedPosition);
+    _currentPlayer = LeaderboardEntry(
+        _currentPlayer.getName, calculatedPoints, calculatedPosition);
     entries.sort((a, b) => b.getScore.compareTo(a.getScore));
     _entries = entries.sublist(0, min(10, entries.length));
   }
-
-
 }

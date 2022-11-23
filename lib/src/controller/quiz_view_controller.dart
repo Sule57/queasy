@@ -1,6 +1,6 @@
-import 'package:queasy/model/question.dart';
-import 'package:queasy/model/quiz.dart';
-import 'package:queasy/model/profile.dart';
+import 'package:queasy/src/model/question.dart';
+import 'package:queasy/src/model/quiz.dart';
+import 'package:queasy/src/model/profile.dart';
 
 /// This is the controller for [QuizView].
 ///

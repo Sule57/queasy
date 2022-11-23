@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:queasy/view/widgets/rounded-button.dart';
+import 'package:queasy/src/view/widgets/rounded-button.dart';
 
 /// This is the register view.
 ///
@@ -65,6 +65,7 @@ class RegisterView extends StatelessWidget {
                                 fontSize: 30.0, fontWeight: FontWeight.bold),
                           ),
                         ),
+
                         /// Each [TextField] is used to get the user's
                         /// information.
                         const TextField(
@@ -89,6 +90,7 @@ class RegisterView extends StatelessWidget {
                             hintText: 'Password',
                           ),
                         ),
+
                         /// This [RoundedButton] is used to create a new account
                         /// to the user.
                         Padding(

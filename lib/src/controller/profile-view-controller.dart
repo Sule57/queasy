@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:queasy/model/profile.dart';
+import 'package:queasy/src/model/profile.dart';
 
 class ProfileViewController {
   ///@param [player] For now a dummy data used as a user
