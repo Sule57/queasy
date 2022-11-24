@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:motion_tab_bar_v2/motion-tab-bar.dart';
 import 'package:queasy/src/view/home_view.dart';
 import 'package:queasy/src/view/leaderboard_view.dart';
-import 'package:queasy/src/view/profile_view.dart';
+import 'package:queasy/src/view/see_profile/profile_view.dart';
 
-import '../quiz_view.dart';
+import '../play_quiz/quiz_view.dart';
 
 /// This is the custom bottom navigation bar.
 ///

@@ -11,7 +11,11 @@ class QuizViewController {
   late Quiz _quiz;
 
   /// The [User] that is currently taking the quiz.
-  late Profile player;
+  late Profile player = Profile(
+    username: 'Savo',
+    email: 'savo@email.com',
+    hashPassword: '1234',
+  );
 
   /// The category of the quiz.
   //TODO
