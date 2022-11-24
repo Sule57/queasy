@@ -45,6 +45,7 @@ class QuizViewController {
   void initQuiz() {
     _quiz = Quiz.normal(
       id: 1,
+      creatorUsername: 'public',
       noOfQuestions: 5,
       category: 'Science',
     );
@@ -72,7 +73,7 @@ class QuizViewController {
   /// Getter for the answer text. It takes an [index] as parameter to decide
   /// which answer text to return.
   String getAnswerText(int index) {
-    return _questions[_currentQuestionIndex].getAnswer(index).getText();
+    return _questions[_currentQuestionIndex].getAnswer(index).text;
   }
 
   /// Getter for [isCorrect] of the answer. It takes an [index] as parameter to

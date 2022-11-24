@@ -6,7 +6,7 @@ import 'answer.dart';
 
 class Quiz {
   int id, noOfQuestions;
-  String? creatorUsername;
+  String creatorUsername;
   static List<Question> _questions = [];
   static List<String> _usedQuestions = [];
   String category;
@@ -20,7 +20,7 @@ class Quiz {
   /// The [creatorUsername] parameter represents the username of the creator of the quiz. (PlayerUsername is to be implemented)
   Quiz.normal({
     required this.id,
-    this.creatorUsername,
+    required this.creatorUsername,
     required this.noOfQuestions,
     required this.category,
   }) {
@@ -38,7 +38,7 @@ class Quiz {
   /// This constructor is used for testing purposes only.
   Quiz.test({
     required this.id,
-    this.creatorUsername,
+    required this.creatorUsername,
     required this.noOfQuestions,
     required this.category,
     required FirebaseFirestore firestore,
@@ -68,14 +68,13 @@ class Quiz {
   /// Firebase is accessed through the [firestore] instance.
   /// Then the question is retrieved from the database from the given [category] and randomly generated [questionId].
   /// And lastly the question is returned
-  Future<Question> getQuestion(
-      category, questionId, FirebaseFirestore firestore) async {
+  Future<Question> getQuestion(category, questionId, FirebaseFirestore firestore) async {
     Map<String, dynamic>? data;
 
     // Access the database and get the question
     await firestore
         .collection('categories')
-        .doc('public')
+        .doc(creatorUsername)
         .collection(category)
         .doc(questionId)
         .get()
@@ -92,6 +91,9 @@ class Quiz {
         Answer(data!['answer3']['text'], data!['answer3']['isCorrect']),
         Answer(data!['answer4']['text'], data!['answer4']['isCorrect']),
       ],
+      category: category,
+      questionID: questionId,
+      owner: creatorUsername
     );
     return question;
   }
