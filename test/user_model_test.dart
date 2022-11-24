@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:queasy/model/user.dart';
+import 'package:queasy/src/model/profile.dart';
 // import 'package:test/test.dart';
 
 /// Main function for testing the [Profile] class.
@@ -9,6 +9,7 @@ void main() async {
   final instance = FakeFirebaseFirestore();
   final user_test = new Profile.test(
       username: 'TEST21',
+      email: 'email@test.com',
       hashPassword: 'nothashedpassword',
       firestore: instance);
   Map<String, dynamic> expectedDumpAfterset = {
@@ -26,6 +27,7 @@ void main() async {
   test('Test user registration', () async {
     final usr = new Profile.test(
         username: 'TEST21',
+        email: 'email@test.com',
         hashPassword: 'nothashedpassword',
         firestore: instance);
     usr.registerUser(instance);
@@ -37,6 +39,7 @@ void main() async {
   test('Test fromJsonConstructor', () async {
     final usr = new Profile.test(
         username: 'TEST21',
+        email: 'email@test.com',
         hashPassword: 'nothashedpassword',
         firestore: instance);
     usr.registerUser(instance);
@@ -50,6 +53,7 @@ void main() async {
   ///Tests for Profile Class methods that update database information
   final profile_test = Profile.test(
       username: 'profileTest',
+      email: 'profileEmail@test.com',
       hashPassword: 'profileTest',
       firestore: instance);
   Map<String, dynamic> expectedDataAfterUpdates = {

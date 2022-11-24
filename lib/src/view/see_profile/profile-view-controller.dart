@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:queasy/model/user.dart';
+import 'package:queasy/src/model/profile.dart';
 
 class ProfileViewController {
   ///@param [player] For now a dummy data used as a user
-  final Profile player = Profile(
+  Profile player = Profile(
       username: "Dummy",
-      // email: "dummy@gmail.com",
+      email: "dummy@gmail.com",
       hashPassword: "dummyPassword",
       firstName: "Dummy",
       lastName: "Whatever",
@@ -22,7 +22,7 @@ class ProfileViewController {
   String get bio => player.bio.toString();
   String get firstName => player.firstName.toString();
   String get lastName => player.lastName.toString();
-  // String get email => player.email;
+  String get email => player.email;
   String get profilePicture => player.profilePicture.toString();
   int? get age => player.age;
 

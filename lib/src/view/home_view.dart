@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:queasy/view/category_selection_view.dart';
-import 'package:queasy/view/profile_view.dart';
-import 'package:queasy/view/quiz_selection_view.dart';
-import 'package:queasy/view/quiz_view.dart';
+import 'package:queasy/src/view/category_selection_view.dart';
+import 'package:queasy/src/view/see_profile/profile_view.dart';
+import 'package:queasy/src/view/quiz_selection_view.dart';
+import 'package:queasy/src/view/play_quiz/quiz_view.dart';
 import 'widgets/custom_bottom_nav_bar.dart';
 
 class HomeView extends StatelessWidget {
@@ -41,10 +41,16 @@ class HomeView extends StatelessWidget {
             alignment: Alignment.center,
             child: Column(
               children: [
-                ///app logo (currently home icon as default)
-                const Icon(
-                  Icons.home,
-                  size: 200,
+                ///app logo
+                Padding(
+                  padding: const EdgeInsets.only(top: 1.0, bottom: 7.0),
+                  child: SizedBox(
+                    height: MediaQuery.of(context).size.height / 5,
+                    child: Image.asset(
+                      'lib/assets/images/logo_and_name.png',
+                      fit: BoxFit.cover,
+                    ),
+                  ),
                 ),
                 TextButton(
                   child: const Text("Public Tournaments"),

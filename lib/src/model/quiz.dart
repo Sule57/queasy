@@ -1,11 +1,10 @@
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:queasy/model/question.dart';
+import 'package:queasy/src/model/question.dart';
 import 'answer.dart';
 
 class Quiz {
-
   int id, noOfQuestions;
   String? creatorUsername;
   static List<Question> _questions = [];
@@ -43,7 +42,7 @@ class Quiz {
     required this.noOfQuestions,
     required this.category,
     required FirebaseFirestore firestore,
-}) {
+  }) {
     initialize(firestore);
   }
 
@@ -69,7 +68,8 @@ class Quiz {
   /// Firebase is accessed through the [firestore] instance.
   /// Then the question is retrieved from the database from the given [category] and randomly generated [questionId].
   /// And lastly the question is returned
-  Future<Question> getQuestion(category, questionId, FirebaseFirestore firestore) async {
+  Future<Question> getQuestion(
+      category, questionId, FirebaseFirestore firestore) async {
     Map<String, dynamic>? data;
 
     // Access the database and get the question
@@ -101,7 +101,6 @@ class Quiz {
   /// The database is accessed through the [firestore] instance and the documents
   /// under the given [category] are counted and the random number is generated
   Future<int> randomizer(category, FirebaseFirestore firestore) async {
-
     /// Stores the current number of questions in the category
     var numOfQuestions = await firestore
         .collection('categories')

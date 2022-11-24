@@ -1,6 +1,6 @@
-import 'package:queasy/model/question.dart';
-import 'package:queasy/model/quiz.dart';
-import 'package:queasy/model/user.dart';
+import 'package:queasy/src/model/question.dart';
+import 'package:queasy/src/model/quiz.dart';
+import 'package:queasy/src/model/profile.dart';
 
 /// This is the controller for [QuizView].
 ///
@@ -11,7 +11,11 @@ class QuizViewController {
   late Quiz _quiz;
 
   /// The [User] that is currently taking the quiz.
-  late Profile player;
+  late Profile player = Profile(
+    username: 'Savo',
+    email: 'savo@email.com',
+    hashPassword: '1234',
+  );
 
   /// The category of the quiz.
   //TODO

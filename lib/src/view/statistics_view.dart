@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:queasy/view/widgets/custom_bottom_nav_bar.dart';
+import 'package:queasy/src/view/widgets/custom_bottom_nav_bar.dart';
 
 class StatisticsView extends StatelessWidget {
   const StatisticsView({Key? key}) : super(key: key);
