@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:queasy/constants/app_themes.dart';
 
 import 'widgets/custom_bottom_nav_bar.dart';
 
@@ -9,7 +8,16 @@ import 'widgets/custom_bottom_nav_bar.dart';
 class CategorySelectionView extends StatelessWidget {
   CategorySelectionView({Key? key}) : super(key: key);
 
-  final List<String> list = <String>['All', 'Sports', 'History', 'Art', '...', '...','...','...',];
+  final List<String> list = <String>[
+    'All',
+    'Sports',
+    'History',
+    'Art',
+    '...',
+    '...',
+    '...',
+    '...',
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -17,22 +25,24 @@ class CategorySelectionView extends StatelessWidget {
       backgroundColor: Theme.of(context).colorScheme.primary,
       bottomNavigationBar: const CustomBottomNavBar(pageTitle: 'Home'),
       appBar: AppBar(
-        elevation:0,
-        leading:
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: IconButton(
-            icon: const Icon(Icons.arrow_back, color: Colors.grey,),
-              onPressed: () { },
-              iconSize: 40,
-      ),
+        elevation: 0,
+        leading: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: IconButton(
+            icon: const Icon(
+              Icons.arrow_back,
+              color: Colors.grey,
+            ),
+            onPressed: () {},
+            iconSize: 40,
           ),
+        ),
       ),
       body: ListView.builder(
         itemCount: 8,
         itemBuilder: (BuildContext context, int index) {
           return Container(
-            padding:  const EdgeInsets.only(left: 30.0, right: 30.0,top: 20.0),
+            padding: const EdgeInsets.only(left: 30.0, right: 30.0, top: 20.0),
             width: 70,
             height: MediaQuery.of(context).size.height / 8,
             child: ElevatedButton(
@@ -42,10 +52,12 @@ class CategorySelectionView extends StatelessWidget {
                   borderRadius: BorderRadius.circular(20),
                 ),
               ),
-              onPressed: () { },
+              onPressed: () {},
               child: Center(
-                  child: Text(('${list[index]}'),style: Theme.of(context).textTheme.headline3,)
-              ),
+                  child: Text(
+                ('${list[index]}'),
+                style: Theme.of(context).textTheme.headline3,
+              )),
             ),
           );
         },
@@ -53,4 +65,3 @@ class CategorySelectionView extends StatelessWidget {
     );
   }
 }
-

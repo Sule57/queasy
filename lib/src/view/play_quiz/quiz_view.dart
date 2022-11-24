@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:queasy/constants/app_themes.dart';
-
-import 'package:queasy/controller/quiz_view_controller.dart';
-import 'package:queasy/view/statistics_view.dart';
-import 'package:queasy/view/widgets/custom_bottom_nav_bar.dart';
+import 'package:queasy/src/view/play_quiz/quiz_view_controller.dart';
+import 'package:queasy/src/view/statistics_view.dart';
+import 'package:queasy/src/view/widgets/custom_bottom_nav_bar.dart';
 
 /// This is the main quiz view.
 ///

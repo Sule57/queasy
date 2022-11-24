@@ -1,8 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:queasy/view/widgets/rounded-button.dart';
+import 'package:queasy/src/view/widgets/rounded-button.dart';
 
-import '../auth.dart';
+import '../../services/auth.dart';
 
 class LogInView extends StatefulWidget {
   const LogInView({Key? key}) : super(key: key);

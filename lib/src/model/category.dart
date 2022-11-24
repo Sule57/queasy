@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-import 'package:queasy/model/question.dart';
+import 'package:queasy/src/model/question.dart';
 
 enum Categories {
   science,
@@ -16,5 +16,4 @@ class Category {
   Color color;
 
   Category(this.questions, this.color);
-
 }
