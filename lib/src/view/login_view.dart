@@ -56,10 +56,10 @@ class _LogInViewState extends State<LogInView> {
                     padding: const EdgeInsets.only(left: 8.0, right: 8.0),
                     child: Container(
                       padding: const EdgeInsets.only(left: 15.0, right: 15.0),
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         color: Colors.white,
                         borderRadius:
-                            const BorderRadius.all(Radius.circular(16.0)),
+                            BorderRadius.all(Radius.circular(16.0)),
                       ),
                       child: Column(
                         children: [
