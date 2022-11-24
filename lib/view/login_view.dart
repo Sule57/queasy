@@ -36,9 +36,6 @@ class _LogInViewState extends State<LogInView> {
       resizeToAvoidBottomInset: false,
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Container(
-          height: MediaQuery.of(context).size.height / 3,
-          color: Theme.of(context).colorScheme.onPrimary,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -150,7 +147,6 @@ class _LogInViewState extends State<LogInView> {
             ],
           ),
         ),
-      ),
     );
   }
 }
