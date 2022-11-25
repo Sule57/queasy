@@ -61,6 +61,7 @@ class Quiz {
         });
       }
     }
+    _firebaseFirestore.terminate();
   }
 
   /// Retrives a question from firebase

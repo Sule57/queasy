@@ -92,7 +92,8 @@ class QuizViewController {
       return true;
     } else {
       //TODO edit username and category to be functional from Firebase
-      player.updateScore("Savo", _category, _currentPoints);
+      //TODO change the current hardcoded 50 seconds left to be retrieved from timer
+      player.updateScore("Savo", _category, _currentPoints, 50);
       return false;
     }
   }

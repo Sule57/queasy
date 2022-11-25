@@ -37,9 +37,11 @@ class Question {
         .update({
       'text': newText,
     });
+    _firebaseFirestore.terminate();
   }
 
   void editAnswerText(int index, String newText) {
+    _firebaseFirestore = FirebaseFirestore.instance;
     answers[index].setText(newText);
     _firebaseFirestore.collection('categories')
         .doc(owner)
@@ -51,10 +53,12 @@ class Question {
         'isCorrect': answers[index].isCorrect,
       },
     });
+    _firebaseFirestore.terminate();
   }
 
   /// Sets the given answer as correct and all others to incorrect
   void setCorrectAnswer (int index) {
+    _firebaseFirestore = FirebaseFirestore.instance;
     for (int i = 0; i < answers.length; i++) {
       if (i == index) {
         answers[i].setCorrect(true);
@@ -84,19 +88,23 @@ class Question {
         'isCorrect': answers[3].isCorrect,
       },
     });
+    _firebaseFirestore.terminate();
   }
 
   /// Deletes the question from firebase
   void deleteQuestion() {
+    _firebaseFirestore = FirebaseFirestore.instance;
     _firebaseFirestore.collection('categories')
         .doc(owner)
         .collection(category)
         .doc(questionID)
         .delete();
+    _firebaseFirestore.terminate();
   }
 
   /// Checks if the question id already exists in firebase, if not it adds a new question
   void addQuestion() {
+    _firebaseFirestore = FirebaseFirestore.instance;
     _firebaseFirestore.collection('categories')
         .doc(owner)
         .collection(category)
@@ -131,5 +139,6 @@ class Question {
         });
       }
     });
+    _firebaseFirestore.terminate();
   }
 }
