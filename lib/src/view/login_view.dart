@@ -1,7 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:queasy/src/view/widgets/rounded-button.dart';
-
 import '../../services/auth.dart';
 
 class LogInView extends StatefulWidget {
@@ -32,6 +30,7 @@ class _LogInViewState extends State<LogInView> {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Padding(
@@ -91,13 +90,27 @@ class _LogInViewState extends State<LogInView> {
                           ),
                           Padding(
                             padding: const EdgeInsets.only(top: 10, bottom: 10),
-                            child: RoundedButton(
-                              buttonName: 'Log In',
-                              backgroundColor:
-                                  Theme.of(context).colorScheme.primary,
-                              textColor:
-                                  Theme.of(context).colorScheme.background,
-                              /*onPressed: signInWithEmailAndPassword,*/
+                            child: Container(
+                              height: size.height * 0.07,
+                              alignment: Alignment.center,
+                              width: size.width * 0.5,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20),
+                                  color: Theme.of(context).colorScheme.primary),
+                              child: TextButton(
+                                onPressed: () => {},
+                                //signInWithEmailAndPassword,
+                                child: Text(
+                                  'Log In',
+                                  style: TextStyle(
+                                    fontSize: 24,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .background,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
                             ),
                           ),
                         ],
