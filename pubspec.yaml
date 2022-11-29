@@ -35,19 +35,40 @@ dependencies:
   firebase_auth: ^4.0.2
   firebase_database: ^10.0.2
   cloud_firestore: ^4.0.3
+  fake_cloud_firestore: ^2.0.1
   motion_tab_bar_v2: ^0.2.6
   test: ^1.16.4
+  google_fonts: ^3.0.1
+  provider: ^6.0.4
+  get_it: ^7.2.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
-  google_fonts: ^3.0.1
-  fake_cloud_firestore: ^2.0.1
 
 
 dev_dependencies:
   flutter_test: 
     sdk: flutter
+  flutter_launcher_icons: ^0.11.0
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "lib/assets/images/logo.png"
+  min_sdk_android: 21 # android min sdk min:16, default 21
+  web:
+    generate: true
+    image_path: "lib/assets/images/logo.png"
+    background_color: "#hexcode"
+    theme_color: "#hexcode"
+  windows:
+    generate: true
+    image_path: "lib/assets/images/logo.png"
+    icon_size: 48 # min:48, max:256, default: 48
+  macos:
+    generate: true
+    image_path: "lib/assets/images/logo.png"
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -69,12 +90,7 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - lib/assets/images/facebook.png
-    - lib/assets/images/twitter.png
-    - lib/assets/images/google.png
-    - lib/assets/images/logo.png
-    - lib/assets/images/logo_and_name.png
-
+    - lib/assets/images/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

@@ -1,10 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 import 'answer.dart';
 
 class Question {
-  String text;
-  final List<Answer> answers;
+  String text = "";
+  List<Answer> answers = [];
   String category;
   String questionID;
   String owner;
@@ -17,6 +15,14 @@ class Question {
     required this.questionID,
     required this.owner,
   });
+
+  Question.fromJson(Map<String, dynamic> json){
+    answers.add(Answer.fromJson(json['answer1']));
+    answers.add(Answer.fromJson(json['answer2']));
+    answers.add(Answer.fromJson(json['answer3']));
+    answers.add(Answer.fromJson(json['answer4']));
+    text = json['text'];
+  }
 
   String getText() {
     return text;
