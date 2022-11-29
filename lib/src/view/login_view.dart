@@ -44,7 +44,7 @@ class _LogInViewState extends State<LogInView> {
               child: SizedBox(
                 height: MediaQuery.of(context).size.height / 5,
                 child: Image.asset(
-                  'lib/assets/images/logo_and_name.png',
+                  'lib/assets/images/logo_vertical.png',
                   fit: BoxFit.cover,
                 ),
               ),

@@ -35,9 +35,9 @@ class _QuizViewState extends State<QuizView> {
     return Scaffold(
       bottomNavigationBar: const CustomBottomNavBar(pageTitle: 'Quiz View'),
       body: Stack(
-        children: [
-          const QuizViewBackground(),
-          const QuizViewContent(),
+        children: const [
+          QuizViewBackground(),
+          QuizViewContent(),
         ],
       ),
     );
@@ -61,7 +61,16 @@ class QuizViewBackground extends StatelessWidget {
 
     return Container(
       height: height / 3,
+      width: double.infinity,
       color: Theme.of(context).colorScheme.onPrimary,
+      alignment: Alignment.topLeft,
+      padding: const EdgeInsets.all(20),
+      child: SafeArea(
+        child: Image.asset(
+          "lib/assets/images/logo_horizontal.png",
+          height: 50,
+        ),
+      ),
     );
   }
 }
@@ -93,7 +102,6 @@ class _QuizViewContentState extends State<QuizViewContent> {
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
 
     return StreamBuilder<QuerySnapshot>(
       stream: FirebaseFirestore.instance
@@ -103,33 +111,9 @@ class _QuizViewContentState extends State<QuizViewContent> {
           .snapshots(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          return Container(
-            width: width,
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Text(
-                  Provider.of<QuizProvider>(context).category,
-                  style: Theme.of(context).textTheme.headline2,
-                ),
-                const ScoreTracking(),
-                const QuestionContainer(),
-                SizedBox(
-                  height: height / 3,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: const [
-                      AnswerButton(index: 0),
-                      AnswerButton(index: 1),
-                      AnswerButton(index: 2),
-                      AnswerButton(index: 3),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          );
+          return width < 700
+              ? const QuizViewMobileContent()
+              : const QuizViewDesktopContent();
         } else {
           return const Center(child: CircularProgressIndicator());
         }
@@ -141,5 +125,102 @@ class _QuizViewContentState extends State<QuizViewContent> {
   void dispose() {
     Provider.of<QuizProvider>(context, listen: false).stopTimer();
     super.dispose();
+  }
+}
+
+class QuizViewDesktopContent extends StatelessWidget {
+  const QuizViewDesktopContent({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
+
+    return Container(
+      alignment: Alignment.center,
+      width: width,
+      padding: EdgeInsets.symmetric(horizontal: width / 10, vertical: 20),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Text(
+            Provider.of<QuizProvider>(context).category,
+            style: Theme.of(context).textTheme.headline2,
+          ),
+          const ScoreTracking(),
+          const QuestionContainer(),
+          SizedBox(
+            height: height / 3,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Expanded(
+                  child: Row(
+                    children: const [
+                      AnswerButton(index: 0),
+                      SizedBox(width: 10),
+                      AnswerButton(index: 1),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 10),
+                Expanded(
+                  child: Row(
+                    children: const [
+                      AnswerButton(index: 2),
+                      SizedBox(width: 10),
+                      AnswerButton(index: 3),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class QuizViewMobileContent extends StatelessWidget {
+  const QuizViewMobileContent({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
+
+    return Container(
+      width: width,
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Text(
+            Provider.of<QuizProvider>(context).category,
+            style: Theme.of(context).textTheme.headline2,
+          ),
+          const ScoreTracking(),
+          const QuestionContainer(),
+          SizedBox(
+            height: height / 3,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: const [
+                AnswerButton(index: 0),
+                SizedBox(height: 10),
+                AnswerButton(index: 1),
+                SizedBox(height: 10),
+                AnswerButton(index: 2),
+                SizedBox(height: 10),
+                AnswerButton(index: 3),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
