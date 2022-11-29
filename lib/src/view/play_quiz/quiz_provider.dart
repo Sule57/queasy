@@ -62,7 +62,6 @@ class QuizProvider with ChangeNotifier {
   /// the current points. Returns `true` if there is a next question, `false`
   /// if the current question is the last one.
   void nextQuestion() {
-    print("NEXT QUESTION");
     if (_currentQuestionIndex < _totalQuestions - 1) {
       _currentQuestionIndex++;
       _currentQuestionAnswered = false;
@@ -70,7 +69,6 @@ class QuizProvider with ChangeNotifier {
       notifyListeners();
     } else {
       stopTimer();
-      print('time stopped');
       player.updateScore("Savo", _category, _currentPoints);
       navigator.currentState?.push(
         MaterialPageRoute(builder: (_) => StatisticsView()),
@@ -115,7 +113,6 @@ class QuizProvider with ChangeNotifier {
   }
 
   void setCountDown() {
-    print("SETCOUNTDOWN");
     final reduceSecondsBy = 1;
     final seconds = timeLeft.inSeconds - reduceSecondsBy;
     if (seconds < 0) {
