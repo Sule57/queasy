@@ -17,12 +17,14 @@ Future<void> main() async {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
-    runApp(MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => QuizProvider()),
-      ],
-      child: const Qeasy(),
-    ));
+    runApp(
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (_) => QuizProvider()),
+        ],
+        child: const Qeasy(),
+      ),
+    );
   } catch (e) {
     print(e.toString());
   }
