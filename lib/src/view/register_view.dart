@@ -34,7 +34,7 @@ class RegisterView extends StatelessWidget {
               child: SizedBox(
                 height: MediaQuery.of(context).size.height / 7,
                 child: Image.asset(
-                  'lib/assets/images/logo_and_name.png',
+                  'lib/assets/images/logo_vertical.png',
                   fit: BoxFit.cover,
                 ),
               ),

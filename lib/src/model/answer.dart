@@ -4,6 +4,10 @@ class Answer {
 
   Answer(this._text, this._isCorrect);
 
+  Answer.fromJson(Map<String, dynamic> json)
+      : _text = json['text'],
+        _isCorrect = json['isCorrect'];
+
   bool isCorrect() {
     return _isCorrect;
   }
