@@ -1,8 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:queasy/constants/app_themes.dart';
-import 'package:queasy/src/view/play_quiz/quiz_view_controller.dart';
+import 'package:queasy/src/view/play_quiz/quiz_provider.dart';
+import 'package:queasy/src/view/play_quiz/widgets/answer_button.dart';
+import 'package:queasy/src/view/play_quiz/widgets/question_container.dart';
+import 'package:queasy/src/view/play_quiz/widgets/score_tracking.dart';
 import 'package:queasy/src/view/statistics_view.dart';
-import 'package:queasy/src/view/widgets/custom_bottom_nav_bar.dart';
 
 /// This is the main quiz view.
 ///
@@ -11,11 +15,8 @@ import 'package:queasy/src/view/widgets/custom_bottom_nav_bar.dart';
 /// press, the view is updated with the data from the next question. When the
 /// quiz is over, the user is taken to [StatisticsView].
 class QuizView extends StatefulWidget {
-  /// Controller to connect to [Quiz], [User] and [Question] models.
-  final QuizViewController controller = QuizViewController();
-
   /// Constructor for [QuizView].
-  QuizView({Key? key}) : super(key: key);
+  const QuizView({Key? key}) : super(key: key);
 
   /// Creates a [QuizView] state.
   @override
@@ -24,21 +25,17 @@ class QuizView extends StatefulWidget {
 
 /// State for [QuizView].
 class _QuizViewState extends State<QuizView> {
-  /// Getter for the controller in the state.
-  get controller => widget.controller;
-
   /// Builds the view.
   ///
-  /// Uses a [CustomBottomNavBar] for navigation and a [Stack] to display the
+  /// Uses a custom bottom navigation bar for navigation and a [Stack] to display the
   /// [QuizViewBackground] and the [QuizViewContent] on top.
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: const CustomBottomNavBar(pageTitle: 'Quiz View'),
       body: Stack(
-        children: [
-          const QuizViewBackground(),
-          QuizViewContent(controller),
+        children: const [
+          QuizViewBackground(),
+          QuizViewContent(),
         ],
       ),
     );
@@ -62,7 +59,16 @@ class QuizViewBackground extends StatelessWidget {
 
     return Container(
       height: height / 3,
+      width: double.infinity,
       color: Theme.of(context).colorScheme.onPrimary,
+      alignment: Alignment.topLeft,
+      padding: const EdgeInsets.all(20),
+      child: SafeArea(
+        child: Image.asset(
+          "lib/assets/images/logo_horizontal.png",
+          height: 50,
+        ),
+      ),
     );
   }
 }
@@ -72,13 +78,7 @@ class QuizViewBackground extends StatelessWidget {
 /// Uses a [StatefulWidget] to display questions and answers and update the
 /// text contained in the widgets.
 class QuizViewContent extends StatefulWidget {
-  /// Controller to connect to [Quiz], [User] and [Question] models. Passed from
-  /// [QuizView].
-  final QuizViewController controller;
-
-  /// Constructor for [QuizViewContent]. It takes a [QuizViewController] as
-  /// parameter to connect to the model.
-  const QuizViewContent(this.controller, {Key? key}) : super(key: key);
+  const QuizViewContent({Key? key}) : super(key: key);
 
   /// Creates a [QuizViewContent] state.
   @override
@@ -87,140 +87,10 @@ class QuizViewContent extends StatefulWidget {
 
 /// State for [QuizViewContent].
 class _QuizViewContentState extends State<QuizViewContent> {
-  /// Getter for the controller in the state.
-  get controller => widget.controller;
-
-  /// Shows text with category of the quiz that is being currently played. It
-  /// takes the [context] as parameter.
-  Widget categoryTitle(BuildContext context) {
-    /// Text with the category of the quiz.
-    String category = controller.category;
-
-    return Text(
-      category,
-      style: Theme.of(context).textTheme.headline2,
-    );
-  }
-
-  /// Uses a [Row] to display the current points of the user as well as the
-  /// count of questions answered so far out of the total number of questions.
-  /// Takes the [context] as parameter.
-  Widget scoreTracking(BuildContext context) {
-    /// Current points of the user.
-    int points = controller.points;
-
-    /// Number of the question that the user is currently answering.
-    int currentQuestionIndex = controller.currentQuestionIndex;
-
-    /// Total number of questions in the quiz.
-    int totalQuestions = controller.totalQuestions;
-
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      width: double.infinity,
-      height: 30,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(30),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text('$points points'),
-          Text("${currentQuestionIndex + 1} / $totalQuestions"),
-        ],
-      ),
-    );
-  }
-
-  /// Uses a [Container] with the main color of [AppThemes] to display the text
-  /// of the current question. Takes the [context] as parameter and a [height]
-  /// to set the height of the container.
-  Container questionContainer(BuildContext context, double height) {
-    /// Text of the current question.
-    String questionText = controller.getQuestionText();
-
-    return Container(
-      height: height / 5,
-      padding: const EdgeInsets.all(20),
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.primary,
-        borderRadius: BorderRadius.circular(25),
-      ),
-      child: Text(
-        questionText,
-        style: Theme.of(context)
-            .textTheme
-            .headline3
-            ?.copyWith(color: Theme.of(context).colorScheme.onPrimary),
-      ),
-    );
-  }
-
-  /// Uses a [Column] to display the possible answers for the current question.
-  /// Takes the [context] as parameter and a [height] to set the height of the
-  /// container where the buttons for the answers are displayed.
-  Widget answerButtons(BuildContext context, double height) {
-    /// Function to create a single answer button.
-    ///
-    /// Takes the [context] as parameter and the [answerIndex] to access to the
-    /// right answer.
-    /// On a button pressed, the current score is edited and the data of the
-    /// next question of the quiz is displayed on the view. If there are no more
-    /// questions, the current points of the user are saved and the user is
-    /// taken to [StatisticsView].
-    Widget singleAnswerButton(BuildContext context, int answerIndex) {
-      /// Text of the answer.
-      String answerText = controller.getAnswerText(answerIndex);
-
-      /// Boolean to check if the answer is correct.
-      bool isCorrect = controller.isCorrectAnswer(answerIndex);
-
-      return Container(
-        height: height / 14,
-        width: double.infinity,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: ElevatedButton(
-          onPressed: () {
-            setState(() {
-              controller.editScore(isCorrect);
-
-              if (!controller.nextQuestion()) {
-                Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => const StatisticsView(),
-                ));
-              }
-            });
-          },
-          style: ElevatedButton.styleFrom(
-            foregroundColor: isCorrect ? Colors.green : Colors.red,
-            backgroundColor: Colors.white,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
-            ),
-          ),
-          child: Text(answerText,
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodyText1),
-        ),
-      );
-    }
-
-    return Container(
-      height: height / 3,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          singleAnswerButton(context, 0),
-          singleAnswerButton(context, 1),
-          singleAnswerButton(context, 2),
-          singleAnswerButton(context, 3),
-        ],
-      ),
-    );
+  @override
+  void initState() {
+    Provider.of<QuizProvider>(context, listen: false).startTimer();
+    super.initState();
   }
 
   /// Builds the content.
@@ -229,10 +99,94 @@ class _QuizViewContentState extends State<QuizViewContent> {
   /// [categoryTitle], [scoreTracking], [questionContainer] and [answerButtons].
   @override
   Widget build(BuildContext context) {
-    /// Width of the screen.
     double width = MediaQuery.of(context).size.width;
 
-    /// Height of the screen.
+    return StreamBuilder<QuerySnapshot>(
+      stream: FirebaseFirestore.instance
+          .collection('categories')
+          .doc('public')
+          .collection('Science')
+          .snapshots(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return width < 700
+              ? const QuizViewMobileContent()
+              : const QuizViewDesktopContent();
+        } else {
+          return const Center(child: CircularProgressIndicator());
+        }
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    Provider.of<QuizProvider>(context, listen: false).stopTimer();
+    super.dispose();
+  }
+}
+
+class QuizViewDesktopContent extends StatelessWidget {
+  const QuizViewDesktopContent({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
+
+    return Container(
+      alignment: Alignment.center,
+      width: width,
+      padding: EdgeInsets.symmetric(horizontal: width / 10, vertical: 20),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Text(
+            Provider.of<QuizProvider>(context).category,
+            style: Theme.of(context).textTheme.headline2,
+          ),
+          const ScoreTracking(),
+          const QuestionContainer(),
+          SizedBox(
+            height: height / 3,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Expanded(
+                  child: Row(
+                    children: const [
+                      AnswerButton(index: 0),
+                      SizedBox(width: 10),
+                      AnswerButton(index: 1),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 10),
+                Expanded(
+                  child: Row(
+                    children: const [
+                      AnswerButton(index: 2),
+                      SizedBox(width: 10),
+                      AnswerButton(index: 3),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class QuizViewMobileContent extends StatelessWidget {
+  const QuizViewMobileContent({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
 
     return Container(
@@ -241,10 +195,28 @@ class _QuizViewContentState extends State<QuizViewContent> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          categoryTitle(context),
-          scoreTracking(context),
-          questionContainer(context, height),
-          answerButtons(context, height),
+          Text(
+            Provider.of<QuizProvider>(context).category,
+            style: Theme.of(context).textTheme.headline2,
+          ),
+          const ScoreTracking(),
+          const QuestionContainer(),
+          SizedBox(
+            height: height / 3,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: const [
+                AnswerButton(index: 0),
+                SizedBox(height: 10),
+                AnswerButton(index: 1),
+                SizedBox(height: 10),
+                AnswerButton(index: 2),
+                SizedBox(height: 10),
+                AnswerButton(index: 3),
+              ],
+            ),
+          ),
         ],
       ),
     );

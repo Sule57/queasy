@@ -71,7 +71,7 @@ class RegisterViewState extends State<RegisterView> {
                 child: SizedBox(
                   height: MediaQuery.of(context).size.height / 7,
                   child: Image.asset(
-                    'lib/assets/images/logo_and_name.png',
+                    'lib/assets/images/logo_and_vertical.png',
                     fit: BoxFit.cover,
                   ),
                 ),

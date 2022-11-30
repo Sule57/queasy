@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:queasy/constants/app_themes.dart';
 import 'package:queasy/src/view/see_profile/profile-view-controller.dart';
 import 'package:queasy/src/view/login_view.dart';
-import '../widgets/custom_bottom_nav_bar.dart';
 
 class UserProfile extends StatefulWidget {
   final ProfileViewController controller = ProfileViewController();
@@ -32,7 +31,6 @@ class ProfileView extends State<UserProfile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: const CustomBottomNavBar(pageTitle: 'Profile'),
       body: Center(
         child: Stack(children: [
           Column(
