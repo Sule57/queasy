@@ -56,7 +56,7 @@ void main() async {
   /// Pushes question0 into the fake firestore database
   await instance
       .collection('categories')
-      .doc('public')
+      .doc('test')
       .collection('testing')
       .doc('question0')
       .set(question0);
@@ -64,7 +64,7 @@ void main() async {
   /// Pushes question1 into the fake firestore database
   await instance
       .collection('categories')
-      .doc('public')
+      .doc('test')
       .collection('testing')
       .doc('question1')
       .set(question1);
@@ -72,7 +72,7 @@ void main() async {
   /// Pushes question2 into the fake firestore database
   await instance
       .collection('categories')
-      .doc('public')
+      .doc('test')
       .collection('testing')
       .doc('question2')
       .set(question2);
@@ -80,7 +80,7 @@ void main() async {
   /// Pushes question3 into the fake firestore database
   await instance
       .collection('categories')
-      .doc('public')
+      .doc('test')
       .collection('testing')
       .doc('question3')
       .set(question3);
@@ -88,7 +88,7 @@ void main() async {
   /// Pushes question4 into the fake firestore database
   await instance
       .collection('categories')
-      .doc('public')
+      .doc('test')
       .collection('testing')
       .doc('question4')
       .set(question4);

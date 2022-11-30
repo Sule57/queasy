@@ -110,7 +110,7 @@ class Profile {
   /// [username] The username of the user
   void updateScore(String username, String category, int score) {
     _firebaseFirestore = FirebaseFirestore.instance;
-    _firebaseFirestore.collection('users').doc(username).update({
+    _firebaseFirestore.collection('users').doc(this.username).update({
       'scores.$category': FieldValue.increment(score),
     });
   }
