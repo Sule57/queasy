@@ -103,6 +103,12 @@ class _LogInDesktopState extends State<LogInDesktop> {
                       ),
                     ),
 
+                    ///[Text] to display error message to the user
+                    Text(
+                      errorMessage == '' ? '' : 'Humm? $errorMessage',
+                      style: TextStyle(color: purple),
+                    ),
+
                     ///[TextFormField] is for user to enter email
                     TextFormField(
                       ///if the user hasn't entered anything, validation fails
