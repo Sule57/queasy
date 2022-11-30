@@ -19,17 +19,13 @@ class _WidgetTreeState extends State<WidgetTree> {
       stream: Auth().authStateChanges,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          if (kIsWeb) {
-            return const HomeView();
-          } else {
-            return const HomeView();
-          }
+          return MediaQuery.of(context).size.width < 700
+              ? const HomeView()
+              : const HomeView(); //later will be changed to desktop version
         } else {
-          if (kIsWeb) {
-            return const LogInDesktop();
-          } else {
-            return const LogInView();
-          }
+          return MediaQuery.of(context).size.width < 700
+              ? const LogInView()
+              : const LogInDesktop();
         }
       },
     );
