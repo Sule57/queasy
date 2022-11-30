@@ -13,7 +13,7 @@ class QuizProvider with ChangeNotifier {
     noOfQuestions: 5,
     //TODO dummy data, change to actual data
     category: 'Science',
-    creatorUsername: 'Savo',
+    creatorUsername: 'public',
   );
 
   Profile player = Profile(
@@ -48,7 +48,7 @@ class QuizProvider with ChangeNotifier {
     return _quiz
         .getQuestions()[_currentQuestionIndex]
         .getAnswer(index)
-        .isCorrect();
+        .isCorrect;
   }
 
   String pointTracker() {
