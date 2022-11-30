@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:queasy/src/view/widgets/custom_bottom_nav_bar.dart';
 
 class StatisticsView extends StatelessWidget {
   const StatisticsView({Key? key}) : super(key: key);
@@ -7,7 +6,6 @@ class StatisticsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
-      bottomNavigationBar: CustomBottomNavBar(pageTitle: 'Quiz View'),
       body: Center(
         child: Text('Statistics View'),
       ),
