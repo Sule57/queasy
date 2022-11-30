@@ -1,10 +1,11 @@
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+//import 'package:flutter/material.dart';
 import 'package:queasy/src/model/question.dart';
 import 'answer.dart';
 
-class Quiz {
+class Quiz{
   int id, noOfQuestions;
   String creatorUsername;
   static List<Question> _questions = [];
@@ -62,6 +63,7 @@ class Quiz {
       }
     }
     _firebaseFirestore.terminate();
+    //notifyListeners();
   }
 
   /// Retrives a question from firebase
@@ -116,6 +118,7 @@ class Quiz {
     int randomNumber = random.nextInt(numOfQuestions);
     return randomNumber;
   }
+
 
   /// Returns the list of questions generated for a particular quiz so public access can be achieved
   List<Question> getQuestions() {

@@ -108,8 +108,7 @@ class Profile {
 
   /// Increment the score of the user in the firebase by the score achieved in the current quiz
   /// [username] The username of the user
-  void updateScore(String username, String category, int score, int timeLeft) {
-    score = score + timeLeft;
+  void updateScore(String username, String category, int score) {
     _firebaseFirestore = FirebaseFirestore.instance;
     _firebaseFirestore.collection('users').doc(this.username).update({
       'scores.$category': FieldValue.increment(score),

@@ -16,4 +16,5 @@ class Answer {
   }
   void setCorrect(bool isCorrect) {
     _isCorrect = isCorrect;
+  }
 }

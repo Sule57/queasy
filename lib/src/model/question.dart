@@ -1,11 +1,14 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'answer.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Question {
   String text = "";
   List<Answer> answers = [];
-  String category;
-  String questionID;
-  String owner;
+  String category = "";
+  String questionID = "";
+  String owner = "";
   late FirebaseFirestore _firebaseFirestore;
 
   Question({
