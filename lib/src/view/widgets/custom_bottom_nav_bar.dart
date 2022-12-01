@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:motion_tab_bar_v2/motion-tab-bar.dart';
 import 'package:queasy/src/view/home_view.dart';
 import 'package:queasy/src/view/leaderboard_view.dart';
+import 'package:queasy/src/view/see_profile/profile-mobile.dart';
 import 'package:queasy/src/view/see_profile/profile_view.dart';
 
 import '../play_quiz/quiz_view.dart';
@@ -96,7 +97,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
 
         /// This takes the user to the [ProfileView].
         Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => UserProfile(),
+          builder: (context) => UserProfileMobile(),
         ));
         break;
       case 3:

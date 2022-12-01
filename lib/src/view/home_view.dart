@@ -36,7 +36,7 @@ class HomeView extends StatelessWidget {
 
                   ///navigates to profile view when clicked
                   onPressed: () => Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => UserProfile())))),
+                      MaterialPageRoute(builder: (context) => ProfileView())))),
           Align(
             alignment: Alignment.center,
             child: Column(
