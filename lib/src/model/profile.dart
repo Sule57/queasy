@@ -89,6 +89,7 @@ class Profile {
         'username': username,
         'lastName': lastName,
         'firstName': firstName,
+        'email': email,
         'hashPassword': hashPassword,
         'bio': bio,
         'age': age,
@@ -102,15 +103,16 @@ class Profile {
   /// [firestore] database instance
   bool registerUser(FirebaseFirestore firestore){
     try {
-      firestore
-          .collection('users')
-          .doc(this.username)
-          .get()
-          .then((DocumentSnapshot documentSnapshot) {
-        if (documentSnapshot.exists) {
-          throw UserAlreadyExistsException();
-        }
-      });
+      // doesnt work for now 
+      // firestore
+      //     .collection('users')
+      //     .doc(this.username)
+      //     .get()
+      //     .then((DocumentSnapshot documentSnapshot) {
+      //   if (documentSnapshot.exists) {
+      //     throw UserAlreadyExistsException();
+      //   }
+      // });
       firestore.collection('users').doc(this.username).set(this.toJson());
       return true;
     } catch (e) {
