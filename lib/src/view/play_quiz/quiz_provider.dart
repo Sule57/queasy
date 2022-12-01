@@ -11,7 +11,9 @@ class QuizProvider with ChangeNotifier {
   final Quiz _quiz = Quiz.normal(
     id: 1,
     noOfQuestions: 5,
+    //TODO dummy data, change to actual data
     category: 'Science',
+    creatorUsername: 'public',
   );
 
   Profile player = Profile(
@@ -39,14 +41,14 @@ class QuizProvider with ChangeNotifier {
     return _quiz
         .getQuestions()[_currentQuestionIndex]
         .getAnswer(index)
-        .getText();
+        .text;
   }
 
   bool isAnswerCorrect(int index) {
     return _quiz
         .getQuestions()[_currentQuestionIndex]
         .getAnswer(index)
-        .isCorrect();
+        .isCorrect;
   }
 
   String pointTracker() {

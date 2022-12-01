@@ -1,6 +1,6 @@
 class Answer {
-  final String _text;
-  final bool _isCorrect;
+  String _text;
+  bool _isCorrect;
 
   Answer(this._text, this._isCorrect);
 
@@ -8,11 +8,13 @@ class Answer {
       : _text = json['text'],
         _isCorrect = json['isCorrect'];
 
-  bool isCorrect() {
-    return _isCorrect;
-  }
+  get text => _text;
+  get isCorrect => _isCorrect;
 
-  String getText() {
-    return _text;
+  void setText(String text) {
+    _text = text;
+  }
+  void setCorrect(bool isCorrect) {
+    _isCorrect = isCorrect;
   }
 }

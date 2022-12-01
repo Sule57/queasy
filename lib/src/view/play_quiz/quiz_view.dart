@@ -7,7 +7,6 @@ import 'package:queasy/src/view/play_quiz/widgets/answer_button.dart';
 import 'package:queasy/src/view/play_quiz/widgets/question_container.dart';
 import 'package:queasy/src/view/play_quiz/widgets/score_tracking.dart';
 import 'package:queasy/src/view/statistics_view.dart';
-import 'package:queasy/src/view/widgets/custom_bottom_nav_bar.dart';
 
 /// This is the main quiz view.
 ///
@@ -28,12 +27,11 @@ class QuizView extends StatefulWidget {
 class _QuizViewState extends State<QuizView> {
   /// Builds the view.
   ///
-  /// Uses a [CustomBottomNavBar] for navigation and a [Stack] to display the
+  /// Uses a custom bottom navigation bar for navigation and a [Stack] to display the
   /// [QuizViewBackground] and the [QuizViewContent] on top.
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: const CustomBottomNavBar(pageTitle: 'Quiz View'),
       body: Stack(
         children: const [
           QuizViewBackground(),

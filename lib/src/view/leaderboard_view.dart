@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:queasy/main.dart';
 import '../model/leaderboard.dart';
 import '../model/leaderboard_entry.dart';
-import 'widgets/custom_bottom_nav_bar.dart';
 
 //const List<String> list = <String>['All', 'Art', 'Science', 'Sports'];
 
@@ -19,7 +18,6 @@ class _LeaderboardView extends State<LeaderboardView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: const CustomBottomNavBar(pageTitle: 'Leaderboard'),
         body: Center(
             child: Stack(children: [
               //violet rectangle at the top of the screen
