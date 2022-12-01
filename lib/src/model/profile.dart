@@ -87,6 +87,7 @@ class Profile {
         'username': username,
         'lastName': lastName,
         'firstName': firstName,
+        'email': email,
         'hashPassword': hashPassword,
         'bio': bio,
         'age': age,
