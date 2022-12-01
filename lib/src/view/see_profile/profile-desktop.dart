@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:queasy/constants/app_themes.dart';
 import 'package:queasy/src/view/see_profile/profile-view-controller.dart';
@@ -83,7 +82,7 @@ class ProfileDesktopState extends State<UserProfileDesktop> {
                                   padding: EdgeInsets.only(
                                     bottom: 7,
                                   ),
-                                  child: Text("Username"),
+                                  child: Text(controller.player.username),
                                 ),
                                 Container(
                                   padding: EdgeInsets.only(
@@ -99,6 +98,12 @@ class ProfileDesktopState extends State<UserProfileDesktop> {
                                                 return StatefulBuilder(builder:
                                                     (context,
                                                         StateSetter setState) {
+                                                  if (MediaQuery.of(context)
+                                                          .size
+                                                          .width <
+                                                      700) {
+                                                    Navigator.of(context).pop();
+                                                  }
                                                   return AlertDialog(
                                                     backgroundColor: purple,
                                                     scrollable: true,
@@ -152,7 +157,49 @@ class ProfileDesktopState extends State<UserProfileDesktop> {
                                                                 style: TextStyle(
                                                                     color:
                                                                         black)),
-                                                            onPressed: () => {},
+                                                            onPressed: () {
+                                                              if (formKey
+                                                                  .currentState!
+                                                                  .validate()) {
+                                                                // bool success =
+                                                                //     controller
+                                                                //         .editAllProfile(
+                                                                //   firstname
+                                                                //       .text,
+                                                                //   lastname.text,
+                                                                //   username.text,
+                                                                //   bio.text,
+                                                                //   controllerCurrentPassword
+                                                                //       .text,
+                                                                //   controllerNewPassword
+                                                                //       .text,
+                                                                //   controllerConfirmPassword
+                                                                //       .text,
+                                                                // );
+                                                                // if (success) {
+                                                                Navigator.of(
+                                                                        context)
+                                                                    .pop();
+                                                                ScaffoldMessenger.of(
+                                                                        context)
+                                                                    .showSnackBar(
+                                                                  const SnackBar(
+                                                                    content: Text(
+                                                                        'Successful!'),
+                                                                    backgroundColor:
+                                                                        Colors
+                                                                            .teal,
+                                                                    behavior:
+                                                                        SnackBarBehavior
+                                                                            .floating,
+                                                                    width: 200,
+                                                                    shape:
+                                                                        StadiumBorder(),
+                                                                  ),
+                                                                );
+                                                                // }
+                                                              }
+                                                            },
                                                             style: ButtonStyle(
                                                                 backgroundColor:
                                                                     MaterialStateProperty
@@ -433,15 +480,6 @@ class ProfileDesktopState extends State<UserProfileDesktop> {
                                                                         obscureText:
                                                                             !passwordVisible,
 
-                                                                        ///if the user hasn't entered anything, validation fails
-                                                                        validator:
-                                                                            (value) {
-                                                                          if (value == null ||
-                                                                              value.isEmpty) {
-                                                                            return 'Please enter password';
-                                                                          }
-                                                                          return null;
-                                                                        },
                                                                         controller:
                                                                             controllerNewPassword,
                                                                         decoration:
@@ -573,7 +611,10 @@ class ProfileDesktopState extends State<UserProfileDesktop> {
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [Text("Bio"), Text("Bla bla")],
+                            children: [
+                              Text("Bio"),
+                              Text(controller.player.bio)
+                            ],
                           ),
                         ),
                         decoration: BoxDecoration(

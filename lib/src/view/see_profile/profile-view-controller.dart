@@ -67,4 +67,43 @@ class ProfileViewController {
   bool signOut() {
     return player.signOut();
   }
+
+  bool editAllProfile(
+      String? newUsername,
+      String? newEmail,
+      String? newPassword,
+      String? newFirstname,
+      String? newLastname,
+      String? newBio,
+      String currentPassword) {
+    List<bool> success = new List.empty();
+    if (newUsername != null) {
+      success.add(editUsername(player.username, newUsername));
+    }
+
+    if (newEmail != null) {
+      success.add(editEmail(player.email, newEmail, currentPassword));
+    }
+    if (newBio != null) {
+      success.add(editBio(player.username, newBio));
+    }
+    if (newFirstname != null && newLastname == null) {
+      success.add(editName(player.username, newFirstname, player.lastName!));
+    }
+    if (newLastname != null && newFirstname == null) {
+      success.add(editName(player.username, player.firstName!, newLastname));
+    }
+
+    if (newFirstname != null && newLastname != null) {
+      success.add(editName(player.username, newFirstname, newLastname));
+    }
+    if (newPassword != null) {
+      success.add(editPassword(currentPassword, newPassword, email));
+    }
+
+    if (success.isEmpty || success.contains(false)) {
+      return false;
+    }
+    return true;
+  }
 }

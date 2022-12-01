@@ -67,7 +67,7 @@ class _HomeViewState extends State<HomeView> {
               if (index == 1) {
                 pages[index] = const LeaderboardView();
               } else if (index == 2) {
-                pages[index] = UserProfile();
+                pages[index] = ProfileView();
               } else {
                 pages[index] = QuizView();
               }
