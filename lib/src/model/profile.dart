@@ -98,9 +98,7 @@ class Profile {
 
   /// registers user the following way: creates document with the username and collection with its attributes
   /// returns true if successful
-  /// [firestore] database instance
-  /// registers user the following way: creates document with the username and collection with its attributes
-  /// returns true if successful
+  /// throws UserAlreadyExistsException if the user with the same username already exists in the database
   /// [firestore] database instance
   bool registerUser(FirebaseFirestore firestore){
     try {
