@@ -20,6 +20,11 @@ class RegisterViewController {
       email: email,
       hashPassword: password,
     );
-    return newUser.registerUser(firestore);
+    try {
+      return newUser.registerUser(firestore);
+    }catch(e){
+      print(e.toString()) ;
+      return false;
+    }
   }
 }
