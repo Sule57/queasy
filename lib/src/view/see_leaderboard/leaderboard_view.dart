@@ -1,7 +1,11 @@
+import 'dart:ui';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:queasy/src/view/see_leaderboard/widgets/category_tile_desktop.dart';
+import 'package:queasy/src/view/see_leaderboard/widgets/user_tile_desktop.dart';
 
-//const List<String> list = <String>['All', 'Art', 'Science', 'Sports'];
+const List<String> list = <String>['All', 'Art', 'Science', 'Sports'];
 
 class LeaderboardView extends StatefulWidget {
   const LeaderboardView({Key? key}) : super(key: key);
@@ -264,111 +268,56 @@ class LeaderboardDesktopContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
     return Scaffold(
+        resizeToAvoidBottomInset: false,
         body: Center(
-            child: Stack(children: [
-      //ListTiles
-      CustomScrollView(
-        slivers: <Widget>[
-          SliverAppBar(
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-            backgroundColor: const Color(0xff72479d),
-            pinned: true,
-            flexibleSpace: const FlexibleSpaceBar(
-              centerTitle: true,
-              title: Text('Science',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 50.0,
-                  ) //TextStyle
+            child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          //Left Column
+          SizedBox(
+              width: width / 4,
+              child:
+                  // SingleChildScrollView(
+                  //   child:
+                  Column(children: [
+                Row(children: [
+                  IconButton(
+                    icon: Icon(Icons.arrow_back),
+                    onPressed: () => Navigator.pop(context),
                   ),
+                  Text(
+                    "Leaderboard",
+                    selectionColor: Colors.black,
+                  )
+                ]),
+                Flexible(
+                    child: ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: list.length,
+                        itemBuilder: ((BuildContext context, int index) {
+                          return CategoryTileDesktop(title: list[index]);
+                        })))
+                // ]),
+              ])),
+          //Right Column
+          Expanded(
+              child: Column(children: [
+            Row(
+              children: [
+                Text(
+                  "Science",
+                  selectionColor: Colors.black,
+                )
+              ],
             ),
-          ),
-          SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (BuildContext context, int index) {
-                return Column(
-                  children: <Widget>[
-                    const Divider(
-                      height: 20,
-                    ),
-                    Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(15),
-                        color: Colors.white,
-                      ),
-                      child: ListTile(
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15)),
-                        tileColor: Colors.white,
-                        textColor: const Color(0xFFFF8C66),
-                        iconColor: Colors.white,
-                        leading: index == 0
-                            ? const Text('')
-                            : Container(
-                                height: 25,
-                                width: 25,
-                                decoration: const BoxDecoration(
-                                    color: Color(0xFFFF8C66),
-                                    shape: BoxShape.circle),
-                                child: Center(
-                                    child: Text(
-                                  (index + 1).toString(),
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.white,
-                                  ),
-                                ))),
-                        title: index == 0
-                            ? Column(
-                                children: [
-                                  Container(
-                                      height: 25,
-                                      width: 25,
-                                      decoration: const BoxDecoration(
-                                          color: Color(0xFFFF8C66),
-                                          shape: BoxShape.circle),
-                                      child: Center(
-                                          child: Text(
-                                        (index + 1).toString(),
-                                        style: const TextStyle(
-                                          fontSize: 16,
-                                          color: Colors.white,
-                                        ),
-                                      ))),
-                                  const Text(
-                                    'username',
-                                    style: TextStyle(
-                                        color: Colors.black, fontSize: 26),
-                                  ),
-                                ],
-                              )
-                            : const Text(
-                                'username',
-                                style: TextStyle(
-                                    color: Colors.black, fontSize: 26),
-                              ),
-                        subtitle: index == 0
-                            ? const Text(
-                                'points',
-                                textAlign: TextAlign.center,
-                              )
-                            : const Text(
-                                'points',
-                              ),
-                        //const Icon(Icons.back_hand_outlined),
-                        //subtitle: index == 0 ? const Text('username', textAlign: TextAlign.center,style:TextStyle(color: Colors.black, fontSize: 26),): null,
-                      ),
-                    ),
-                  ],
-                );
-              },
-              childCount: 10,
-            ),
-          ),
-        ],
-      ),
-    ])));
+            Expanded(
+                child: ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: 10,
+                    itemBuilder: ((BuildContext context, int index) {
+                      return UserTileDesktop(index: index);
+                    })))
+          ]))
+        ])));
   }
 }
