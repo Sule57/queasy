@@ -22,11 +22,11 @@ class ProfileDesktopState extends State<UserProfileDesktop> {
   TextEditingController bio = new TextEditingController();
   TextEditingController currentPassword = new TextEditingController();
   TextEditingController newPassword = new TextEditingController();
-  TextEditingController confirmPassword = new TextEditingController();
   TextEditingController email = new TextEditingController();
 
   bool passwordVisible = false;
-
+  bool errorCurrentPassword = false;
+  bool errorConfirmPassword = false;
   final formKey = GlobalKey<FormState>();
 
   @override
@@ -38,7 +38,6 @@ class ProfileDesktopState extends State<UserProfileDesktop> {
     bio.dispose();
     currentPassword.dispose();
     newPassword.dispose();
-    confirmPassword.dispose();
     super.dispose();
   }
 
@@ -181,10 +180,6 @@ class ProfileDesktopState extends State<UserProfileDesktop> {
                                                                           .username,
                                                                       username
                                                                           .text);
-                                                                  username
-                                                                      .clear();
-                                                                  currentPassword
-                                                                      .clear();
                                                                 }
                                                                 if (bio.text
                                                                     .isNotEmpty) {
@@ -193,9 +188,6 @@ class ProfileDesktopState extends State<UserProfileDesktop> {
                                                                           .player
                                                                           .username,
                                                                       bio.text);
-                                                                  bio.clear();
-                                                                  currentPassword
-                                                                      .clear();
                                                                 }
                                                                 if (firstname
                                                                         .text
@@ -211,12 +203,6 @@ class ProfileDesktopState extends State<UserProfileDesktop> {
                                                                           .text,
                                                                       lastname
                                                                           .text);
-                                                                  firstname
-                                                                      .clear();
-                                                                  lastname
-                                                                      .clear();
-                                                                  currentPassword
-                                                                      .clear();
                                                                 }
                                                                 if (firstname
                                                                         .text
@@ -233,10 +219,6 @@ class ProfileDesktopState extends State<UserProfileDesktop> {
                                                                       controller
                                                                           .player
                                                                           .lastName);
-                                                                  firstname
-                                                                      .clear();
-                                                                  currentPassword
-                                                                      .clear();
                                                                 }
                                                                 if (firstname
                                                                         .text
@@ -255,10 +237,6 @@ class ProfileDesktopState extends State<UserProfileDesktop> {
                                                                     lastname
                                                                         .text,
                                                                   );
-                                                                  lastname
-                                                                      .clear();
-                                                                  currentPassword
-                                                                      .clear();
                                                                 }
                                                                 if (newPassword
                                                                     .text
@@ -271,13 +249,6 @@ class ProfileDesktopState extends State<UserProfileDesktop> {
                                                                       controller
                                                                           .player
                                                                           .email);
-
-                                                                  newPassword
-                                                                      .clear();
-                                                                  currentPassword
-                                                                      .clear();
-                                                                  confirmPassword
-                                                                      .clear();
                                                                 }
                                                                 ;
                                                                 if (email.text
@@ -290,14 +261,11 @@ class ProfileDesktopState extends State<UserProfileDesktop> {
                                                                           .text,
                                                                       currentPassword
                                                                           .text);
-                                                                  email.clear();
-                                                                  currentPassword
-                                                                      .clear();
                                                                 }
-
-                                                                bool success =
-                                                                    controller
-                                                                        .editAllProfile();
+                                                                bool success = controller
+                                                                    .editAllProfile(
+                                                                        currentPassword
+                                                                            .text);
                                                                 if (success) {
                                                                   Navigator.of(
                                                                           context)
@@ -320,6 +288,18 @@ class ProfileDesktopState extends State<UserProfileDesktop> {
                                                                           StadiumBorder(),
                                                                     ),
                                                                   );
+                                                                  newPassword
+                                                                      .clear();
+                                                                  currentPassword
+                                                                      .clear();
+                                                                  lastname
+                                                                      .clear();
+                                                                  firstname
+                                                                      .clear();
+                                                                  bio.clear();
+                                                                  username
+                                                                      .clear();
+                                                                  email.clear();
                                                                 }
                                                               }
                                                             },
@@ -390,11 +370,6 @@ class ProfileDesktopState extends State<UserProfileDesktop> {
                                                                               Colors.white)),
                                                                   Text(
                                                                       "New Password",
-                                                                      style: TextStyle(
-                                                                          color:
-                                                                              Colors.white)),
-                                                                  Text(
-                                                                      "Confirm New Password",
                                                                       style: TextStyle(
                                                                           color:
                                                                               Colors.white)),
@@ -565,66 +540,70 @@ class ProfileDesktopState extends State<UserProfileDesktop> {
                                                                       ),
                                                                     ),
                                                                   ),
-                                                                  Container(
-                                                                      height:
-                                                                          30,
-                                                                      width: MediaQuery.of(context)
-                                                                              .size
-                                                                              .width /
-                                                                          3,
-                                                                      child:
-                                                                          TextFormField(
-                                                                        ///hides/shows password based on user click
-                                                                        obscureText:
-                                                                            !passwordVisible,
+                                                                  Stack(
+                                                                      children: [
+                                                                        Container(
+                                                                            height:
+                                                                                30,
+                                                                            width: MediaQuery.of(context).size.width /
+                                                                                3,
+                                                                            child:
+                                                                                TextFormField(
+                                                                              ///hides/shows password based on user click
+                                                                              obscureText: !passwordVisible,
 
-                                                                        ///if the user hasn't entered anything, validation fails
-                                                                        validator:
-                                                                            (value) {
-                                                                          if (value == null ||
-                                                                              value.isEmpty) {
-                                                                            return 'Please enter password';
-                                                                          }
-                                                                          return null;
-                                                                        },
-                                                                        controller:
-                                                                            currentPassword,
-                                                                        decoration:
-                                                                            InputDecoration(
-                                                                          labelText:
-                                                                              'Password',
-                                                                          contentPadding: EdgeInsets.only(
-                                                                              bottom: 15,
-                                                                              left: 20),
-                                                                          filled:
-                                                                              true,
-                                                                          fillColor:
-                                                                              Colors.white,
-                                                                          border:
-                                                                              UnderlineInputBorder(
-                                                                            borderSide:
-                                                                                BorderSide(color: Colors.white),
-                                                                            borderRadius:
-                                                                                BorderRadius.circular(25.7),
-                                                                          ),
+                                                                              ///if the user hasn't entered anything, validation fails
+                                                                              validator: (value) {
+                                                                                setState(() {
+                                                                                  errorCurrentPassword = false;
+                                                                                });
+                                                                                if (value == null || value.isEmpty) {
+                                                                                  setState(() {
+                                                                                    errorCurrentPassword = true;
+                                                                                  });
+                                                                                  return null;
+                                                                                }
+                                                                                return null;
+                                                                              },
+                                                                              controller: currentPassword,
+                                                                              decoration: InputDecoration(
+                                                                                errorStyle: TextStyle(
+                                                                                  color: Colors.white,
+                                                                                ),
+                                                                                contentPadding: EdgeInsets.only(bottom: 15, left: 20),
+                                                                                filled: true,
+                                                                                fillColor: Colors.white,
+                                                                                border: UnderlineInputBorder(
+                                                                                  borderSide: BorderSide(color: Colors.white),
+                                                                                  borderRadius: BorderRadius.circular(25.7),
+                                                                                ),
 
-                                                                          ///[IconButton] to click when user wants to see/hide password
-                                                                          suffixIcon:
-                                                                              IconButton(
-                                                                            icon:
-                                                                                Icon(
-                                                                              passwordVisible ? Icons.visibility : Icons.visibility_off,
-                                                                              color: Theme.of(context).primaryColorDark,
-                                                                            ),
-                                                                            onPressed:
-                                                                                () {
-                                                                              setState(() {
-                                                                                passwordVisible = !passwordVisible;
-                                                                              });
-                                                                            },
-                                                                          ),
-                                                                        ),
-                                                                      )),
+                                                                                ///[IconButton] to click when user wants to see/hide password
+                                                                                suffixIcon: IconButton(
+                                                                                  icon: Icon(
+                                                                                    passwordVisible ? Icons.visibility : Icons.visibility_off,
+                                                                                    color: Theme.of(context).primaryColorDark,
+                                                                                  ),
+                                                                                  onPressed: () {
+                                                                                    setState(() {
+                                                                                      passwordVisible = !passwordVisible;
+                                                                                    });
+                                                                                  },
+                                                                                ),
+                                                                              ),
+                                                                            )),
+                                                                        errorCurrentPassword
+                                                                            ? Container(
+                                                                                padding: EdgeInsets.only(top: 30, left: 20),
+                                                                                child: Text(
+                                                                                  "Please enter password",
+                                                                                  style: TextStyle(
+                                                                                    color: white,
+                                                                                  ),
+                                                                                ),
+                                                                              )
+                                                                            : Container()
+                                                                      ]),
                                                                   Container(
                                                                       height:
                                                                           30,
@@ -642,8 +621,6 @@ class ProfileDesktopState extends State<UserProfileDesktop> {
                                                                             newPassword,
                                                                         decoration:
                                                                             InputDecoration(
-                                                                          labelText:
-                                                                              'Password',
                                                                           contentPadding: EdgeInsets.only(
                                                                               bottom: 15,
                                                                               left: 20),
@@ -676,66 +653,6 @@ class ProfileDesktopState extends State<UserProfileDesktop> {
                                                                           ),
                                                                         ),
                                                                       )),
-                                                                  Container(
-                                                                      height:
-                                                                          30,
-                                                                      width: MediaQuery.of(context)
-                                                                              .size
-                                                                              .width /
-                                                                          3.0,
-                                                                      child:
-                                                                          TextFormField(
-                                                                        ///hides/shows password based on user click
-                                                                        obscureText:
-                                                                            !passwordVisible,
-
-                                                                        ///if the user hasn't entered anything, validation fails
-                                                                        validator:
-                                                                            (value) {
-                                                                          if ((value == null || value.isEmpty || value != newPassword.text) &&
-                                                                              newPassword.text.isNotEmpty) {
-                                                                            return 'Please confirm new password';
-                                                                          }
-                                                                          return null;
-                                                                        },
-                                                                        controller:
-                                                                            confirmPassword,
-                                                                        decoration:
-                                                                            InputDecoration(
-                                                                          labelText:
-                                                                              'Password',
-                                                                          contentPadding: EdgeInsets.only(
-                                                                              bottom: 15,
-                                                                              left: 20),
-                                                                          filled:
-                                                                              true,
-                                                                          fillColor:
-                                                                              Colors.white,
-                                                                          border:
-                                                                              UnderlineInputBorder(
-                                                                            borderSide:
-                                                                                BorderSide(color: Colors.white),
-                                                                            borderRadius:
-                                                                                BorderRadius.circular(25.7),
-                                                                          ),
-
-                                                                          ///[IconButton] to click when user wants to see/hide password
-                                                                          suffixIcon:
-                                                                              IconButton(
-                                                                            icon:
-                                                                                Icon(
-                                                                              passwordVisible ? Icons.visibility : Icons.visibility_off,
-                                                                              color: Theme.of(context).primaryColorDark,
-                                                                            ),
-                                                                            onPressed:
-                                                                                () {
-                                                                              setState(() {
-                                                                                passwordVisible = !passwordVisible;
-                                                                              });
-                                                                            },
-                                                                          ),
-                                                                        ),
-                                                                      ))
                                                                 ],
                                                               ),
                                                             ],
@@ -762,8 +679,6 @@ class ProfileDesktopState extends State<UserProfileDesktop> {
                       top: MediaQuery.of(context).size.height * .05,
                     ),
                     child: Container(
-                        width: MediaQuery.of(context).size.width / 3.5,
-                        height: MediaQuery.of(context).size.height * .15,
                         padding: EdgeInsets.all(20),
                         child: SingleChildScrollView(
                           child: Column(

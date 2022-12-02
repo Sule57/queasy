@@ -79,7 +79,10 @@ class ProfileViewController {
 
   ///deletes the account by confirming it via [email] and [password]
   bool deleteAccount(String email, String password) {
-    return player.deleteAccount(email, password);
+    if (email.isNotEmpty && password.isNotEmpty) {
+      return player.deleteAccount(email, password);
+    }
+    return false;
   }
 
   ///signs out of the account
@@ -87,8 +90,10 @@ class ProfileViewController {
     return player.signOut();
   }
 
-  bool editAllProfile() {
-    if (success.isNotEmpty && !success.contains(false)) {
+  bool editAllProfile(String currentPassword) {
+    if (success.isNotEmpty &&
+        !success.contains(false) &&
+        currentPassword.isNotEmpty) {
       success.clear();
       return true;
     }
