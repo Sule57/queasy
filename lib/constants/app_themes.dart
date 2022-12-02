@@ -47,6 +47,10 @@ class AppThemes {
         fontWeight: FontWeight.bold,
         color: purple,
       ),
+      headline4: TextStyle(
+        fontSize: 24,
+        color: purple,
+      ),
     ),
 
     //TEXT FIELD

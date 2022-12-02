@@ -97,7 +97,7 @@ class HomeWidgets extends StatelessWidget {
     return Center(
       child: Stack(
         children: [
-          /// User profile at the top right corner
+          /// User profile at the top left corner
           Align(
             alignment: Alignment.topLeft,
             child: IconButton(
