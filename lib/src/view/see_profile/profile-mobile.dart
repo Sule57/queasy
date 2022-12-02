@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_profile_picture/flutter_profile_picture.dart';
 import 'package:queasy/constants/app_themes.dart';
+import 'package:queasy/src/view/login_view.dart';
+import 'package:queasy/src/view/register_view.dart';
 import 'package:queasy/src/view/see_profile/profile-view-controller.dart';
 
 class UserProfileMobile extends StatefulWidget {
@@ -20,14 +22,17 @@ class ProfileMobileState extends State<UserProfileMobile> {
   TextEditingController lastname = new TextEditingController();
   TextEditingController username = new TextEditingController();
   TextEditingController bio = new TextEditingController();
-  TextEditingController controllerCurrentPassword = new TextEditingController();
-  TextEditingController controllerNewPassword = new TextEditingController();
-  TextEditingController controllerConfirmPassword = new TextEditingController();
+  TextEditingController currentPassword = new TextEditingController();
+  TextEditingController newPassword = new TextEditingController();
+  TextEditingController confirmPassword = new TextEditingController();
   TextEditingController email = new TextEditingController();
+  TextEditingController emailForDelete = new TextEditingController();
+  TextEditingController passwordForDelete = new TextEditingController();
 
   bool passwordVisible = false;
 
   final formKey = GlobalKey<FormState>();
+  final formKeyDelete = GlobalKey<FormState>();
 
   @override
   void dispose() {
@@ -36,9 +41,9 @@ class ProfileMobileState extends State<UserProfileMobile> {
     lastname.dispose();
     username.dispose();
     bio.dispose();
-    controllerCurrentPassword.dispose();
-    controllerNewPassword.dispose();
-    controllerConfirmPassword.dispose();
+    currentPassword.dispose();
+    newPassword.dispose();
+    confirmPassword.dispose();
     super.dispose();
   }
 
@@ -204,8 +209,16 @@ class ProfileMobileState extends State<UserProfileMobile> {
                                         ElevatedButton(
                                           child: Text("Cancel",
                                               style: TextStyle(color: black)),
-                                          onPressed: () =>
-                                              {Navigator.of(context).pop()},
+                                          onPressed: () => {
+                                            Navigator.of(context).pop(),
+                                            username.clear(),
+                                            firstname.clear(),
+                                            lastname.clear(),
+                                            bio.clear(),
+                                            currentPassword.clear(),
+                                            newPassword.clear(),
+                                            newPassword.clear(),
+                                          },
                                           style: ButtonStyle(
                                               backgroundColor:
                                                   MaterialStateProperty.all<
@@ -223,31 +236,86 @@ class ProfileMobileState extends State<UserProfileMobile> {
                                           onPressed: () {
                                             if (formKey.currentState!
                                                 .validate()) {
-                                              // bool success =
-                                              //     controller.editAllProfile(
-                                              //   firstname.text,
-                                              //   lastname.text,
-                                              //   username.text,
-                                              //   bio.text,
-                                              //   controllerCurrentPassword.text,
-                                              //   controllerNewPassword.text,
-                                              //   controllerConfirmPassword.text,
-                                              // );
-                                              // if (success) {
-                                              Navigator.of(context).pop();
-                                              ScaffoldMessenger.of(context)
-                                                  .showSnackBar(
-                                                const SnackBar(
-                                                    content:
-                                                        Text('Successful!'),
-                                                    backgroundColor:
-                                                        Colors.teal,
-                                                    behavior: SnackBarBehavior
-                                                        .floating,
-                                                    width: 200,
-                                                    shape: StadiumBorder()),
-                                              );
-                                              // }
+                                              if (username.text.isNotEmpty) {
+                                                controller.editUsername(
+                                                    controller.player.username,
+                                                    username.text);
+                                                username.clear();
+                                                currentPassword.clear();
+                                              }
+                                              if (bio.text.isNotEmpty) {
+                                                controller.editBio(
+                                                    controller.player.username,
+                                                    bio.text);
+                                                bio.clear();
+                                                currentPassword.clear();
+                                              }
+                                              if (firstname.text.isNotEmpty &&
+                                                  lastname.text.isNotEmpty) {
+                                                controller.editName(
+                                                    controller.player.username,
+                                                    firstname.text,
+                                                    lastname.text);
+                                                firstname.clear();
+                                                lastname.clear();
+                                                currentPassword.clear();
+                                              }
+                                              if (firstname.text.isNotEmpty &&
+                                                  lastname.text.isEmpty) {
+                                                controller.editName(
+                                                    controller.player.username,
+                                                    firstname.text,
+                                                    controller.player.lastName);
+                                                firstname.clear();
+                                                currentPassword.clear();
+                                              }
+                                              if (firstname.text.isEmpty &&
+                                                  lastname.text.isNotEmpty) {
+                                                controller.editName(
+                                                  controller.player.username,
+                                                  controller.player.firstName,
+                                                  lastname.text,
+                                                );
+                                                lastname.clear();
+                                                currentPassword.clear();
+                                              }
+                                              if (newPassword.text.isNotEmpty) {
+                                                controller.editPassword(
+                                                    currentPassword.text,
+                                                    newPassword.text,
+                                                    controller.player.email);
+
+                                                newPassword.clear();
+                                                currentPassword.clear();
+                                                confirmPassword.clear();
+                                              }
+                                              ;
+                                              if (email.text.isNotEmpty) {
+                                                controller.editEmail(
+                                                    controller.player.email,
+                                                    email.text,
+                                                    currentPassword.text);
+                                                email.clear();
+                                                currentPassword.clear();
+                                              }
+
+                                              bool success =
+                                                  controller.editAllProfile();
+                                              if (success) {
+                                                Navigator.of(context).pop();
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(
+                                                  const SnackBar(
+                                                      content:
+                                                          Text('Successful!'),
+                                                      backgroundColor:
+                                                          Colors.teal,
+                                                      behavior: SnackBarBehavior
+                                                          .floating,
+                                                      width: 200,
+                                                      shape: StadiumBorder()),
+                                                );
+                                              }
                                             }
                                           },
                                           style: ButtonStyle(
@@ -269,7 +337,7 @@ class ProfileMobileState extends State<UserProfileMobile> {
                                           MediaQuery.of(context).size.height *
                                               .80,
                                       width: MediaQuery.of(context).size.width /
-                                          1.5,
+                                          1.3,
                                       child: Form(
                                         key: formKey,
                                         child: Row(
@@ -293,13 +361,13 @@ class ProfileMobileState extends State<UserProfileMobile> {
                                                 Text("Email",
                                                     style: TextStyle(
                                                         color: Colors.white)),
-                                                Text("Current Password",
+                                                Text("Current Password *",
                                                     style: TextStyle(
                                                         color: Colors.white)),
                                                 Text("New Password",
                                                     style: TextStyle(
                                                         color: Colors.white)),
-                                                Text("Confirm Password",
+                                                Text("Confirm New Password",
                                                     style: TextStyle(
                                                         color: Colors.white)),
                                               ],
@@ -467,7 +535,7 @@ class ProfileMobileState extends State<UserProfileMobile> {
                                                         return null;
                                                       },
                                                       controller:
-                                                          controllerCurrentPassword,
+                                                          currentPassword,
                                                       decoration:
                                                           InputDecoration(
                                                         labelText: 'Password',
@@ -522,8 +590,7 @@ class ProfileMobileState extends State<UserProfileMobile> {
                                                       obscureText:
                                                           !passwordVisible,
 
-                                                      controller:
-                                                          controllerNewPassword,
+                                                      controller: newPassword,
                                                       decoration:
                                                           InputDecoration(
                                                         labelText: 'Password',
@@ -580,14 +647,19 @@ class ProfileMobileState extends State<UserProfileMobile> {
 
                                                       ///if the user hasn't entered anything, validation fails
                                                       validator: (value) {
-                                                        if (value == null ||
-                                                            value.isEmpty) {
-                                                          return 'Please enter password';
+                                                        if ((value == null ||
+                                                                value.isEmpty ||
+                                                                value !=
+                                                                    newPassword
+                                                                        .text) &&
+                                                            newPassword.text
+                                                                .isNotEmpty) {
+                                                          return 'Please confirm new password';
                                                         }
                                                         return null;
                                                       },
                                                       controller:
-                                                          controllerConfirmPassword,
+                                                          confirmPassword,
                                                       decoration:
                                                           InputDecoration(
                                                         labelText: 'Password',
@@ -649,7 +721,22 @@ class ProfileMobileState extends State<UserProfileMobile> {
             Container(
                 padding: EdgeInsets.only(top: 7),
                 child: ElevatedButton(
-                  onPressed: () => {},
+                  onPressed: () {
+                    bool success = controller.signOut();
+                    if (success) {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => const LogInView()));
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                            content: Text('Failed to sign out'),
+                            backgroundColor: Colors.red,
+                            behavior: SnackBarBehavior.floating,
+                            width: 200,
+                            shape: StadiumBorder()),
+                      );
+                    }
+                  },
                   style: ButtonStyle(
                       shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                           RoundedRectangleBorder(
@@ -701,7 +788,32 @@ class ProfileMobileState extends State<UserProfileMobile> {
                                     ElevatedButton(
                                       child: Text("Confirm",
                                           style: TextStyle(color: black)),
-                                      onPressed: () => {},
+                                      onPressed: () {
+                                        bool success = controller.deleteAccount(
+                                            emailForDelete.text,
+                                            passwordForDelete.text);
+                                        if (formKeyDelete.currentState!
+                                            .validate()) {
+                                          if (success) {
+                                            Navigator.of(context).push(
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        const RegisterView()));
+                                          } else {
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              const SnackBar(
+                                                  content: Text(
+                                                      'Failed to delete account!'),
+                                                  backgroundColor: Colors.red,
+                                                  behavior:
+                                                      SnackBarBehavior.floating,
+                                                  width: 200,
+                                                  shape: StadiumBorder()),
+                                            );
+                                          }
+                                        }
+                                      },
                                       style: ButtonStyle(
                                           backgroundColor:
                                               MaterialStateProperty.all<Color>(
@@ -722,7 +834,7 @@ class ProfileMobileState extends State<UserProfileMobile> {
                                   width:
                                       MediaQuery.of(context).size.width / 1.5,
                                   child: Form(
-                                    key: formKey,
+                                    key: formKeyDelete,
                                     child: Row(
                                       children: [
                                         Column(
@@ -751,7 +863,15 @@ class ProfileMobileState extends State<UserProfileMobile> {
                                                       .width /
                                                   3,
                                               child: TextFormField(
-                                                controller: email,
+                                                ///if the user hasn't entered anything, validation fails
+                                                validator: (value) {
+                                                  if (value == null ||
+                                                      value.isEmpty) {
+                                                    return 'Please enter email';
+                                                  }
+                                                  return null;
+                                                },
+                                                controller: emailForDelete,
                                                 decoration: InputDecoration(
                                                   contentPadding:
                                                       EdgeInsets.only(
@@ -786,8 +906,7 @@ class ProfileMobileState extends State<UserProfileMobile> {
                                                     }
                                                     return null;
                                                   },
-                                                  controller:
-                                                      controllerCurrentPassword,
+                                                  controller: passwordForDelete,
                                                   decoration: InputDecoration(
                                                     labelText: 'Password',
                                                     contentPadding:

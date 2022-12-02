@@ -15,6 +15,7 @@ class ProfileViewController {
 
   ///constructor for the controller
   ProfileViewController();
+  List<bool> success = new List.empty();
 
   ///getter methods for user data
   Profile get user => player;
@@ -27,35 +28,53 @@ class ProfileViewController {
   int? get age => player.age;
 
   ///changes the [currentUsername] with the given new [newUsername]
-  bool editUsername(String currentUsername, String newUsername) {
-    return player.updateUsername(
-        currentUsername, newUsername, FirebaseFirestore.instance);
+  void editUsername(String currentUsername, String newUsername) {
+    success = [
+      ...success,
+      player.updateUsername(
+          currentUsername, newUsername, FirebaseFirestore.instance)
+    ];
   }
 
   ///changes the [currentEmail] with the given [newEmail] and confirms it through [password]
-  bool editEmail(String currentEmail, String newEmail, String password) {
-    return player.updateEmail(currentEmail, newEmail, password);
+  void editEmail(String currentEmail, String newEmail, String password) {
+    success = [
+      ...success,
+      player.updateEmail(currentEmail, newEmail, password)
+    ];
   }
 
   ///changes the current name with the given [newFirstname] and [newLastname] and requires [username]
-  bool editName(String username, String newFirstname, String newLastname) {
-    return player.updateName(
-        username, newFirstname, newLastname, FirebaseFirestore.instance);
+  void editName(String username, String newFirstname, String newLastname) {
+    success = [
+      ...success,
+      player.updateName(
+          username, newFirstname, newLastname, FirebaseFirestore.instance)
+    ];
   }
 
   ///changes the current bio with the given [newBio] and requires [username]
-  bool editBio(String username, String newBio) {
-    return player.updateBio(username, newBio, FirebaseFirestore.instance);
+  void editBio(String username, String newBio) {
+    success = [
+      ...success,
+      player.updateBio(username, newBio, FirebaseFirestore.instance)
+    ];
   }
 
   ///changes the current profile picture with the given [newPic]
-  bool editProfilePic(String newPic) {
-    return player.updatePicture(username, newPic, FirebaseFirestore.instance);
+  void editProfilePic(String newPic) {
+    success = [
+      ...success,
+      player.updatePicture(username, newPic, FirebaseFirestore.instance)
+    ];
   }
 
   ///changes the current password [currentPassword] with the given [newPassword] and confirms it through [email]
-  bool editPassword(String currentPassword, String newPassword, String email) {
-    return player.updatePassword(email, currentPassword, newPassword);
+  void editPassword(String currentPassword, String newPassword, String email) {
+    success = [
+      ...success,
+      player.updatePassword(email, currentPassword, newPassword)
+    ];
   }
 
   ///deletes the account by confirming it via [email] and [password]
@@ -68,42 +87,14 @@ class ProfileViewController {
     return player.signOut();
   }
 
-  bool editAllProfile(
-      String? newUsername,
-      String? newEmail,
-      String? newPassword,
-      String? newFirstname,
-      String? newLastname,
-      String? newBio,
-      String currentPassword) {
-    List<bool> success = new List.empty();
-    if (newUsername != null) {
-      success.add(editUsername(player.username, newUsername));
+  bool editAllProfile() {
+    if (success.isNotEmpty && !success.contains(false)) {
+      success.clear();
+      return true;
     }
-
-    if (newEmail != null) {
-      success.add(editEmail(player.email, newEmail, currentPassword));
+    if (success.isNotEmpty) {
+      success.clear();
     }
-    if (newBio != null) {
-      success.add(editBio(player.username, newBio));
-    }
-    if (newFirstname != null && newLastname == null) {
-      success.add(editName(player.username, newFirstname, player.lastName!));
-    }
-    if (newLastname != null && newFirstname == null) {
-      success.add(editName(player.username, player.firstName!, newLastname));
-    }
-
-    if (newFirstname != null && newLastname != null) {
-      success.add(editName(player.username, newFirstname, newLastname));
-    }
-    if (newPassword != null) {
-      success.add(editPassword(currentPassword, newPassword, email));
-    }
-
-    if (success.isEmpty || success.contains(false)) {
-      return false;
-    }
-    return true;
+    return false;
   }
 }

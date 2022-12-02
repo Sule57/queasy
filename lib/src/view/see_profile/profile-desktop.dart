@@ -20,9 +20,10 @@ class ProfileDesktopState extends State<UserProfileDesktop> {
   TextEditingController lastname = new TextEditingController();
   TextEditingController username = new TextEditingController();
   TextEditingController bio = new TextEditingController();
-  TextEditingController controllerCurrentPassword = new TextEditingController();
-  TextEditingController controllerNewPassword = new TextEditingController();
-  TextEditingController controllerConfirmPassword = new TextEditingController();
+  TextEditingController currentPassword = new TextEditingController();
+  TextEditingController newPassword = new TextEditingController();
+  TextEditingController confirmPassword = new TextEditingController();
+  TextEditingController email = new TextEditingController();
 
   bool passwordVisible = false;
 
@@ -35,9 +36,9 @@ class ProfileDesktopState extends State<UserProfileDesktop> {
     lastname.dispose();
     username.dispose();
     bio.dispose();
-    controllerCurrentPassword.dispose();
-    controllerNewPassword.dispose();
-    controllerConfirmPassword.dispose();
+    currentPassword.dispose();
+    newPassword.dispose();
+    confirmPassword.dispose();
     super.dispose();
   }
 
@@ -135,7 +136,17 @@ class ProfileDesktopState extends State<UserProfileDesktop> {
                                                             onPressed: () => {
                                                               Navigator.of(
                                                                       context)
-                                                                  .pop()
+                                                                  .pop(),
+                                                              username.clear(),
+                                                              firstname.clear(),
+                                                              lastname.clear(),
+                                                              bio.clear(),
+                                                              currentPassword
+                                                                  .clear(),
+                                                              newPassword
+                                                                  .clear(),
+                                                              newPassword
+                                                                  .clear(),
                                                             },
                                                             style: ButtonStyle(
                                                                 backgroundColor:
@@ -161,43 +172,155 @@ class ProfileDesktopState extends State<UserProfileDesktop> {
                                                               if (formKey
                                                                   .currentState!
                                                                   .validate()) {
-                                                                // bool success =
-                                                                //     controller
-                                                                //         .editAllProfile(
-                                                                //   firstname
-                                                                //       .text,
-                                                                //   lastname.text,
-                                                                //   username.text,
-                                                                //   bio.text,
-                                                                //   controllerCurrentPassword
-                                                                //       .text,
-                                                                //   controllerNewPassword
-                                                                //       .text,
-                                                                //   controllerConfirmPassword
-                                                                //       .text,
-                                                                // );
-                                                                // if (success) {
-                                                                Navigator.of(
-                                                                        context)
-                                                                    .pop();
-                                                                ScaffoldMessenger.of(
-                                                                        context)
-                                                                    .showSnackBar(
-                                                                  const SnackBar(
-                                                                    content: Text(
-                                                                        'Successful!'),
-                                                                    backgroundColor:
-                                                                        Colors
-                                                                            .teal,
-                                                                    behavior:
-                                                                        SnackBarBehavior
-                                                                            .floating,
-                                                                    width: 200,
-                                                                    shape:
-                                                                        StadiumBorder(),
-                                                                  ),
-                                                                );
-                                                                // }
+                                                                if (username
+                                                                    .text
+                                                                    .isNotEmpty) {
+                                                                  controller.editUsername(
+                                                                      controller
+                                                                          .player
+                                                                          .username,
+                                                                      username
+                                                                          .text);
+                                                                  username
+                                                                      .clear();
+                                                                  currentPassword
+                                                                      .clear();
+                                                                }
+                                                                if (bio.text
+                                                                    .isNotEmpty) {
+                                                                  controller.editBio(
+                                                                      controller
+                                                                          .player
+                                                                          .username,
+                                                                      bio.text);
+                                                                  bio.clear();
+                                                                  currentPassword
+                                                                      .clear();
+                                                                }
+                                                                if (firstname
+                                                                        .text
+                                                                        .isNotEmpty &&
+                                                                    lastname
+                                                                        .text
+                                                                        .isNotEmpty) {
+                                                                  controller.editName(
+                                                                      controller
+                                                                          .player
+                                                                          .username,
+                                                                      firstname
+                                                                          .text,
+                                                                      lastname
+                                                                          .text);
+                                                                  firstname
+                                                                      .clear();
+                                                                  lastname
+                                                                      .clear();
+                                                                  currentPassword
+                                                                      .clear();
+                                                                }
+                                                                if (firstname
+                                                                        .text
+                                                                        .isNotEmpty &&
+                                                                    lastname
+                                                                        .text
+                                                                        .isEmpty) {
+                                                                  controller.editName(
+                                                                      controller
+                                                                          .player
+                                                                          .username,
+                                                                      firstname
+                                                                          .text,
+                                                                      controller
+                                                                          .player
+                                                                          .lastName);
+                                                                  firstname
+                                                                      .clear();
+                                                                  currentPassword
+                                                                      .clear();
+                                                                }
+                                                                if (firstname
+                                                                        .text
+                                                                        .isEmpty &&
+                                                                    lastname
+                                                                        .text
+                                                                        .isNotEmpty) {
+                                                                  controller
+                                                                      .editName(
+                                                                    controller
+                                                                        .player
+                                                                        .username,
+                                                                    controller
+                                                                        .player
+                                                                        .firstName,
+                                                                    lastname
+                                                                        .text,
+                                                                  );
+                                                                  lastname
+                                                                      .clear();
+                                                                  currentPassword
+                                                                      .clear();
+                                                                }
+                                                                if (newPassword
+                                                                    .text
+                                                                    .isNotEmpty) {
+                                                                  controller.editPassword(
+                                                                      currentPassword
+                                                                          .text,
+                                                                      newPassword
+                                                                          .text,
+                                                                      controller
+                                                                          .player
+                                                                          .email);
+
+                                                                  newPassword
+                                                                      .clear();
+                                                                  currentPassword
+                                                                      .clear();
+                                                                  confirmPassword
+                                                                      .clear();
+                                                                }
+                                                                ;
+                                                                if (email.text
+                                                                    .isNotEmpty) {
+                                                                  controller.editEmail(
+                                                                      controller
+                                                                          .player
+                                                                          .email,
+                                                                      email
+                                                                          .text,
+                                                                      currentPassword
+                                                                          .text);
+                                                                  email.clear();
+                                                                  currentPassword
+                                                                      .clear();
+                                                                }
+
+                                                                bool success =
+                                                                    controller
+                                                                        .editAllProfile();
+                                                                if (success) {
+                                                                  Navigator.of(
+                                                                          context)
+                                                                      .pop();
+                                                                  ScaffoldMessenger.of(
+                                                                          context)
+                                                                      .showSnackBar(
+                                                                    const SnackBar(
+                                                                      content: Text(
+                                                                          'Successful!'),
+                                                                      backgroundColor:
+                                                                          Colors
+                                                                              .teal,
+                                                                      behavior:
+                                                                          SnackBarBehavior
+                                                                              .floating,
+                                                                      width:
+                                                                          200,
+                                                                      shape:
+                                                                          StadiumBorder(),
+                                                                    ),
+                                                                  );
+                                                                }
                                                               }
                                                             },
                                                             style: ButtonStyle(
@@ -256,8 +379,12 @@ class ProfileDesktopState extends State<UserProfileDesktop> {
                                                                       style: TextStyle(
                                                                           color:
                                                                               Colors.white)),
+                                                                  Text("Email",
+                                                                      style: TextStyle(
+                                                                          color:
+                                                                              Colors.white)),
                                                                   Text(
-                                                                      "Current Password",
+                                                                      "Current Password *",
                                                                       style: TextStyle(
                                                                           color:
                                                                               Colors.white)),
@@ -267,7 +394,7 @@ class ProfileDesktopState extends State<UserProfileDesktop> {
                                                                           color:
                                                                               Colors.white)),
                                                                   Text(
-                                                                      "Confirm Password",
+                                                                      "Confirm New Password",
                                                                       style: TextStyle(
                                                                           color:
                                                                               Colors.white)),
@@ -408,6 +535,37 @@ class ProfileDesktopState extends State<UserProfileDesktop> {
                                                                     ),
                                                                   ),
                                                                   Container(
+                                                                    height: 30,
+                                                                    width: MediaQuery.of(context)
+                                                                            .size
+                                                                            .width /
+                                                                        3,
+                                                                    child:
+                                                                        TextFormField(
+                                                                      controller:
+                                                                          email,
+                                                                      decoration:
+                                                                          InputDecoration(
+                                                                        contentPadding: EdgeInsets.only(
+                                                                            bottom:
+                                                                                15,
+                                                                            left:
+                                                                                20),
+                                                                        filled:
+                                                                            true,
+                                                                        fillColor:
+                                                                            Colors.white,
+                                                                        border:
+                                                                            UnderlineInputBorder(
+                                                                          borderSide:
+                                                                              BorderSide(color: Colors.white),
+                                                                          borderRadius:
+                                                                              BorderRadius.circular(25.7),
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                  Container(
                                                                       height:
                                                                           30,
                                                                       width: MediaQuery.of(context)
@@ -430,7 +588,7 @@ class ProfileDesktopState extends State<UserProfileDesktop> {
                                                                           return null;
                                                                         },
                                                                         controller:
-                                                                            controllerCurrentPassword,
+                                                                            currentPassword,
                                                                         decoration:
                                                                             InputDecoration(
                                                                           labelText:
@@ -481,7 +639,7 @@ class ProfileDesktopState extends State<UserProfileDesktop> {
                                                                             !passwordVisible,
 
                                                                         controller:
-                                                                            controllerNewPassword,
+                                                                            newPassword,
                                                                         decoration:
                                                                             InputDecoration(
                                                                           labelText:
@@ -534,14 +692,14 @@ class ProfileDesktopState extends State<UserProfileDesktop> {
                                                                         ///if the user hasn't entered anything, validation fails
                                                                         validator:
                                                                             (value) {
-                                                                          if (value == null ||
-                                                                              value.isEmpty) {
-                                                                            return 'Please enter password';
+                                                                          if ((value == null || value.isEmpty || value != newPassword.text) &&
+                                                                              newPassword.text.isNotEmpty) {
+                                                                            return 'Please confirm new password';
                                                                           }
                                                                           return null;
                                                                         },
                                                                         controller:
-                                                                            controllerConfirmPassword,
+                                                                            confirmPassword,
                                                                         decoration:
                                                                             InputDecoration(
                                                                           labelText:
@@ -700,62 +858,3 @@ class ProfileDesktopState extends State<UserProfileDesktop> {
     );
   }
 }
-
-// showDialog(
-//     context: context,
-//     builder: (context) {
-//       return StatefulBuilder(builder: (context, StateSetter setState) {
-//         return AlertDialog(
-//           title: Text("Update $title"),
-//           content: content,
-//           actions: [
-//             ///cancel button in case user changes their mind
-//             TextButton(
-//               child: const Text("Cancel"),
-//               onPressed: () {
-//                 Navigator.pop(context);
-//               },
-//             ),
-
-//             ///confirm button for user to submit the new data
-//             TextButton(
-//               child: const Text("Confirm"),
-//               onPressed: () {
-//                 setState(() {
-//                   bool success = edit();
-//                   if (success) {
-//                     Navigator.pop(context);
-//                   } else {
-//                     print("failed");
-//                   }
-//                 });
-//               },
-//             )
-//           ],
-//         );
-//       });
-//     },
-//   );
-
-//   ///A Container class to show statistics when the button is clicked
-// class StatsContainer extends StatelessWidget {
-//   ///Constructor for the Container class
-//   const StatsContainer(this._isContainerVisible, {super.key});
-
-//   ///@param isContainerVisible To determine the size of the container
-//   final bool _isContainerVisible;
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Center(
-//         child: AnimatedContainer(
-//             duration: const Duration(seconds: 1),
-
-//             ///background color
-//             color: Colors.white,
-
-//             ///the size of the container
-//             height: _isContainerVisible ? 150.0 : 0.0,
-//             width: _isContainerVisible ? 500.0 : 0.0));
-//   }
-// }
