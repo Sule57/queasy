@@ -5,19 +5,24 @@ import 'package:queasy/src/view/login_view.dart';
 import 'package:queasy/src/view/register_view.dart';
 import 'package:queasy/src/view/see_profile/profile-view-controller.dart';
 
+///This is UserProfileMobile view
+///It displays mobile version of the profile page
 class UserProfileMobile extends StatefulWidget {
+  ///[controller] is ProfileViewController
   final ProfileViewController controller = ProfileViewController();
 
   UserProfileMobile({Key? key}) : super(key: key);
 
-  ///creates ProfileView class
+  ///creates UserProfileMobile class
   @override
   State<UserProfileMobile> createState() => ProfileMobileState();
 }
 
 class ProfileMobileState extends State<UserProfileMobile> {
+  ///[controller] is ProfileViewController
   get controller => widget.controller;
 
+  ///Text editing controllers to save user input
   TextEditingController firstname = new TextEditingController();
   TextEditingController lastname = new TextEditingController();
   TextEditingController username = new TextEditingController();
@@ -28,12 +33,22 @@ class ProfileMobileState extends State<UserProfileMobile> {
   TextEditingController emailForDelete = new TextEditingController();
   TextEditingController passwordForDelete = new TextEditingController();
 
+  ///[passwordVisible] is for user to hide/show the entered password
   bool passwordVisible = false;
+
+  ///[errorCurrentPassword] is to display error message when current password is not entered
   bool errorCurrentPassword = false;
+
+  ///[errorDeletePassword] is to display error message when password entered in delete account container is not entered
   bool errorDeletePassword = false;
+
+  ///[errorDeleteEmail] is to display error message when email entered in delete account container is not entered
   bool errorDeleteEmail = false;
 
+  ///[formKey] used for Form in EditProfile button
   final formKey = GlobalKey<FormState>();
+
+  ///[formKeyDelete] used for Form in DeleteAccount button
   final formKeyDelete = GlobalKey<FormState>();
 
   @override
@@ -54,10 +69,12 @@ class ProfileMobileState extends State<UserProfileMobile> {
     passwordVisible = false;
   }
 
+  /// Builds the view
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         body: Stack(children: <Widget>[
+      ///[Container] used for design
       Container(
           alignment: Alignment.topRight,
           child: Container(
@@ -68,6 +85,8 @@ class ProfileMobileState extends State<UserProfileMobile> {
                   borderRadius: const BorderRadius.only(
                     bottomLeft: Radius.circular(20),
                   )))),
+
+      ///[Container] used for design
       Container(
         alignment: Alignment.bottomRight,
         padding: EdgeInsets.only(
@@ -83,6 +102,8 @@ class ProfileMobileState extends State<UserProfileMobile> {
                   topLeft: Radius.circular(20), topRight: Radius.circular(20))),
         ),
       ),
+
+      ///[Container] used for design
       Container(
         alignment: Alignment.bottomLeft,
         child: Container(
@@ -94,6 +115,8 @@ class ProfileMobileState extends State<UserProfileMobile> {
                   const BorderRadius.only(topRight: Radius.circular(20))),
         ),
       ),
+
+      ///[SingleChildScrollView] to avoid overflow
       SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -102,6 +125,8 @@ class ProfileMobileState extends State<UserProfileMobile> {
               alignment: Alignment.topCenter,
               padding: EdgeInsets.only(
                   top: MediaQuery.of(context).size.height * .07, bottom: 7),
+
+              ///[ProfilePicture] to show user icon as a round circle with the first letters of their name inside
               child: ProfilePicture(
                 name: 'Username',
                 radius: 40,
@@ -109,12 +134,16 @@ class ProfileMobileState extends State<UserProfileMobile> {
                 //img: '',
               ),
             ),
+
+            ///[Container] to show username
             Container(
               padding: EdgeInsets.only(
                 bottom: 7,
               ),
               child: Text(controller.player.username),
             ),
+
+            ///[Container] to show first and last names of the user
             Container(
               padding: EdgeInsets.only(
                 bottom: 7,
@@ -122,12 +151,16 @@ class ProfileMobileState extends State<UserProfileMobile> {
               child: Text(
                   "${controller.player.firstName} - ${controller.player.lastName}"),
             ),
+
+            ///[Container] to show email of the user
             Container(
               padding: EdgeInsets.only(
                 bottom: 7,
               ),
               child: Text(controller.player.email),
             ),
+
+            ///[Container] to display Bio of the user
             Container(
                 width: MediaQuery.of(context).size.width / 2,
                 height: MediaQuery.of(context).size.height * .15,
@@ -143,6 +176,8 @@ class ProfileMobileState extends State<UserProfileMobile> {
                     color: Colors.white,
                     borderRadius: BorderRadius.all(Radius.circular(20)),
                     border: Border.all(color: orange))),
+
+            ///[Container] to display Personal Statistics of the user
             Container(
               padding: EdgeInsets.only(
                 top: MediaQuery.of(context).size.height * .05,
@@ -180,6 +215,9 @@ class ProfileMobileState extends State<UserProfileMobile> {
             ),
             Container(
               padding: EdgeInsets.only(top: 7),
+
+              ///[ElevatedButton] to enable the user to edit their profile info
+              ///it opens a new dialog that contains TextFields
               child: ElevatedButton(
                   onPressed: () => {
                         showDialog(
@@ -207,9 +245,12 @@ class ProfileMobileState extends State<UserProfileMobile> {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.end,
                                       children: [
+                                        ///[ElevatedButton] to close the dialog if user wants to exit
                                         ElevatedButton(
                                           child: Text("Cancel",
                                               style: TextStyle(color: black)),
+
+                                          ///if clicked clears all the text editing controllers
                                           onPressed: () => {
                                             Navigator.of(context).pop(),
                                             username.clear(),
@@ -231,10 +272,14 @@ class ProfileMobileState extends State<UserProfileMobile> {
                                                     BorderRadius.circular(18.0),
                                               ))),
                                         ),
+
+                                        ///[ElevatedButton] to confirm the changes to the profile info
                                         ElevatedButton(
                                           child: Text("Confirm",
                                               style: TextStyle(color: black)),
                                           onPressed: () {
+                                            ///when clicked, if form has been successfully validated then
+                                            ///it calls different edit methods depending on which text field is not empty
                                             if (formKey.currentState!
                                                 .validate()) {
                                               if (username.text.isNotEmpty) {
@@ -283,9 +328,14 @@ class ProfileMobileState extends State<UserProfileMobile> {
                                                     currentPassword.text);
                                               }
 
+                                              ///editAllProfile method is called from the controller
+                                              ///result is saved in [success] variable
                                               bool success =
                                                   controller.editAllProfile(
                                                       currentPassword.text);
+
+                                              ///if successful, then snackbar is shown and the dialog is exited
+                                              ///and all the text editing controllers are cleared
                                               if (success) {
                                                 Navigator.of(context).pop();
                                                 ScaffoldMessenger.of(context)
@@ -324,6 +374,9 @@ class ProfileMobileState extends State<UserProfileMobile> {
                                       ],
                                     ),
                                   ],
+
+                                  ///[SingleChildScrollView] to avoid overflow
+                                  ///it enables scrolling horizontally inside the dialog
                                   content: SingleChildScrollView(
                                       scrollDirection: Axis.horizontal,
                                       child: Container(
@@ -335,10 +388,13 @@ class ProfileMobileState extends State<UserProfileMobile> {
                                                   .size
                                                   .width /
                                               1.3,
+
+                                          ///[Form] to validate user input (in this case only current password)
                                           child: Form(
                                             key: formKey,
                                             child: Row(
                                               children: [
+                                                ///[Column] displays the labels for text fields
                                                 Column(
                                                   mainAxisAlignment:
                                                       MainAxisAlignment
@@ -374,7 +430,11 @@ class ProfileMobileState extends State<UserProfileMobile> {
                                                                 Colors.white)),
                                                   ],
                                                 ),
+
+                                                ///[SizedBox] to set space between labels and text fields
                                                 SizedBox(width: 25),
+
+                                                ///[Column] shows text fields for the user to enter input
                                                 Column(
                                                   mainAxisAlignment:
                                                       MainAxisAlignment
@@ -382,6 +442,7 @@ class ProfileMobileState extends State<UserProfileMobile> {
                                                   crossAxisAlignment:
                                                       CrossAxisAlignment.start,
                                                   children: [
+                                                    ///[Container] which includes [TextFormField] for first name
                                                     Container(
                                                       height: 30,
                                                       width:
@@ -414,6 +475,8 @@ class ProfileMobileState extends State<UserProfileMobile> {
                                                         ),
                                                       ),
                                                     ),
+
+                                                    ///[Container] which includes [TextFormField] for last name
                                                     Container(
                                                       height: 30,
                                                       width:
@@ -446,6 +509,8 @@ class ProfileMobileState extends State<UserProfileMobile> {
                                                         ),
                                                       ),
                                                     ),
+
+                                                    ///[Container] which includes [TextFormField] for username
                                                     Container(
                                                       height: 30,
                                                       width:
@@ -478,6 +543,8 @@ class ProfileMobileState extends State<UserProfileMobile> {
                                                         ),
                                                       ),
                                                     ),
+
+                                                    ///[Container] which includes [TextFormField] for bio
                                                     Container(
                                                       height: 50,
                                                       width:
@@ -510,6 +577,8 @@ class ProfileMobileState extends State<UserProfileMobile> {
                                                         ),
                                                       ),
                                                     ),
+
+                                                    ///[Container] which includes [TextFormField] for email
                                                     Container(
                                                       height: 30,
                                                       width:
@@ -543,6 +612,7 @@ class ProfileMobileState extends State<UserProfileMobile> {
                                                       ),
                                                     ),
                                                     Stack(children: [
+                                                      ///[Container] which includes [TextFormField] for current password
                                                       Container(
                                                           height: 30,
                                                           width: MediaQuery.of(
@@ -556,7 +626,9 @@ class ProfileMobileState extends State<UserProfileMobile> {
                                                                 !passwordVisible,
 
                                                             ///if the user hasn't entered anything, validation fails
+                                                            ///and the corresponding error message is displayed
                                                             validator: (value) {
+                                                              //initially false
                                                               setState(() {
                                                                 errorCurrentPassword =
                                                                     false;
@@ -623,6 +695,9 @@ class ProfileMobileState extends State<UserProfileMobile> {
                                                               ),
                                                             ),
                                                           )),
+
+                                                      ///if validation failed then error message is displayed under text field
+                                                      ///if not then empty container which is not seen by the user
                                                       errorCurrentPassword
                                                           ? Container(
                                                               padding: EdgeInsets
@@ -646,6 +721,8 @@ class ProfileMobileState extends State<UserProfileMobile> {
                                                             )
                                                           : Container()
                                                     ]),
+
+                                                    ///[Container] which includes [TextFormField] for new password
                                                     Container(
                                                         height: 30,
                                                         width: MediaQuery.of(

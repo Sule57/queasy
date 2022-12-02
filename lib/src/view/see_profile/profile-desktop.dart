@@ -3,19 +3,24 @@ import 'package:queasy/constants/app_themes.dart';
 import 'package:queasy/src/view/see_profile/profile-view-controller.dart';
 import 'package:flutter_profile_picture/flutter_profile_picture.dart';
 
+///This is UserProfileDesktop view
+///It displays web version of the profile page
 class UserProfileDesktop extends StatefulWidget {
+  ///[controller] is ProfileViewController
   final ProfileViewController controller = ProfileViewController();
 
   UserProfileDesktop({Key? key}) : super(key: key);
 
-  ///creates ProfileView class
+  ///creates UserProfileDesktop class
   @override
   State<UserProfileDesktop> createState() => ProfileDesktopState();
 }
 
 class ProfileDesktopState extends State<UserProfileDesktop> {
+  ///[controller] is ProfileViewController
   get controller => widget.controller;
 
+  ///Text editing controllers to save user input
   TextEditingController firstname = new TextEditingController();
   TextEditingController lastname = new TextEditingController();
   TextEditingController username = new TextEditingController();
@@ -24,9 +29,13 @@ class ProfileDesktopState extends State<UserProfileDesktop> {
   TextEditingController newPassword = new TextEditingController();
   TextEditingController email = new TextEditingController();
 
+  ///[passwordVisible] is for user to hide/show the entered password
   bool passwordVisible = false;
+
+  ///[errorCurrentPassword] is to display error message when current password is not entered
   bool errorCurrentPassword = false;
-  bool errorConfirmPassword = false;
+
+  ///[formKey] used for Form
   final formKey = GlobalKey<FormState>();
 
   @override
@@ -47,11 +56,13 @@ class ProfileDesktopState extends State<UserProfileDesktop> {
     passwordVisible = false;
   }
 
+  /// Builds the view
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: <Widget>[
+          ///[SingleChildScrollView] to avoid overflow
           SingleChildScrollView(
             child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -65,6 +76,7 @@ class ProfileDesktopState extends State<UserProfileDesktop> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
+                        ///[ProfilePicture] to show user icon as a round circle with the first letters of their name inside
                         ProfilePicture(
                           name: 'Username',
                           radius: 30,
@@ -78,18 +90,24 @@ class ProfileDesktopState extends State<UserProfileDesktop> {
                             ),
                             child: Column(
                               children: [
+                                ///[Container] to show username
                                 Container(
                                   padding: EdgeInsets.only(
                                     bottom: 7,
                                   ),
                                   child: Text(controller.player.username),
                                 ),
+
+                                ///[Container] to show the number of user's followers and following
                                 Container(
                                   padding: EdgeInsets.only(
                                     bottom: 7,
                                   ),
                                   child: Text("1 Followers - 2 Following"),
                                 ),
+
+                                ///[ElevatedButton] to enable the user to edit their profile info
+                                ///it opens a new dialog that contains TextFields
                                 ElevatedButton(
                                     onPressed: () => {
                                           showDialog(
@@ -126,12 +144,15 @@ class ProfileDesktopState extends State<UserProfileDesktop> {
                                                             CrossAxisAlignment
                                                                 .end,
                                                         children: [
+                                                          ///[ElevatedButton] to close the dialog if user wants to exit
                                                           ElevatedButton(
                                                             child: Text(
                                                                 "Cancel",
                                                                 style: TextStyle(
                                                                     color:
                                                                         black)),
+
+                                                            ///if clicked clears all the text editing controllers
                                                             onPressed: () => {
                                                               Navigator.of(
                                                                       context)
@@ -161,6 +182,8 @@ class ProfileDesktopState extends State<UserProfileDesktop> {
                                                                               18.0),
                                                                 ))),
                                                           ),
+
+                                                          ///[ElevatedButton] to confirm the changes to the profile info
                                                           ElevatedButton(
                                                             child: Text(
                                                                 "Confirm",
@@ -168,6 +191,8 @@ class ProfileDesktopState extends State<UserProfileDesktop> {
                                                                     color:
                                                                         black)),
                                                             onPressed: () {
+                                                              ///when clicked, if form has been successfully validated then
+                                                              ///it calls different edit methods depending on which text field is not empty
                                                               if (formKey
                                                                   .currentState!
                                                                   .validate()) {
@@ -262,10 +287,16 @@ class ProfileDesktopState extends State<UserProfileDesktop> {
                                                                       currentPassword
                                                                           .text);
                                                                 }
+
+                                                                ///editAllProfile method is called from the controller
+                                                                ///result is saved in [success] variable
                                                                 bool success = controller
                                                                     .editAllProfile(
                                                                         currentPassword
                                                                             .text);
+
+                                                                ///if successful, then snackbar is shown and the dialog is exited
+                                                                ///and all the text editing controllers are cleared
                                                                 if (success) {
                                                                   Navigator.of(
                                                                           context)
@@ -331,10 +362,13 @@ class ProfileDesktopState extends State<UserProfileDesktop> {
                                                                 .size
                                                                 .width /
                                                             1.5,
+
+                                                        ///[Form] to validate user input (in this case only current password)
                                                         child: Form(
                                                           key: formKey,
                                                           child: Row(
                                                             children: [
+                                                              ///[Column] displays the labels for text fields
                                                               Column(
                                                                 mainAxisAlignment:
                                                                     MainAxisAlignment
@@ -375,8 +409,12 @@ class ProfileDesktopState extends State<UserProfileDesktop> {
                                                                               Colors.white)),
                                                                 ],
                                                               ),
+
+                                                              ///[SizedBox] to set space between labels and text fields
                                                               SizedBox(
                                                                   width: 25),
+
+                                                              ///[Column] shows text fields for the user to enter input
                                                               Column(
                                                                 mainAxisAlignment:
                                                                     MainAxisAlignment
@@ -385,6 +423,7 @@ class ProfileDesktopState extends State<UserProfileDesktop> {
                                                                     CrossAxisAlignment
                                                                         .start,
                                                                 children: [
+                                                                  ///[Container] which includes [TextFormField] for first name
                                                                   Container(
                                                                     height: 30,
                                                                     width: MediaQuery.of(context)
@@ -416,6 +455,8 @@ class ProfileDesktopState extends State<UserProfileDesktop> {
                                                                       ),
                                                                     ),
                                                                   ),
+
+                                                                  ///[Container] which includes [TextFormField] for last name
                                                                   Container(
                                                                     height: 30,
                                                                     width: MediaQuery.of(context)
@@ -447,6 +488,8 @@ class ProfileDesktopState extends State<UserProfileDesktop> {
                                                                       ),
                                                                     ),
                                                                   ),
+
+                                                                  ///[Container] which includes [TextFormField] for username
                                                                   Container(
                                                                     height: 30,
                                                                     width: MediaQuery.of(context)
@@ -478,6 +521,8 @@ class ProfileDesktopState extends State<UserProfileDesktop> {
                                                                       ),
                                                                     ),
                                                                   ),
+
+                                                                  ///[Container] which includes [TextFormField] for bio
                                                                   Container(
                                                                     height: 50,
                                                                     width: MediaQuery.of(context)
@@ -509,6 +554,8 @@ class ProfileDesktopState extends State<UserProfileDesktop> {
                                                                       ),
                                                                     ),
                                                                   ),
+
+                                                                  ///[Container] which includes [TextFormField] for email
                                                                   Container(
                                                                     height: 30,
                                                                     width: MediaQuery.of(context)
@@ -542,6 +589,7 @@ class ProfileDesktopState extends State<UserProfileDesktop> {
                                                                   ),
                                                                   Stack(
                                                                       children: [
+                                                                        ///[Container] which includes [TextFormField] for current password
                                                                         Container(
                                                                             height:
                                                                                 30,
@@ -553,7 +601,9 @@ class ProfileDesktopState extends State<UserProfileDesktop> {
                                                                               obscureText: !passwordVisible,
 
                                                                               ///if the user hasn't entered anything, validation fails
+                                                                              ///and the corresponding error message is displayed
                                                                               validator: (value) {
+                                                                                //initially false
                                                                                 setState(() {
                                                                                   errorCurrentPassword = false;
                                                                                 });
@@ -592,6 +642,9 @@ class ProfileDesktopState extends State<UserProfileDesktop> {
                                                                                 ),
                                                                               ),
                                                                             )),
+
+                                                                        ///if validation failed then error message is displayed under text field
+                                                                        ///if not then empty container which is not seen by the user
                                                                         errorCurrentPassword
                                                                             ? Container(
                                                                                 padding: EdgeInsets.only(top: 30, left: 20),
@@ -604,6 +657,8 @@ class ProfileDesktopState extends State<UserProfileDesktop> {
                                                                               )
                                                                             : Container()
                                                                       ]),
+
+                                                                  ///[Container] which includes [TextFormField] for new password
                                                                   Container(
                                                                       height:
                                                                           30,
@@ -662,18 +717,24 @@ class ProfileDesktopState extends State<UserProfileDesktop> {
                                                 });
                                               })
                                         },
+
+                                    ///[ButtonStyle] to customise the button
                                     style: ButtonStyle(
                                         shape: MaterialStateProperty.all<
                                                 RoundedRectangleBorder>(
                                             RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(18.0),
                                     ))),
+
+                                    ///[Text] to set the name of the button
                                     child: Text("Edit Profile"))
                               ],
                             ))
                       ],
                     ),
                   ),
+
+                  ///[Container] to display Bio of the user
                   Container(
                     padding: EdgeInsets.only(
                       top: MediaQuery.of(context).size.height * .05,
@@ -695,6 +756,8 @@ class ProfileDesktopState extends State<UserProfileDesktop> {
                             borderRadius: BorderRadius.all(Radius.circular(20)),
                             border: Border.all(color: orange))),
                   ),
+
+                  ///[Container] to display Personal Statistics of the user
                   Container(
                     padding: EdgeInsets.only(
                         top: MediaQuery.of(context).size.height * .05,
@@ -732,6 +795,8 @@ class ProfileDesktopState extends State<UserProfileDesktop> {
                   ),
                 ]),
           ),
+
+          ///[Container] used for design
           Container(
               alignment: Alignment.topRight,
               child: Container(
@@ -742,6 +807,8 @@ class ProfileDesktopState extends State<UserProfileDesktop> {
                       borderRadius: const BorderRadius.only(
                         bottomLeft: Radius.circular(20),
                       )))),
+
+          ///[Container] used for design
           Container(
             alignment: Alignment.centerRight,
             padding: EdgeInsets.only(
@@ -757,6 +824,8 @@ class ProfileDesktopState extends State<UserProfileDesktop> {
                       bottomLeft: Radius.circular(20))),
             ),
           ),
+
+          ///[Container] used for design
           Container(
             alignment: Alignment.bottomRight,
             child: Container(
