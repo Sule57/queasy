@@ -1,11 +1,9 @@
-import 'dart:ui';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:queasy/src/view/see_leaderboard/leaderboard_provider.dart';
 import 'package:queasy/src/view/see_leaderboard/widgets/category_tile_desktop.dart';
 import 'package:queasy/src/view/see_leaderboard/widgets/user_tile_desktop.dart';
-
-const List<String> list = <String>['All', 'Art', 'Science', 'Sports'];
 
 class LeaderboardView extends StatefulWidget {
   const LeaderboardView({Key? key}) : super(key: key);
@@ -92,7 +90,7 @@ class _LeaderboardViewContentState extends State<LeaderboardViewContent> {
         if (snapshot.hasData) {
           return width < 700
               ? const LeaderboardMobileContent()
-              : const LeaderboardDesktopContent();
+              : LeaderboardDesktopContent();
         } else {
           return const Center(child: CircularProgressIndicator());
         }
@@ -264,58 +262,73 @@ class LeaderboardMobileContent extends StatelessWidget {
 }
 
 class LeaderboardDesktopContent extends StatelessWidget {
-  const LeaderboardDesktopContent({Key? key}) : super(key: key);
+  LeaderboardDesktopContent({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
     return Scaffold(
         resizeToAvoidBottomInset: false,
         body: Center(
             child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
           //Left Column
           SizedBox(
-              width: width / 4,
-              child:
-                  // SingleChildScrollView(
-                  //   child:
-                  Column(children: [
+              width: 300,
+              child: Column(children: [
                 Row(children: [
                   IconButton(
                     icon: Icon(Icons.arrow_back),
-                    onPressed: () => Navigator.pop(context),
+                    onPressed: () => Navigator.pop(
+                        context), //will only work if home pushes when navigating to leaderboard
                   ),
-                  Text(
-                    "Leaderboard",
-                    selectionColor: Colors.black,
-                  )
+                  Text("Leaderboard",
+                      style: TextStyle(fontSize: 40, color: Color(0xff72479d)))
                 ]),
                 Flexible(
-                    child: ListView.builder(
+                    child: ListView.separated(
+                        separatorBuilder: (context, index) => Container(
+                              height: 7,
+                            ),
                         shrinkWrap: true,
-                        itemCount: list.length,
+                        itemCount: Provider.of<LeaderboardProvider>(context)
+                            .publicCategories
+                            .length,
                         itemBuilder: ((BuildContext context, int index) {
-                          return CategoryTileDesktop(title: list[index]);
+                          return CategoryTileDesktop(
+                            title: Provider.of<LeaderboardProvider>(context)
+                                .publicCategories[index],
+                            entries: Provider.of<LeaderboardProvider>(context)
+                                .publicCategories,
+                          );
                         })))
                 // ]),
               ])),
+          VerticalDivider(
+            color: Colors.grey,
+            thickness: 2,
+            width: 20,
+          ),
           //Right Column
           Expanded(
               child: Column(children: [
             Row(
               children: [
-                Text(
-                  "Science",
-                  selectionColor: Colors.black,
-                )
+                Text(Provider.of<LeaderboardProvider>(context).category,
+                    style: TextStyle(fontSize: 40, color: Colors.black))
               ],
             ),
             Expanded(
-                child: ListView.builder(
+                child: ListView.separated(
+                    separatorBuilder: (context, index) => Container(
+                          height: 7,
+                        ),
                     shrinkWrap: true,
-                    itemCount: 10,
+                    itemCount:
+                        Provider.of<LeaderboardProvider>(context).totalEntries,
                     itemBuilder: ((BuildContext context, int index) {
-                      return UserTileDesktop(index: index);
+                      return UserTileDesktop(
+                          index: index,
+                          entries: Provider.of<LeaderboardProvider>(context)
+                              .entries);
                     })))
           ]))
         ])));
