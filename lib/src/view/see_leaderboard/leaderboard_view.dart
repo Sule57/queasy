@@ -17,13 +17,13 @@ class _LeaderboardViewState extends State<LeaderboardView> {
   /// Builds the view.
   ///
   /// Uses a [Stack] to display the
-  /// [LeaderboardViewBackground] and the [LeaderboardViewContent] on top.
+  /// [LeaderboardDesktopViewBackground] and the [LeaderboardViewContent] on top.
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: const [
-          // LeaderboardViewBackground(),
+          LeaderboardDesktopViewBackground(),
           LeaderboardViewContent(),
         ],
       ),
@@ -34,9 +34,9 @@ class _LeaderboardViewState extends State<LeaderboardView> {
 /// Background for [LeaderboardView].
 ///
 /// Uses a [StatelessWidget] to display a background color.
-class LeaderboardViewBackground extends StatelessWidget {
-  /// Constructor for [LeaderboardViewBackground].
-  const LeaderboardViewBackground({Key? key}) : super(key: key);
+class LeaderboardDesktopViewBackground extends StatelessWidget {
+  /// Constructor for [LeaderboardDesktopViewBackground].
+  const LeaderboardDesktopViewBackground({Key? key}) : super(key: key);
 
   /// Builds the background.
   ///
@@ -45,20 +45,70 @@ class LeaderboardViewBackground extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
+    double width = MediaQuery.of(context).size.width;
 
-    return Container(
-      height: height / 3,
-      width: double.infinity,
-      color: Theme.of(context).colorScheme.onPrimary,
-      alignment: Alignment.topLeft,
-      padding: const EdgeInsets.all(20),
-      child: SafeArea(
-        child: Image.asset(
-          "lib/assets/images/logo_horizontal.png",
-          height: 50,
-        ),
-      ),
-    );
+    return width > 700
+        ? Scaffold(
+            body: Center(
+                child: Stack(children: [
+            //dark green rectangle at the top right of the screen
+            Column(
+              children: [
+                Expanded(
+                  child: Align(
+                    alignment: FractionalOffset.topRight,
+                    child: Container(
+                      width: width / 4,
+                      height: height / 3,
+                      //alignment: Alignment.bottomLeft,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(30),
+                        color: const Color(0xff9fc490),
+                      ),
+                    ),
+                  ),
+                )
+              ],
+            ),
+            //orange rectangle at the bottom left of the screen
+            Column(
+              children: [
+                Expanded(
+                  child: Align(
+                    alignment: FractionalOffset.bottomLeft,
+                    child: Container(
+                      width: width * 2 / 3,
+                      height: height / 5,
+                      //alignment: Alignment.bottomLeft,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(30),
+                        color: const Color(0xffF19C79),
+                      ),
+                    ),
+                  ),
+                )
+              ],
+            ),
+            //light green rectangle at the bottom right of the screen
+            Column(
+              children: [
+                Expanded(
+                  child: Align(
+                    alignment: FractionalOffset.bottomRight,
+                    child: Container(
+                      width: width / 2,
+                      height: height / 4,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(30),
+                        color: const Color(0xfff1ffe7),
+                      ),
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ])))
+        : Container(); //empty container for mobile view
   }
 }
 
@@ -156,106 +206,122 @@ class LeaderboardMobileContent extends StatelessWidget {
         ],
       ),
       //ListTiles
-      CustomScrollView(
-        slivers: <Widget>[
-          SliverAppBar(
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-            backgroundColor: const Color(0xff72479d),
-            pinned: true,
-            flexibleSpace: const FlexibleSpaceBar(
-              centerTitle: true,
-              title: Text('Science',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 50.0,
-                  ) //TextStyle
-                  ),
-            ),
-          ),
-          SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (BuildContext context, int index) {
-                return Column(
-                  children: <Widget>[
-                    const Divider(
-                      height: 20,
+      Container(
+        padding: const EdgeInsets.all(20),
+        child: CustomScrollView(
+          slivers: <Widget>[
+            SliverAppBar(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15)),
+              backgroundColor: const Color(0xff72479d),
+              pinned: true,
+              flexibleSpace: FlexibleSpaceBar(
+                centerTitle: true,
+                title: Text(Provider.of<LeaderboardProvider>(context).category,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 50.0,
+                    ) //TextStyle
                     ),
-                    Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(15),
-                        color: Colors.white,
-                      ),
-                      child: ListTile(
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15)),
-                        tileColor: Colors.white,
-                        textColor: const Color(0xFFFF8C66),
-                        iconColor: Colors.white,
-                        leading: index == 0
-                            ? const Text('')
-                            : Container(
-                                height: 25,
-                                width: 25,
-                                decoration: const BoxDecoration(
-                                    color: Color(0xFFFF8C66),
-                                    shape: BoxShape.circle),
-                                child: Center(
-                                    child: Text(
-                                  (index + 1).toString(),
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.white,
-                                  ),
-                                ))),
-                        title: index == 0
-                            ? Column(
-                                children: [
-                                  Container(
-                                      height: 25,
-                                      width: 25,
-                                      decoration: const BoxDecoration(
-                                          color: Color(0xFFFF8C66),
-                                          shape: BoxShape.circle),
-                                      child: Center(
-                                          child: Text(
-                                        (index + 1).toString(),
-                                        style: const TextStyle(
-                                          fontSize: 16,
-                                          color: Colors.white,
-                                        ),
-                                      ))),
-                                  const Text(
-                                    'username',
-                                    style: TextStyle(
-                                        color: Colors.black, fontSize: 26),
-                                  ),
-                                ],
-                              )
-                            : const Text(
-                                'username',
-                                style: TextStyle(
-                                    color: Colors.black, fontSize: 26),
-                              ),
-                        subtitle: index == 0
-                            ? const Text(
-                                'points',
-                                textAlign: TextAlign.center,
-                              )
-                            : const Text(
-                                'points',
-                              ),
-                        //const Icon(Icons.back_hand_outlined),
-                        //subtitle: index == 0 ? const Text('username', textAlign: TextAlign.center,style:TextStyle(color: Colors.black, fontSize: 26),): null,
-                      ),
-                    ),
-                  ],
-                );
-              },
-              childCount: 10,
+              ),
             ),
-          ),
-        ],
+            SliverList(
+              delegate: SliverChildBuilderDelegate(
+                (BuildContext context, int index) {
+                  return Column(
+                    children: <Widget>[
+                      const Divider(
+                        height: 20,
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                          color: Colors.white,
+                        ),
+                        child: ListTile(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15)),
+                          tileColor: Colors.white,
+                          textColor: const Color(0xFFFF8C66),
+                          iconColor: Colors.white,
+                          leading: index == 0
+                              ? const Text('')
+                              : Container(
+                                  height: 25,
+                                  width: 25,
+                                  decoration: const BoxDecoration(
+                                      color: Color(0xFFFF8C66),
+                                      shape: BoxShape.circle),
+                                  child: Center(
+                                      child: Text(
+                                    (index + 1).toString(),
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.white,
+                                    ),
+                                  ))),
+                          title: index == 0
+                              ? Column(
+                                  children: [
+                                    Container(
+                                        height: 25,
+                                        width: 25,
+                                        decoration: const BoxDecoration(
+                                            color: Color(0xFFFF8C66),
+                                            shape: BoxShape.circle),
+                                        child: Center(
+                                            child: Text(
+                                          (index + 1).toString(),
+                                          style: const TextStyle(
+                                            fontSize: 16,
+                                            color: Colors.white,
+                                          ),
+                                        ))),
+                                    Text(
+                                      Provider.of<LeaderboardProvider>(context)
+                                          .entries[index]
+                                          .getName,
+                                      style: TextStyle(
+                                          color: Colors.black, fontSize: 26),
+                                    ),
+                                  ],
+                                )
+                              : Text(
+                                  Provider.of<LeaderboardProvider>(context)
+                                      .entries[index]
+                                      .getName,
+                                  style: TextStyle(
+                                      color: Colors.black, fontSize: 26),
+                                ),
+                          subtitle: index == 0
+                              ? Text(
+                                  Provider.of<LeaderboardProvider>(context)
+                                          .entries[index]
+                                          .getScore
+                                          .toString() +
+                                      'points',
+                                  textAlign: TextAlign.center,
+                                )
+                              : Text(
+                                  Provider.of<LeaderboardProvider>(context)
+                                          .entries[index]
+                                          .getScore
+                                          .toString() +
+                                      'points',
+                                ),
+                          //const Icon(Icons.back_hand_outlined),
+                          //subtitle: index == 0 ? const Text('username', textAlign: TextAlign.center,style:TextStyle(color: Colors.black, fontSize: 26),): null,
+                        ),
+                      ),
+                    ],
+                  );
+                },
+                childCount:
+                    Provider.of<LeaderboardProvider>(context).totalEntries,
+              ),
+            ),
+          ],
+        ),
       ),
     ])));
   }
@@ -267,70 +333,100 @@ class LeaderboardDesktopContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: Colors.transparent,
         resizeToAvoidBottomInset: false,
         body: Center(
             child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
           //Left Column
           SizedBox(
-              width: 300,
+              width: 320,
               child: Column(children: [
-                Row(children: [
-                  IconButton(
-                    icon: Icon(Icons.arrow_back),
-                    onPressed: () => Navigator.pop(
-                        context), //will only work if home pushes when navigating to leaderboard
-                  ),
-                  Text("Leaderboard",
-                      style: TextStyle(fontSize: 40, color: Color(0xff72479d)))
-                ]),
-                Flexible(
-                    child: ListView.separated(
-                        separatorBuilder: (context, index) => Container(
-                              height: 7,
-                            ),
-                        shrinkWrap: true,
-                        itemCount: Provider.of<LeaderboardProvider>(context)
-                            .publicCategories
-                            .length,
-                        itemBuilder: ((BuildContext context, int index) {
-                          return CategoryTileDesktop(
-                            title: Provider.of<LeaderboardProvider>(context)
-                                .publicCategories[index],
-                            entries: Provider.of<LeaderboardProvider>(context)
-                                .publicCategories,
-                          );
-                        })))
+                Container(
+                  padding: const EdgeInsets.all(20),
+                  color: Colors.white,
+                  child: Row(children: [
+                    IconButton(
+                      icon: Icon(Icons.arrow_back),
+                      onPressed: () => Navigator.pop(
+                          context), //will only work if home pushes when navigating to leaderboard
+                    ),
+                    Text("Leaderboard",
+                        style:
+                            TextStyle(fontSize: 40, color: Color(0xff72479d)))
+                  ]),
+                ),
+                Divider(
+                  color: Colors.grey,
+                  thickness: 2,
+                  height: 0,
+                ),
+                Expanded(
+                    child: Container(
+                  padding: const EdgeInsets.all(20),
+                  color: Colors.white,
+                  child: ListView.separated(
+                      separatorBuilder: (context, index) => Container(
+                            height: 7,
+                            color: Colors.white,
+                          ),
+                      shrinkWrap: true,
+                      itemCount: Provider.of<LeaderboardProvider>(context)
+                          .publicCategories
+                          .length,
+                      itemBuilder: ((BuildContext context, int index) {
+                        return CategoryTileDesktop(
+                          title: Provider.of<LeaderboardProvider>(context)
+                              .publicCategories[index],
+                          entries: Provider.of<LeaderboardProvider>(context)
+                              .publicCategories,
+                        );
+                      })),
+                ))
                 // ]),
               ])),
           VerticalDivider(
             color: Colors.grey,
             thickness: 2,
-            width: 20,
+            width: 0,
           ),
           //Right Column
           Expanded(
-              child: Column(children: [
-            Row(
-              children: [
-                Text(Provider.of<LeaderboardProvider>(context).category,
-                    style: TextStyle(fontSize: 40, color: Colors.black))
-              ],
-            ),
-            Expanded(
-                child: ListView.separated(
-                    separatorBuilder: (context, index) => Container(
-                          height: 7,
-                        ),
-                    shrinkWrap: true,
-                    itemCount:
-                        Provider.of<LeaderboardProvider>(context).totalEntries,
-                    itemBuilder: ((BuildContext context, int index) {
-                      return UserTileDesktop(
-                          index: index,
-                          entries: Provider.of<LeaderboardProvider>(context)
-                              .entries);
-                    })))
-          ]))
+            // child: Container(
+            // padding: const EdgeInsets.all(20),
+            child: Column(children: [
+              Container(
+                color: Color(0xff72479d),
+                child: Row(
+                  children: [
+                    Container(
+                        padding: const EdgeInsets.all(20),
+                        child: Text(
+                            Provider.of<LeaderboardProvider>(context).category,
+                            style:
+                                TextStyle(fontSize: 40, color: Colors.white)))
+                  ],
+                ),
+              ),
+              Expanded(
+                  child: Container(
+                      padding: const EdgeInsets.all(20),
+                      child: ListView.separated(
+                          separatorBuilder: (context, index) => Container(
+                                height: 7,
+                              ),
+                          shrinkWrap: true,
+                          itemCount: Provider.of<LeaderboardProvider>(context)
+                              .totalEntries,
+                          itemBuilder: ((BuildContext context, int index) {
+                            return UserTileDesktop(
+                                index: index,
+                                entries:
+                                    Provider.of<LeaderboardProvider>(context)
+                                        .entries);
+                          }))))
+            ]),
+          )
+          // )
         ])));
   }
 }
