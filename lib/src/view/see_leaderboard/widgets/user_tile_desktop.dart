@@ -21,8 +21,8 @@ class UserTileDesktop extends StatelessWidget {
             color: Colors.white,
           ),
           child: ListTile(
-            // shape:
-            //     RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
             tileColor: Colors.white,
             textColor: const Color(0xFFFF8C66),
             iconColor: Colors.white,
@@ -44,7 +44,7 @@ class UserTileDesktop extends StatelessWidget {
               style: TextStyle(color: Colors.black, fontSize: 26),
             ),
             subtitle: Text(
-              entries[index].getScore.toString(),
+              entries[index].getScore.toString() + " points",
             ),
             //const Icon(Icons.back_hand_outlined),
             //subtitle: index == 0 ? const Text('username', textAlign: TextAlign.center,style:TextStyle(color: Colors.black, fontSize: 26),): null,
