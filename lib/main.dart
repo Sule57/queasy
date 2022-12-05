@@ -7,6 +7,7 @@ import 'package:queasy/src/view/widgets/widget_tree.dart';
 
 import 'constants/app_themes.dart';
 import 'services/firebase_options.dart';
+import 'src/view/see_leaderboard/leaderboard_provider.dart';
 
 final GlobalKey<NavigatorState> navigator = GlobalKey<NavigatorState>();
 
@@ -20,6 +21,7 @@ Future<void> main() async {
     runApp(MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => QuizProvider()),
+        ChangeNotifierProvider(create: (_) => LeaderboardProvider()),
       ],
       child: const Qeasy(),
     ));
