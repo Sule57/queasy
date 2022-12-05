@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:queasy/src/model/statistics.dart';
 
 import '../utils/exceptions/user_already_exists.dart';
 
@@ -101,27 +102,47 @@ class Profile {
   /// returns true if successful
   /// throws UserAlreadyExistsException if the user with the same username already exists in the database
   /// [firestore] database instance
-  bool registerUser(FirebaseFirestore firestore){
-      //this does not work for some reason
-      //
-      // firestore
-      //     .collection('users')
-      //     .doc(this.username)
-      //     .get()
-      //     .then((DocumentSnapshot documentSnapshot) {
-      //   if (documentSnapshot.exists) {
-      //     print(documentSnapshot.get('username'));
-      //     throw UserAlreadyExistsException();
-      //   }
-      // });
+  Future<bool> registerUser(FirebaseFirestore firestore) async{
+
+//THIS
+     await firestore
+          .collection('users')
+          .doc(this.username)
+          .get()
+          .then((DocumentSnapshot documentSnapshot) {
+        if (documentSnapshot.exists) {
+
+          throw UserAlreadyExistsException();
+        }
+      });
+
+      ///
       firestore.collection('users').doc(this.username).set(this.toJson());
-      Map<String, dynamic> data = { 'quizzes':{ }};
-      firestore.collection('statistics').doc('users').collection(this.username).add(data);
+      UserStatistics s = UserStatistics(this.username, []);
+      //Adding the user to the statistics
+      Map<String, dynamic> data = { 'quizz1':{}};
+      firestore.collection('UserStatistics').doc(this.username).set(data);
       return true;
   }
+  // UserStatistics getUserStatistics(){
+  //   UserStatistics s =
+  // }
 
-
-
+  Future<UserStatistics?> getUserStatistics() async {
+    UserStatistics? s = null;
+    await FirebaseFirestore.instance
+        .collection('UserStatistics')
+        .doc(this.username)
+        .get()
+        .then((DocumentSnapshot documentSnapshot) {
+      if (documentSnapshot.exists) {
+        s = UserStatistics.fromJson(this.username, documentSnapshot.data() as Map<String, dynamic>);
+        //print(s.toString());
+        return s;
+      }
+    });
+    return s;
+  }
 
   /// Increment the score of the user in the firebase by the score achieved in the current quiz
   /// [username] The username of the user
