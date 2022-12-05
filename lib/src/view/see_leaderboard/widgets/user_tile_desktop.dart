@@ -12,9 +12,6 @@ class UserTileDesktop extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
-        // const Divider(
-        //   height: 20,
-        // ),
         Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15),

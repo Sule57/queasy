@@ -112,24 +112,24 @@ class LeaderboardDesktopViewBackground extends StatelessWidget {
   }
 }
 
-/// Content for [QuizView].
+/// Content for [LeaderboardView].
 ///
-/// Uses a [StatefulWidget] to display questions and answers and update the
+/// Uses a [StatefulWidget] to display leaerboard and updates the
 /// text contained in the widgets.
 class LeaderboardViewContent extends StatefulWidget {
   const LeaderboardViewContent({Key? key}) : super(key: key);
 
-  /// Creates a [QuizViewContent] state.
+  /// Creates a [LeaderboardViewContent] state.
   @override
   State<LeaderboardViewContent> createState() => _LeaderboardViewContentState();
 }
 
-/// State for [QuizViewContent].
+/// State for [LeaderboardViewContent].
 class _LeaderboardViewContentState extends State<LeaderboardViewContent> {
   /// Builds the content.
   ///
-  /// It uses a [Column] to display the different elements of the view:
-  /// [categoryTitle], [scoreTracking], [questionContainer] and [answerButtons].
+  /// It uses a [Scaffold] to display the different elements of the view:
+  /// including [CategoryTileDesktop] and [UserTileDesktop].
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
