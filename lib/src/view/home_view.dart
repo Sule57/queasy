@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:motion_tab_bar_v2/motion-tab-bar.dart';
-import 'package:queasy/src/view/leaderboard_view.dart';
+import 'package:queasy/src/view/see_leaderboard/leaderboard_view.dart';
 import 'package:queasy/src/view/category_selection_view.dart';
 import 'package:queasy/src/view/see_profile/profile_view.dart';
 import 'package:queasy/src/view/quiz_selection_view.dart';
@@ -99,7 +99,7 @@ class HomeWidgets extends StatelessWidget {
     return Center(
       child: Stack(
         children: [
-          /// User profile at the top right corner
+          /// User profile at the top left corner
           Align(
               alignment: Alignment.topLeft,
               child: IconButton(
