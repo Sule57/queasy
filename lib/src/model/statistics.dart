@@ -19,11 +19,6 @@ class UserStatistics{
 
   }
 
-
-
-
-
-
 Map<String, dynamic> toJson(){
     Map<String, dynamic> m = {};
    for(UserQuizzResults q in userQuizzes){
