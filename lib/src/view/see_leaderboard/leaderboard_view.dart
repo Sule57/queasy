@@ -151,6 +151,7 @@ class _LeaderboardViewContentState extends State<LeaderboardViewContent> {
 
 class LeaderboardMobileContent extends StatelessWidget {
   const LeaderboardMobileContent({Key? key}) : super(key: key);
+  static const List<String> list = <String>['All', 'Science'];
 
   @override
   Widget build(BuildContext context) {
@@ -195,7 +196,6 @@ class LeaderboardMobileContent extends StatelessWidget {
               child: Container(
                 width: 200,
                 height: 220,
-                //alignment: Alignment.bottomLeft,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(30),
                   color: const Color(0xfff1ffe7),
@@ -211,6 +211,7 @@ class LeaderboardMobileContent extends StatelessWidget {
         child: CustomScrollView(
           slivers: <Widget>[
             SliverAppBar(
+              toolbarHeight: 75,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15)),
               backgroundColor: const Color(0xff72479d),
@@ -224,6 +225,31 @@ class LeaderboardMobileContent extends StatelessWidget {
                     ) //TextStyle
                     ),
               ),
+              //drop down menu
+              actions: [
+                Center(
+                    child: DropdownButton<String>(
+                  hint: Text("Category",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20.0,
+                      )),
+                  icon: const Icon(Icons.arrow_downward),
+                  iconEnabledColor: Colors.white,
+                  iconDisabledColor: Colors.white,
+                  items:
+                      list.map<DropdownMenuItem<String>>((final String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    Provider.of<LeaderboardProvider>(context, listen: false)
+                        .setLeaderboard(value!);
+                  },
+                ))
+              ],
             ),
             SliverList(
               delegate: SliverChildBuilderDelegate(
@@ -231,7 +257,8 @@ class LeaderboardMobileContent extends StatelessWidget {
                   return Column(
                     children: <Widget>[
                       const Divider(
-                        height: 20,
+                        color: Colors.transparent,
+                        height: 10,
                       ),
                       Container(
                         decoration: BoxDecoration(
