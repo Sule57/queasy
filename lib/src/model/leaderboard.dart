@@ -8,7 +8,7 @@ import 'package:queasy/src/model/leaderboard_entry.dart';
 /// in the database. It also contains the logic for updating the leaderboard in the database.
 class Leaderboard {
   /// The [LeaderboardEntry]s in the database for the leaderboard with the given category.
-  late List<LeaderboardEntry> _entries;
+  late List<LeaderboardEntry> _entries = [];
 
   /// The category of the leaderboard.
   late String _category;
@@ -28,6 +28,9 @@ class Leaderboard {
 
   /// Document reference for the combined (All) leaderboard in the database.
   late final DocumentReference _docAll = _collection.doc('All');
+
+  ///Default constructor for [Leaderboard]
+  Leaderboard() {}
 
   /// Private constructor for [Leaderboard] that deals with initializing the private parameters.
   Leaderboard._create(String category, String username) {
@@ -85,6 +88,14 @@ class Leaderboard {
   /// Getter for the list of [LeaderboardEntry]s
   List<LeaderboardEntry> getEntries() {
     return _entries;
+  }
+
+  /// Getter for the list of Public Category Names
+  Future<List<String>> getPublicCategories() async {
+    List<String> categoryNames = [];
+    QuerySnapshot querySnapshot = await _collection.get();
+    final allData = querySnapshot.docs.map((doc) => doc.id).toList();
+    return allData;
   }
 
   /// Adds a new [LeaderboardEntry] to the existing list of entries. (testing purposes)
@@ -333,6 +344,9 @@ class Leaderboard {
   /// and sorted list of entries limited to 10.
   Future<void> getData() async {
     final docSnap = await _doc.get();
+    final app =
+        FirebaseFirestore.instance.collection('leaderboard').doc('Science');
+    app.get().then((value) => print(value));
     Map<String, dynamic> data = docSnap.data() as Map<String, dynamic>;
 
     List<LeaderboardEntry> entries = [];
@@ -350,6 +364,7 @@ class Leaderboard {
     _currentPlayer = LeaderboardEntry(
         _currentPlayer.getName, calculatedPoints, calculatedPosition);
     entries.sort((a, b) => b.getScore.compareTo(a.getScore));
+    print(entries);
     _entries = entries.sublist(0, min(10, entries.length));
   }
 }

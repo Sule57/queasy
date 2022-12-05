@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:motion_tab_bar_v2/motion-tab-bar.dart';
-import 'package:queasy/src/view/leaderboard_view.dart';
+import 'package:queasy/src/view/see_leaderboard/leaderboard_view.dart';
 import 'package:queasy/src/view/category_selection_view.dart';
 import 'package:queasy/src/view/see_profile/profile_view.dart';
 import 'package:queasy/src/view/quiz_selection_view.dart';
@@ -18,6 +18,7 @@ class HomeView extends StatefulWidget {
 class _HomeViewState extends State<HomeView> {
   /// The index of the currently selected page.
   late int selectedPage;
+
   /// The list of pages that the user can navigate to.
   List<Widget> pages = [];
 
@@ -27,6 +28,7 @@ class _HomeViewState extends State<HomeView> {
     selectedPage = 0;
     pages = [
       HomeWidgets(),
+
       /// This avoids other pages to be built unnecessarily.
       const SizedBox(),
       const SizedBox(),
@@ -97,7 +99,7 @@ class HomeWidgets extends StatelessWidget {
     return Center(
       child: Stack(
         children: [
-          /// User profile at the top right corner
+          /// User profile at the top left corner
           Align(
             alignment: Alignment.topLeft,
             child: IconButton(

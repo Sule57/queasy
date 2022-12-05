@@ -4,6 +4,11 @@ class RoundedButton extends StatelessWidget {
   final String buttonName;
   final Color? backgroundColor;
   final Color? textColor;
+  final Color? borderColor;
+  final double? width;
+  final double? height;
+  final double? fontSize;
+  final FontWeight? fontWeight;
   final Function()? onPressed;
 
   const RoundedButton({
@@ -11,6 +16,11 @@ class RoundedButton extends StatelessWidget {
     required this.buttonName,
     this.backgroundColor,
     this.textColor,
+    this.borderColor,
+    this.width,
+    this.height,
+    this.fontSize,
+    this.fontWeight,
     this.onPressed,
   }) : super(key: key);
 
@@ -18,21 +28,24 @@ class RoundedButton extends StatelessWidget {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Container(
-      height: size.height * 0.07,
+      height: height ?? size.height * 0.07,
       alignment: Alignment.center,
-      width: size.width * 0.5,
+      width: width ?? size.width * 0.5,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
         color: backgroundColor ?? Theme.of(context).colorScheme.primary,
+        border: Border.all(
+          color: borderColor ?? Colors.transparent,
+        ),
       ),
       child: TextButton(
         onPressed: onPressed,
         child: Text(
           buttonName,
           style: TextStyle(
-            fontSize: 24,
+            fontSize: fontSize ?? 24,
             color: textColor ?? Theme.of(context).colorScheme.onPrimary,
-            fontWeight: FontWeight.bold,
+            fontWeight: fontWeight ?? FontWeight.bold,
           ),
         ),
       ),
