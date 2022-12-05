@@ -13,7 +13,6 @@ String? getCurrentUserID() {
 }
 //TODO fix _firebaseFirestore and fix documentation
 class Profile {
-  late FirebaseFirestore _firebaseFirestore;
   String email;
   String username;
   String hashPassword;
@@ -38,24 +37,10 @@ class Profile {
     this.age = 0,
     this.birthdayMonth = '',
     this.birthdayDay = 0,
-  }) {
-    _firebaseFirestore = FirebaseFirestore.instance;
-  } //use this for later!!! :    _firebaseFirestore = FirebaseFirestore.instance;
+  }) ;
 
   ///This constructor is used only for unit tests
-  Profile.test({
-    required this.username,
-    required this.email,
-    required this.hashPassword,
-    this.firstName = '',
-    this.lastName = '',
-    this.profilePicture = '',
-    this.bio = '',
-    this.age = 0,
-    this.birthdayMonth = '',
-    this.birthdayDay = 0,
-    required FirebaseFirestore firestore,
-  });
+
 
   /// Creates a user instance from json
   /// Note: the json format must be the following:
@@ -120,7 +105,7 @@ class Profile {
       firestore.collection('users').doc(this.username).set(this.toJson());
       UserStatistics s = UserStatistics(this.username, []);
       //Adding the user to the statistics
-      Map<String, dynamic> data = { 'quizz1':{}};
+      Map<String, dynamic> data = { };
       firestore.collection('UserStatistics').doc(this.username).set(data);
       return true;
   }
@@ -147,8 +132,8 @@ class Profile {
   /// Increment the score of the user in the firebase by the score achieved in the current quiz
   /// [username] The username of the user
   void updateScore(String username, String category, int score) {
-    _firebaseFirestore = FirebaseFirestore.instance;
-    _firebaseFirestore.collection('users').doc(this.username).update({
+    final firebaseFirestore = FirebaseFirestore.instance;
+    firebaseFirestore.collection('users').doc(this.username).update({
       'scores.$category': FieldValue.increment(score),
     });
   }

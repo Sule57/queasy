@@ -7,15 +7,15 @@ import 'package:queasy/src/model/profile.dart';
 /// Main function for testing the [Profile] class.
 void main() async {
   final instance = FakeFirebaseFirestore();
-  final user_test = new Profile.test(
+  Profile user_test = Profile(
       username: 'TEST21',
       email: 'email@test.com',
-      hashPassword: 'nothashedpassword',
-      firestore: instance);
+      hashPassword: 'nothashedpassword',);
   Map<String, dynamic> expectedDumpAfterset = {
     'username': 'TEST21',
     'lastName': '',
     'firstName': '',
+    'email': 'email@test.com',
     'hashPassword': 'nothashedpassword',
     'bio': '',
     'age': 0,
@@ -25,37 +25,34 @@ void main() async {
 
   ///tests method register() in User model
   test('Test user registration', () async {
-    final usr = new Profile.test(
+    final usr = new Profile(
         username: 'TEST21',
         email: 'email@test.com',
-        hashPassword: 'nothashedpassword',
-        firestore: instance);
-    usr.registerUser(instance);
-    Map<String, dynamic> data = json.decode(instance.dump());
-    expect(data['users']["TEST21"], equals(expectedDumpAfterset));
+        hashPassword: 'nothashedpassword');
+    await usr.registerUser(instance);
+    //Map<String, dynamic> data = await instance.collection('users').get(). as Map<String, dynamic>;
+    Map<String, dynamic> data = jsonDecode(instance.dump())['users'];
+    expect(data["TEST21"], equals(expectedDumpAfterset));
   });
 
   /// tests User instance creation from json file
   test('Test fromJsonConstructor', () async {
-    final usr = new Profile.test(
+    final usr = new Profile(
         username: 'TEST21',
         email: 'email@test.com',
-        hashPassword: 'nothashedpassword',
-        firestore: instance);
-    usr.registerUser(instance);
-    Map<String, dynamic> data = json.decode(instance.dump());
-
-    final r_user = Profile.fromJson(data['users']["TEST21"]);
+        hashPassword: 'nothashedpassword',);
+    //Map<String, dynamic> data = await instance.collection('users').get() as Map<String, dynamic>;
+    Map<String, dynamic> data = jsonDecode(instance.dump())['users'];
+    final r_user = Profile.fromJson(data["TEST21"]);
     print(r_user.toString());
     expect(r_user.toString(), equals(user_test.toString()));
   });
 
   ///Tests for Profile Class methods that update database information
-  final profile_test = Profile.test(
+  final profile_test = Profile(
       username: 'profileTest',
       email: 'profileEmail@test.com',
-      hashPassword: 'profileTest',
-      firestore: instance);
+      hashPassword: 'profileTest');
   Map<String, dynamic> expectedDataAfterUpdates = {
     'username': 'testProfile',
     'firstName': 'profile',
