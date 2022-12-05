@@ -3,15 +3,15 @@ import 'package:queasy/controller/register-view-controller.dart';
 import 'package:queasy/src/view/home_view.dart';
 import 'package:queasy/src/view/see_profile/profile_view.dart';
 
-class RegisterView extends StatefulWidget {
+class RegisterViewMobile extends StatefulWidget {
   ///[controller] register-view controller
   final RegisterViewController controller = RegisterViewController();
 
-  RegisterView({Key? key}) : super(key: key);
+  RegisterViewMobile({Key? key}) : super(key: key);
 
   ///creates RegisterViewState class
   @override
-  State<RegisterView> createState() => RegisterViewState();
+  State<RegisterViewMobile> createState() => RegisterViewMobileState();
 }
 
 /// This is the register view state.
@@ -20,7 +20,7 @@ class RegisterView extends StatefulWidget {
 /// use the app. It shows four fields for the user to fill in, and a button
 /// to sign up. When the registration is over, the user is taken to [HomeView].
 /// It uses colors from [AppThemes].
-class RegisterViewState extends State<RegisterView> {
+class RegisterViewMobileState extends State<RegisterViewMobile> {
   ///[controller] register-view controller
   get controller => widget.controller;
 
