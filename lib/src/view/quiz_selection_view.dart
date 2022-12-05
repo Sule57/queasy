@@ -5,6 +5,10 @@ class QuizSelectionView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(child: Text('Quiz Selection View'));
+    return const
+    Scaffold(
+      body: Center(
+            child: Text('Quiz Selection View'))
+    );
   }
 }
