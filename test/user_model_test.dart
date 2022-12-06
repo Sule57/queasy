@@ -36,6 +36,7 @@ void main() async {
   });
 
   /// tests User instance creation from json file
+  //TODO UPDATE TESTS WITH THE VALIDATION AND EXCEPTIONS
   test('Test fromJsonConstructor', () async {
     final usr = new Profile.test(
         username: 'TEST21',
