@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:queasy/src/view/home_view.dart';
-import 'package:queasy/src/view/login_view.dart';
-
+import 'package:queasy/src/view/login/login_view.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import '../../../services/auth.dart';
+import '../login/login_desktop.dart';
 
 class WidgetTree extends StatefulWidget {
   const WidgetTree({Key? key}) : super(key: key);
@@ -18,9 +19,13 @@ class _WidgetTreeState extends State<WidgetTree> {
       stream: Auth().authStateChanges,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          return const HomeView();
+          return MediaQuery.of(context).size.width < 700
+              ? const HomeView()
+              : const HomeView(); //later will be changed to desktop version
         } else {
-          return LogInView();
+          return MediaQuery.of(context).size.width < 700
+              ? const LogInView()
+              : const LogInDesktop();
         }
       },
     );

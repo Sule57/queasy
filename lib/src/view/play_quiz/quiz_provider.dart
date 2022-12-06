@@ -38,10 +38,7 @@ class QuizProvider with ChangeNotifier {
   }
 
   String getAnswerText(int index) {
-    return _quiz
-        .getQuestions()[_currentQuestionIndex]
-        .getAnswer(index)
-        .text;
+    return _quiz.getQuestions()[_currentQuestionIndex].getAnswer(index).text;
   }
 
   bool isAnswerCorrect(int index) {
