@@ -11,7 +11,7 @@ String? getCurrentUserID() {
   }
   return null;
 }
-//TODO fix _firebaseFirestore and fix documentation
+
 class Profile {
   String email;
   String username;
@@ -23,6 +23,8 @@ class Profile {
   int? age;
   String? birthdayMonth;
   int? birthdayDay;
+  // it must be late so
+  late var firestore = FirebaseFirestore.instance;
   //In the database publicScore and private score are stored as collections
   Map<String, dynamic> publicScore = {};
   Map<String, dynamic> privatecScore = {};
@@ -37,6 +39,19 @@ class Profile {
     this.age = 0,
     this.birthdayMonth = '',
     this.birthdayDay = 0,
+  }) ;
+  Profile.test({
+    required this.username,
+    required this.email,
+    required this.hashPassword,
+    this.firstName = '',
+    this.lastName = '',
+    this.profilePicture = '',
+    this.bio = '',
+    this.age = 0,
+    this.birthdayMonth = '',
+    this.birthdayDay = 0,
+    required this.firestore,
   }) ;
 
   ///This constructor is used only for unit tests
@@ -83,14 +98,13 @@ class Profile {
         'privateScore': privatecScore,
       };
 
-  /// registers user the following way: creates document with the username and collection with its attributes
+  /// registers user the following way: creates document with the usaername and collection with its attributes
   /// returns true if successful
-  /// throws UserAlreadyExistsException if the user with the same username already exists in the database
-  /// [firestore] database instance
-  Future<bool> registerUser(FirebaseFirestore firestore) async{
+  /// throws an [UserAlreadyExistsException] if the user with the same username already exists in the database
+  Future<bool> registerUser() async{
 
 //THIS
-     await firestore
+     await this.firestore
           .collection('users')
           .doc(this.username)
           .get()
@@ -109,13 +123,14 @@ class Profile {
       firestore.collection('UserStatistics').doc(this.username).set(data);
       return true;
   }
-  // UserStatistics getUserStatistics(){
-  //   UserStatistics s =
-  // }
 
+
+  /// gets a UserStatistics object from the current user
+  /// the objects contains all user results from played quizzes
+  /// returns null if there is no data
   Future<UserStatistics?> getUserStatistics() async {
     UserStatistics? s = null;
-    await FirebaseFirestore.instance
+    await firestore
         .collection('UserStatistics')
         .doc(this.username)
         .get()

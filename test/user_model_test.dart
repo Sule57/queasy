@@ -2,15 +2,17 @@ import 'dart:convert';
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:queasy/src/model/profile.dart';
+import 'package:queasy/src/utils/exceptions/user_already_exists.dart';
 // import 'package:test/test.dart';
 
 /// Main function for testing the [Profile] class.
 void main() async {
   final instance = FakeFirebaseFirestore();
-  Profile user_test = Profile(
+  Profile user_test = Profile.test(
       username: 'TEST21',
       email: 'email@test.com',
-      hashPassword: 'nothashedpassword',);
+      hashPassword: 'nothashedpassword',
+      firestore: instance);
   Map<String, dynamic> expectedDumpAfterset = {
     'username': 'TEST21',
     'lastName': '',
@@ -25,11 +27,12 @@ void main() async {
 
   ///tests method register() in User model
   test('Test user registration', () async {
-    final usr = new Profile(
+    Profile usr = Profile.test(
         username: 'TEST21',
         email: 'email@test.com',
-        hashPassword: 'nothashedpassword');
-    await usr.registerUser(instance);
+        hashPassword: 'nothashedpassword',
+        firestore: instance);
+    await usr.registerUser();
     //Map<String, dynamic> data = await instance.collection('users').get(). as Map<String, dynamic>;
     Map<String, dynamic> data = jsonDecode(instance.dump())['users'];
     expect(data["TEST21"], equals(expectedDumpAfterset));
@@ -38,15 +41,27 @@ void main() async {
   /// tests User instance creation from json file
   //TODO UPDATE TESTS WITH THE VALIDATION AND EXCEPTIONS
   test('Test fromJsonConstructor', () async {
-    final usr = new Profile(
+    final usr = new Profile.test(
         username: 'TEST21',
         email: 'email@test.com',
-        hashPassword: 'nothashedpassword',);
+        hashPassword: 'nothashedpassword',
+        firestore: instance);
     //Map<String, dynamic> data = await instance.collection('users').get() as Map<String, dynamic>;
     Map<String, dynamic> data = jsonDecode(instance.dump())['users'];
     final r_user = Profile.fromJson(data["TEST21"]);
     print(r_user.toString());
     expect(r_user.toString(), equals(user_test.toString()));
+  });
+  test('Test data validation', () async {
+    Profile usr = new Profile.test(
+        username: 'TEST21',
+        email: 'email@test.com',
+        hashPassword: 'nothashedpassword',
+        firestore: instance);
+    //Map<String, dynamic> data = await instance.collection('users').get() as Map<String, dynamic>;
+
+    // a UserAlreadyExists exception is expected
+    expect(() =>  usr.registerUser(), throwsA(isA<UserAlreadyExistsException>()));
   });
 
   ///Tests for Profile Class methods that update database information

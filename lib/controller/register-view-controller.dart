@@ -24,7 +24,7 @@ class RegisterViewController {
       // always use register user with try catch since it throws
       // user already exists exception if the user already exists
 
-      return newUser.registerUser(firestore);
+      return newUser.registerUser();
     }catch(e){
       print(e.toString()) ;
       return false;
