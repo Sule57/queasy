@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import '../utils/exceptions/user_already_exists.dart';
+
 String? getCurrentUserID() {
   if (FirebaseAuth.instance.currentUser != null) {
     print(FirebaseAuth.instance.currentUser?.uid);
@@ -87,6 +89,7 @@ class Profile {
         'username': username,
         'lastName': lastName,
         'firstName': firstName,
+        'email': email,
         'hashPassword': hashPassword,
         'bio': bio,
         'age': age,
@@ -96,15 +99,29 @@ class Profile {
 
   /// registers user the following way: creates document with the username and collection with its attributes
   /// returns true if successful
+  /// throws UserAlreadyExistsException if the user with the same username already exists in the database
   /// [firestore] database instance
-  bool registerUser(FirebaseFirestore firestore) {
+  bool registerUser(FirebaseFirestore firestore){
     try {
+      // doesnt work for now 
+      // firestore
+      //     .collection('users')
+      //     .doc(this.username)
+      //     .get()
+      //     .then((DocumentSnapshot documentSnapshot) {
+      //   if (documentSnapshot.exists) {
+      //     throw UserAlreadyExistsException();
+      //   }
+      // });
       firestore.collection('users').doc(this.username).set(this.toJson());
       return true;
     } catch (e) {
       return false;
     }
   }
+
+
+
 
   /// Increment the score of the user in the firebase by the score achieved in the current quiz
   /// [username] The username of the user

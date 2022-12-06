@@ -67,7 +67,7 @@ class _HomeViewState extends State<HomeView> {
               if (index == 1) {
                 pages[index] = const LeaderboardView();
               } else if (index == 2) {
-                pages[index] = UserProfile();
+                pages[index] = ProfileView();
               } else {
                 pages[index] = QuizView();
               }
@@ -101,27 +101,24 @@ class HomeWidgets extends StatelessWidget {
         children: [
           /// User profile at the top left corner
           Align(
-            alignment: Alignment.topLeft,
-            child: IconButton(
-              icon: Container(
-                height: 66,
-                width: 66,
-                decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                  image: DecorationImage(
-                    fit: BoxFit.fill,
-                    image:
-                        NetworkImage('https://picsum.photos/500/300?random=1'),
+              alignment: Alignment.topLeft,
+              child: IconButton(
+                  icon: Container(
+                    height: 66,
+                    width: 66,
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      image: DecorationImage(
+                        fit: BoxFit.fill,
+                        image: NetworkImage(
+                            'https://picsum.photos/500/300?random=1'),
+                      ),
+                    ),
                   ),
-                ),
-              ),
 
-              /// Navigates to profile view when clicked
-              onPressed: () => Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => UserProfile()),
-              ),
-            ),
-          ),
+                  ///navigates to profile view when clicked
+                  onPressed: () => Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => ProfileView())))),
           Align(
             alignment: Alignment.center,
             child: Column(
