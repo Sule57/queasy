@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_profile_picture/flutter_profile_picture.dart';
 import 'package:queasy/constants/app_themes.dart';
-import 'package:queasy/src/view/login_view.dart';
-import 'package:queasy/src/view/register_view.dart';
-import 'package:queasy/src/view/see_profile/profile-view-controller.dart';
+import 'package:queasy/src/view/login/login_view.dart';
+import 'package:queasy/src/view/see_profile/profile_view_controller.dart';
+
+import '../registration/register_view.dart';
 
 ///This is UserProfileMobile view
 ///It displays mobile version of the profile page
@@ -877,7 +878,7 @@ class ProfileMobileState extends State<UserProfileMobile> {
                                             Navigator.of(context).push(
                                                 MaterialPageRoute(
                                                     builder: (context) =>
-                                                        const RegisterView()));
+                                                        RegisterView()));
                                             emailForDelete.clear();
                                             passwordForDelete.clear();
                                           } else {
