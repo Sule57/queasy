@@ -3,17 +3,19 @@ import 'package:queasy/src/model/profile.dart';
 
 class UserStatistics{
   String username;
-  List<UserQuizzResults> userQuizzes = [];
-  UserStatistics(this.username, this.userQuizzes);
+  List<UserQuizzResult> userQuizzes = [];
 
+  late var firestore = FirebaseFirestore.instance;
+  UserStatistics(this.username, this.userQuizzes);
+  UserStatistics.test(this.username, this.userQuizzes, this.firestore);
   factory UserStatistics.fromJson(String usr, Map<String, dynamic> json){
 
     String username = usr;
-    List<UserQuizzResults> q = [];
+    List<UserQuizzResult> q = [];
     print(json.keys);
     print(json['quizz1']['correct']);
     for(String str in json.keys){
-      q.add(UserQuizzResults.fromJson(json[str]));
+      q.add(UserQuizzResult.fromJson(json[str]));
     }
     return UserStatistics(username, q);
 
@@ -21,42 +23,53 @@ class UserStatistics{
 
 Map<String, dynamic> toJson(){
     Map<String, dynamic> m = {};
-   for(UserQuizzResults q in userQuizzes){
+   for(UserQuizzResult q in userQuizzes){
      m.addAll({q.quizzName: q.toJson()});
    }
 
   return m;
   }
-  Future<void> addQuizzStatistics(FirebaseFirestore firestore) async{
+  /// stores the statistics to the database
+  Future<void> saveStatistics() async{
     firestore.collection('UserStatistics').doc(this.username).update(this.toJson());
   }
+  //very important note:
+  // TO STORE THE DATA INTO FIREBASE YOU MUST RUN saveStatistics()
+  /// adds UserQuizzResult to the statistics list
+ void addUserQuizzResult(UserQuizzResult r){
+    //this does not saves data to the database
+   // you must run saveStatistics()
+    this.userQuizzes.add(r);
 
+ }
   @override
   String toString() {
     return 'UserStatistics{username: $username, userQuizzes: $userQuizzes}';
   }
 }
 
-class UserQuizzResults {
+class UserQuizzResult {
   String quizzName;
   int allQestions;
   int correct;
   double secondsSpent;
 
-  UserQuizzResults(this.quizzName, this.correct,this.allQestions, this.secondsSpent);
+  UserQuizzResult(this.quizzName, this.correct,this.allQestions, this.secondsSpent);
 
-  UserQuizzResults.fromJson(Map<String, dynamic> json):
+  UserQuizzResult.fromJson(Map<String, dynamic> json):
       quizzName = json.keys.toList()[0],
       allQestions = json['all'],
       correct = json['correct'],
       secondsSpent = json['timeSpent'];
-  Map toJson() => {
+  Map<String, dynamic> toJson() => {
 
       'all': allQestions,
       'correct': correct,
       'timeSpent': secondsSpent,
 
   };
+
+
 
   @override
   String toString() {
