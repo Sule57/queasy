@@ -14,7 +14,7 @@ class RegisterViewController {
   ///[password] the user's password
   ///@return true -> the new user has been successfully entered into the database
   ///@return false -> registration failed
-  bool signUp(String email, String username, String password) {
+  Future<bool> signUp(String email, String username, String password) async {
     Profile newUser = Profile(
       username: username,
       email: email,
@@ -23,6 +23,7 @@ class RegisterViewController {
     try {
       // always use register user with try catch since it throws
       // user already exists exception if the user already exists
+
       return newUser.registerUser(firestore);
     }catch(e){
       print(e.toString()) ;
