@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'widgets/custom_bottom_nav_bar.dart';
-
 /// This is the widget responsible for building the item in the list,
 /// once we have the actual data [item].
 
@@ -23,7 +21,6 @@ class CategorySelectionView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.primary,
-      bottomNavigationBar: const CustomBottomNavBar(pageTitle: 'Home'),
       appBar: AppBar(
         elevation: 0,
         leading: Padding(
