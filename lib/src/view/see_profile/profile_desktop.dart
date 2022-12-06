@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:queasy/constants/app_themes.dart';
-import 'package:queasy/src/view/see_profile/profile-view-controller.dart';
+import 'package:queasy/src/view/see_profile/profile_view_controller.dart';
 import 'package:flutter_profile_picture/flutter_profile_picture.dart';
 
 ///This is UserProfileDesktop view

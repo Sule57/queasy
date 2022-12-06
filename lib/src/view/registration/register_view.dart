@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:queasy/src/view/register-desktop.dart';
-import 'package:queasy/src/view/register-mobile.dart';
+import 'package:queasy/src/view/registration/register_desktop.dart';
+import 'package:queasy/src/view/registration/register_mobile.dart';
 
 class RegisterView extends StatefulWidget {
   RegisterView({Key? key}) : super(key: key);
