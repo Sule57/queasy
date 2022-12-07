@@ -33,22 +33,7 @@ Future<void> main() async {
   } catch (e) {
     print(e.toString());
   }
-  Profile p = Profile(
-      username: "newTestUser", email: 'test', hashPassword: 'fckhash??asf');
-  try {} on UserAlreadyExistsException catch (e) {}
-  //   Profile p = Profile(username: "statisticsTest", email: 'test', hashPassword: 'fckhash??asf');
-  //   UserStatistics? s = await p.getUserStatistics();
-  //   if(s!=null)
-  //     print(s);
-  //   else
-  //     print("null");
-  UserQuizzResult q1 = UserQuizzResult("quizz1", 50, 100, 300);
-  UserQuizzResult q2 = UserQuizzResult("quizz2", 1, 100, 300);
-  UserQuizzResult q3 = UserQuizzResult("quizz3", 50, 200, 300);
-  UserQuizzResult q5 = UserQuizzResult("quizz5", 50, 200, 300);
-  UserStatistics s = UserStatistics("statisticsTest", [q1, q2, q3, q5]);
-  s.saveStatistics();
-  print(s.toJson());
+
 }
 
 class Qeasy extends StatelessWidget {
