@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_profile_picture/flutter_profile_picture.dart';
 import 'package:motion_tab_bar_v2/motion-tab-bar.dart';
+import 'package:queasy/constants/app_themes.dart';
 import 'package:queasy/src/view/see_leaderboard/leaderboard_view.dart';
 import 'package:queasy/src/view/category_selection_view.dart';
 import 'package:queasy/src/view/see_profile/profile_view.dart';
@@ -93,91 +95,212 @@ class HomeWidgets extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Center(
+          child: SingleChildScrollView(
         child: Stack(
           children: [
-            Align(
+            Stack(children: [
+              ///User Profile picture
+              Container(
+                alignment: Alignment.topLeft,
+                padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).size.height * .30,
+                  top: 0,
+                ),
+                child: IconButton(
+                  splashColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
+                  iconSize: 40,
+                  onPressed: () {
+                    Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => ProfileView()));
+                  },
+                  icon: ProfilePicture(
+                    name: 'Username',
+                    radius: 40,
+                    fontsize: 25,
+                    //img: '',
+                  ),
+                ),
+              ),
+            ]),
+            Container(
               alignment: Alignment.center,
+              padding: EdgeInsets.all(
+                MediaQuery.of(context).size.height * .10,
+              ),
               child: Column(
                 children: [
                   /// App logo
-                  Padding(
-                    padding: const EdgeInsets.only(top: 1.0, bottom: 7.0),
+                  Container(
+                    padding: EdgeInsets.only(bottom: 13),
                     child: SizedBox(
-                      height: MediaQuery.of(context).size.height / 5,
+                      height: MediaQuery.of(context).size.height * .30,
                       child: Image.asset(
                         'lib/assets/images/logo_vertical.png',
                         fit: BoxFit.cover,
                       ),
                     ),
                   ),
-                  TextButton(
-                    child: const Text('Public Tournaments'),
 
-                    /// Navigates to categories when clicked
-                    onPressed: () => Navigator.of(context).push(
-                        MaterialPageRoute(
-                            builder: (context) => CategorySelectionView())),
-                  ),
-                  TextButton(
-                    child: const Text('Join Quiz'),
+                  ///[Container] used for design
+                  Container(
+                    height: MediaQuery.of(context).size.height * .07,
+                    width: MediaQuery.of(context).size.width / 2.5,
+                    decoration: BoxDecoration(
+                        color: white,
+                        borderRadius: const BorderRadius.only(
+                            topRight: Radius.circular(20))),
+                    child: TextButton(
+                      child: const Text('Public Tournaments'),
 
-                    /// Opens a dialog for the user to enter a key to be able to enter a quiz
-                    onPressed: () => showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: const Text('Enter key'),
-                          content: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              /// User input
-                              TextField(
-                                  controller: textController,
-                                  decoration: const InputDecoration())
-                            ],
-                          ),
-                          actions: [
-                            /// Cancel button
-                            TextButton(
-                                onPressed: () => Navigator.pop(context),
-                                child: const Text('Cancel')),
-                            TextButton(
-
-                                /// Join button navigates to a quiz if the entered key is confirmed
-                                onPressed: () => {
-                                      confirmKey(textController.text),
-                                      if (confirmKey(textController.text))
-                                        {
-                                          // Navigator.of(context).push(
-                                          //     MaterialPageRoute(
-                                          //         builder: (context) =>
-                                          //             QuizView()))
-                                        }
-                                      else
-                                        {
-                                          Navigator.pop(context),
-                                        }
-                                    },
-                                child: const Text('Join')),
-                          ],
-                        );
-                      },
+                      /// Navigates to categories when clicked
+                      onPressed: () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                              builder: (context) => CategorySelectionView())),
                     ),
                   ),
-                  TextButton(
-                    child: const Text('My Quizzes'),
-
-                    /// Navigates to quiz selection view when clicked
-                    onPressed: () => Navigator.of(context).push(
-                        MaterialPageRoute(
-                            builder: (context) => const QuizSelectionView())),
+                  SizedBox(
+                    height: 5,
                   ),
+                  Container(
+                    height: MediaQuery.of(context).size.height * .07,
+                    width: MediaQuery.of(context).size.width / 2.5,
+                    decoration: BoxDecoration(
+                        color: white,
+                        borderRadius: const BorderRadius.only(
+                            topRight: Radius.circular(20))),
+                    child: TextButton(
+                      child: const Text('Join Quiz'),
+
+                      /// Opens a dialog for the user to enter a key to be able to enter a quiz
+                      onPressed: () => showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            backgroundColor: purple,
+                            title: Container(
+                                alignment: Alignment.topCenter,
+                                child: const Text('Enter key',
+                                    style: TextStyle(color: Colors.white))),
+                            content: Container(
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  /// User input
+                                  Container(
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              .07,
+                                      width:
+                                          MediaQuery.of(context).size.width / 2,
+                                      child: TextField(
+                                        controller: textController,
+                                        decoration: InputDecoration(
+                                          filled: true,
+                                          fillColor: Colors.white,
+                                          border: UnderlineInputBorder(
+                                            borderSide:
+                                                BorderSide(color: Colors.white),
+                                            borderRadius:
+                                                BorderRadius.circular(25.7),
+                                          ),
+                                        ),
+                                      ))
+                                ],
+                              ),
+                            ),
+                            actions: [
+                              Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    ///[ElevatedButton] to close the dialog if user wants to exit
+                                    ElevatedButton(
+                                      child: Text("Cancel",
+                                          style: TextStyle(color: black)),
+
+                                      ///if clicked clears all the text editing controllers
+                                      onPressed: () => {
+                                        Navigator.of(context).pop(),
+                                      },
+                                      style: ButtonStyle(
+                                          backgroundColor:
+                                              MaterialStateProperty.all<Color>(
+                                                  orange),
+                                          shape: MaterialStateProperty.all<
+                                                  RoundedRectangleBorder>(
+                                              RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(18.0),
+                                          ))),
+                                    ),
+
+                                    ///[ElevatedButton] to confirm the entered key
+                                    ElevatedButton(
+                                      child: Text("Join",
+                                          style: TextStyle(color: black)),
+                                      onPressed: () {
+                                        if (textController.text.isNotEmpty) {
+                                          ///confirmKey method is called from the controller
+                                          ///result is saved in [success] variable
+                                          bool success =
+                                              confirmKey(textController.text);
+
+                                          ///if successful the user is taken to the corresponding Quiz
+                                          if (success) {
+                                            // Navigator.of(context).push(
+                                            //     MaterialPageRoute(
+                                            //         builder: (context) =>
+                                            //             QuizView()))
+                                          } else {
+                                            Navigator.pop(context);
+                                          }
+                                        }
+                                      },
+                                      style: ButtonStyle(
+                                          backgroundColor:
+                                              MaterialStateProperty.all<Color>(
+                                                  green),
+                                          shape: MaterialStateProperty.all<
+                                                  RoundedRectangleBorder>(
+                                              RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(18.0),
+                                          ))),
+                                    ),
+                                  ]),
+                            ],
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Container(
+                    height: MediaQuery.of(context).size.height * .07,
+                    width: MediaQuery.of(context).size.width / 2.5,
+                    decoration: BoxDecoration(
+                        color: white,
+                        borderRadius: const BorderRadius.only(
+                            topRight: Radius.circular(20))),
+                    child: TextButton(
+                      child: const Text('My Quizzes'),
+
+                      /// Navigates to quiz selection view when clicked
+                      onPressed: () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                              builder: (context) => const QuizSelectionView())),
+                    ),
+                  )
                 ],
               ),
             )
           ],
         ),
-      ),
+      )),
     );
   }
 
