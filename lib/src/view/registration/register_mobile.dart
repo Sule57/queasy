@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:queasy/controller/register-view-controller.dart';
+import 'package:queasy/src/view/registration/register_view_controller.dart';
 import 'package:queasy/src/view/home_view.dart';
-import 'package:queasy/src/view/see_profile/profile_view.dart';
 
 class RegisterViewMobile extends StatefulWidget {
   ///[controller] register-view controller
