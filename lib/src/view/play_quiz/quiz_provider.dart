@@ -8,13 +8,15 @@ import '../../model/profile.dart';
 import '../../model/quiz.dart';
 
 class QuizProvider with ChangeNotifier {
-  final Quiz _quiz = Quiz.normal(
-    id: 1,
-    noOfQuestions: 5,
-    //TODO dummy data, change to actual data
-    category: 'Science',
-    creatorUsername: 'public',
-  );
+  // QuizProvider._internal();
+
+  // static final QuizProvider _instance = QuizProvider._internal();
+  //
+  // factory QuizProvider() {
+  //   return _instance;
+  // }
+
+  late Quiz _quiz;
 
   Profile player = Profile(
     username: 'Savo',
@@ -22,16 +24,36 @@ class QuizProvider with ChangeNotifier {
     hashPassword: '1234',
   );
 
-  final String _category = 'Science';
-  late final int _totalQuestions = 5;
+  late String _category;
+  late int _totalQuestions;
   int _currentQuestionIndex = 0;
   int _currentPoints = 0;
   bool _currentQuestionAnswered = false;
   static Timer? countdownTimer;
-  static Duration timeLeft = const Duration(seconds: 10);
+  static Duration _timeLeft = const Duration(seconds: 15);
 
   get category => _category;
   get quiz => _quiz;
+  get timeLeft => _timeLeft.inSeconds.toString();
+
+  void startQuiz({
+    int? id,
+    required String category,
+    required int numberOfQuestions,
+    String? creatorUsername,
+  }) {
+    _category = category;
+    _totalQuestions = numberOfQuestions;
+    _currentQuestionIndex = 0;
+    _currentPoints = 0;
+
+    _quiz = Quiz.normal(
+      id: id ?? 1,
+      noOfQuestions: _totalQuestions,
+      category: _category,
+      creatorUsername: creatorUsername ?? 'public',
+    );
+  }
 
   String getCurrentQuestionText() {
     return _quiz.getQuestions()[_currentQuestionIndex].getText();
@@ -85,9 +107,9 @@ class QuizProvider with ChangeNotifier {
     }
 
     if (isCorrect) {
-      _currentPoints += 5 + timeLeft.inSeconds;
+      _currentPoints += 5 + _timeLeft.inSeconds;
     } else {
-      _currentPoints -= 3;
+      _currentPoints -= 2;
       if (_currentPoints < 0) {
         _currentPoints = 0;
       }
@@ -103,7 +125,7 @@ class QuizProvider with ChangeNotifier {
 
   void resetTimer() {
     stopTimer();
-    timeLeft = const Duration(seconds: 10);
+    _timeLeft = const Duration(seconds: 15);
     startTimer();
   }
 
@@ -113,17 +135,13 @@ class QuizProvider with ChangeNotifier {
 
   void setCountDown() {
     final reduceSecondsBy = 1;
-    final seconds = timeLeft.inSeconds - reduceSecondsBy;
+    final seconds = _timeLeft.inSeconds - reduceSecondsBy;
     if (seconds < 0) {
       countdownTimer?.cancel();
       nextQuestion();
     } else {
-      timeLeft = Duration(seconds: seconds);
+      _timeLeft = Duration(seconds: seconds);
       notifyListeners();
     }
-  }
-
-  String getTimeLeft() {
-    return timeLeft.inSeconds.toString();
   }
 }
