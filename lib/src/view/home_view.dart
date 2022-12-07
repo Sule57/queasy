@@ -98,31 +98,6 @@ class HomeWidgets extends StatelessWidget {
           child: SingleChildScrollView(
         child: Stack(
           children: [
-            Stack(children: [
-              ///User Profile picture
-              Container(
-                alignment: Alignment.topLeft,
-                padding: EdgeInsets.only(
-                  bottom: MediaQuery.of(context).size.height * .30,
-                  top: 0,
-                ),
-                child: IconButton(
-                  splashColor: Colors.transparent,
-                  highlightColor: Colors.transparent,
-                  iconSize: 40,
-                  onPressed: () {
-                    Navigator.of(context).push(
-                        MaterialPageRoute(builder: (context) => ProfileView()));
-                  },
-                  icon: ProfilePicture(
-                    name: 'Username',
-                    radius: 40,
-                    fontsize: 25,
-                    //img: '',
-                  ),
-                ),
-              ),
-            ]),
             Container(
               alignment: Alignment.center,
               padding: EdgeInsets.all(
@@ -133,12 +108,10 @@ class HomeWidgets extends StatelessWidget {
                   /// App logo
                   Container(
                     padding: EdgeInsets.only(bottom: 13),
-                    child: SizedBox(
-                      height: MediaQuery.of(context).size.height * .30,
-                      child: Image.asset(
-                        'lib/assets/images/logo_vertical.png',
-                        fit: BoxFit.cover,
-                      ),
+                    child: Image.asset(
+                      height: MediaQuery.of(context).size.height * .60,
+                      width: MediaQuery.of(context).size.width / 3,
+                      'lib/assets/images/logo_vertical.png',
                     ),
                   ),
 
