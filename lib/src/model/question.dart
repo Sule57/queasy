@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-
 import 'answer.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+
 
 class Question {
   String text = "";
@@ -9,7 +8,7 @@ class Question {
   String category = "";
   String questionID = "";
   String owner = "";
-  late FirebaseFirestore _firebaseFirestore;
+  late FirebaseFirestore firestore;
 
   Question({
     required this.text,
@@ -36,23 +35,27 @@ class Question {
   }
 
 /// edits the question text locally and in firebase
-  void editQuestionText(String newText) {
-    _firebaseFirestore = FirebaseFirestore.instance;
+  void editQuestionText(String newText, FirebaseFirestore? firestore) {
+    if (firestore == null) {
+      firestore = FirebaseFirestore.instance;
+    }
     text = newText;
-    _firebaseFirestore.collection('categories')
+    firestore.collection('categories')
         .doc(owner)
         .collection(category)
         .doc(questionID)
         .update({
       'text': newText,
     });
-    _firebaseFirestore.terminate();
+    firestore.terminate();
   }
 
-  void editAnswerText(int index, String newText) {
-    _firebaseFirestore = FirebaseFirestore.instance;
+  void editAnswerText(int index, String newText, FirebaseFirestore? firestore) {
+    if (firestore == null) {
+      firestore = FirebaseFirestore.instance;
+    }
     answers[index].setText(newText);
-    _firebaseFirestore.collection('categories')
+    firestore.collection('categories')
         .doc(owner)
         .collection(category)
         .doc(questionID)
@@ -62,12 +65,14 @@ class Question {
         'isCorrect': answers[index].isCorrect,
       },
     });
-    _firebaseFirestore.terminate();
+    firestore.terminate();
   }
 
   /// Sets the given answer as correct and all others to incorrect
-  void setCorrectAnswer (int index) {
-    _firebaseFirestore = FirebaseFirestore.instance;
+  void setCorrectAnswer (int index, FirebaseFirestore? firestore) {
+    if (firestore == null) {
+      firestore = FirebaseFirestore.instance;
+    }
     for (int i = 0; i < answers.length; i++) {
       if (i == index) {
         answers[i].setCorrect(true);
@@ -75,7 +80,7 @@ class Question {
         answers[i].setCorrect(false);
       }
     }
-    _firebaseFirestore.collection('categories')
+    firestore.collection('categories')
         .doc(owner)
         .collection(category)
         .doc(questionID)
@@ -97,24 +102,28 @@ class Question {
         'isCorrect': answers[3].isCorrect,
       },
     });
-    _firebaseFirestore.terminate();
+    firestore.terminate();
   }
 
   /// Deletes the question from firebase
-  void deleteQuestion() {
-    _firebaseFirestore = FirebaseFirestore.instance;
-    _firebaseFirestore.collection('categories')
+  void deleteQuestion(FirebaseFirestore? firestore) {
+    if (firestore == null) {
+      firestore = FirebaseFirestore.instance;
+    }
+    firestore.collection('categories')
         .doc(owner)
         .collection(category)
         .doc(questionID)
         .delete();
-    _firebaseFirestore.terminate();
+    firestore.terminate();
   }
 
   /// Checks if the question id already exists in firebase, if not it adds a new question
-  void addQuestion() {
-    _firebaseFirestore = FirebaseFirestore.instance;
-    _firebaseFirestore.collection('categories')
+  void addQuestion(FirebaseFirestore? firestore) {
+    if (firestore == null) {
+      firestore = FirebaseFirestore.instance;
+    }
+    firestore.collection('categories')
         .doc(owner)
         .collection(category)
         .doc(questionID)
@@ -123,7 +132,7 @@ class Question {
       if (doc.exists) {
         print('Question id already exists');
       } else {
-        _firebaseFirestore.collection('categories')
+        firestore?.collection('categories')
             .doc(owner)
             .collection(category)
             .doc(questionID)
@@ -148,6 +157,6 @@ class Question {
         });
       }
     });
-    _firebaseFirestore.terminate();
+    firestore.terminate();
   }
 }
