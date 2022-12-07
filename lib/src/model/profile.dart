@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:queasy/utils/exceptions/user_already_exists.dart';
+import 'package:queasy/src/model/statistics.dart';
+
+import '../utils/exceptions/user_already_exists.dart';
 
 String? getCurrentUserID() {
   if (FirebaseAuth.instance.currentUser != null) {
@@ -11,7 +13,6 @@ String? getCurrentUserID() {
 }
 
 class Profile {
-  late FirebaseFirestore _firebaseFirestore;
   String email;
   String username;
   String hashPassword;
@@ -22,6 +23,8 @@ class Profile {
   int? age;
   String? birthdayMonth;
   int? birthdayDay;
+  // it must be late so
+  late var firestore = FirebaseFirestore.instance;
   //In the database publicScore and private score are stored as collections
   Map<String, dynamic> publicScore = {};
   Map<String, dynamic> privatecScore = {};
@@ -36,11 +39,7 @@ class Profile {
     this.age = 0,
     this.birthdayMonth = '',
     this.birthdayDay = 0,
-  }) {
-    _firebaseFirestore = FirebaseFirestore.instance;
-  } //use this for later!!! :    _firebaseFirestore = FirebaseFirestore.instance;
-
-  ///This constructor is used only for unit tests
+  }) ;
   Profile.test({
     required this.username,
     required this.email,
@@ -52,8 +51,11 @@ class Profile {
     this.age = 0,
     this.birthdayMonth = '',
     this.birthdayDay = 0,
-    required FirebaseFirestore firestore,
-  });
+    required this.firestore,
+  }) ;
+
+  ///This constructor is used only for unit tests
+
 
   /// Creates a user instance from json
   /// Note: the json format must be the following:
@@ -96,34 +98,57 @@ class Profile {
         'privateScore': privatecScore,
       };
 
-  /// registers user the following way: creates document with the username and collection with its attributes
+  /// registers user the following way: creates document with the usaername and collection with its attributes
   /// returns true if successful
-  /// throws UserAlreadyExistsException if the user with the same username already exists in the database
-  /// [firestore] database instance
-  bool registerUser(FirebaseFirestore firestore) {
-    try {
-      // doesnt work for now
-      // firestore
-      //     .collection('users')
-      //     .doc(this.username)
-      //     .get()
-      //     .then((DocumentSnapshot documentSnapshot) {
-      //   if (documentSnapshot.exists) {
-      //     throw UserAlreadyExistsException();
-      //   }
-      // });
+  /// throws an [UserAlreadyExistsException] if the user with the same username already exists in the database
+  Future<bool> registerUser() async{
+
+//THIS
+     await this.firestore
+          .collection('users')
+          .doc(this.username)
+          .get()
+          .then((DocumentSnapshot documentSnapshot) {
+        if (documentSnapshot.exists) {
+
+          throw UserAlreadyExistsException();
+        }
+      });
+
+      ///
       firestore.collection('users').doc(this.username).set(this.toJson());
+      UserStatistics s = UserStatistics(this.username, []);
+      //Adding the user to the statistics
+      Map<String, dynamic> data = { };
+      firestore.collection('UserStatistics').doc(this.username).set(data);
       return true;
-    } catch (e) {
-      return false;
-    }
+  }
+
+
+  /// gets a UserStatistics object from the current user
+  /// the objects contains all user results from played quizzes
+  /// returns null if there is no data
+  Future<UserStatistics?> getUserStatistics() async {
+    UserStatistics? s = null;
+    await firestore
+        .collection('UserStatistics')
+        .doc(this.username)
+        .get()
+        .then((DocumentSnapshot documentSnapshot) {
+      if (documentSnapshot.exists) {
+        s = UserStatistics.fromJson(this.username, documentSnapshot.data() as Map<String, dynamic>);
+        //print(s.toString());
+        return s;
+      }
+    });
+    return s;
   }
 
   /// Increment the score of the user in the firebase by the score achieved in the current quiz
   /// [username] The username of the user
   void updateScore(String username, String category, int score) {
-    _firebaseFirestore = FirebaseFirestore.instance;
-    _firebaseFirestore.collection('users').doc(this.username).update({
+    final firebaseFirestore = FirebaseFirestore.instance;
+    firebaseFirestore.collection('users').doc(this.username).update({
       'scores.$category': FieldValue.increment(score),
     });
   }
@@ -292,4 +317,8 @@ class Profile {
     }
   }
   //END OF METHODS FOR PROFILE VIEW
+
+
+
+
 }
