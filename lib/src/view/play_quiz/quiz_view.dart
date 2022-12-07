@@ -15,8 +15,10 @@ import 'package:queasy/src/view/statistics_view.dart';
 /// press, the view is updated with the data from the next question. When the
 /// quiz is over, the user is taken to [StatisticsView].
 class QuizView extends StatefulWidget {
+  final String category;
+
   /// Constructor for [QuizView].
-  const QuizView({Key? key}) : super(key: key);
+  const QuizView({Key? key, required this.category}) : super(key: key);
 
   /// Creates a [QuizView] state.
   @override
@@ -25,6 +27,8 @@ class QuizView extends StatefulWidget {
 
 /// State for [QuizView].
 class _QuizViewState extends State<QuizView> {
+  get category => widget.category;
+
   /// Builds the view.
   ///
   /// Uses a custom bottom navigation bar for navigation and a [Stack] to display the
@@ -33,9 +37,9 @@ class _QuizViewState extends State<QuizView> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
-        children: const [
+        children: [
           QuizViewBackground(),
-          QuizViewContent(),
+          QuizViewContent(category: category),
         ],
       ),
     );
@@ -78,7 +82,9 @@ class QuizViewBackground extends StatelessWidget {
 /// Uses a [StatefulWidget] to display questions and answers and update the
 /// text contained in the widgets.
 class QuizViewContent extends StatefulWidget {
-  const QuizViewContent({Key? key}) : super(key: key);
+  const QuizViewContent({Key? key, required this.category}) : super(key: key);
+
+  final String category;
 
   /// Creates a [QuizViewContent] state.
   @override
@@ -87,10 +93,25 @@ class QuizViewContent extends StatefulWidget {
 
 /// State for [QuizViewContent].
 class _QuizViewContentState extends State<QuizViewContent> {
+  get category => widget.category;
+
   @override
   void initState() {
+    context
+        .read<QuizProvider>()
+        .startQuiz(category: category, numberOfQuestions: 5);
     Provider.of<QuizProvider>(context, listen: false).startTimer();
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    print('Quiz view activated');
+    Provider.of<QuizProvider>(context, listen: false).resetTimer();
+    context
+        .read<QuizProvider>()
+        .startQuiz(category: category, numberOfQuestions: 5);
+    super.didChangeDependencies();
   }
 
   /// Builds the content.
@@ -105,7 +126,7 @@ class _QuizViewContentState extends State<QuizViewContent> {
       stream: FirebaseFirestore.instance
           .collection('categories')
           .doc('public')
-          .collection('Science')
+          .collection(category)
           .snapshots(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
@@ -120,10 +141,17 @@ class _QuizViewContentState extends State<QuizViewContent> {
   }
 
   @override
-  void dispose() {
+  void deactivate() {
+    print("Quiz View deactivated");
     Provider.of<QuizProvider>(context, listen: false).stopTimer();
-    super.dispose();
+    super.deactivate();
   }
+
+  // @override
+  // void dispose() {
+  //   Provider.of<QuizProvider>(context, listen: false).stopTimer();
+  //   super.dispose();
+  // }
 }
 
 class QuizViewDesktopContent extends StatelessWidget {
@@ -197,7 +225,7 @@ class QuizViewMobileContent extends StatelessWidget {
         children: [
           Text(
             Provider.of<QuizProvider>(context).category,
-            style: Theme.of(context).textTheme.headline2,
+            style: Theme.of(context).textTheme.headline1,
           ),
           const ScoreTracking(),
           const QuestionContainer(),

@@ -24,8 +24,8 @@ class AppThemes {
     //TEXT
     fontFamily: GoogleFonts.nunito().fontFamily,
     textTheme: TextTheme(
-      headline3: TextStyle(
-        fontSize: 20,
+      headline1: TextStyle(
+        fontSize: 40,
         fontWeight: FontWeight.bold,
         color: black,
       ),
@@ -33,6 +33,15 @@ class AppThemes {
         fontSize: 16,
         fontWeight: FontWeight.w500,
         color: white,
+      ),
+      headline3: TextStyle(
+        fontSize: 20,
+        fontWeight: FontWeight.bold,
+        color: black,
+      ),
+      headline4: TextStyle(
+        fontSize: 24,
+        color: purple,
       ),
       bodyText1: TextStyle(
         fontSize: 16,
@@ -47,15 +56,11 @@ class AppThemes {
         fontWeight: FontWeight.bold,
         color: purple,
       ),
-      headline4: TextStyle(
-        fontSize: 24,
-        color: purple,
-      ),
     ),
 
     //TEXT FIELD
     inputDecorationTheme: const InputDecorationTheme(
-      counterStyle: TextStyle(fontSize: 16.0),
+      counterStyle: TextStyle(fontSize: 16),
     ),
 
     //BUTTONS

@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:queasy/constants/app_themes.dart';
-import 'package:queasy/controller/register-view-controller.dart';
+import 'package:queasy/src/view/registration/register_view_controller.dart';
 import 'package:queasy/services/auth.dart';
 import 'package:queasy/src/view/home_view.dart';
 

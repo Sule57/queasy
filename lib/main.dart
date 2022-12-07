@@ -1,13 +1,12 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:queasy/src/model/profile.dart';
 import 'package:queasy/src/model/statistics.dart';
-import 'package:queasy/src/utils/exceptions/user_already_exists.dart';
 import 'package:queasy/src/view/play_quiz/quiz_provider.dart';
 import 'package:queasy/src/view/widgets/widget_tree.dart';
+import 'package:queasy/utils/exceptions/user_already_exists.dart';
 
 import 'constants/app_themes.dart';
 import 'services/firebase_options.dart';
@@ -24,23 +23,19 @@ Future<void> main() async {
       options: DefaultFirebaseOptions.currentPlatform,
     );
 
-
     runApp(MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => QuizProvider()),
         ChangeNotifierProvider(create: (_) => LeaderboardProvider()),
       ],
       child: const Qeasy(),
-
-
     ));
   } catch (e) {
     print(e.toString());
   }
-  Profile p = Profile(username: "newTestUser", email: 'test', hashPassword: 'fckhash??asf');
-  try {
-
-  }on UserAlreadyExistsException catch(e){}
+  Profile p = Profile(
+      username: "newTestUser", email: 'test', hashPassword: 'fckhash??asf');
+  try {} on UserAlreadyExistsException catch (e) {}
   //   Profile p = Profile(username: "statisticsTest", email: 'test', hashPassword: 'fckhash??asf');
   //   UserStatistics? s = await p.getUserStatistics();
   //   if(s!=null)
@@ -61,7 +56,6 @@ class Qeasy extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return MaterialApp(
       home: const WidgetTree(),
       navigatorKey: navigator,

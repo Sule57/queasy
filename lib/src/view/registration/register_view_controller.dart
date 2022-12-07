@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../src/model/profile.dart';
+import '../../model/profile.dart';
 
 ///This is controller for RegisterView
 class RegisterViewController {
@@ -23,10 +23,9 @@ class RegisterViewController {
     try {
       // always use register user with try catch since it throws
       // user already exists exception if the user already exists
-
       return newUser.registerUser();
-    }catch(e){
-      print(e.toString()) ;
+    } catch (e) {
+      print(e.toString());
       return false;
     }
   }

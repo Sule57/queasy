@@ -1,19 +1,21 @@
 import 'dart:ui';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-
-import 'package:queasy/src/model/profile.dart';
 import 'package:queasy/src/model/question.dart';
 
 String getCurrentUserID() {
   return 'Savo';
 }
+
 class Category {
   /// Collection [DocumentReference] for the public [Category] location in the database.
-  DocumentReference _publicDoc = FirebaseFirestore.instance.collection('categories').doc('public');
+  DocumentReference _publicDoc =
+      FirebaseFirestore.instance.collection('categories').doc('public');
 
   /// Collection [DocumentReference] for the private [Category] location in the database.
-  DocumentReference _privateDoc = FirebaseFirestore.instance.collection('categories').doc(getCurrentUserID());
+  DocumentReference _privateDoc = FirebaseFirestore.instance
+      .collection('categories')
+      .doc(getCurrentUserID());
 
   /// [Color] of the [Category].
   late Color _color;
@@ -30,21 +32,23 @@ class Category {
   Category({required String category, required Color color}) {
     _category = category;
     _color = color;
-    this._createNewCategory(_category, _color);
+    // this._createNewCategory(_category, _color);
   }
 
   /// Constructor for the [Category] class for testing.
   ///
   /// [category] is the name of the [Category], [color] is the color of the [Category]
   /// and [FirebaseFirestore] is the Fake instance of the database
-  Category.test({required String category, required Color color, required FirebaseFirestore firestore}) {
+  Category.test(
+      {required String category,
+      required Color color,
+      required FirebaseFirestore firestore}) {
     _category = category;
     _color = color;
     _publicDoc = firestore.collection('categories').doc('public');
     _privateDoc = firestore.collection('categories').doc(getCurrentUserID());
-    this._createNewCategory(_category, _color);
+    // this._createNewCategory(_category, _color);
   }
-
 
   /// Constructor for the [Category] from JSON data.
   ///
@@ -62,14 +66,10 @@ class Category {
     return {_category: _color.value};
   }
 
-
-
-
-
   /// Changes the name of the current [Category].
   Future<void> changeNameOfCategory(String newName) async {
     String? username = getCurrentUserID();
-    if(username == null) {
+    if (username == null) {
       throw Exception('User is not logged in');
     }
     _privateDoc.update({
@@ -80,15 +80,21 @@ class Category {
     });
     // copy collection from Firestore old category to 'newName'
     // and delete the old collection
-    await _privateDoc.collection(_category).get().then((QuerySnapshot querySnapshot) {
+    await _privateDoc
+        .collection(_category)
+        .get()
+        .then((QuerySnapshot querySnapshot) {
       querySnapshot.docs.forEach((doc) {
-        _privateDoc.collection(newName).doc(doc.id).set(doc.data() as Map<String, dynamic>);
+        _privateDoc
+            .collection(newName)
+            .doc(doc.id)
+            .set(doc.data() as Map<String, dynamic>);
       });
     });
 
     // iterate through all questions in the category and delete them
     await _privateDoc.collection(_category).get().then((snapshot) {
-      for (DocumentSnapshot ds in snapshot.docs){
+      for (DocumentSnapshot ds in snapshot.docs) {
         ds.reference.delete();
       }
     });
@@ -96,34 +102,12 @@ class Category {
     _category = newName;
   }
 
-  /// Creates a new [Category] in the database.
-  ///
-  /// [category] is the name of the [Category] and [color] is the color of the [Category].
-  /// Checking if category already exists in the database is done before calling this function.
-  Future<void> _createNewCategory(String cat, Color color) async {
-    String? username = getCurrentUserID();
-    if(username == null) {
-      throw Exception('User is not logged in');
-    }
-    await _privateDoc.set({
-      cat: color.value,
-    });
-
-    // iterate through all questions in the category and delete them
-    await _privateDoc.collection(cat).get().then((snapshot) {
-      for (DocumentSnapshot ds in snapshot.docs){
-        ds.reference.delete();
-      }
-    });
-    await _privateDoc.collection(cat).doc('firstQuestion').set({});
-  }
-
   /// Sets the color of the current [Category]
   ///
   /// [color] is the color of the [Category].
   Future<void> setColor(Color col) async {
     String? username = getCurrentUserID();
-    if(username == null) {
+    if (username == null) {
       throw Exception('User is not logged in');
     }
     _color = col;
@@ -135,7 +119,7 @@ class Category {
   /// Get the name of the current [Category].
   String getCategory() {
     String? username = getCurrentUserID();
-    if(username == null) {
+    if (username == null) {
       throw Exception('User is not logged in');
     }
     return _category;
@@ -144,101 +128,50 @@ class Category {
   /// Get the color of the current [Category].
   Color getColor() {
     String? username = getCurrentUserID();
-    if(username == null) {
+    if (username == null) {
       throw Exception('User is not logged in');
     }
     return _color;
   }
 
-  /// Delete the current [Category] from the database.
-  Future<void> deleteCategory() async {
-    String? username = getCurrentUserID();
-    if(username == null) {
-      throw Exception('User is not logged in');
-    }
-    await _privateDoc.update({
-      _category: FieldValue.delete(),
-    });
-  }
-
-  /// Get the list of [String] names of current user's public [Category]s.
-  Future<List<String>> getPublicCategories() async{
-    String? username = getCurrentUserID();
-    if(username == null) {
-      throw Exception('User is not logged in');
-    }
-    List<String> list = [];
-    // // parse through the document and update the positions
-    await _publicDoc.get().then((DocumentSnapshot documentSnapshot) {
-      if (documentSnapshot != null && documentSnapshot.exists) {
-        Map<String, dynamic> data = documentSnapshot.data() as Map<String, dynamic>;
-        for (String key in data.keys) {
-          list.add(key);
-        }
-      }
-    });
-    return list;
-  }
-
-
-  /// Get the list of [String] names of current user's private [Category]s.
-  Future<List<String>> getPrivateCategories() async {
-    String? username = getCurrentUserID();
-    if(username == null) {
-      throw Exception('User is not logged in');
-    }
-    List<String> list = [];
-    // get all document id from public categories
-    await _privateDoc.get().then((DocumentSnapshot documentSnapshot) {
-      if (documentSnapshot.exists) {
-        Map<String, dynamic> data = documentSnapshot.data() as Map<String, dynamic>;
-        for (String key in data.keys) {
-          list.add(key);
-        }
-      }
-    });
-    return list;
-  }
-
-
-
   /// Get the list of [Question]s in the current public [Category].
   Future<List<Question>> getQuestionsFromPublicCategory(String cat) async {
     String? username = getCurrentUserID();
-    if(username == null) {
+    if (username == null) {
       throw Exception('User is not logged in');
     }
 
     List<Question> questions = [];
 
     // get all document id from public categories
-    await _publicDoc.collection(_category).get().then((QuerySnapshot querySnapshot) {
+    await _publicDoc
+        .collection(_category)
+        .get()
+        .then((QuerySnapshot querySnapshot) {
       querySnapshot.docs.forEach((doc) {
         questions.add(Question.fromJson(doc.data() as Map<String, dynamic>));
       });
     });
     return questions;
   }
-
 
   /// Get the list of [Question]s in the current private [Category].
   Future<List<Question>> getQuestionsFromPrivateCategory() async {
     String? username = getCurrentUserID();
-    if(username == null) {
+    if (username == null) {
       throw Exception('User is not logged in');
     }
 
     List<Question> questions = [];
     // get all document id from public categories
-    await _privateDoc.collection(_category).get().then((QuerySnapshot querySnapshot) {
+    await _privateDoc
+        .collection(_category)
+        .get()
+        .then((QuerySnapshot querySnapshot) {
       querySnapshot.docs.forEach((doc) {
         questions.add(Question.fromJson(doc.data() as Map<String, dynamic>));
       });
     });
     return questions;
   }
-
-
-
-
 }

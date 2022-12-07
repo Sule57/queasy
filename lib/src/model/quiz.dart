@@ -5,7 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:queasy/src/model/question.dart';
 import 'answer.dart';
 
-class Quiz{
+class Quiz {
   int id, noOfQuestions;
   String creatorUsername;
   static List<Question> _questions = [];
@@ -63,7 +63,6 @@ class Quiz{
       }
     }
     _firebaseFirestore.terminate();
-    //notifyListeners();
   }
 
   /// Retrives a question from firebase
@@ -71,7 +70,8 @@ class Quiz{
   /// Firebase is accessed through the [firestore] instance.
   /// Then the question is retrieved from the database from the given [category] and randomly generated [questionId].
   /// And lastly the question is returned
-  Future<Question> getQuestion(category, questionId, FirebaseFirestore firestore) async {
+  Future<Question> getQuestion(
+      category, questionId, FirebaseFirestore firestore) async {
     Map<String, dynamic>? data;
 
     // Access the database and get the question
@@ -96,7 +96,7 @@ class Quiz{
       ],
       category: category,
       questionID: questionId,
-      owner: creatorUsername
+      owner: creatorUsername,
     );
     return question;
   }
@@ -118,7 +118,6 @@ class Quiz{
     int randomNumber = random.nextInt(numOfQuestions);
     return randomNumber;
   }
-
 
   /// Returns the list of questions generated for a particular quiz so public access can be achieved
   List<Question> getQuestions() {

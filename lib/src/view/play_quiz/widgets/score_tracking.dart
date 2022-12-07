@@ -16,7 +16,7 @@ class ScoreTracking extends StatelessWidget {
     String pointTracker = Provider.of<QuizProvider>(context).pointTracker();
     String questionTracker =
         Provider.of<QuizProvider>(context).questionTracker();
-    String timeLeft = Provider.of<QuizProvider>(context).getTimeLeft();
+    String timeLeft = Provider.of<QuizProvider>(context).timeLeft;
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10),

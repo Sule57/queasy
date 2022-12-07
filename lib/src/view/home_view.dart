@@ -4,7 +4,6 @@ import 'package:queasy/src/view/see_leaderboard/leaderboard_view.dart';
 import 'package:queasy/src/view/category_selection_view.dart';
 import 'package:queasy/src/view/see_profile/profile_view.dart';
 import 'package:queasy/src/view/quiz_selection_view.dart';
-import 'package:queasy/src/view/play_quiz/quiz_view.dart';
 
 /// This is the base view for navigation. It contains the bottom navigation bar
 /// and the [pages] that are navigated to when the bottom navigation bar is tapped.
@@ -32,7 +31,6 @@ class _HomeViewState extends State<HomeView> {
       /// This avoids other pages to be built unnecessarily.
       const SizedBox(),
       const SizedBox(),
-      const SizedBox(),
     ];
   }
 
@@ -47,13 +45,12 @@ class _HomeViewState extends State<HomeView> {
   Widget build(BuildContext context) {
     return Scaffold(
       bottomNavigationBar: MotionTabBar(
-        labels: const ['Home', 'Leaderboard', 'Profile', 'Quiz'],
+        labels: const ['Home', 'Leaderboard', 'Profile'],
         initialSelectedTab: 'Home',
         icons: const [
           Icons.home_outlined,
           Icons.leaderboard_outlined,
           Icons.person_outline,
-          Icons.question_mark
         ],
         useSafeArea: true,
         tabIconColor: Colors.grey,
@@ -68,8 +65,6 @@ class _HomeViewState extends State<HomeView> {
                 pages[index] = const LeaderboardView();
               } else if (index == 2) {
                 pages[index] = ProfileView();
-              } else {
-                pages[index] = QuizView();
               }
             }
             selectedPage = index;
@@ -96,108 +91,92 @@ class HomeWidgets extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Stack(
-        children: [
-          /// User profile at the top left corner
-          Align(
-              alignment: Alignment.topLeft,
-              child: IconButton(
-                  icon: Container(
-                    height: 66,
-                    width: 66,
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                      image: DecorationImage(
-                        fit: BoxFit.fill,
-                        image: NetworkImage(
-                            'https://picsum.photos/500/300?random=1'),
+    return SafeArea(
+      child: Center(
+        child: Stack(
+          children: [
+            Align(
+              alignment: Alignment.center,
+              child: Column(
+                children: [
+                  /// App logo
+                  Padding(
+                    padding: const EdgeInsets.only(top: 1.0, bottom: 7.0),
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.height / 5,
+                      child: Image.asset(
+                        'lib/assets/images/logo_vertical.png',
+                        fit: BoxFit.cover,
                       ),
                     ),
                   ),
+                  TextButton(
+                    child: const Text('Public Tournaments'),
 
-                  ///navigates to profile view when clicked
-                  onPressed: () => Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => ProfileView())))),
-          Align(
-            alignment: Alignment.center,
-            child: Column(
-              children: [
-                /// App logo
-                Padding(
-                  padding: const EdgeInsets.only(top: 1.0, bottom: 7.0),
-                  child: SizedBox(
-                    height: MediaQuery.of(context).size.height / 5,
-                    child: Image.asset(
-                      'lib/assets/images/logo_vertical.png',
-                      fit: BoxFit.cover,
+                    /// Navigates to categories when clicked
+                    onPressed: () => Navigator.of(context).push(
+                        MaterialPageRoute(
+                            builder: (context) => CategorySelectionView())),
+                  ),
+                  TextButton(
+                    child: const Text('Join Quiz'),
+
+                    /// Opens a dialog for the user to enter a key to be able to enter a quiz
+                    onPressed: () => showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: const Text('Enter key'),
+                          content: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              /// User input
+                              TextField(
+                                  controller: textController,
+                                  decoration: const InputDecoration())
+                            ],
+                          ),
+                          actions: [
+                            /// Cancel button
+                            TextButton(
+                                onPressed: () => Navigator.pop(context),
+                                child: const Text('Cancel')),
+                            TextButton(
+
+                                /// Join button navigates to a quiz if the entered key is confirmed
+                                onPressed: () => {
+                                      confirmKey(textController.text),
+                                      if (confirmKey(textController.text))
+                                        {
+                                          // Navigator.of(context).push(
+                                          //     MaterialPageRoute(
+                                          //         builder: (context) =>
+                                          //             QuizView()))
+                                        }
+                                      else
+                                        {
+                                          Navigator.pop(context),
+                                        }
+                                    },
+                                child: const Text('Join')),
+                          ],
+                        );
+                      },
                     ),
                   ),
-                ),
-                TextButton(
-                  child: const Text('Public Tournaments'),
+                  TextButton(
+                    child: const Text('My Quizzes'),
 
-                  /// Navigates to categories when clicked
-                  onPressed: () => Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => CategorySelectionView())),
-                ),
-                TextButton(
-                  child: const Text('Join Quiz'),
-
-                  /// Opens a dialog for the user to enter a key to be able to enter a quiz
-                  onPressed: () => showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: const Text('Enter key'),
-                        content: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            /// User input
-                            TextField(
-                                controller: textController,
-                                decoration: const InputDecoration())
-                          ],
-                        ),
-                        actions: [
-                          /// Cancel button
-                          TextButton(
-                              onPressed: () => Navigator.pop(context),
-                              child: const Text('Cancel')),
-                          TextButton(
-
-                              /// Join button navigates to a quiz if the entered key is confirmed
-                              onPressed: () => {
-                                    confirmKey(textController.text),
-                                    if (confirmKey(textController.text))
-                                      {
-                                        Navigator.of(context).push(
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    QuizView()))
-                                      }
-                                    else
-                                      {
-                                        Navigator.pop(context),
-                                      }
-                                  },
-                              child: const Text('Join')),
-                        ],
-                      );
-                    },
+                    /// Navigates to quiz selection view when clicked
+                    onPressed: () => Navigator.of(context).push(
+                        MaterialPageRoute(
+                            builder: (context) => const QuizSelectionView())),
                   ),
-                ),
-                TextButton(
-                  child: const Text('My Quizzes'),
-
-                  /// Navigates to quiz selection view when clicked
-                  onPressed: () => Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => const QuizSelectionView())),
-                ),
-              ],
-            ),
-          )
-        ],
+                ],
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
