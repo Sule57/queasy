@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:queasy/src/model/statistics.dart';
 
-import '../utils/exceptions/user_already_exists.dart';
+import '../../utils/exceptions/user_already_exists.dart';
 
 String? getCurrentUserID() {
   if (FirebaseAuth.instance.currentUser != null) {
@@ -39,7 +39,7 @@ class Profile {
     this.age = 0,
     this.birthdayMonth = '',
     this.birthdayDay = 0,
-  }) ;
+  });
   Profile.test({
     required this.username,
     required this.email,
@@ -52,10 +52,9 @@ class Profile {
     this.birthdayMonth = '',
     this.birthdayDay = 0,
     required this.firestore,
-  }) ;
+  });
 
   ///This constructor is used only for unit tests
-
 
   /// Creates a user instance from json
   /// Note: the json format must be the following:
@@ -101,29 +100,27 @@ class Profile {
   /// registers user the following way: creates document with the usaername and collection with its attributes
   /// returns true if successful
   /// throws an [UserAlreadyExistsException] if the user with the same username already exists in the database
-  Future<bool> registerUser() async{
-
+  Future<bool> registerUser() async {
 //THIS
-     await this.firestore
-          .collection('users')
-          .doc(this.username)
-          .get()
-          .then((DocumentSnapshot documentSnapshot) {
-        if (documentSnapshot.exists) {
+    await this
+        .firestore
+        .collection('users')
+        .doc(this.username)
+        .get()
+        .then((DocumentSnapshot documentSnapshot) {
+      if (documentSnapshot.exists) {
+        throw UserAlreadyExistsException();
+      }
+    });
 
-          throw UserAlreadyExistsException();
-        }
-      });
-
-      ///
-      firestore.collection('users').doc(this.username).set(this.toJson());
-      UserStatistics s = UserStatistics(this.username, []);
-      //Adding the user to the statistics
-      Map<String, dynamic> data = { };
-      firestore.collection('UserStatistics').doc(this.username).set(data);
-      return true;
+    ///
+    firestore.collection('users').doc(this.username).set(this.toJson());
+    UserStatistics s = UserStatistics(this.username, []);
+    //Adding the user to the statistics
+    Map<String, dynamic> data = {};
+    firestore.collection('UserStatistics').doc(this.username).set(data);
+    return true;
   }
-
 
   /// gets a UserStatistics object from the current user
   /// the objects contains all user results from played quizzes
@@ -136,7 +133,8 @@ class Profile {
         .get()
         .then((DocumentSnapshot documentSnapshot) {
       if (documentSnapshot.exists) {
-        s = UserStatistics.fromJson(this.username, documentSnapshot.data() as Map<String, dynamic>);
+        s = UserStatistics.fromJson(
+            this.username, documentSnapshot.data() as Map<String, dynamic>);
         //print(s.toString());
         return s;
       }
@@ -317,8 +315,5 @@ class Profile {
     }
   }
   //END OF METHODS FOR PROFILE VIEW
-
-
-
 
 }

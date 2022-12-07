@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:queasy/src/model/profile.dart';
-import 'package:queasy/src/utils/exceptions/user_already_exists.dart';
+import 'package:queasy/utils/exceptions/user_already_exists.dart';
 // import 'package:test/test.dart';
 
 /// Main function for testing the [Profile] class.
@@ -61,7 +61,8 @@ void main() async {
     //Map<String, dynamic> data = await instance.collection('users').get() as Map<String, dynamic>;
 
     // a UserAlreadyExists exception is expected
-    expect(() =>  usr.registerUser(), throwsA(isA<UserAlreadyExistsException>()));
+    expect(
+        () => usr.registerUser(), throwsA(isA<UserAlreadyExistsException>()));
   });
 
   ///Tests for Profile Class methods that update database information
