@@ -12,6 +12,7 @@ String? getCurrentUserID() {
   return null;
 }
 
+
 class Profile {
   String email;
   String username;
@@ -40,6 +41,7 @@ class Profile {
     this.birthdayMonth = '',
     this.birthdayDay = 0,
   });
+
   Profile.test({
     required this.username,
     required this.email,
@@ -114,13 +116,32 @@ class Profile {
     });
 
     ///
-    firestore.collection('users').doc(this.username).set(this.toJson());
-    UserStatistics s = UserStatistics(this.username, []);
-    //Adding the user to the statistics
-    Map<String, dynamic> data = {};
-    firestore.collection('UserStatistics').doc(this.username).set(data);
-    return true;
+    //
+   if(getCurrentUserID() != null) {
+     firestore.collection('users').doc(getCurrentUserID()).set(this.toJson());
+     UserStatistics s = UserStatistics(this.username, []);
+     //Adding the user to the statistics
+     Map<String, dynamic> data = {};
+     firestore.collection('UserStatistics').doc(this.username).set(data);
+     return true;
+   }
+   return false;
   }
+  static Future<Profile?> getProfilefromUID(String uid) async {
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(uid)
+        .get()
+        .then((DocumentSnapshot documentSnapshot) {
+        Map<String, dynamic> j =  documentSnapshot.data() as Map<String, dynamic>;
+        var result = new Profile.fromJson(j);
+        return result;
+
+    });
+
+  }
+
+
 
   /// gets a UserStatistics object from the current user
   /// the objects contains all user results from played quizzes

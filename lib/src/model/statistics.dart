@@ -8,6 +8,7 @@ class UserStatistics{
   late var firestore = FirebaseFirestore.instance;
   UserStatistics(this.username, this.userQuizzes);
   UserStatistics.test(this.username, this.userQuizzes, this.firestore);
+
   factory UserStatistics.fromJson(String usr, Map<String, dynamic> json){
 
     String username = usr;
