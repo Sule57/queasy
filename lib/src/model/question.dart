@@ -35,27 +35,26 @@ class Question {
   }
 
 /// edits the question text locally and in firebase
-  void editQuestionText(String newText, FirebaseFirestore? firestore) {
+  Future<void> editQuestionText(String newText, FirebaseFirestore? firestore) async{
     if (firestore == null) {
       firestore = FirebaseFirestore.instance;
     }
     text = newText;
-    firestore.collection('categories')
+    await firestore.collection('categories')
         .doc(owner)
         .collection(category)
         .doc(questionID)
         .update({
       'text': newText,
     });
-    firestore.terminate();
   }
 
-  void editAnswerText(int index, String newText, FirebaseFirestore? firestore) {
+  Future<void> editAnswerText(int index, String newText, FirebaseFirestore? firestore) async{
     if (firestore == null) {
       firestore = FirebaseFirestore.instance;
     }
     answers[index].setText(newText);
-    firestore.collection('categories')
+    await firestore.collection('categories')
         .doc(owner)
         .collection(category)
         .doc(questionID)
@@ -65,11 +64,10 @@ class Question {
         'isCorrect': answers[index].isCorrect,
       },
     });
-    firestore.terminate();
   }
 
   /// Sets the given answer as correct and all others to incorrect
-  void setCorrectAnswer (int index, FirebaseFirestore? firestore) {
+  Future<void> setCorrectAnswer (int index, FirebaseFirestore? firestore) async{
     if (firestore == null) {
       firestore = FirebaseFirestore.instance;
     }
@@ -80,7 +78,7 @@ class Question {
         answers[i].setCorrect(false);
       }
     }
-    firestore.collection('categories')
+    await firestore.collection('categories')
         .doc(owner)
         .collection(category)
         .doc(questionID)
@@ -102,31 +100,63 @@ class Question {
         'isCorrect': answers[3].isCorrect,
       },
     });
-    firestore.terminate();
   }
 
   /// Deletes the question from firebase
-  void deleteQuestion(FirebaseFirestore? firestore) {
+  Future<void> deleteQuestion(FirebaseFirestore? firestore) async{
     if (firestore == null) {
       firestore = FirebaseFirestore.instance;
     }
-    firestore.collection('categories')
+    await firestore.collection('categories')
         .doc(owner)
         .collection(category)
         .doc(questionID)
         .delete();
-    firestore.terminate();
   }
 
   /// Checks if the question id already exists in firebase, if not it adds a new question
-  void addQuestion(FirebaseFirestore? firestore) {
+  Future<void> addQuestion(FirebaseFirestore? firestore) async {
     if (firestore == null) {
       firestore = FirebaseFirestore.instance;
     }
-    firestore.collection('categories')
+
+    // count the amount of questions in the category
+    int questionCount = 0;
+    await firestore.collection('categories')
         .doc(owner)
         .collection(category)
-        .doc(questionID)
+        .get()
+        .then((QuerySnapshot querySnapshot) {
+      querySnapshot.docs.forEach((doc) {
+        questionCount++;
+      });
+    });
+
+    String newQuestionID = "";
+    newQuestionID = 'question' + questionCount.toString();
+
+    // check if the newQuestionID already exists in the category, if so add 1 to the questionCount, then run newQuestionID = 'question' + questionCount.toString(); again, until a new id is found
+    bool idExists = true;
+    while (idExists) {
+      idExists = false;
+      await firestore.collection('categories')
+          .doc(owner)
+          .collection(category)
+          .doc(newQuestionID)
+          .get()
+          .then((DocumentSnapshot documentSnapshot) {
+        if (documentSnapshot.exists) {
+          idExists = true;
+          questionCount++;
+          newQuestionID = 'question' + questionCount.toString();
+        }
+      });
+    }
+
+    await firestore.collection('categories')
+        .doc(owner)
+        .collection(category)
+        .doc(newQuestionID)
         .get()
         .then((DocumentSnapshot doc) {
       if (doc.exists) {
@@ -135,7 +165,7 @@ class Question {
         firestore?.collection('categories')
             .doc(owner)
             .collection(category)
-            .doc(questionID)
+            .doc(newQuestionID)
             .set({
           'text': text,
           'answer1': {
@@ -157,6 +187,5 @@ class Question {
         });
       }
     });
-    firestore.terminate();
   }
 }
