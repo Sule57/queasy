@@ -5,6 +5,23 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:queasy/src/model/question.dart';
 import 'answer.dart';
 
+
+/// The class [Quiz] represents a playable quiz
+/// It consists of multiple variables that need to be correctly parsed in order for the class to be properly initialized
+///
+/// The variable [id] represents the unique id of a quiz in the database
+///
+/// The variable [noOfQuestions] represents the amount of questions that the quiz should have and is used to know how many questions to retrieve from the database
+///
+/// The variable [creatorUsername] defines the username of the person who originally created the quiz
+///
+/// The static List [_questions] is a private list that stores objects of type Questions, or to be exact, the actual questions of the quiz
+///
+/// The static list [_usedQuestions] is a private list that stores the indexes of the questions that have already been used in the quiz
+///
+/// The String variable [category] is a variable that stores the category of the quiz, so on which topic is the quiz
+///
+/// The variable [_firebaseFirestore] is a private variable that represents an instance of the firebase connection, used to manipulate the firebase database
 class Quiz {
   int id, noOfQuestions;
   String creatorUsername;
@@ -47,9 +64,8 @@ class Quiz {
     initialize(firestore);
   }
 
-  /// Initializes the quiz
-  ///
-  /// Uses the [firestore] instance to get the questions from the database and adds them to the [_questions] list.
+  /// The [initialize] function is used to retrieve the questions from the database and store them in the [_questions] list.
+  /// The function takes the [firestore] parameter which is the default firestore instance used to retrieve the previously mentioned questions
   Future<void> initialize(FirebaseFirestore firestore) async {
     for (int i = 0; i < noOfQuestions; i++) {
       String questionId = "question${await randomizer(category, firestore)}";
@@ -73,7 +89,6 @@ class Quiz {
       category, questionId, FirebaseFirestore firestore) async {
     Map<String, dynamic>? data;
 
-    // Access the database and get the question
     await firestore
         .collection('categories')
         .doc(creatorUsername)
@@ -84,7 +99,6 @@ class Quiz {
       data = doc.data() as Map<String, dynamic>;
     });
 
-    // Create an instance of Question
     Question question = Question(
       text: data!['text'],
       answers: [
@@ -125,6 +139,10 @@ class Quiz {
     return _questions;
   }
 
+  /// The method [storeQuiz] is used to store the quiz in the database using it's information provided in the general variables
+  /// The method takes the [firestore] optional parameter which makes it easier to test the method
+  /// If the [firestore] instance is provided the method will use it to store the quiz in the database
+  /// If the [firestore] instance is not provided the method will use the default instance to store the quiz in the database
   Future<void> storeQuiz(FirebaseFirestore? firebaseFirestore) async {
 
     if (firebaseFirestore == null) {
