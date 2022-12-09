@@ -145,23 +145,6 @@ void main() async {
           completion(true));
     });
 
-    // // test the delete question function
-    // test('Testing the deleteQuestion function', () async {
-    //   await testQuestion.deleteQuestion(instance);
-    //
-    //   await instance.collection('categories').doc('test').collection('testing'). doc('question3').delete();
-    //
-    //   /// Check if the question was deleted from the database
-    //   expect(
-    //       instance
-    //           .collection('categories')
-    //           .doc('test')
-    //           .collection('testing')
-    //           .doc('question3')
-    //           .get(),
-    //       completion(isNull));
-    // });
-
     // test the editAnswerText function
     test('Testing the editAnswerText function', () async {
       await testQuestion.editAnswerText(1, 'lmao123', instance);
