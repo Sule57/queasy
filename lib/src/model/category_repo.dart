@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:queasy/src/model/category.dart';
+import '../../utils/exceptions.dart';
 
 /// Gathers all the categories available from the user in the variable
 /// [categoryList]. The documents are retrieved from Firestore and stored in
@@ -23,7 +24,7 @@ class CategoryRepo {
   Future<void> createCategory(String cat, Color color) async {
     String? username = getCurrentUserID();
     if (username == null) {
-      throw Exception('User is not logged in');
+      throw UserNotLoggedInException();
     }
     await _privateDoc.set({
       cat: color.value,
@@ -42,7 +43,7 @@ class CategoryRepo {
   Future<void> deleteCategory(String _category) async {
     String? username = getCurrentUserID();
     if (username == null) {
-      throw Exception('User is not logged in');
+      throw UserNotLoggedInException();
     }
     await _privateDoc.update({
       _category: FieldValue.delete(),
@@ -53,7 +54,7 @@ class CategoryRepo {
   Future<List<String>> getPublicCategories() async {
     String? username = getCurrentUserID();
     if (username == null) {
-      throw Exception('User is not logged in');
+      throw UserNotLoggedInException();
     }
     List<String> list = [];
     // // parse through the document and update the positions
@@ -73,7 +74,7 @@ class CategoryRepo {
   Future<List<String>> getPrivateCategories() async {
     String? username = getCurrentUserID();
     if (username == null) {
-      throw Exception('User is not logged in');
+      throw UserNotLoggedInException();
     }
     List<String> list = [];
     // get all document id from public categories
