@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-
 import 'answer.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+
 
 class Question {
   String text = "";
@@ -9,7 +8,7 @@ class Question {
   String category = "";
   String questionID = "";
   String owner = "";
-  late FirebaseFirestore _firebaseFirestore;
+  late FirebaseFirestore firestore;
 
   Question({
     required this.text,
@@ -36,23 +35,26 @@ class Question {
   }
 
 /// edits the question text locally and in firebase
-  void editQuestionText(String newText) {
-    _firebaseFirestore = FirebaseFirestore.instance;
+  Future<void> editQuestionText(String newText, FirebaseFirestore? firestore) async{
+    if (firestore == null) {
+      firestore = FirebaseFirestore.instance;
+    }
     text = newText;
-    _firebaseFirestore.collection('categories')
+    await firestore.collection('categories')
         .doc(owner)
         .collection(category)
         .doc(questionID)
         .update({
       'text': newText,
     });
-    _firebaseFirestore.terminate();
   }
 
-  void editAnswerText(int index, String newText) {
-    _firebaseFirestore = FirebaseFirestore.instance;
+  Future<void> editAnswerText(int index, String newText, FirebaseFirestore? firestore) async{
+    if (firestore == null) {
+      firestore = FirebaseFirestore.instance;
+    }
     answers[index].setText(newText);
-    _firebaseFirestore.collection('categories')
+    await firestore.collection('categories')
         .doc(owner)
         .collection(category)
         .doc(questionID)
@@ -62,12 +64,13 @@ class Question {
         'isCorrect': answers[index].isCorrect,
       },
     });
-    _firebaseFirestore.terminate();
   }
 
   /// Sets the given answer as correct and all others to incorrect
-  void setCorrectAnswer (int index) {
-    _firebaseFirestore = FirebaseFirestore.instance;
+  Future<void> setCorrectAnswer (int index, FirebaseFirestore? firestore) async{
+    if (firestore == null) {
+      firestore = FirebaseFirestore.instance;
+    }
     for (int i = 0; i < answers.length; i++) {
       if (i == index) {
         answers[i].setCorrect(true);
@@ -75,7 +78,7 @@ class Question {
         answers[i].setCorrect(false);
       }
     }
-    _firebaseFirestore.collection('categories')
+    await firestore.collection('categories')
         .doc(owner)
         .collection(category)
         .doc(questionID)
@@ -97,36 +100,72 @@ class Question {
         'isCorrect': answers[3].isCorrect,
       },
     });
-    _firebaseFirestore.terminate();
   }
 
   /// Deletes the question from firebase
-  void deleteQuestion() {
-    _firebaseFirestore = FirebaseFirestore.instance;
-    _firebaseFirestore.collection('categories')
+  Future<void> deleteQuestion(FirebaseFirestore? firestore) async{
+    if (firestore == null) {
+      firestore = FirebaseFirestore.instance;
+    }
+    await firestore.collection('categories')
         .doc(owner)
         .collection(category)
         .doc(questionID)
         .delete();
-    _firebaseFirestore.terminate();
   }
 
   /// Checks if the question id already exists in firebase, if not it adds a new question
-  void addQuestion() {
-    _firebaseFirestore = FirebaseFirestore.instance;
-    _firebaseFirestore.collection('categories')
+  Future<void> addQuestion(FirebaseFirestore? firestore) async {
+    if (firestore == null) {
+      firestore = FirebaseFirestore.instance;
+    }
+
+    // count the amount of questions in the category
+    int questionCount = 0;
+    await firestore.collection('categories')
         .doc(owner)
         .collection(category)
-        .doc(questionID)
+        .get()
+        .then((QuerySnapshot querySnapshot) {
+      querySnapshot.docs.forEach((doc) {
+        questionCount++;
+      });
+    });
+
+    String newQuestionID = "";
+    newQuestionID = 'question' + questionCount.toString();
+
+    // check if the newQuestionID already exists in the category, if so add 1 to the questionCount, then run newQuestionID = 'question' + questionCount.toString(); again, until a new id is found
+    bool idExists = true;
+    while (idExists) {
+      idExists = false;
+      await firestore.collection('categories')
+          .doc(owner)
+          .collection(category)
+          .doc(newQuestionID)
+          .get()
+          .then((DocumentSnapshot documentSnapshot) {
+        if (documentSnapshot.exists) {
+          idExists = true;
+          questionCount++;
+          newQuestionID = 'question' + questionCount.toString();
+        }
+      });
+    }
+
+    await firestore.collection('categories')
+        .doc(owner)
+        .collection(category)
+        .doc(newQuestionID)
         .get()
         .then((DocumentSnapshot doc) {
       if (doc.exists) {
         print('Question id already exists');
       } else {
-        _firebaseFirestore.collection('categories')
+        firestore?.collection('categories')
             .doc(owner)
             .collection(category)
-            .doc(questionID)
+            .doc(newQuestionID)
             .set({
           'text': text,
           'answer1': {
@@ -148,6 +187,5 @@ class Question {
         });
       }
     });
-    _firebaseFirestore.terminate();
   }
 }
