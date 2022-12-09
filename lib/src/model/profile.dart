@@ -102,6 +102,20 @@ class Profile {
   /// throws an [UserAlreadyExistsException] if the user with the same username already exists in the database
   Future<bool> registerUser() async {
 //THIS
+    try {
+      UserCredential userCredential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(
+              email: "barry.allen@example.com",
+              password: "SuperSecretPassword!");
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'weak-password') {
+        print('The password provided is too weak.');
+      } else if (e.code == 'email-already-in-use') {
+        print('The account already exists for that email.');
+      }
+    } catch (e) {
+      print(e);
+    }
     await this
         .firestore
         .collection('users')

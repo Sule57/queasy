@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:queasy/src/model/profile.dart';
 import 'package:queasy/src/model/statistics.dart';
+import 'package:queasy/src/theme_provider.dart';
 import 'package:queasy/src/view/play_quiz/quiz_provider.dart';
 import 'package:queasy/src/view/widgets/widget_tree.dart';
 import 'package:queasy/utils/exceptions/user_already_exists.dart';
@@ -27,13 +28,14 @@ Future<void> main() async {
       providers: [
         ChangeNotifierProvider(create: (_) => QuizProvider()),
         ChangeNotifierProvider(create: (_) => LeaderboardProvider()),
+        ChangeNotifierProvider(
+            create: (_) => ThemeProvider(AppThemes().lightTheme)),
       ],
       child: const Qeasy(),
     ));
   } catch (e) {
     print(e.toString());
   }
-
 }
 
 class Qeasy extends StatelessWidget {
@@ -46,7 +48,7 @@ class Qeasy extends StatelessWidget {
       navigatorKey: navigator,
       debugShowCheckedModeBanner: false,
       title: 'Queasy',
-      theme: AppThemes().themeData,
+      theme: Provider.of<ThemeProvider>(context).currentTheme,
     );
   }
 }
