@@ -30,7 +30,7 @@ class Quiz {
   String category;
   late FirebaseFirestore _firebaseFirestore;
 
-  /// The default onstructor for the [Quiz] class.
+  /// The default constructor for the [Quiz] class.
   ///
   /// This class takes the given parameters to create an instance of class [Quiz]
   /// The [id] parameter represents the unique id of the quiz.

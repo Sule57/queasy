@@ -26,7 +26,7 @@ class CategoryRepo {
     if (username == null) {
       throw UserNotLoggedInException();
     }
-    await _privateDoc.set({
+    await _privateDoc.update({
       cat: color.value,
     });
 
