@@ -102,6 +102,9 @@ void main() async {
     firestore: instance,
   );
 
+  // await quiz.storeQuiz(instance);
+  // print(instance.dump());
+
   /// Store quiz questions into _questions List for testing
   _questions = quiz.getQuestions();
 
@@ -160,5 +163,6 @@ void main() async {
               (element) => element.text == 'What is the capital of Spain?'),
           true);
     });
+
   });
 }

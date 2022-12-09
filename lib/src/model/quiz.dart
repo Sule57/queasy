@@ -50,7 +50,7 @@ class Quiz {
   /// Initializes the quiz
   ///
   /// Uses the [firestore] instance to get the questions from the database and adds them to the [_questions] list.
-  void initialize(FirebaseFirestore firestore) async {
+  Future<void> initialize(FirebaseFirestore firestore) async {
     for (int i = 0; i < noOfQuestions; i++) {
       String questionId = "question${await randomizer(category, firestore)}";
       if (_usedQuestions.contains(questionId)) {
@@ -62,7 +62,6 @@ class Quiz {
         });
       }
     }
-    _firebaseFirestore.terminate();
   }
 
   /// Retrives a question from firebase
@@ -114,13 +113,63 @@ class Quiz {
         .get()
         .then((value) => value.docs.length);
 
-    Random random = Random();
-    int randomNumber = random.nextInt(numOfQuestions);
-    return randomNumber;
+    if (numOfQuestions == 0) {
+      return 0;
+    } else {
+      return Random().nextInt(numOfQuestions);
+    }
   }
 
   /// Returns the list of questions generated for a particular quiz so public access can be achieved
   List<Question> getQuestions() {
     return _questions;
   }
+
+  Future<void> storeQuiz(FirebaseFirestore? firebaseFirestore) async {
+
+    if (firebaseFirestore == null) {
+      firebaseFirestore = FirebaseFirestore.instance;
+    }
+
+    /// count the amount of quizzes in the database
+    var numOfQuizzes = await firebaseFirestore
+        .collection('quizzes')
+        .doc(creatorUsername)
+        .collection('myQuizzes')
+        .get()
+        .then((value) => value.docs.length);
+
+    String quizId = "quiz$numOfQuizzes";
+
+    // Check if the quiz already exists, if it does numofquizzes is incremented and the quizId is updated
+    while (await firebaseFirestore
+        .collection('quizzes')
+        .doc(creatorUsername)
+        .collection('myQuizzes')
+        .doc(quizId)
+        .get()
+        .then((value) => value.exists)) {
+      numOfQuizzes++;
+      quizId = "quiz$numOfQuizzes";
+    }
+
+    // Store the quiz in the database
+    await firebaseFirestore
+        .collection('quizzes')
+        .doc(creatorUsername)
+        .collection('myQuizzes')
+        .doc(quizId)
+        .set({
+      'id': quizId,
+      'creatorUsername': creatorUsername,
+      'noOfQuestions': noOfQuestions,
+      'category': category,
+      'questions': {
+        for (int i = 0; i < _questions.length; i++){
+          'question$i': _usedQuestions[i],
+        }
+      }
+    });
+  }
+
 }
