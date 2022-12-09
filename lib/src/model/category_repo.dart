@@ -3,14 +3,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:queasy/src/model/category.dart';
 
+/// Gathers all the categories available from the user in the variable
+/// [categoryList]. The documents are retrieved from Firestore and stored in
+/// [_publicDoc] for public categories and [_privateDoc] for categories
+/// created by the user.
+///
 class CategoryRepo {
   List<Category> categoryList = [];
-
-  /// Collection [DocumentReference] for the public [Category] location in the database.
   DocumentReference _publicDoc =
       FirebaseFirestore.instance.collection('categories').doc('public');
-
-  /// Collection [DocumentReference] for the private [Category] location in the database.
   DocumentReference _privateDoc = FirebaseFirestore.instance
       .collection('categories')
       .doc(getCurrentUserID());
