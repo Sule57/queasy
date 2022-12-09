@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:queasy/src/view/statistic_view_controller.dart';
+import 'package:queasy/src/view/home_view.dart';
+import 'package:queasy/src/view/statistics/statistic_view_controller.dart';
 
 class StatisticsView extends StatelessWidget {
   StatisticsView({Key? key}) : super(key: key);
@@ -9,9 +10,11 @@ class StatisticsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (controller.getCorrectAnswers() != null){
-      final int correct = controller.getCorrectAnswers();
-    }
+
+    final int correct = controller.getCorrectAnswers();
+    final double points = controller.getPoints();
+    final double secondsSpent = controller.getSecondsSpent();
+    final int correctPercentage = controller.getCorrectPercentage();
 
     return Scaffold(
       
@@ -61,8 +64,7 @@ class StatisticsView extends StatelessWidget {
                                   children: <Widget>[
                                     Expanded(
                                       child: Text(
-                                        //controller.getCorrectAnswers();
-                                        correct.toString(),
+                                        correct.toString() + '\n correct',
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
                                           fontSize: 20,
@@ -71,7 +73,7 @@ class StatisticsView extends StatelessWidget {
                                     ),
                                     Expanded(
                                       child: Text(
-                                        '0 \n Points',
+                                        points.toString() + '\n Points',
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
                                           fontSize: 20,
@@ -80,7 +82,7 @@ class StatisticsView extends StatelessWidget {
                                     ),
                                     Expanded(
                                       child: Text(
-                                        '300 \n Seconds',
+                                        secondsSpent.toString() + '\n Seconds',
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
                                           fontSize: 20,
@@ -100,9 +102,9 @@ class StatisticsView extends StatelessWidget {
                                         mainAxisAlignment: MainAxisAlignment.center,
                                         crossAxisAlignment:
                                         CrossAxisAlignment.center,
-                                        children: const [
+                                        children: [
                                           Text(
-                                            '0%',
+                                            correctPercentage.toString()+'%',
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
                                               fontSize: 20,
@@ -131,7 +133,9 @@ class StatisticsView extends StatelessWidget {
                             RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(30.0),
                             ))),
-                    onPressed: () {},
+                    onPressed: () {
+                      HomeView();
+                    },
                     child: const Text(
                       'Continue',
                       style: TextStyle(
