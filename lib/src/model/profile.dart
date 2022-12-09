@@ -12,7 +12,16 @@ String? getCurrentUserID() {
   return null;
 }
 
-
+///Profile class is an extention of the firebase user
+///adapted for the needs of the quizz application
+/// [email] email field
+/// [username] username
+/// [hashPassword] password
+/// [firstName] user first name
+/// [lastName] user last name
+/// [profilePicture] path to the profile picture
+/// [bio] user description
+/// [age] user age
 class Profile {
   String email;
   String username;
@@ -103,7 +112,7 @@ class Profile {
   /// returns true if successful
   /// throws an [UserAlreadyExistsException] if the user with the same username already exists in the database
   Future<bool> registerUser() async {
-//THIS
+
     await this
         .firestore
         .collection('users')
@@ -115,8 +124,6 @@ class Profile {
       }
     });
 
-    ///
-    //
    if(getCurrentUserID() != null) {
      firestore.collection('users').doc(getCurrentUserID()).set(this.toJson());
      UserStatistics s = UserStatistics(this.username, []);
@@ -127,6 +134,9 @@ class Profile {
    }
    return false;
   }
+  /// gets the current profile from user uid
+  /// [uid] is the firebase user uid
+  /// returns a Profile instance
   static Future<Profile?> getProfilefromUID(String uid) async {
     await FirebaseFirestore.instance
         .collection('users')
