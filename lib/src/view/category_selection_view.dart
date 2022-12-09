@@ -2,9 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:queasy/src/model/category_repo.dart';
 import 'package:queasy/src/view/play_quiz/quiz_view.dart';
 
-/// This is the widget responsible for building the item in the list,
-/// once we have the actual data [item].
-
+/// View for selecting a category.
+///
+/// This view is used to select a category for the quiz. It displays a progress
+/// indicator while the categories are being loaded from the database. When the
+/// categories are loaded, it displays a list of categories and when a category
+/// is selected, it navigates to [QuizView] with the selected category as a
+/// parameter.
 class CategorySelectionView extends StatefulWidget {
   CategorySelectionView({Key? key}) : super(key: key);
 
@@ -12,10 +16,21 @@ class CategorySelectionView extends StatefulWidget {
   State<CategorySelectionView> createState() => _CategorySelectionViewState();
 }
 
+/// State for [CategorySelectionView].
+///
+/// This state is responsible for updating the view when the user selects a
+/// category.
+/// The late parameter [list] is used to store the list of categories to be
+/// displayed.
+/// The parameter [_isLoading] is used to determine whether the view should
+/// display a loading indicator or the list of categories.
 class _CategorySelectionViewState extends State<CategorySelectionView> {
   late List<String> list;
   bool _isLoading = true;
 
+  /// Called when the view is build for the first time, it initializes the
+  /// [list] calling the database and sets [_isLoading] to false once the
+  /// data is loaded.
   init() async {
     _isLoading = true;
     list = await CategoryRepo().getPublicCategories();
@@ -24,12 +39,23 @@ class _CategorySelectionViewState extends State<CategorySelectionView> {
     });
   }
 
+  /// Initializes the view.
+  ///
+  /// Calls [init] to initialize the view.
   @override
   void initState() {
     init();
     super.initState();
   }
 
+  /// Builds the view.
+  ///
+  /// Displays a loading indicator while the categories are being loaded from
+  /// the database.
+  /// Once the categories are loaded, it displays a [ListView] with buttons for
+  /// the list of categories returned from the database. When a category is
+  /// selected, it navigates to [QuizView] with the selected category as a
+  /// parameter.
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {

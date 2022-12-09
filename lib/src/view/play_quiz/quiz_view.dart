@@ -11,9 +11,12 @@ import 'package:queasy/src/view/statistics_view.dart';
 /// This is the main quiz view.
 ///
 /// It is the view that the user sees when they are taking a quiz. It shows one
-/// [Question] with a number of possible [Answer], and in an answer button
+/// [Question] and four [Answer]s, and in an answer button
 /// press, the view is updated with the data from the next question. When the
 /// quiz is over, the user is taken to [StatisticsView].
+///
+/// The widget takes a parameter [category] when it is created. This parameter
+/// is used to get the questions from the database.
 class QuizView extends StatefulWidget {
   final String category;
 
@@ -26,13 +29,19 @@ class QuizView extends StatefulWidget {
 }
 
 /// State for [QuizView].
+///
+/// This state is responsible for updating the view when the user answers a
+/// question.
+///
+/// The state has a parameter [category] taken from the widget. This parameter
+/// is used to get the questions from the database.
 class _QuizViewState extends State<QuizView> {
   get category => widget.category;
 
   /// Builds the view.
   ///
-  /// Uses a custom bottom navigation bar for navigation and a [Stack] to display the
-  /// [QuizViewBackground] and the [QuizViewContent] on top.
+  /// Uses a [Stack] to display the [QuizViewBackground], and the
+  /// [QuizViewContent] on top.
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,7 +57,7 @@ class _QuizViewState extends State<QuizView> {
 
 /// Background for [QuizView].
 ///
-/// Uses a [StatelessWidget] to display a background color.
+/// Uses a [StatelessWidget] to display the background colors.
 class QuizViewBackground extends StatelessWidget {
   /// Constructor for [QuizViewBackground].
   const QuizViewBackground({Key? key}) : super(key: key);
@@ -95,6 +104,8 @@ class QuizViewContent extends StatefulWidget {
 class _QuizViewContentState extends State<QuizViewContent> {
   get category => widget.category;
 
+  /// Constructs the quiz from the database and starts the timer for the first
+  /// time.
   @override
   void initState() {
     context
@@ -104,6 +115,8 @@ class _QuizViewContentState extends State<QuizViewContent> {
     super.initState();
   }
 
+  /// Function called when [QuizView] is active again on screen. It restarts the
+  /// timer and starts the quiz.
   @override
   void didChangeDependencies() {
     print('Quiz view activated');
@@ -114,10 +127,12 @@ class _QuizViewContentState extends State<QuizViewContent> {
     super.didChangeDependencies();
   }
 
-  /// Builds the content.
-  ///
-  /// It uses a [Column] to display the different elements of the view:
-  /// [categoryTitle], [scoreTracking], [questionContainer] and [answerButtons].
+  /// Builds the content depending on the screen size, with a threshold of 700
+  /// pixels. If the screen is smaller than 700 pixels, the function displays
+  /// [QuizViewMobileContent]. Otherwise, it displays [QuizViewDesktopContent].
+  /// The builder takes a stream of [QuerySnapshot]s from the database and
+  /// displays the questions only when they are loaded. Until then, it displays
+  /// a [CircularProgressIndicator].
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -140,20 +155,18 @@ class _QuizViewContentState extends State<QuizViewContent> {
     );
   }
 
+  /// This function is called everytime [QuizView] stops being displayed on
+  /// screen. It stops the timer.
   @override
   void deactivate() {
     print("Quiz View deactivated");
     Provider.of<QuizProvider>(context, listen: false).stopTimer();
     super.deactivate();
   }
-
-  // @override
-  // void dispose() {
-  //   Provider.of<QuizProvider>(context, listen: false).stopTimer();
-  //   super.dispose();
-  // }
 }
 
+/// Content for [QuizView] on desktop devices and bigger screens. It shows
+/// the question and the answer in 2 rows of 2 columns.
 class QuizViewDesktopContent extends StatelessWidget {
   const QuizViewDesktopContent({Key? key}) : super(key: key);
 
@@ -209,6 +222,8 @@ class QuizViewDesktopContent extends StatelessWidget {
   }
 }
 
+/// Content for [QuizView] on mobile devices and smaller screens. It shows
+/// the question and the answers in one column.
 class QuizViewMobileContent extends StatelessWidget {
   const QuizViewMobileContent({Key? key}) : super(key: key);
 
