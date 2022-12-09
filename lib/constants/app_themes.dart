@@ -8,24 +8,28 @@ Color white = const Color(0xfff1ffe7);
 Color black = const Color(0xff0d0106);
 
 ThemeData lightTheme = ThemeData(
+    scaffoldBackgroundColor: Colors.white,
+    backgroundColor: Colors.white,
     colorScheme: ColorScheme.light(
-  primary: const Color(0xff72479d), //purple
-  secondary: const Color(0xfff19c79), //orange
-  tertiary: const Color(0xff9fc490), //dark green
-  onTertiary: const Color(0xfff1ffe7), //light green
-  background: Colors.white,
-  onBackground: Colors.black,
-));
+      primary: const Color(0xff72479d), //purple
+      secondary: const Color(0xfff19c79), //orange
+      tertiary: const Color(0xff9fc490), //dark green
+      onTertiary: const Color(0xfff1ffe7), //light green
+      background: Colors.white,
+      onBackground: Colors.black,
+    ));
 
 ThemeData darkTheme = ThemeData(
+    scaffoldBackgroundColor: Colors.black,
+    backgroundColor: Colors.black,
     colorScheme: ColorScheme.dark(
-  primary: const Color(0xff72479d), //purple
-  secondary: const Color(0xfff19c79), //orange
-  tertiary: const Color(0xff9fc490), //dark green
-  onTertiary: const Color(0xfff1ffe7), //light green
-  background: Colors.black,
-  onBackground: Colors.white,
-));
+      primary: const Color(0xff72479d), //purple
+      secondary: const Color(0xfff19c79), //orange
+      tertiary: const Color(0xff9fc490), //dark green
+      onTertiary: const Color(0xfff1ffe7), //light green
+      background: Colors.black,
+      onBackground: Colors.white,
+    ));
 
 class AppThemes {
   ThemeData lightTheme = ThemeData(

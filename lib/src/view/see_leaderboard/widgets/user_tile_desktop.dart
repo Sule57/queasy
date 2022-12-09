@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:queasy/src/model/leaderboard_entry.dart';
+
+import '../../../theme_provider.dart';
 
 class UserTileDesktop extends StatelessWidget {
   final int index;
@@ -15,12 +18,18 @@ class UserTileDesktop extends StatelessWidget {
         Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15),
-            color: Colors.white,
+            color: Provider.of<ThemeProvider>(context)
+                .currentTheme
+                .colorScheme
+                .background,
           ),
           child: ListTile(
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-            tileColor: Colors.white,
+            tileColor: Provider.of<ThemeProvider>(context)
+                .currentTheme
+                .colorScheme
+                .background,
             textColor: const Color(0xFFFF8C66),
             iconColor: Colors.white,
             leading: Container(
@@ -38,7 +47,12 @@ class UserTileDesktop extends StatelessWidget {
                 ))),
             title: Text(
               entries[index].getName,
-              style: TextStyle(color: Colors.black, fontSize: 26),
+              style: TextStyle(
+                  color: Provider.of<ThemeProvider>(context)
+                      .currentTheme
+                      .colorScheme
+                      .onBackground,
+                  fontSize: 26),
             ),
             subtitle: Text(
               entries[index].getScore.toString() + " points",
