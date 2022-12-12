@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:queasy/src/model/category.dart';
 import '../../utils/exceptions.dart';
+import 'package:queasy/src/model/profile.dart';
 
 /// Gathers all the categories available from the user in the variable
 /// [categoryList]. The documents are retrieved from Firestore and stored in

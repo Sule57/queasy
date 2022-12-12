@@ -121,86 +121,45 @@ class Leaderboard {
   /// In the end, the All leaderboard is also updated in the same way.
   Future<void> updateCurrentUserPoints(int newPoints) async {
     int oldPoints = _currentPlayer.getScore;
-    if (newPoints >= 0) {
-      int lowestPoints = 9999999999;
-      int lowestPosition = 1;
-      // parse through the document and update the positions
-      await _doc.get().then((DocumentSnapshot documentSnapshot) {
-        if (documentSnapshot.exists) {
-          Map<String, dynamic> data =
-              documentSnapshot.data() as Map<String, dynamic>;
-          for (String key in data.keys) {
-            if (data[key]['points'] < newPoints + oldPoints &&
-                data[key]['points'] >= oldPoints) {
-              _doc.set({
-                key: {
-                  'points': data[key]['points'],
-                  'position': data[key]['position'] + 1
-                }
-              }, SetOptions(merge: true));
-            }
-            if (data[key]['points'] < lowestPoints &&
-                data[key]['points'] > newPoints + oldPoints) {
-              lowestPoints = data[key]['points'];
-              lowestPosition = data[key]['position'] + 1;
-            } else if (data[key]['points'] == newPoints + oldPoints) {
-              lowestPoints = data[key]['points'];
-              lowestPosition = data[key]['position'];
-            }
+    int lowestPoints = 9999999999;
+    int lowestPosition = 1;
+    // parse through the document and update the positions
+    await _doc.get().then((DocumentSnapshot documentSnapshot) {
+      if (documentSnapshot.exists) {
+        Map<String, dynamic> data =
+            documentSnapshot.data() as Map<String, dynamic>;
+        for (String key in data.keys) {
+          if (data[key]['points'] < newPoints + oldPoints &&
+              data[key]['points'] >= oldPoints) {
+            _doc.set({
+              key: {
+                'points': data[key]['points'],
+                'position': data[key]['position'] + 1
+              }
+            }, SetOptions(merge: true));
+          }
+          if (data[key]['points'] < lowestPoints &&
+              data[key]['points'] > newPoints + oldPoints) {
+            lowestPoints = data[key]['points'];
+            lowestPosition = data[key]['position'] + 1;
+          } else if (data[key]['points'] == newPoints + oldPoints) {
+            lowestPoints = data[key]['points'];
+            lowestPosition = data[key]['position'];
           }
         }
-      });
+      }
+    });
 
-      await _doc.set({
-        _currentPlayer.getName: {
-          'points': newPoints + oldPoints,
-          'position': lowestPosition
-        }
-      }, SetOptions(merge: true));
-      _currentPlayer = LeaderboardEntry(
-          _currentPlayer.getName, newPoints + oldPoints, lowestPosition);
+    await _doc.set({
+      _currentPlayer.getName: {
+        'points': newPoints + oldPoints,
+        'position': lowestPosition
+      }
+    }, SetOptions(merge: true));
+    _currentPlayer = LeaderboardEntry(
+        _currentPlayer.getName, newPoints + oldPoints, lowestPosition);
 
-      await getData();
-    } else {
-      int highestPoints = -9999999999;
-      int highestPosition = -9999999999;
-
-      await _doc.get().then((DocumentSnapshot documentSnapshot) {
-        if (documentSnapshot.exists) {
-          Map<String, dynamic> data =
-              documentSnapshot.data() as Map<String, dynamic>;
-          for (String key in data.keys) {
-            if (data[key]['points'] >= newPoints + oldPoints &&
-                data[key]['points'] < oldPoints) {
-              _doc.set({
-                key: {
-                  'points': data[key]['points'],
-                  'position': data[key]['position'] - 1
-                }
-              }, SetOptions(merge: true));
-            }
-            if (data[key]['points'] > highestPoints &&
-                data[key]['points'] <= newPoints + oldPoints) {
-              highestPoints = data[key]['points'];
-              highestPosition = data[key]['position'] - 1;
-            } else if (data[key]['points'] == newPoints + oldPoints) {
-              highestPoints = data[key]['points'];
-              highestPosition = data[key]['position'];
-            }
-          }
-        }
-      });
-      await _doc.set({
-        _currentPlayer.getName: {
-          'points': newPoints + oldPoints,
-          'position': highestPosition
-        }
-      }, SetOptions(merge: true));
-
-      _currentPlayer = LeaderboardEntry(
-          _currentPlayer.getName, newPoints + oldPoints, highestPosition);
-      await getData();
-    }
+    await getData();
     await updateAllLeaderboard(newPoints);
   }
 
@@ -223,81 +182,44 @@ class Leaderboard {
         }
       }
     });
-    if (newPoints >= 0) {
-      int lowestPoints = 9999999999;
-      int lowestPosition = 1;
-      // parse through the document and update the positions
-      await _docAll.get().then((DocumentSnapshot documentSnapshot) {
-        if (documentSnapshot.exists) {
-          Map<String, dynamic> data =
-              documentSnapshot.data() as Map<String, dynamic>;
-          for (String key in data.keys) {
-            if (data[key]['points'] < newPoints + oldPoints &&
-                data[key]['points'] >= oldPoints) {
-              _docAll.set({
-                key: {
-                  'points': data[key]['points'],
-                  'position': data[key]['position'] + 1
-                }
-              }, SetOptions(merge: true));
-            }
+    int lowestPoints = 9999999999;
+    int lowestPosition = 1;
+    // parse through the document and update the positions
+    await _docAll.get().then((DocumentSnapshot documentSnapshot) {
+      if (documentSnapshot.exists) {
+        Map<String, dynamic> data =
+            documentSnapshot.data() as Map<String, dynamic>;
+        for (String key in data.keys) {
+          if (data[key]['points'] < newPoints + oldPoints &&
+              data[key]['points'] >= oldPoints) {
+            _docAll.set({
+              key: {
+                'points': data[key]['points'],
+                'position': data[key]['position'] + 1
+              }
+            }, SetOptions(merge: true));
+          }
 
-            if (data[key]['points'] < lowestPoints &&
-                data[key]['points'] > newPoints + oldPoints) {
-              lowestPoints = data[key]['points'];
-              lowestPosition = data[key]['position'] + 1;
-            } else if (data[key]['points'] == newPoints + oldPoints) {
-              lowestPoints = data[key]['points'];
-              lowestPosition = data[key]['position'];
-            }
+          if (data[key]['points'] < lowestPoints &&
+              data[key]['points'] > newPoints + oldPoints) {
+            lowestPoints = data[key]['points'];
+            lowestPosition = data[key]['position'] + 1;
+          } else if (data[key]['points'] == newPoints + oldPoints) {
+            lowestPoints = data[key]['points'];
+            lowestPosition = data[key]['position'];
           }
         }
-      });
-      await _docAll.set({
-        _currentPlayer.getName: {
-          'points': newPoints + oldPoints,
-          'position': lowestPosition
-        }
-      }, SetOptions(merge: true));
+      }
+    });
+    await _docAll.set({
+      _currentPlayer.getName: {
+        'points': newPoints + oldPoints,
+        'position': lowestPosition
+      }
+    }, SetOptions(merge: true));
 
-      await getData();
-    } else {
-      int highestPoints = -9999999999;
-      int highestPosition = -9999999999;
+    await getData();
 
-      await _docAll.get().then((DocumentSnapshot documentSnapshot) {
-        if (documentSnapshot.exists) {
-          Map<String, dynamic> data =
-              documentSnapshot.data() as Map<String, dynamic>;
-          for (String key in data.keys) {
-            if (data[key]['points'] >= newPoints + oldPoints &&
-                data[key]['points'] < oldPoints) {
-              _docAll.set({
-                key: {
-                  'points': data[key]['points'],
-                  'position': data[key]['position'] - 1
-                }
-              }, SetOptions(merge: true));
-            }
-            if (data[key]['points'] > highestPoints &&
-                data[key]['points'] <= newPoints + oldPoints) {
-              highestPoints = data[key]['points'];
-              highestPosition = data[key]['position'] - 1;
-            } else if (data[key]['points'] == newPoints + oldPoints) {
-              highestPoints = data[key]['points'];
-              highestPosition = data[key]['position'];
-            }
-          }
-        }
-      });
-      await _docAll.set({
-        _currentPlayer.getName: {
-          'points': newPoints + oldPoints,
-          'position': highestPosition
-        }
-      }, SetOptions(merge: true));
-      await getData();
-    }
   }
 
   /// create a new [Leaderboard] with 10 entries with random data (for testing purposes).

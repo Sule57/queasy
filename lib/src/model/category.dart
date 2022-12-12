@@ -1,12 +1,10 @@
 import 'dart:ui';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:queasy/src/model/profile.dart';
 import 'package:queasy/src/model/question.dart';
 import 'package:queasy/utils/exceptions.dart';
 
-String getCurrentUserID() {
-  return 'Savo';
-}
 
 class Category {
   /// Collection [DocumentReference] for the public [Category] location in the database.
@@ -27,13 +25,13 @@ class Category {
   /// Flag to check if the [Category] is public or private.
   late bool _isPublic;
 
-  /// Constructor for the [Category] class.
+  /// Constructor for the private [Category] class.
   ///
   /// [category] is the name of the [Category] and [color] is the color of the [Category].
   Category({required String category, required Color color}) {
     _category = category;
     _color = color;
-    // this._createNewCategory(_category, _color);
+    _isPublic = false;
   }
 
   /// Constructor for the [Category] class for testing.
@@ -56,7 +54,7 @@ class Category {
   /// [json] is the JSON data of the [Category]. Throws an error if the [json] is not in the correct format.
   Category.fromJSON(Map<String, dynamic> json) {
     if (json.length != 1) {
-      throw Exception('Invalid JSON format for Category');
+      throw InvalidJSONFormatException();
     }
     _category = json.keys.first;
     _color = Color(json[_category]);
