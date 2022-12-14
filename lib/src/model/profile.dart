@@ -6,7 +6,6 @@ import '../../utils/exceptions/user_already_exists.dart';
 
 String? getCurrentUserID() {
   if (FirebaseAuth.instance.currentUser != null) {
-    print(FirebaseAuth.instance.currentUser?.uid);
     return FirebaseAuth.instance.currentUser?.uid;
   }
   return null;
@@ -88,7 +87,10 @@ class Profile {
         lastName = json['lastName'],
         profilePicture = json['profilePicture'],
         bio = json['bio'],
-        age = json['age'];
+        age = json['age'],
+        privatecScore = json['privateScore'],
+        publicScore = json['scores'];
+
 
   @override
   String toString() {
@@ -116,7 +118,7 @@ class Profile {
     await this
         .firestore
         .collection('users')
-        .doc(this.username)
+        .doc(getCurrentUserID())
         .get()
         .then((DocumentSnapshot documentSnapshot) {
       if (documentSnapshot.exists) {
@@ -138,17 +140,16 @@ class Profile {
   /// [uid] is the firebase user uid
   /// returns a Profile instance
   static Future<Profile?> getProfilefromUID(String uid) async {
+    Profile? result;
     await FirebaseFirestore.instance
         .collection('users')
         .doc(uid)
         .get()
         .then((DocumentSnapshot documentSnapshot) {
         Map<String, dynamic> j =  documentSnapshot.data() as Map<String, dynamic>;
-        var result = new Profile.fromJson(j);
-        return result;
-
+        result = new Profile.fromJson(j);
     });
-
+    return result;
   }
 
 

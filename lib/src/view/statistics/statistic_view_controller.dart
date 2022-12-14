@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:queasy/src/model/profile.dart';
 import 'package:queasy/src/model/statistics.dart';
+import 'package:queasy/utils/exceptions/user_does_not_exist_exception.dart';
 
 class StatisticsViewController {
   UserStatistics? statistics;
@@ -12,10 +13,15 @@ class StatisticsViewController {
   void init() async {
     Profile? p;
     var uid = getCurrentUserID();
-    if(uid != null)
-      p =  await Profile.getProfilefromUID(uid);
-      if(p != null)
+    if(uid != null) {
+      p = await Profile.getProfilefromUID(uid);
+      if (p != null) {
         statistics = await p.getUserStatistics();
+      }else{
+        throw UserDoesNotExistException();
+      }
+    }else
+      throw UserNotLoggedInException();
   }
   int getCorrectAnswers(){
     var quiz = statistics?.userQuizzes.last;

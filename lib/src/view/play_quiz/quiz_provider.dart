@@ -2,10 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:queasy/main.dart';
-import 'package:queasy/src/view/statistics_view.dart';
+
 
 import '../../model/profile.dart';
 import '../../model/quiz.dart';
+import '../statistics/statistics_view.dart';
 
 class QuizProvider with ChangeNotifier {
   // QuizProvider._internal();
