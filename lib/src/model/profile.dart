@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:queasy/src/model/statistics.dart';
 
-import '../../utils/exceptions/user_already_exists.dart';
+import '../../utils/exceptions.dart';
 
 String? getCurrentUserID() {
   if (FirebaseAuth.instance.currentUser != null) {

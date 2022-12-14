@@ -3,18 +3,20 @@ import 'package:provider/provider.dart';
 
 import '../quiz_provider.dart';
 
-/// Uses a [Container] with the main color of [AppThemes] to display the text
-/// of the current question. Takes the [context] as parameter and a [height]
-/// to set the height of the container.
+/// Widget to display questions of the quiz.
 class QuestionContainer extends StatelessWidget {
   const QuestionContainer({
     Key? key,
   }) : super(key: key);
 
+  /// Builds the view.
+  ///
+  /// It displays a container with color of the main color of the theme. It
+  /// displays the text of the question aligned to the center. This text
+  /// is updated every time the user answers a question.
   @override
   Widget build(BuildContext context) {
     String text = Provider.of<QuizProvider>(context).getCurrentQuestionText();
-
     double height = MediaQuery.of(context).size.height;
 
     return Container(
