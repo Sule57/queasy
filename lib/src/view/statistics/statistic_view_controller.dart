@@ -30,14 +30,14 @@ class StatisticsViewController {
     else
       return 0;
   }
-  double getSecondsSpent(){
+  int getSecondsSpent(){
     var quiz = statistics?.userQuizzes.last;
     if (quiz != null)
       return quiz.secondsSpent;
     else
       return 0;
   }
-  double getPoints(){
+  int getPoints(){
     var quiz = statistics?.userQuizzes.last;
     if (quiz != null)
       return quiz.secondsSpent + quiz.correct;

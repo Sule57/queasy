@@ -167,8 +167,9 @@ class Profile {
       if (documentSnapshot.exists) {
         s = UserStatistics.fromJson(
             this.username, documentSnapshot.data() as Map<String, dynamic>);
-        //print(s.toString());
-        return s;
+
+      }else{
+        s = UserStatistics.fromJson(this.username, {});
       }
     });
     return s;
@@ -178,7 +179,7 @@ class Profile {
   /// [username] The username of the user
   void updateScore(String username, String category, int score) {
     final firebaseFirestore = FirebaseFirestore.instance;
-    firebaseFirestore.collection('users').doc(this.username).update({
+    firebaseFirestore.collection('users').doc(getCurrentUserID()).update({
       'scores.$category': FieldValue.increment(score),
     });
   }

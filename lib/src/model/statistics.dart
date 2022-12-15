@@ -15,14 +15,16 @@ class UserStatistics{
 
     String username = usr;
     List<UserQuizzResult> q = [];
-    print(json.keys);
-    print(json['quizz1']['correct']);
+    print(json.keys.toString());
     for(String str in json.keys){
       q.add(UserQuizzResult.fromJson(json[str]));
     }
     return UserStatistics(username, q);
 
   }
+
+
+
 /// converts UserStatistics instance to json object of type
   /// Map<String, dynamic>
 Map<String, dynamic> toJson(){
@@ -35,7 +37,7 @@ Map<String, dynamic> toJson(){
   }
   /// stores the statistics to the database
   Future<void> saveStatistics() async{
-    firestore.collection('UserStatistics').doc(this.username).update(this.toJson());
+   await firestore.collection('UserStatistics').doc(this.username).update(this.toJson());
   }
   //very important note:
   // TO STORE THE DATA INTO FIREBASE YOU MUST RUN saveStatistics()
@@ -46,6 +48,8 @@ Map<String, dynamic> toJson(){
     this.userQuizzes.add(r);
 
  }
+
+
   @override
   String toString() {
     return 'UserStatistics{username: $username, userQuizzes: $userQuizzes}';
@@ -60,7 +64,7 @@ class UserQuizzResult {
   String quizzName;
   int allQestions;
   int correct;
-  double secondsSpent;
+  int secondsSpent;
 
   UserQuizzResult(this.quizzName, this.correct,this.allQestions, this.secondsSpent);
 

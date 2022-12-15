@@ -4,7 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:queasy/src/model/question.dart';
 import 'package:queasy/utils/exceptions.dart';
 
-String getCurrentUserID() {
+
+//change the name getCurrentUserID conflicts with
+// getCurrentUserID in profile.dart
+String getCurrentUserIDTest() {
   return 'Savo';
 }
 
@@ -16,7 +19,7 @@ class Category {
   /// Collection [DocumentReference] for the private [Category] location in the database.
   DocumentReference _privateDoc = FirebaseFirestore.instance
       .collection('categories')
-      .doc(getCurrentUserID());
+      .doc(getCurrentUserIDTest());
 
   /// [Color] of the [Category].
   late Color _color;
@@ -47,7 +50,7 @@ class Category {
     _category = category;
     _color = color;
     _publicDoc = firestore.collection('categories').doc('public');
-    _privateDoc = firestore.collection('categories').doc(getCurrentUserID());
+    _privateDoc = firestore.collection('categories').doc(getCurrentUserIDTest());
     // this._createNewCategory(_category, _color);
   }
 
@@ -69,7 +72,7 @@ class Category {
 
   /// Changes the name of the current [Category].
   Future<void> changeNameOfCategory(String newName) async {
-    String? username = getCurrentUserID();
+    String? username = getCurrentUserIDTest();
     if (username == null) {
       throw UserNotLoggedInException();
     }
@@ -107,7 +110,7 @@ class Category {
   ///
   /// [color] is the color of the [Category].
   Future<void> setColor(Color col) async {
-    String? username = getCurrentUserID();
+    String? username = getCurrentUserIDTest();
     if (username == null) {
       throw UserNotLoggedInException();
     }
@@ -119,7 +122,7 @@ class Category {
 
   /// Get the name of the current [Category].
   String getCategory() {
-    String? username = getCurrentUserID();
+    String? username = getCurrentUserIDTest();
     if (username == null) {
       throw UserNotLoggedInException();
     }
@@ -128,7 +131,7 @@ class Category {
 
   /// Get the color of the current [Category].
   Color getColor() {
-    String? username = getCurrentUserID();
+    String? username = getCurrentUserIDTest();
     if (username == null) {
       throw UserNotLoggedInException();
     }
@@ -137,7 +140,7 @@ class Category {
 
   /// Get the list of [Question]s in the current public [Category].
   Future<List<Question>> getQuestionsFromPublicCategory(String cat) async {
-    String? username = getCurrentUserID();
+    String? username = getCurrentUserIDTest();
     if (username == null) {
       throw UserNotLoggedInException();
     }
@@ -158,7 +161,7 @@ class Category {
 
   /// Get the list of [Question]s in the current private [Category].
   Future<List<Question>> getQuestionsFromPrivateCategory() async {
-    String? username = getCurrentUserID();
+    String? username = getCurrentUserIDTest();
     if (username == null) {
       throw UserNotLoggedInException();
     }
