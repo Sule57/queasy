@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:queasy/src/model/profile.dart';
 import 'package:queasy/src/model/statistics.dart';
-import 'package:queasy/utils/exceptions/user_does_not_exist_exception.dart';
+
+import '../../../utils/exceptions.dart';
+
 
 class StatisticsViewController {
   UserStatistics? statistics;

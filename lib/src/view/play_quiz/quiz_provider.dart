@@ -4,7 +4,7 @@ import 'package:queasy/main.dart';
 import 'package:queasy/src/model/category.dart';
 import 'package:queasy/src/model/statistics.dart';
 import 'package:queasy/src/view/statistics/statistics_view.dart';
-import 'package:queasy/utils/exceptions/user_does_not_exist_exception.dart';
+import '../../../utils/exceptions.dart';
 import '../../model/profile.dart';
 import '../../model/quiz.dart';
 
@@ -72,7 +72,7 @@ class QuizProvider with ChangeNotifier {
   get timeLeft => _timeLeft.inSeconds.toString();
 
 
-
+// assign the current user to the app
   QuizProvider() {
     // default profile
     player = Profile(
@@ -84,10 +84,13 @@ class QuizProvider with ChangeNotifier {
   }
 
   //player = Profile.getProfilefromUID(getCurrentUserID());
+  /// initializes [player] as the current logged in user
   void init() async {
     String? uid = getCurrentUserID();
     Profile? p;
     if (uid != null) {
+      // very important class method creating Profile instance
+      // from profile UID !!!!
       p = await Profile.getProfilefromUID(uid);
       if (p != null) {
         player = p;
