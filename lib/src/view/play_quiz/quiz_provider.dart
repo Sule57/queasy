@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:queasy/main.dart';
 import 'package:queasy/src/model/category.dart';
@@ -64,11 +65,8 @@ class QuizProvider with ChangeNotifier {
   bool _currentQuestionAnswered = false;
   static Timer? countdownTimer;
   static Duration _timeLeft = const Duration(seconds: 15);
-  int counter = 0;
   get category => _category;
-
   get quiz => _quiz;
-
   get timeLeft => _timeLeft.inSeconds.toString();
 
 
@@ -181,25 +179,25 @@ class QuizProvider with ChangeNotifier {
       resetTimer();
       notifyListeners();
     } else {
-      counter++;
       //TODO WHEN QUIZZES NAMES ARE IMPLEMENTED ADD NAME TO THE QUIZZREQULT
       //TODO GET THE REAL TIME SPENT
+      Random rand = Random();
       UserQuizzResult r = UserQuizzResult(
-          "Test8", correctAnswers, _totalQuestions, _timeLeft.inSeconds);
+          "Test" + rand.nextInt(50).toString(), correctAnswers, _totalQuestions, _timeLeft.inSeconds);
       UserStatistics? stat = await player.getUserStatistics();
       if (stat != null) {
-        print(counter);
         stat.addUserQuizzResult(r);
-       await stat.saveStatistics();
+        print(Profile.globalCounter);
+        await stat.saveStatistics();
       }
-      endQuiz();
+      await endQuiz();
     }
   }
 
   /// It is called when the user clicks on an answer button of the last
   /// question. It stops the timer, updates the score of the player and takes
   /// the user to the [StatisticsView].
-  void endQuiz() {
+  Future<void> endQuiz() async {
     stopTimer();
     player.updateScore("Savo", _category, _currentPoints);
     navigator.currentState?.pop();

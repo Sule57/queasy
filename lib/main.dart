@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:queasy/src/view/play_quiz/quiz_provider.dart';
+import 'package:queasy/src/view/registration/register_view_controller.dart';
 import 'package:queasy/src/view/widgets/widget_tree.dart';
 
 import 'constants/app_themes.dart';
@@ -27,6 +28,7 @@ Future<void> main() async {
       ],
       child: const Qeasy(),
     ));
+
   } catch (e) {
     print(e.toString());
   }

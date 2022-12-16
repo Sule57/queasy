@@ -22,6 +22,7 @@ String? getCurrentUserID() {
 /// [bio] user description
 /// [age] user age
 class Profile {
+  static int globalCounter = 0;
   String email;
   String username;
   String hashPassword;
@@ -169,6 +170,7 @@ class Profile {
             this.username, documentSnapshot.data() as Map<String, dynamic>);
 
       }else{
+        print("This should never happen");
         s = UserStatistics.fromJson(this.username, {});
       }
     });
