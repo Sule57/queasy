@@ -217,7 +217,7 @@ class _RegisterDesktopState extends State<RegisterDesktop> {
                       child: ElevatedButton(
                         onPressed: (() async {
                           if (formKey.currentState!.validate()) {
-                            bool success = controller.signUp(
+                            bool success = await controller.signUp(
                               controllerEmail.text,
                               controllerUsername.text,
                               controllerPassword.text,

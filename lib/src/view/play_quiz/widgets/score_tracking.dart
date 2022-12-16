@@ -3,14 +3,19 @@ import 'package:provider/provider.dart';
 
 import '../quiz_provider.dart';
 
-/// Uses a [Row] to display the current points of the user as well as the
-/// count of questions answered so far out of the total number of questions.
-/// Takes the [context] as parameter.
+/// Widget to display the score, the current question being answered, and the
+/// time left.
 class ScoreTracking extends StatelessWidget {
   const ScoreTracking({
     Key? key,
   }) : super(key: key);
 
+  /// Builds the view.
+  ///
+  /// Uses a [Row] to display the time left, the current points of the user and
+  /// count of questions answered so far out of the total number of questions.
+  /// The time gets updated every second and the points and question count get
+  /// updated every time the user answers a question.
   @override
   Widget build(BuildContext context) {
     String pointTracker = Provider.of<QuizProvider>(context).pointTracker();

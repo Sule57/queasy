@@ -7,7 +7,6 @@ import 'package:queasy/src/model/statistics.dart';
 import 'package:queasy/src/theme_provider.dart';
 import 'package:queasy/src/view/play_quiz/quiz_provider.dart';
 import 'package:queasy/src/view/widgets/widget_tree.dart';
-import 'package:queasy/utils/exceptions/user_already_exists.dart';
 
 import 'constants/app_themes.dart';
 import 'services/firebase_options.dart';

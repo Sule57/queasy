@@ -1,12 +1,11 @@
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:queasy/src/model/answer.dart';
 import 'package:queasy/src/model/question.dart';
-import 'package:queasy/src/model/quiz.dart';
 
 /// Main function for testing the [Quiz] class.
 void main() async {
   final instance = FakeFirebaseFirestore();
-  late List<Question> _questions;
 
   /// Creates question0 for testing: What is the capital of France?
   Map<String, dynamic> question0 = {
@@ -93,75 +92,75 @@ void main() async {
       .doc('question4')
       .set(question4);
 
-  /// Initializes the test constructor for the [Quiz] class
-  Quiz quiz = Quiz.test(
-    id: 58,
-    creatorUsername: 'test',
-    noOfQuestions: 5,
-    category: 'testing',
-    firestore: instance,
-  );
+  Question testQuestion = Question(text: 'What is the Capital of the US?', answers: [
+    Answer('Washington DC', true),
+    Answer('New York', false),
+    Answer('Los Angeles', false),
+    Answer('Chicago', false),
+  ], category: 'testing', questionID: 'question3', owner: 'test');
 
-  // await quiz.storeQuiz(instance);
-  // print(instance.dump());
+  await testQuestion.addQuestion(instance);
 
-  /// Store quiz questions into _questions List for testing
-  _questions = quiz.getQuestions();
+  group('testing of the question.dart functions for firebase', () {
 
-  group('Tests the quiz model (retrieving questions)', () {
-    /// Testing if the amount of questions int the list is the same as in the constructor
-    test('Quiz should have a question list with 5 questions', () {
-      expect(_questions.length, 5);
+    /// Check if the question was added to the database
+    test('Testing the addQuestion function', ()
+    {
+      expect(
+          instance.collection('categories').doc('test').collection('testing').doc(
+              'question5').get(), completion(isNotNull));
     });
 
-    /// Testing if question0 is in the returned list
-    test(
-        'One of the questions should have the text \'What is the capital of France?\'',
-        () {
+    // test if the editQuestion function works
+    test('Testing the editQuestion function', () async {
+      await testQuestion.editQuestionText('lmao123', instance);
+
       expect(
-          _questions.any(
-              (element) => element.text == 'What is the capital of France?'),
-          true);
+          instance
+              .collection('categories')
+              .doc('test')
+              .collection('testing')
+              .doc('question3')
+              .get()
+              .then((value) => value.data()!['text']),
+          completion('lmao123'));
     });
 
-    /// Testing if question1 is in the returned list
-    test(
-        'One of the questions should have the text \'What is the capital of Germany?\'',
-        () {
+    // test the set corect answer function
+    test('Testing the setCorrectAnswer function', () async {
+      await testQuestion.setCorrectAnswer(1, instance);
+      expect(testQuestion.answers[1].isCorrect, true);
+
+      print(instance.dump());
+
+      /// Check if the isCorrect field of answer 2 in question3 is true in the database
       expect(
-          _questions.any(
-              (element) => element.text == 'What is the capital of Germany?'),
-          true);
+          instance
+              .collection('categories')
+              .doc('test')
+              .collection('testing')
+              .doc('question3')
+              .get()
+              .then((value) => value.data()!['answer2']['isCorrect']),
+          completion(true));
     });
 
-    ///  Testing if question2 is in the returned list
-    test(
-        'One of the questions should have the text \'What is the capital of Italy?\'',
-        () {
-      expect(
-          _questions.any(
-              (element) => element.text == 'What is the capital of Italy?'),
-          true);
-    });
+    // test the editAnswerText function
+    test('Testing the editAnswerText function', () async {
+      await testQuestion.editAnswerText(1, 'lmao123', instance);
 
-    /// Testing if question3 is in the returned list
-    test(
-        'One of the questions should have the text \'What is the capital of England?\'',
-        () {
-      expect(
-          _questions.any(
-              (element) => element.text == 'What is the capital of England?'),
-          true);
-    });
+      expect(testQuestion.answers[1].text, 'lmao123');
 
-    /// Testing if question4 is in the returned list
-    test(
-        'One of the questions should have the text \'What is the capital of Spain?\'',
-        () {
+      /// Check if the text of answer 2 in question3 is 'lmao123' in the database
       expect(
-          _questions.any(
-              (element) => element.text == 'What is the capital of Spain?'),
-          true);
+          instance
+              .collection('categories')
+              .doc('test')
+              .collection('testing')
+              .doc('question3')
+              .get()
+              .then((value) => value.data()!['answer2']['text']),
+          completion('lmao123'));
     });
 
   });

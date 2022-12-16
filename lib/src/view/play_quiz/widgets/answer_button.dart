@@ -3,6 +3,12 @@ import 'package:provider/provider.dart';
 
 import '../quiz_provider.dart';
 
+/// Widget for every answer of the quiz.
+///
+/// It is a [StatefulWidget] that displays the answer text and changes
+/// its color when the user clicks it depending on whether the answer is correct
+/// or not.
+/// It takes a parameter [index] to determine which answer to display.
 class AnswerButton extends StatefulWidget {
   final int index;
 
@@ -12,11 +18,24 @@ class AnswerButton extends StatefulWidget {
   State<AnswerButton> createState() => _AnswerButtonState();
 }
 
+/// State for [AnswerButton].
+///
+/// This state is responsible for updating the view when the user clicks an
+/// answer.
+///
+/// It has a parameter [_animationController] that controls the time of the
+/// Tween animation.
+/// It has a parameter [_colorTween] that is used to animate the answer button
+/// when the user clicks it. It controls the color of the button.
 class _AnswerButtonState extends State<AnswerButton>
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation _colorTween;
 
+  /// Initializes the state.
+  ///
+  /// Creates an [AnimationController] that is used to animate the answer
+  /// button when the user clicks it.
   @override
   void initState() {
     _animationController = AnimationController(
@@ -26,12 +45,21 @@ class _AnswerButtonState extends State<AnswerButton>
     super.initState();
   }
 
+  /// Disposes the state.
+  ///
+  /// Disposes the [_animationController] when the state is disposed.
   @override
   void dispose() {
     _animationController.dispose();
     super.dispose();
   }
 
+  /// Builds the view.
+  ///
+  /// Specifies the color for [_colorTween] variable using the
+  /// [_animationController] depending on whether the answer is correct or not.
+  /// It displays the answer text in a container that will turn green when
+  /// the user clicks on it if the answer is correct, and red if it is not.
   @override
   Widget build(BuildContext context) {
     var provider = Provider.of<QuizProvider>(context);

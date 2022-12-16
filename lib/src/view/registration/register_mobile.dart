@@ -212,9 +212,9 @@ class RegisterViewMobileState extends State<RegisterViewMobile> {
                                   borderRadius: BorderRadius.circular(20),
                                   color: Colors.white),
                               child: TextButton(
-                                onPressed: () {
+                                onPressed: () async {
                                   if (formKey.currentState!.validate()) {
-                                    bool success = controller.signUp(
+                                    bool success = await controller.signUp(
                                         textController[0].text,
                                         textController[1].text,
                                         textController[2].text);
