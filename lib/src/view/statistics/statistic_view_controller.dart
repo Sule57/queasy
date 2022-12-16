@@ -11,13 +11,15 @@ class StatisticsViewController {
   StatisticsViewController(){
     init();
   }
-
+/// initializes the statistics with data from firebase
   void init() async {
     Profile? p;
     var uid = getCurrentUserID();
     if(uid != null) {
+      // get the user profile who palyed the quizz
       p = await Profile.getProfilefromUID(uid);
       if (p != null) {
+        // get his statistics so you can display them
         statistics = await p.getUserStatistics();
       }else{
         throw UserDoesNotExistException();
