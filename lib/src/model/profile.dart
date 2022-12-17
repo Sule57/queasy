@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:queasy/src/model/statistics.dart';
 
-import '../../utils/exceptions/user_already_exists.dart';
+import '../../utils/exceptions.dart';
 
 String? getCurrentUserID() {
   if (FirebaseAuth.instance.currentUser != null) {
@@ -12,6 +12,16 @@ String? getCurrentUserID() {
   return null;
 }
 
+///Profile class is an extention of the firebase user
+///adapted for the needs of the quizz application
+/// [email] email field
+/// [username] username
+/// [hashPassword] password
+/// [firstName] user first name
+/// [lastName] user last name
+/// [profilePicture] path to the profile picture
+/// [bio] user description
+/// [age] user age
 class Profile {
   String email;
   String username;
@@ -40,6 +50,7 @@ class Profile {
     this.birthdayMonth = '',
     this.birthdayDay = 0,
   });
+
   Profile.test({
     required this.username,
     required this.email,
@@ -101,7 +112,7 @@ class Profile {
   /// returns true if successful
   /// throws an [UserAlreadyExistsException] if the user with the same username already exists in the database
   Future<bool> registerUser() async {
-//THIS
+
     await this
         .firestore
         .collection('users')
@@ -113,14 +124,34 @@ class Profile {
       }
     });
 
-    ///
-    firestore.collection('users').doc(this.username).set(this.toJson());
-    UserStatistics s = UserStatistics(this.username, []);
-    //Adding the user to the statistics
-    Map<String, dynamic> data = {};
-    firestore.collection('UserStatistics').doc(this.username).set(data);
-    return true;
+   if(getCurrentUserID() != null) {
+     firestore.collection('users').doc(getCurrentUserID()).set(this.toJson());
+     UserStatistics s = UserStatistics(this.username, []);
+     //Adding the user to the statistics
+     Map<String, dynamic> data = {};
+     firestore.collection('UserStatistics').doc(this.username).set(data);
+     return true;
+   }
+   return false;
   }
+  /// gets the current profile from user uid
+  /// [uid] is the firebase user uid
+  /// returns a Profile instance
+  static Future<Profile?> getProfilefromUID(String uid) async {
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(uid)
+        .get()
+        .then((DocumentSnapshot documentSnapshot) {
+        Map<String, dynamic> j =  documentSnapshot.data() as Map<String, dynamic>;
+        var result = new Profile.fromJson(j);
+        return result;
+
+    });
+
+  }
+
+
 
   /// gets a UserStatistics object from the current user
   /// the objects contains all user results from played quizzes

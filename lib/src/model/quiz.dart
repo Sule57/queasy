@@ -5,6 +5,23 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:queasy/src/model/question.dart';
 import 'answer.dart';
 
+
+/// The class [Quiz] represents a playable quiz
+/// It consists of multiple variables that need to be correctly parsed in order for the class to be properly initialized
+///
+/// The variable [id] represents the unique id of a quiz in the database
+///
+/// The variable [noOfQuestions] represents the amount of questions that the quiz should have and is used to know how many questions to retrieve from the database
+///
+/// The variable [creatorUsername] defines the username of the person who originally created the quiz
+///
+/// The static List [_questions] is a private list that stores objects of type Questions, or to be exact, the actual questions of the quiz
+///
+/// The static list [_usedQuestions] is a private list that stores the indexes of the questions that have already been used in the quiz
+///
+/// The String variable [category] is a variable that stores the category of the quiz, so on which topic is the quiz
+///
+/// The variable [_firebaseFirestore] is a private variable that represents an instance of the firebase connection, used to manipulate the firebase database
 class Quiz {
   int id, noOfQuestions;
   String creatorUsername;
@@ -13,7 +30,7 @@ class Quiz {
   String category;
   late FirebaseFirestore _firebaseFirestore;
 
-  /// The default onstructor for the [Quiz] class.
+  /// The default constructor for the [Quiz] class.
   ///
   /// This class takes the given parameters to create an instance of class [Quiz]
   /// The [id] parameter represents the unique id of the quiz.
@@ -47,10 +64,9 @@ class Quiz {
     initialize(firestore);
   }
 
-  /// Initializes the quiz
-  ///
-  /// Uses the [firestore] instance to get the questions from the database and adds them to the [_questions] list.
-  void initialize(FirebaseFirestore firestore) async {
+  /// The [initialize] function is used to retrieve the questions from the database and store them in the [_questions] list.
+  /// The function takes the [firestore] parameter which is the default firestore instance used to retrieve the previously mentioned questions
+  Future<void> initialize(FirebaseFirestore firestore) async {
     for (int i = 0; i < noOfQuestions; i++) {
       String questionId = "question${await randomizer(category, firestore)}";
       if (_usedQuestions.contains(questionId)) {
@@ -62,7 +78,6 @@ class Quiz {
         });
       }
     }
-    _firebaseFirestore.terminate();
   }
 
   /// Retrives a question from firebase
@@ -74,7 +89,6 @@ class Quiz {
       category, questionId, FirebaseFirestore firestore) async {
     Map<String, dynamic>? data;
 
-    // Access the database and get the question
     await firestore
         .collection('categories')
         .doc(creatorUsername)
@@ -85,7 +99,6 @@ class Quiz {
       data = doc.data() as Map<String, dynamic>;
     });
 
-    // Create an instance of Question
     Question question = Question(
       text: data!['text'],
       answers: [
@@ -114,13 +127,67 @@ class Quiz {
         .get()
         .then((value) => value.docs.length);
 
-    Random random = Random();
-    int randomNumber = random.nextInt(numOfQuestions);
-    return randomNumber;
+    if (numOfQuestions == 0) {
+      return 0;
+    } else {
+      return Random().nextInt(numOfQuestions);
+    }
   }
 
   /// Returns the list of questions generated for a particular quiz so public access can be achieved
   List<Question> getQuestions() {
     return _questions;
   }
+
+  /// The method [storeQuiz] is used to store the quiz in the database using it's information provided in the general variables
+  /// The method takes the [firestore] optional parameter which makes it easier to test the method
+  /// If the [firestore] instance is provided the method will use it to store the quiz in the database
+  /// If the [firestore] instance is not provided the method will use the default instance to store the quiz in the database
+  Future<void> storeQuiz(FirebaseFirestore? firebaseFirestore) async {
+
+    if (firebaseFirestore == null) {
+      firebaseFirestore = FirebaseFirestore.instance;
+    }
+
+    /// count the amount of quizzes in the database
+    var numOfQuizzes = await firebaseFirestore
+        .collection('quizzes')
+        .doc(creatorUsername)
+        .collection('myQuizzes')
+        .get()
+        .then((value) => value.docs.length);
+
+    String quizId = "quiz$numOfQuizzes";
+
+    // Check if the quiz already exists, if it does numofquizzes is incremented and the quizId is updated
+    while (await firebaseFirestore
+        .collection('quizzes')
+        .doc(creatorUsername)
+        .collection('myQuizzes')
+        .doc(quizId)
+        .get()
+        .then((value) => value.exists)) {
+      numOfQuizzes++;
+      quizId = "quiz$numOfQuizzes";
+    }
+
+    // Store the quiz in the database
+    await firebaseFirestore
+        .collection('quizzes')
+        .doc(creatorUsername)
+        .collection('myQuizzes')
+        .doc(quizId)
+        .set({
+      'id': quizId,
+      'creatorUsername': creatorUsername,
+      'noOfQuestions': noOfQuestions,
+      'category': category,
+      'questions': {
+        for (int i = 0; i < _questions.length; i++){
+          'question$i': _usedQuestions[i],
+        }
+      }
+    });
+  }
+
 }

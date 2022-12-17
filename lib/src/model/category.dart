@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:queasy/src/model/question.dart';
+import 'package:queasy/utils/exceptions.dart';
 
 String getCurrentUserID() {
   return 'Savo';
@@ -70,7 +71,7 @@ class Category {
   Future<void> changeNameOfCategory(String newName) async {
     String? username = getCurrentUserID();
     if (username == null) {
-      throw Exception('User is not logged in');
+      throw UserNotLoggedInException();
     }
     _privateDoc.update({
       _category: FieldValue.delete(),
@@ -108,7 +109,7 @@ class Category {
   Future<void> setColor(Color col) async {
     String? username = getCurrentUserID();
     if (username == null) {
-      throw Exception('User is not logged in');
+      throw UserNotLoggedInException();
     }
     _color = col;
     _privateDoc.update({
@@ -120,7 +121,7 @@ class Category {
   String getCategory() {
     String? username = getCurrentUserID();
     if (username == null) {
-      throw Exception('User is not logged in');
+      throw UserNotLoggedInException();
     }
     return _category;
   }
@@ -129,7 +130,7 @@ class Category {
   Color getColor() {
     String? username = getCurrentUserID();
     if (username == null) {
-      throw Exception('User is not logged in');
+      throw UserNotLoggedInException();
     }
     return _color;
   }
@@ -138,7 +139,7 @@ class Category {
   Future<List<Question>> getQuestionsFromPublicCategory(String cat) async {
     String? username = getCurrentUserID();
     if (username == null) {
-      throw Exception('User is not logged in');
+      throw UserNotLoggedInException();
     }
 
     List<Question> questions = [];
@@ -159,7 +160,7 @@ class Category {
   Future<List<Question>> getQuestionsFromPrivateCategory() async {
     String? username = getCurrentUserID();
     if (username == null) {
-      throw Exception('User is not logged in');
+      throw UserNotLoggedInException();
     }
 
     List<Question> questions = [];
