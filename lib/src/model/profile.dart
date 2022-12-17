@@ -112,7 +112,7 @@ class Profile {
   /// returns true if successful
   /// throws an [UserAlreadyExistsException] if the user with the same username already exists in the database
   Future<bool> registerUser() async {
-
+//THIS
     await this
         .firestore
         .collection('users')
@@ -124,16 +124,17 @@ class Profile {
       }
     });
 
-   if(getCurrentUserID() != null) {
-     firestore.collection('users').doc(getCurrentUserID()).set(this.toJson());
-     UserStatistics s = UserStatistics(this.username, []);
-     //Adding the user to the statistics
-     Map<String, dynamic> data = {};
-     firestore.collection('UserStatistics').doc(this.username).set(data);
-     return true;
-   }
-   return false;
+    if (getCurrentUserID() != null) {
+      firestore.collection('users').doc(getCurrentUserID()).set(this.toJson());
+      UserStatistics s = UserStatistics(this.username, []);
+      //Adding the user to the statistics
+      Map<String, dynamic> data = {};
+      firestore.collection('UserStatistics').doc(this.username).set(data);
+      return true;
+    }
+    return false;
   }
+
   /// gets the current profile from user uid
   /// [uid] is the firebase user uid
   /// returns a Profile instance
@@ -143,15 +144,11 @@ class Profile {
         .doc(uid)
         .get()
         .then((DocumentSnapshot documentSnapshot) {
-        Map<String, dynamic> j =  documentSnapshot.data() as Map<String, dynamic>;
-        var result = new Profile.fromJson(j);
-        return result;
-
+      Map<String, dynamic> j = documentSnapshot.data() as Map<String, dynamic>;
+      var result = new Profile.fromJson(j);
+      return result;
     });
-
   }
-
-
 
   /// gets a UserStatistics object from the current user
   /// the objects contains all user results from played quizzes
