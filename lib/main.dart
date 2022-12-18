@@ -2,11 +2,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:queasy/src/model/profile.dart';
-import 'package:queasy/src/model/statistics.dart';
 import 'package:queasy/src/theme_provider.dart';
 import 'package:queasy/src/view/play_quiz/quiz_provider.dart';
-import 'package:queasy/src/view/registration/register_view_controller.dart';
 import 'package:queasy/src/view/widgets/widget_tree.dart';
 
 import 'constants/app_themes.dart';
