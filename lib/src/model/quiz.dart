@@ -109,7 +109,6 @@ class Quiz {
       ],
       category: category,
       questionID: questionId,
-      owner: creatorUsername,
     );
     return question;
   }

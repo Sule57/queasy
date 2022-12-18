@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:queasy/src/model/profile.dart';
 import 'package:queasy/src/model/question.dart';
 import 'package:queasy/utils/exceptions.dart';
 
@@ -177,5 +178,128 @@ class Category {
       });
     });
     return questions;
+  }
+
+  /// deleteQuestion is used to delete a given question out of the category
+  Future<void> deleteQuestion(Question question, FirebaseFirestore? firestore) async {
+    String? username = getCurrentUserID();
+
+    if (firestore == null) {
+      firestore = FirebaseFirestore.instance;
+    }
+
+    if (username == null) {
+      throw UserNotLoggedInException();
+    }
+    // delete the question from the private category
+    await firestore
+        .collection('categories')
+        .doc(username)
+        .collection(_category)
+        .doc(question.ID)
+        .delete();
+  }
+
+  /// addQuestion is used to add a given question to the category
+  Future<void> addQuestion(Question question, FirebaseFirestore? firestore) async {
+    String? username = getCurrentUserID();
+
+    if (firestore == null) {
+      firestore = FirebaseFirestore.instance;
+    }
+
+    if (username == null) {
+      throw UserNotLoggedInException();
+    }
+
+    /// count how many questions already exist inside of the given category
+    int count = 0;
+    await firestore
+        .collection('categories')
+        .doc(username)
+        .collection(_category)
+        .get()
+        .then((QuerySnapshot querySnapshot) {
+      querySnapshot.docs.forEach((doc) {
+        count++;
+      });
+    });
+
+    /// create a variable newID from 'question' + count
+    String newID = 'question' + count.toString();
+
+    /// check if the newID already exists in the category, if it does, increment count by 1, re-create the newID, and check again
+    while (await firestore
+        .collection('categories')
+        .doc(username)
+        .collection(_category)
+        .doc(newID)
+        .get()
+        .then((DocumentSnapshot documentSnapshot) {
+      return documentSnapshot.exists;
+    })) {
+      count++;
+      newID = 'question' + count.toString();
+    }
+
+    // add the question to the private category
+    await firestore
+        .collection('categories')
+        .doc(username)
+        .collection(_category)
+        .doc(newID)
+        .set(question.toJson());
+  }
+
+  /// getQuestion retrieves a question from the category with a given id
+  Future<Question> getPrivateQuestion(String id) async{
+    String? username = getCurrentUserID();
+    if (username == null) {
+      throw UserNotLoggedInException();
+    }
+    late Question question;
+    await _privateDoc
+        .collection(_category)
+        .doc(id)
+        .get()
+        .then((DocumentSnapshot documentSnapshot) {
+      if (documentSnapshot.exists) {
+        question = Question.fromJson(documentSnapshot.data() as Map<String, dynamic>);
+      } else {
+        print('Document does not exist on the database');
+      }
+    });
+    if (question == null) {
+      throw Exception('Question is null');
+    }
+    else{
+      return question;
+    }
+  }
+
+  /// getQuestion retrieves a question from the category with a given id
+  Future<Question> getPublicQuestion(String id) async{
+    String? username = getCurrentUserID();
+    if (username == null) {
+      throw UserNotLoggedInException();
+    }
+    late Question question;
+    await _publicDoc
+        .collection(_category)
+        .doc(id)
+        .get()
+        .then((DocumentSnapshot documentSnapshot) {
+      if (documentSnapshot.exists) {
+        question = Question.fromJson(documentSnapshot.data() as Map<String, dynamic>);
+      } else {
+        print('Document does not exist on the database');
+      }
+    });
+    if (question == null) {
+      throw Exception('Question is null');
+    }
+    else{
+      return question;
+    }
   }
 }
