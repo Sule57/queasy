@@ -6,7 +6,6 @@ import '../../utils/exceptions.dart';
 
 String? getCurrentUserID() {
   if (FirebaseAuth.instance.currentUser != null) {
-    print(FirebaseAuth.instance.currentUser?.uid);
     return FirebaseAuth.instance.currentUser?.uid;
   }
   return null;
@@ -23,6 +22,7 @@ String? getCurrentUserID() {
 /// [bio] user description
 /// [age] user age
 class Profile {
+  static int globalCounter = 0;
   String email;
   String username;
   String hashPassword;
@@ -88,7 +88,10 @@ class Profile {
         lastName = json['lastName'],
         profilePicture = json['profilePicture'],
         bio = json['bio'],
-        age = json['age'];
+        age = json['age'],
+        privatecScore = json['privateScore'],
+        publicScore = json['scores'];
+
 
   @override
   String toString() {
@@ -112,11 +115,11 @@ class Profile {
   /// returns true if successful
   /// throws an [UserAlreadyExistsException] if the user with the same username already exists in the database
   Future<bool> registerUser() async {
-//THIS
+
     await this
         .firestore
         .collection('users')
-        .doc(this.username)
+        .doc(getCurrentUserID())
         .get()
         .then((DocumentSnapshot documentSnapshot) {
       if (documentSnapshot.exists) {
@@ -124,31 +127,33 @@ class Profile {
       }
     });
 
-    if (getCurrentUserID() != null) {
-      firestore.collection('users').doc(getCurrentUserID()).set(this.toJson());
-      UserStatistics s = UserStatistics(this.username, []);
-      //Adding the user to the statistics
-      Map<String, dynamic> data = {};
-      firestore.collection('UserStatistics').doc(this.username).set(data);
-      return true;
-    }
-    return false;
+   if(getCurrentUserID() != null) {
+     firestore.collection('users').doc(getCurrentUserID()).set(this.toJson());
+     UserStatistics s = UserStatistics(this.username, []);
+     //Adding the user to the statistics
+     Map<String, dynamic> data = {};
+     firestore.collection('UserStatistics').doc(this.username).set(data);
+     return true;
+   }
+   return false;
   }
-
   /// gets the current profile from user uid
   /// [uid] is the firebase user uid
   /// returns a Profile instance
   static Future<Profile?> getProfilefromUID(String uid) async {
+    Profile? result;
     await FirebaseFirestore.instance
         .collection('users')
         .doc(uid)
         .get()
         .then((DocumentSnapshot documentSnapshot) {
-      Map<String, dynamic> j = documentSnapshot.data() as Map<String, dynamic>;
-      var result = new Profile.fromJson(j);
-      return result;
+        Map<String, dynamic> j =  documentSnapshot.data() as Map<String, dynamic>;
+        result = new Profile.fromJson(j);
     });
+    return result;
   }
+
+
 
   /// gets a UserStatistics object from the current user
   /// the objects contains all user results from played quizzes
@@ -163,8 +168,10 @@ class Profile {
       if (documentSnapshot.exists) {
         s = UserStatistics.fromJson(
             this.username, documentSnapshot.data() as Map<String, dynamic>);
-        //print(s.toString());
-        return s;
+
+      }else{
+        print("This should never happen");
+        s = UserStatistics.fromJson(this.username, {});
       }
     });
     return s;
@@ -174,7 +181,7 @@ class Profile {
   /// [username] The username of the user
   void updateScore(String username, String category, int score) {
     final firebaseFirestore = FirebaseFirestore.instance;
-    firebaseFirestore.collection('users').doc(this.username).update({
+    firebaseFirestore.collection('users').doc(getCurrentUserID()).update({
       'scores.$category': FieldValue.increment(score),
     });
   }

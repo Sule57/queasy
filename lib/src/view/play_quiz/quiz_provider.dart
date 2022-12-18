@@ -1,12 +1,18 @@
 import 'dart:async';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:queasy/main.dart';
+import 'package:queasy/src/model/category.dart';
+import 'package:queasy/src/model/statistics.dart';
 import 'package:queasy/src/view/statistics/statistics_view.dart';
+import '../../../utils/exceptions.dart';
 import '../../model/profile.dart';
 import '../../model/quiz.dart';
 
 /// This class is responsible for managing the state of the quiz. It sums the
 /// controller and the model for the use case of playing the quiz.
+///
+///The field [correctAnswers] counts the correct answers of the users
 ///
 /// The late parameter [_quiz] is the quiz that is being played. It is
 /// initialized in the method [startQuiz].
@@ -46,29 +52,64 @@ class QuizProvider with ChangeNotifier {
 
   // static final QuizProvider _instance = QuizProvider._internal();
   //
-  // factory QuizProvider() {
-  //   return _instance;
-  // }
+
 
   late Quiz _quiz;
 
-  Profile player = Profile(
-    username: 'Savo',
-    email: 'savo@email.com',
-    hashPassword: '1234',
-  );
-
+  late Profile player;
   late String _category;
   late int _totalQuestions;
   int _currentQuestionIndex = 0;
   int _currentPoints = 0;
+  int correctAnswers = 0;
   bool _currentQuestionAnswered = false;
   static Timer? countdownTimer;
   static Duration _timeLeft = const Duration(seconds: 15);
-
   get category => _category;
   get quiz => _quiz;
   get timeLeft => _timeLeft.inSeconds.toString();
+
+
+// assign the current user to the app
+  QuizProvider() {
+    // default profile
+    player = Profile(
+      username: 'Savo',
+      email: 'savo@email.com',
+      hashPassword: '1234',
+    );
+    init();
+  }
+
+  //player = Profile.getProfilefromUID(getCurrentUserID());
+  /// initializes [player] as the current logged in user
+  void init() async {
+    String? uid = getCurrentUserID();
+    Profile? p;
+    if (uid != null) {
+      // very important class method creating Profile instance
+      // from profile UID !!!!
+      p = await Profile.getProfilefromUID(uid);
+      if (p != null) {
+        player = p;
+      } else {
+        //default player
+
+        //exception is recommended but tests needed
+        //TODO TEST FUNCTIONALITY WITH EXCEPTION
+        throw UserDoesNotExistException();
+
+      }
+    } else {
+      // default player
+
+      //exception is recommended but tests needed
+      //TODO TEST FUNCTIONALITY WITH EXCEPTION
+      throw UserNotLoggedInException();
+    }
+  }
+
+
 
   /// Starts the quiz.
   ///
@@ -131,21 +172,31 @@ class QuizProvider with ChangeNotifier {
   /// Updates [_currentQuestionIndex] and [_currentQuestionAnswered] to
   /// display the next question in the UI. It also resets the timer.
   /// If there are no more question, it calls the method [endQuiz].
-  void nextQuestion() {
+  void nextQuestion() async {
     if (_currentQuestionIndex < _totalQuestions - 1) {
       _currentQuestionIndex++;
       _currentQuestionAnswered = false;
       resetTimer();
       notifyListeners();
     } else {
-      endQuiz();
+      //TODO WHEN QUIZZES NAMES ARE IMPLEMENTED ADD NAME TO THE QUIZZREQULT
+      //TODO GET THE REAL TIME SPENT
+      Random rand = Random();
+      UserQuizzResult r = UserQuizzResult(
+          "Test" + rand.nextInt(50).toString(), correctAnswers, _totalQuestions, _timeLeft.inSeconds);
+      UserStatistics? stat = await player.getUserStatistics();
+      if (stat != null) {
+        stat.addUserQuizzResult(r);
+        await stat.saveStatistics();
+      }
+      await endQuiz();
     }
   }
 
   /// It is called when the user clicks on an answer button of the last
   /// question. It stops the timer, updates the score of the player and takes
   /// the user to the [StatisticsView].
-  void endQuiz() {
+  Future<void> endQuiz() async {
     stopTimer();
     player.updateScore("Savo", _category, _currentPoints);
     navigator.currentState?.pop();
@@ -168,6 +219,7 @@ class QuizProvider with ChangeNotifier {
 
     if (isCorrect) {
       _currentPoints += 5 + _timeLeft.inSeconds;
+      correctAnswers++;
     } else {
       _currentPoints -= 2;
       if (_currentPoints < 0) {

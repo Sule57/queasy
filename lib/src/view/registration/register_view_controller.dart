@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../../../services/auth.dart';
 import '../../model/profile.dart';
 
@@ -24,10 +25,27 @@ class RegisterViewController {
     try {
       // always use register user with try catch since it throws
       // user already exists exception if the user already exists
+
+      UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+            email: email,
+            password: password
+        );
       Auth a = Auth();
       a.signInWithEmailAndPassword(email: newUser.email, password: newUser.hashPassword);
       return newUser.registerUser();
-    } catch (e) {
+    }  on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        print('No user found for that email.');
+        return false;
+      } else if (e.code == 'wrong-password') {
+        print('Wrong password provided for that user.');
+        return false;
+      }else{
+        print("Something went wrong");
+        return false;
+      }
+    }
+    catch (e) {
       print(e.toString());
       return false;
     }
