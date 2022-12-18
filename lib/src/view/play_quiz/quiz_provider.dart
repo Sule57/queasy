@@ -187,7 +187,6 @@ class QuizProvider with ChangeNotifier {
       UserStatistics? stat = await player.getUserStatistics();
       if (stat != null) {
         stat.addUserQuizzResult(r);
-        print(Profile.globalCounter);
         await stat.saveStatistics();
       }
       await endQuiz();

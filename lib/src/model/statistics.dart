@@ -35,7 +35,6 @@ Map<String, dynamic> toJson(){
   }
   /// stores the statistics to the database
   Future<void> saveStatistics() async{
-    Profile.globalCounter++;
    await firestore.collection('UserStatistics').doc(this.username).update(this.toJson());
   }
   //very important note:

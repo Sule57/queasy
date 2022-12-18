@@ -5,6 +5,8 @@ import 'package:queasy/src/view/see_leaderboard/leaderboard_provider.dart';
 import 'package:queasy/src/view/see_leaderboard/widgets/category_tile_desktop.dart';
 import 'package:queasy/src/view/see_leaderboard/widgets/user_tile_desktop.dart';
 
+import '../../theme_provider.dart';
+
 class LeaderboardView extends StatefulWidget {
   const LeaderboardView({Key? key}) : super(key: key);
 
@@ -263,12 +265,18 @@ class LeaderboardMobileContent extends StatelessWidget {
                       Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(15),
-                          color: Colors.white,
+                          color: Provider.of<ThemeProvider>(context)
+                              .currentTheme
+                              .colorScheme
+                              .background,
                         ),
                         child: ListTile(
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(15)),
-                          tileColor: Colors.white,
+                          tileColor: Provider.of<ThemeProvider>(context)
+                              .currentTheme
+                              .colorScheme
+                              .background,
                           textColor: const Color(0xFFFF8C66),
                           iconColor: Colors.white,
                           leading: index == 0
@@ -309,7 +317,12 @@ class LeaderboardMobileContent extends StatelessWidget {
                                           .entries[index]
                                           .getName,
                                       style: TextStyle(
-                                          color: Colors.black, fontSize: 26),
+                                          color: Provider.of<ThemeProvider>(
+                                                  context)
+                                              .currentTheme
+                                              .colorScheme
+                                              .onBackground,
+                                          fontSize: 26),
                                     ),
                                   ],
                                 )
@@ -318,7 +331,11 @@ class LeaderboardMobileContent extends StatelessWidget {
                                       .entries[index]
                                       .getName,
                                   style: TextStyle(
-                                      color: Colors.black, fontSize: 26),
+                                      color: Provider.of<ThemeProvider>(context)
+                                          .currentTheme
+                                          .colorScheme
+                                          .onBackground,
+                                      fontSize: 26),
                                 ),
                           subtitle: index == 0
                               ? Text(
@@ -370,7 +387,10 @@ class LeaderboardDesktopContent extends StatelessWidget {
               child: Column(children: [
                 Container(
                   padding: const EdgeInsets.all(20),
-                  color: Colors.white,
+                  color: Provider.of<ThemeProvider>(context)
+                      .currentTheme
+                      .colorScheme
+                      .background,
                   child: Row(children: [
                     IconButton(
                       icon: Icon(Icons.arrow_back),
@@ -390,11 +410,17 @@ class LeaderboardDesktopContent extends StatelessWidget {
                 Expanded(
                     child: Container(
                   padding: const EdgeInsets.all(20),
-                  color: Colors.white,
+                  color: Provider.of<ThemeProvider>(context)
+                      .currentTheme
+                      .colorScheme
+                      .background,
                   child: ListView.separated(
                       separatorBuilder: (context, index) => Container(
                             height: 7,
-                            color: Colors.white,
+                            color: Provider.of<ThemeProvider>(context)
+                                .currentTheme
+                                .colorScheme
+                                .background,
                           ),
                       shrinkWrap: true,
                       itemCount: Provider.of<LeaderboardProvider>(context)
