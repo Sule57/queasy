@@ -80,7 +80,7 @@ class Question {
 
   /// updateQuestion function takes all the parameters of the question and updates the question in the firebase as a json
   /// this function is used to update the question in the firebase
-  Future<void> updateQuestion(FirebaseFirestore? firestore) async {
+  Future<void> updateQuestion({FirebaseFirestore? firestore}) async {
 
     if(firestore == null){
       firestore = FirebaseFirestore.instance;
