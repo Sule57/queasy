@@ -181,7 +181,7 @@ class Category {
   }
 
   /// deleteQuestion is used to delete a given question out of the category
-  Future<void> deleteQuestion(Question question, FirebaseFirestore? firestore) async {
+  Future<void> deleteQuestion(Question question, {FirebaseFirestore? firestore}) async {
     String? username = getCurrentUserID();
 
     if (firestore == null) {
@@ -201,7 +201,7 @@ class Category {
   }
 
   /// addQuestion is used to add a given question to the category
-  Future<void> addQuestion(Question question, FirebaseFirestore? firestore) async {
+  Future<void> addQuestion(Question question, {FirebaseFirestore? firestore}) async {
     String? username = getCurrentUserID();
 
     if (firestore == null) {
