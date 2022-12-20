@@ -31,11 +31,10 @@ class ProfileViewController {
 
   ///changes the [currentUsername] with the given new [newUsername]
   ///and the value is added to the [success] list
-  void editUsername(String currentUsername, String newUsername) {
+  void editUsername(String newUsername) {
     success = [
       ...success,
-      player.updateUsername(
-          currentUsername, newUsername, FirebaseFirestore.instance)
+      player.updateUsername(newUsername, FirebaseFirestore.instance)
     ];
   }
 

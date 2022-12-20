@@ -92,7 +92,6 @@ class Profile {
         privatecScore = json['privateScore'],
         publicScore = json['scores'];
 
-
   @override
   String toString() {
     return 'User{ username: $username, hashPassword: $hashPassword, firstName: $firstName, lastName: $lastName, bio: $bio, age: $age, }';
@@ -115,7 +114,6 @@ class Profile {
   /// returns true if successful
   /// throws an [UserAlreadyExistsException] if the user with the same username already exists in the database
   Future<bool> registerUser() async {
-
     await this
         .firestore
         .collection('users')
@@ -127,16 +125,17 @@ class Profile {
       }
     });
 
-   if(getCurrentUserID() != null) {
-     firestore.collection('users').doc(getCurrentUserID()).set(this.toJson());
-     UserStatistics s = UserStatistics(this.username, []);
-     //Adding the user to the statistics
-     Map<String, dynamic> data = {};
-     firestore.collection('UserStatistics').doc(this.username).set(data);
-     return true;
-   }
-   return false;
+    if (getCurrentUserID() != null) {
+      firestore.collection('users').doc(getCurrentUserID()).set(this.toJson());
+      UserStatistics s = UserStatistics(this.username, []);
+      //Adding the user to the statistics
+      Map<String, dynamic> data = {};
+      firestore.collection('UserStatistics').doc(this.username).set(data);
+      return true;
+    }
+    return false;
   }
+
   /// gets the current profile from user uid
   /// [uid] is the firebase user uid
   /// returns a Profile instance
@@ -147,13 +146,11 @@ class Profile {
         .doc(uid)
         .get()
         .then((DocumentSnapshot documentSnapshot) {
-        Map<String, dynamic> j =  documentSnapshot.data() as Map<String, dynamic>;
-        result = new Profile.fromJson(j);
+      Map<String, dynamic> j = documentSnapshot.data() as Map<String, dynamic>;
+      result = new Profile.fromJson(j);
     });
     return result;
   }
-
-
 
   /// gets a UserStatistics object from the current user
   /// the objects contains all user results from played quizzes
@@ -168,8 +165,7 @@ class Profile {
       if (documentSnapshot.exists) {
         s = UserStatistics.fromJson(
             this.username, documentSnapshot.data() as Map<String, dynamic>);
-
-      }else{
+      } else {
         print("This should never happen");
         s = UserStatistics.fromJson(this.username, {});
       }
@@ -192,12 +188,12 @@ class Profile {
   /// @param [newUsername] - username to change the current username to
   /// @return true - username was updated successfully
   /// @return false - username was not updated successfully
-  bool updateUsername(
-      String currentUsername, String newUsername, FirebaseFirestore firestore) {
+  bool updateUsername(String newUsername, FirebaseFirestore firestore) {
     try {
+      String currentUID = getCurrentUserID()!;
       firestore
           .collection('users')
-          .doc(currentUsername)
+          .doc(currentUID)
           .update({'username': newUsername});
       return true;
     } catch (e) {

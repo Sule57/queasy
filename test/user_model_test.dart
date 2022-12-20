@@ -90,10 +90,7 @@ void main() async {
 
   /// Testing update username in profile class
   test('Profile should have changed username', () {
-    expect(
-        profile_test.updateUsername(
-            "testProfileDocID", 'testProfile', instance),
-        true);
+    expect(profile_test.updateUsername('testProfile', instance), true);
   });
 
   /// Testing update name in profile class

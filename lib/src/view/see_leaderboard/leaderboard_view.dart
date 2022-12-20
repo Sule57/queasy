@@ -153,6 +153,7 @@ class _LeaderboardViewContentState extends State<LeaderboardViewContent> {
 
 class LeaderboardMobileContent extends StatelessWidget {
   const LeaderboardMobileContent({Key? key}) : super(key: key);
+  //TODO: manually add all public category names to this list
   static const List<String> list = <String>['All', 'Science'];
 
   @override

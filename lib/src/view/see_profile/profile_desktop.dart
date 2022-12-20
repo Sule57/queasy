@@ -6,6 +6,7 @@ import 'package:queasy/src/view/see_profile/profile_view_controller.dart';
 import 'package:flutter_profile_picture/flutter_profile_picture.dart';
 
 import '../../theme_provider.dart';
+import 'profile_provider.dart';
 
 ///This is UserProfileDesktop view
 ///It displays web version of the profile page
@@ -99,7 +100,9 @@ class ProfileDesktopState extends State<UserProfileDesktop> {
                                   padding: EdgeInsets.only(
                                     bottom: 7,
                                   ),
-                                  child: Text(controller.player.username),
+                                  child: Text(
+                                      Provider.of<ProfileProvider>(context)
+                                          .username),
                                 ),
 
                                 ///[Container] to show the number of user's followers and following
@@ -204,9 +207,6 @@ class ProfileDesktopState extends State<UserProfileDesktop> {
                                                                     .text
                                                                     .isNotEmpty) {
                                                                   controller.editUsername(
-                                                                      controller
-                                                                          .player
-                                                                          .username,
                                                                       username
                                                                           .text);
                                                                 }
