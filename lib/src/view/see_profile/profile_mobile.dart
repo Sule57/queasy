@@ -1110,7 +1110,7 @@ class ProfileMobileState extends State<UserProfileMobile> {
                   ))),
                   child: Text("Delete Account"),
                 )),
-            ThemeButton(),
+            Container(padding: EdgeInsets.only(top: 7), child: ThemeButton()),
           ],
         ),
       )

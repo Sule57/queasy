@@ -22,11 +22,13 @@ class ThemeButton extends StatelessWidget {
     _darkTheme = (themeNotifier.currentTheme == AppThemes().darkTheme);
     return TextButton(
         style: TextButton.styleFrom(
-          backgroundColor: Provider.of<ThemeProvider>(context)
-              .currentTheme
-              .colorScheme
-              .primary,
-        ),
+            backgroundColor: Provider.of<ThemeProvider>(context)
+                .currentTheme
+                .colorScheme
+                .primary,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(18.0),
+            )),
         onPressed: () {
           onThemeChanged(_darkTheme, themeNotifier);
         },

@@ -803,7 +803,8 @@ class ProfileDesktopState extends State<UserProfileDesktop> {
                             borderRadius: BorderRadius.all(Radius.circular(20)),
                             border: Border.all(color: orange))),
                   ),
-                  ThemeButton(),
+                  Container(
+                      padding: EdgeInsets.only(top: 7), child: ThemeButton()),
                 ]),
           ),
 
