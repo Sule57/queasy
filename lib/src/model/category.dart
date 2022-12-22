@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:ui';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +16,7 @@ String getCurrentUserIDTest() {
 class Category {
   /// Collection [DocumentReference] for the public [Category] location in the database.
   DocumentReference _publicDoc =
-      FirebaseFirestore.instance.collection('categories').doc('public');
+  FirebaseFirestore.instance.collection('categories').doc('public');
 
   /// Collection [DocumentReference] for the private [Category] location in the database.
   DocumentReference _privateDoc = FirebaseFirestore.instance
@@ -46,8 +47,8 @@ class Category {
   /// and [FirebaseFirestore] is the Fake instance of the database
   Category.test(
       {required String category,
-      required Color color,
-      required FirebaseFirestore firestore}) {
+        required Color color,
+        required FirebaseFirestore firestore}) {
     _category = category;
     _color = color;
     _publicDoc = firestore.collection('categories').doc('public');
@@ -301,5 +302,63 @@ class Category {
     else{
       return question;
     }
+  }
+
+  Future<int> PublicRandomizer({FirebaseFirestore? firestore}) async {
+    String? username = getCurrentUserID();
+    if (username == null) {
+      throw UserNotLoggedInException();
+    }
+
+    if (firestore == null) {
+      firestore = FirebaseFirestore.instance;
+    }
+
+    // count the amount of documents in the public category
+    int count = 0;
+    await firestore
+        .collection('categories')
+        .doc('public')
+        .collection(_category)
+        .get()
+        .then((QuerySnapshot querySnapshot) {
+      querySnapshot.docs.forEach((doc) {
+        count++;
+      });
+    });
+
+    // create a random integer between 0 and count
+    int random = Random().nextInt(count);
+
+    return random;
+  }
+
+Future<int> PrivateRandomizer({FirebaseFirestore? firestore}) async {
+    String? username = getCurrentUserID();
+    if (username == null) {
+      throw UserNotLoggedInException();
+    }
+
+    if (firestore == null) {
+      firestore = FirebaseFirestore.instance;
+    }
+
+    // count the amount of documents in the public category
+    int count = 0;
+    await firestore
+        .collection('categories')
+        .doc(username)
+        .collection(_category)
+        .get()
+        .then((QuerySnapshot querySnapshot) {
+      querySnapshot.docs.forEach((doc) {
+        count++;
+      });
+    });
+
+    // create a random integer between 0 and count
+    int random = Random().nextInt(count);
+
+    return random;
   }
 }
