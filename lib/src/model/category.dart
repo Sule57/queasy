@@ -6,30 +6,23 @@ import 'package:queasy/src/model/profile.dart';
 import 'package:queasy/src/model/question.dart';
 import 'package:queasy/utils/exceptions.dart';
 
-
-//change the name getCurrentUserID conflicts with
-// getCurrentUserID in profile.dart
-String getCurrentUserIDTest() {
-  return 'Savo';
-}
-
+/// This is the model of the Category.
+///
+/// [name] is the name of the category.
+///
+/// [color] is the color of the category.
+///
+/// [_publicDoc] is the reference to the public categories in Firestore.
+///
+/// [_privateDoc] is the reference to the private categories in Firestore where categories of the current user are stored.
+///
+/// [_isPublic] is a boolean that determines if the category is public or private.
 class Category {
-  /// Collection [DocumentReference] for the public [Category] location in the database.
-  DocumentReference _publicDoc =
-  FirebaseFirestore.instance.collection('categories').doc('public');
+  DocumentReference _publicDoc = FirebaseFirestore.instance.collection('categories').doc('public');
+  DocumentReference _privateDoc = FirebaseFirestore.instance.collection('categories').doc(getCurrentUserID());
 
-  /// Collection [DocumentReference] for the private [Category] location in the database.
-  DocumentReference _privateDoc = FirebaseFirestore.instance
-      .collection('categories')
-      .doc(getCurrentUserIDTest());
-
-  /// [Color] of the [Category].
   late Color _color;
-
-  /// Default value of the [Category] is -1.
   late String _category;
-
-  /// Flag to check if the [Category] is public or private.
   late bool _isPublic;
 
   /// Constructor for the [Category] class.
@@ -38,7 +31,6 @@ class Category {
   Category({required String category, required Color color}) {
     _category = category;
     _color = color;
-    // this._createNewCategory(_category, _color);
   }
 
   /// Constructor for the [Category] class for testing.
@@ -52,7 +44,7 @@ class Category {
     _category = category;
     _color = color;
     _publicDoc = firestore.collection('categories').doc('public');
-    _privateDoc = firestore.collection('categories').doc(getCurrentUserIDTest());
+    _privateDoc = firestore.collection('categories').doc(getCurrentUserID());
     // this._createNewCategory(_category, _color);
   }
 
@@ -74,7 +66,7 @@ class Category {
 
   /// Changes the name of the current [Category].
   Future<void> changeNameOfCategory(String newName) async {
-    String? username = getCurrentUserIDTest();
+    String? username = getCurrentUserID();
     if (username == null) {
       throw UserNotLoggedInException();
     }
@@ -112,7 +104,7 @@ class Category {
   ///
   /// [color] is the color of the [Category].
   Future<void> setColor(Color col) async {
-    String? username = getCurrentUserIDTest();
+    String? username = getCurrentUserID();
     if (username == null) {
       throw UserNotLoggedInException();
     }
@@ -124,7 +116,7 @@ class Category {
 
   /// Get the name of the current [Category].
   String getCategory() {
-    String? username = getCurrentUserIDTest();
+    String? username = getCurrentUserID();
     if (username == null) {
       throw UserNotLoggedInException();
     }
@@ -133,7 +125,7 @@ class Category {
 
   /// Get the color of the current [Category].
   Color getColor() {
-    String? username = getCurrentUserIDTest();
+    String? username = getCurrentUserID();
     if (username == null) {
       throw UserNotLoggedInException();
     }
@@ -142,7 +134,7 @@ class Category {
 
   /// Get the list of [Question]s in the current public [Category].
   Future<List<Question>> getQuestionsFromPublicCategory(String cat) async {
-    String? username = getCurrentUserIDTest();
+    String? username = getCurrentUserID();
     if (username == null) {
       throw UserNotLoggedInException();
     }
@@ -163,7 +155,7 @@ class Category {
 
   /// Get the list of [Question]s in the current private [Category].
   Future<List<Question>> getQuestionsFromPrivateCategory() async {
-    String? username = getCurrentUserIDTest();
+    String? username = getCurrentUserID();
     if (username == null) {
       throw UserNotLoggedInException();
     }
@@ -227,29 +219,31 @@ class Category {
     });
 
     /// create a variable newID from 'question' + count
-    String newID = 'question' + count.toString();
-
-    /// check if the newID already exists in the category, if it does, increment count by 1, re-create the newID, and check again
-    while (await firestore
-        .collection('categories')
-        .doc(username)
-        .collection(_category)
-        .doc(newID)
-        .get()
-        .then((DocumentSnapshot documentSnapshot) {
-      return documentSnapshot.exists;
-    })) {
-      count++;
-      newID = 'question' + count.toString();
+    String newID;
+    print(question.questionID);
+    if(question.questionID == null) {
+      newID = 'question' + (count+1).toString();
+    } else {
+      newID = question.questionID!;
     }
-
-    // add the question to the private category
+    print(newID);
     await firestore
         .collection('categories')
         .doc(username)
         .collection(_category)
         .doc(newID)
         .set(question.toJson());
+
+    print(count);
+    if(count == 1){
+      // delete the question from the public category which is called question-1
+      await firestore
+          .collection('categories')
+          .doc(username)
+          .collection(_category)
+          .doc('question-1')
+          .delete();
+    }
   }
 
   /// getQuestion retrieves a question from the category with a given id

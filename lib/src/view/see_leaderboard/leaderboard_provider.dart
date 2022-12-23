@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:queasy/src/model/category.dart';
+import 'package:queasy/src/model/category_repo.dart';
 import 'package:queasy/src/model/leaderboard_entry.dart';
 
 import '../../model/leaderboard.dart';
@@ -21,23 +22,25 @@ class LeaderboardProvider with ChangeNotifier {
   }
 
   void initLeaderboardProvider() async {
-    _currentLeaderboard = await Leaderboard.create(_category, '');
-    _totalEntries = _currentLeaderboard.getEntries().length;
+    _currentLeaderboard = await Leaderboard.createPublic(_category, '');
     _entries = _currentLeaderboard.getEntries();
-    _publicCategories = await _currentLeaderboard.getPublicCategories();
+    _totalEntries = _entries.length;
+    _publicCategories = await CategoryRepo().getPublicCategories();
+    _publicCategories.add('All');
     notifyListeners();
   }
 
   void setLeaderboard(String category) async {
-    _currentLeaderboard = await Leaderboard.create(category, '');
-    _totalEntries = _currentLeaderboard.getEntries().length;
+    _currentLeaderboard = await Leaderboard.createPublic(category, '');
     _entries = _currentLeaderboard.getEntries();
+    _totalEntries = _entries.length;
     _category = category;
     notifyListeners();
   }
 
   void setCategories() async {
-    _publicCategories = await _currentLeaderboard.getPublicCategories();
+    _publicCategories = await CategoryRepo().getPublicCategories();
+    _publicCategories.add('All');
     notifyListeners();
   }
 }

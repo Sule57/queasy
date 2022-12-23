@@ -1,17 +1,26 @@
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:queasy/src/model/leaderboard_entry.dart';
+import 'package:queasy/src/model/profile.dart';
+import 'package:queasy/utils/exceptions.dart';
+
+
 
 /// This is the Model class for the Leaderboard
 ///
 /// It is responsible for connecting the [Leaderboard] to the [LeaderboardEntry]s
 /// in the database. It also contains the logic for updating the leaderboard in the database.
+///
+///
 class Leaderboard {
   /// The [LeaderboardEntry]s in the database for the leaderboard with the given category.
   late List<LeaderboardEntry> _entries = [];
 
   /// The category of the leaderboard.
   late String _category;
+
+  /// The owner of the category of the leaderboard.
+  late String _owner;
 
   /// [LeaderboardEntry] of the category of the currently logged-in user.
   late LeaderboardEntry _currentPlayer;
@@ -23,56 +32,62 @@ class Leaderboard {
   late final CollectionReference _collection =
       _firebaseFirestore.collection('leaderboard');
 
-  /// Document reference for the leaderboard of the given category in the database.
+  /// Document reference for the leaderboard of the given public category in the database.
   late final DocumentReference _doc = _collection.doc(_category);
+
+  /// Document reference for the leaderboard of the given private category in the database.
+  late final DocumentReference _docPriv = _collection.doc(getCurrentUserID()! + '-' + _category);
 
   /// Document reference for the combined (All) leaderboard in the database.
   late final DocumentReference _docAll = _collection.doc('All');
 
-  ///Default constructor for [Leaderboard]
-  Leaderboard() {}
+  late final bool _isPublic;
 
   /// Private constructor for [Leaderboard] that deals with initializing the private parameters.
-  Leaderboard._create(String category, String username) {
+  Leaderboard._create(String category, String username, bool isPublic) {
     _entries = [];
     _currentPlayer = LeaderboardEntry(username, -1, -1);
     _category = category;
     _firebaseFirestore = FirebaseFirestore.instance;
+    this._isPublic = isPublic;
   }
 
-  /// Factory constructor for [Leaderboard] that creates a new [Leaderboard] object.
+  /// Factory constructor for public [Leaderboard] that creates a new [Leaderboard] object.
   /// It calls the private constructor and then waits for the data from the database.
-  static Future<Leaderboard> create(String category, String username) async {
-    var leaderboard = Leaderboard._create(category, username);
-
+  static Future<Leaderboard> createPublic(String category, String username) async {
+    var leaderboard = Leaderboard._create(category, username, true);
     await leaderboard.getData();
     return leaderboard;
   }
 
-  /// Constructor for [Leaderboard] that creates a new [Leaderboard] object with given parameters.
-  /// Used only if we have the List<LeaderboardEntry> [lb] that we want to copy into the new object.
-  Leaderboard.withEntries(
-      List<LeaderboardEntry> lb, this._category, this._currentPlayer) {
-    _entries = List.from(lb);
-    _firebaseFirestore = FirebaseFirestore.instance;
-  }
-
-  /// Copy constructor for [Leaderboard] that creates a new [Leaderboard] object from another [Leaderboard] object.
-  Leaderboard.fromLeaderboard(Leaderboard lb) {
-    _entries = List.from(lb._entries);
-    _category = lb._category;
-    _currentPlayer = lb._currentPlayer;
-    _firebaseFirestore = FirebaseFirestore.instance;
+  /// Factory constructor for private [Leaderboard] that creates a new [Leaderboard] object.
+  /// It calls the private constructor and then waits for the data from the database.
+  static Future<Leaderboard> createPrivate(String category, String username) async {
+    var leaderboard = Leaderboard._create(category, username, false);
+    await leaderboard.getData();
+    return leaderboard;
   }
 
   /// Constructor for [Leaderboard] that creates a new [Leaderboard] object with the Mock database for testing.
-  Leaderboard.test(
+  Leaderboard.testPublic(
     this._category,
     String username,
     this._firebaseFirestore,
   ) {
     _entries = [];
     _currentPlayer = LeaderboardEntry(username, -1, -1);
+    _isPublic = true;
+  }
+
+  /// Constructor for [Leaderboard] that creates a new [Leaderboard] object with the Mock database for testing.
+  Leaderboard.testPrivate(
+      this._category,
+      String username,
+      this._firebaseFirestore,
+      ) {
+    _entries = [];
+    _currentPlayer = LeaderboardEntry(username, -1, -1);
+    _isPublic = false;
   }
 
   /// Getter for the [currentUser]'s position in the leaderboard
@@ -116,92 +131,60 @@ class Leaderboard {
 
   /// Updates the leaderboard in the database with the new points of the current user.
   /// It takes the [newPoints] as a parameter which should be added to the current points of the user and updates the database.
-  /// There is a difference between positive and negative [newPoints] because the leaderboard is sorted in descending order (based on points).
-  /// If the [newPoints] are positive, the user's position in the leaderboard will decrease and vice versa.
+  /// The user's position in the leaderboard will decrease and vice versa.
   /// In the end, the All leaderboard is also updated in the same way.
   Future<void> updateCurrentUserPoints(int newPoints) async {
     int oldPoints = _currentPlayer.getScore;
-    if (newPoints >= 0) {
-      int lowestPoints = 9999999999;
-      int lowestPosition = 1;
-      // parse through the document and update the positions
-      await _doc.get().then((DocumentSnapshot documentSnapshot) {
-        if (documentSnapshot.exists) {
-          Map<String, dynamic> data =
-              documentSnapshot.data() as Map<String, dynamic>;
-          for (String key in data.keys) {
-            if (data[key]['points'] < newPoints + oldPoints &&
-                data[key]['points'] >= oldPoints) {
-              _doc.set({
-                key: {
-                  'points': data[key]['points'],
-                  'position': data[key]['position'] + 1
-                }
-              }, SetOptions(merge: true));
-            }
-            if (data[key]['points'] < lowestPoints &&
-                data[key]['points'] > newPoints + oldPoints) {
-              lowestPoints = data[key]['points'];
-              lowestPosition = data[key]['position'] + 1;
-            } else if (data[key]['points'] == newPoints + oldPoints) {
-              lowestPoints = data[key]['points'];
-              lowestPosition = data[key]['position'];
-            }
-          }
-        }
-      });
-
-      await _doc.set({
-        _currentPlayer.getName: {
-          'points': newPoints + oldPoints,
-          'position': lowestPosition
-        }
-      }, SetOptions(merge: true));
-      _currentPlayer = LeaderboardEntry(
-          _currentPlayer.getName, newPoints + oldPoints, lowestPosition);
-
-      await getData();
-    } else {
-      int highestPoints = -9999999999;
-      int highestPosition = -9999999999;
-
-      await _doc.get().then((DocumentSnapshot documentSnapshot) {
-        if (documentSnapshot.exists) {
-          Map<String, dynamic> data =
-              documentSnapshot.data() as Map<String, dynamic>;
-          for (String key in data.keys) {
-            if (data[key]['points'] >= newPoints + oldPoints &&
-                data[key]['points'] < oldPoints) {
-              _doc.set({
-                key: {
-                  'points': data[key]['points'],
-                  'position': data[key]['position'] - 1
-                }
-              }, SetOptions(merge: true));
-            }
-            if (data[key]['points'] > highestPoints &&
-                data[key]['points'] <= newPoints + oldPoints) {
-              highestPoints = data[key]['points'];
-              highestPosition = data[key]['position'] - 1;
-            } else if (data[key]['points'] == newPoints + oldPoints) {
-              highestPoints = data[key]['points'];
-              highestPosition = data[key]['position'];
-            }
-          }
-        }
-      });
-      await _doc.set({
-        _currentPlayer.getName: {
-          'points': newPoints + oldPoints,
-          'position': highestPosition
-        }
-      }, SetOptions(merge: true));
-
-      _currentPlayer = LeaderboardEntry(
-          _currentPlayer.getName, newPoints + oldPoints, highestPosition);
-      await getData();
+    int lowestPoints = 9999999999;
+    int lowestPosition = 1;
+    DocumentReference doc = _collection.doc(_category);
+    if(_isPublic){
+      doc = _doc;
+    }else{
+      doc = _docPriv;
     }
-    await updateAllLeaderboard(newPoints);
+
+    // parse through the document and update the positions
+    await doc.get().then((DocumentSnapshot documentSnapshot) {
+      if (documentSnapshot.exists) {
+        Map<String, dynamic> data =
+            documentSnapshot.data() as Map<String, dynamic>;
+
+        for (String key in data.keys) {
+          if (data[key]['points'] < newPoints + oldPoints &&
+              data[key]['points'] >= oldPoints) {
+            doc.set({
+              key: {
+                'points': data[key]['points'],
+                'position': data[key]['position'] + 1
+              }
+            }, SetOptions(merge: true));
+          }
+          if (data[key]['points'] < lowestPoints &&
+              data[key]['points'] > newPoints + oldPoints) {
+            lowestPoints = data[key]['points'];
+            lowestPosition = data[key]['position'] + 1;
+          } else if (data[key]['points'] == newPoints + oldPoints) {
+            lowestPoints = data[key]['points'];
+            lowestPosition = data[key]['position'];
+          }
+        }
+      }
+    });
+
+    await doc.set({
+      _currentPlayer.getName: {
+        'points': newPoints + oldPoints,
+        'position': lowestPosition
+      }
+    }, SetOptions(merge: true));
+    _currentPlayer = LeaderboardEntry(
+        _currentPlayer.getName, newPoints + oldPoints, lowestPosition);
+
+    await getData();
+    if(_isPublic){
+      await updateAllLeaderboard(newPoints);
+    }
   }
 
   /// Updates the All leaderboard in the database with the new points of the current user.
@@ -211,6 +194,7 @@ class Leaderboard {
   /// If the [newPoints] are positive, the user's position in the leaderboard will decrease and vice versa.
   Future<void> updateAllLeaderboard(int newPoints) async {
     int oldPoints = -9999999999;
+
     await _docAll.get().then((DocumentSnapshot documentSnapshot) {
       if (documentSnapshot.exists) {
         Map<String, dynamic> data =
@@ -223,81 +207,44 @@ class Leaderboard {
         }
       }
     });
-    if (newPoints >= 0) {
-      int lowestPoints = 9999999999;
-      int lowestPosition = 1;
-      // parse through the document and update the positions
-      await _docAll.get().then((DocumentSnapshot documentSnapshot) {
-        if (documentSnapshot.exists) {
-          Map<String, dynamic> data =
-              documentSnapshot.data() as Map<String, dynamic>;
-          for (String key in data.keys) {
-            if (data[key]['points'] < newPoints + oldPoints &&
-                data[key]['points'] >= oldPoints) {
-              _docAll.set({
-                key: {
-                  'points': data[key]['points'],
-                  'position': data[key]['position'] + 1
-                }
-              }, SetOptions(merge: true));
-            }
+    int lowestPoints = 9999999999;
+    int lowestPosition = 1;
+    // parse through the document and update the positions
+    await _docAll.get().then((DocumentSnapshot documentSnapshot) {
+      if (documentSnapshot.exists) {
+        Map<String, dynamic> data =
+            documentSnapshot.data() as Map<String, dynamic>;
+        for (String key in data.keys) {
+          if (data[key]['points'] < newPoints + oldPoints &&
+              data[key]['points'] >= oldPoints) {
+            _docAll.set({
+              key: {
+                'points': data[key]['points'],
+                'position': data[key]['position'] + 1
+              }
+            }, SetOptions(merge: true));
+          }
 
-            if (data[key]['points'] < lowestPoints &&
-                data[key]['points'] > newPoints + oldPoints) {
-              lowestPoints = data[key]['points'];
-              lowestPosition = data[key]['position'] + 1;
-            } else if (data[key]['points'] == newPoints + oldPoints) {
-              lowestPoints = data[key]['points'];
-              lowestPosition = data[key]['position'];
-            }
+          if (data[key]['points'] < lowestPoints &&
+              data[key]['points'] > newPoints + oldPoints) {
+            lowestPoints = data[key]['points'];
+            lowestPosition = data[key]['position'] + 1;
+          } else if (data[key]['points'] == newPoints + oldPoints) {
+            lowestPoints = data[key]['points'];
+            lowestPosition = data[key]['position'];
           }
         }
-      });
-      await _docAll.set({
-        _currentPlayer.getName: {
-          'points': newPoints + oldPoints,
-          'position': lowestPosition
-        }
-      }, SetOptions(merge: true));
+      }
+    });
+    await _docAll.set({
+      _currentPlayer.getName: {
+        'points': newPoints + oldPoints,
+        'position': lowestPosition
+      }
+    }, SetOptions(merge: true));
 
-      await getData();
-    } else {
-      int highestPoints = -9999999999;
-      int highestPosition = -9999999999;
+    await getData();
 
-      await _docAll.get().then((DocumentSnapshot documentSnapshot) {
-        if (documentSnapshot.exists) {
-          Map<String, dynamic> data =
-              documentSnapshot.data() as Map<String, dynamic>;
-          for (String key in data.keys) {
-            if (data[key]['points'] >= newPoints + oldPoints &&
-                data[key]['points'] < oldPoints) {
-              _docAll.set({
-                key: {
-                  'points': data[key]['points'],
-                  'position': data[key]['position'] - 1
-                }
-              }, SetOptions(merge: true));
-            }
-            if (data[key]['points'] > highestPoints &&
-                data[key]['points'] <= newPoints + oldPoints) {
-              highestPoints = data[key]['points'];
-              highestPosition = data[key]['position'] - 1;
-            } else if (data[key]['points'] == newPoints + oldPoints) {
-              highestPoints = data[key]['points'];
-              highestPosition = data[key]['position'];
-            }
-          }
-        }
-      });
-      await _docAll.set({
-        _currentPlayer.getName: {
-          'points': newPoints + oldPoints,
-          'position': highestPosition
-        }
-      }, SetOptions(merge: true));
-      await getData();
-    }
   }
 
   /// create a new [Leaderboard] with 10 entries with random data (for testing purposes).
@@ -323,32 +270,45 @@ class Leaderboard {
 
   /// Updates the database with the current leaderboard [_entries]. (for testing purposes)
   Future<void> updateData() async {
+    DocumentReference doc = _collection.doc(_category);
+    if(_isPublic){
+      doc = _doc;
+    }else{
+      doc = _docPriv;
+    }
+
     sortEntries();
     // make document empty
-    await _doc.delete();
+    await doc.delete();
     // update document with new data from entries
     for (LeaderboardEntry entry in _entries) {
-      await _doc.set({
+      await doc.set({
         entry.getName: {'points': entry.getScore, 'position': entry.getPosition}
       }, SetOptions(merge: true));
-      await _docAll.set({
-        entry.getName: {
-          'points': entry.getScore + 355,
-          'position': entry.getPosition
-        }
-      }, SetOptions(merge: true));
+      if (_isPublic) {
+        await _docAll.set({
+          entry.getName: {
+            'points': entry.getScore + 355,
+            'position': entry.getPosition
+          }
+        }, SetOptions(merge: true));
+      }
     }
   }
 
   /// Get the up-to-date leaderboard data from [Firestore] including data such as the [_currentPlayer] points and position,
   /// and sorted list of entries limited to 10.
   Future<void> getData() async {
-    final docSnap = await _doc.get();
-    final app =
-        FirebaseFirestore.instance.collection('leaderboard').doc('Science');
-    app.get().then((value) => print(value));
+    final docSnap;
+    if(_isPublic){
+      docSnap = await _doc.get();
+    }else{
+      docSnap = await _docPriv.get();
+    }
+    print(docSnap.toString());
+    print(getCurrentUserID()! + '-' + _category);
     Map<String, dynamic> data = docSnap.data() as Map<String, dynamic>;
-
+    print(data.toString());
     List<LeaderboardEntry> entries = [];
 
     int calculatedPosition = -1;
@@ -364,7 +324,12 @@ class Leaderboard {
     _currentPlayer = LeaderboardEntry(
         _currentPlayer.getName, calculatedPoints, calculatedPosition);
     entries.sort((a, b) => b.getScore.compareTo(a.getScore));
-    print(entries);
     _entries = entries.sublist(0, min(10, entries.length));
+  }
+
+
+  // create a new leaderboard in the FIrestore database with the given [category] name.
+  Future<void> createNewLeaderboard(String category) async {
+    await _collection.doc(category).set({});
   }
 }
