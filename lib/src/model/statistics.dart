@@ -12,30 +12,30 @@ class UserStatistics{
   UserStatistics.test(this.username, this.userQuizzes, this.firestore);
 /// a JSON constructor that converts json object to a UserStatistics instance
   factory UserStatistics.fromJson(String usr, Map<String, dynamic> json){
-
     String username = usr;
     List<UserQuizzResult> q = [];
-    print(json.keys);
-    print(json['quizz1']['correct']);
     for(String str in json.keys){
-      q.add(UserQuizzResult.fromJson(json[str]));
+      q.add(UserQuizzResult.fromJson(str, json[str]));
     }
     return UserStatistics(username, q);
 
   }
+
+
+
 /// converts UserStatistics instance to json object of type
   /// Map<String, dynamic>
 Map<String, dynamic> toJson(){
     Map<String, dynamic> m = {};
    for(UserQuizzResult q in userQuizzes){
-     m.addAll({q.quizzName: q.toJson()});
+     m.addAll(q.toJson());
    }
 
   return m;
   }
   /// stores the statistics to the database
   Future<void> saveStatistics() async{
-    firestore.collection('UserStatistics').doc(this.username).update(this.toJson());
+   await firestore.collection('UserStatistics').doc(this.username).update(this.toJson());
   }
   //very important note:
   // TO STORE THE DATA INTO FIREBASE YOU MUST RUN saveStatistics()
@@ -46,6 +46,8 @@ Map<String, dynamic> toJson(){
     this.userQuizzes.add(r);
 
  }
+
+
   @override
   String toString() {
     return 'UserStatistics{username: $username, userQuizzes: $userQuizzes}';
@@ -60,14 +62,14 @@ class UserQuizzResult {
   String quizzName;
   int allQestions;
   int correct;
-  double secondsSpent;
+  int secondsSpent;
 
   UserQuizzResult(this.quizzName, this.correct,this.allQestions, this.secondsSpent);
 
 /// converts a json object to UserQUizzResult instance
   /// [json] json object of type Map<String, dynamic>
-  UserQuizzResult.fromJson(Map<String, dynamic> json):
-      quizzName = json.keys.toList()[0],
+  UserQuizzResult.fromJson(String name, Map<String, dynamic> json):
+      quizzName = name,
       allQestions = json['all'],
       correct = json['correct'],
       secondsSpent = json['timeSpent'];
@@ -75,11 +77,11 @@ class UserQuizzResult {
   ///converts UserResultQuizz instance to json object of type
   ///Map<String, dynamic>
   Map<String, dynamic> toJson() => {
-
-      'all': allQestions,
-      'correct': correct,
-      'timeSpent': secondsSpent,
-
+      quizzName: {
+        'all': allQestions,
+        'correct': correct,
+        'timeSpent': secondsSpent,
+      }
   };
 
 

@@ -98,8 +98,8 @@ class StatisticsMobileContent extends StatelessWidget {
   Widget build(BuildContext context) {
 
     final int correct = controller.getCorrectAnswers();
-    final double points = controller.getPoints();
-    final double secondsSpent = controller.getSecondsSpent();
+    final int points = controller.getPoints();
+    final int secondsSpent = controller.getSecondsSpent();
     final int correctPercentage = controller.getCorrectPercentage();
 
     return Scaffold(
@@ -247,8 +247,8 @@ class StatisticsDesktopContent extends StatelessWidget {
   Widget build(BuildContext context) {
 
     final int correct = controller.getCorrectAnswers();
-    final double points = controller.getPoints();
-    final double secondsSpent = controller.getSecondsSpent();
+    final int points = controller.getPoints();
+    final int secondsSpent = controller.getSecondsSpent();
     final int correctPercentage = controller.getCorrectPercentage();
 
     return Scaffold(

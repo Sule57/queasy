@@ -16,14 +16,14 @@ class CategoryRepo {
       FirebaseFirestore.instance.collection('categories').doc('public');
   DocumentReference _privateDoc = FirebaseFirestore.instance
       .collection('categories')
-      .doc(getCurrentUserID());
+      .doc(getCurrentUserIDTest());
 
   /// Creates a new [Category] in the database.
   ///
   /// [category] is the name of the [Category] and [color] is the color of the [Category].
   /// Checking if category already exists in the database is done before calling this function.
   Future<void> createCategory(String cat, Color color) async {
-    String? username = getCurrentUserID();
+    String? username = getCurrentUserIDTest();
     if (username == null) {
       throw UserNotLoggedInException();
     }
@@ -42,7 +42,7 @@ class CategoryRepo {
 
   /// Deletes the current [Category] from the database.
   Future<void> deleteCategory(String _category) async {
-    String? username = getCurrentUserID();
+    String? username = getCurrentUserIDTest();
     if (username == null) {
       throw UserNotLoggedInException();
     }
@@ -53,7 +53,7 @@ class CategoryRepo {
 
   /// Gets the list of [String] names of current user's public [Category]s.
   Future<List<String>> getPublicCategories() async {
-    String? username = getCurrentUserID();
+    String? username = getCurrentUserIDTest();
     if (username == null) {
       throw UserNotLoggedInException();
     }
@@ -73,7 +73,7 @@ class CategoryRepo {
 
   /// Get the list of [String] names of current user's private [Category]s.
   Future<List<String>> getPrivateCategories() async {
-    String? username = getCurrentUserID();
+    String? username = getCurrentUserIDTest();
     if (username == null) {
       throw UserNotLoggedInException();
     }

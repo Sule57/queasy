@@ -41,6 +41,33 @@ void main() async {
     },
 
   };
+  Map<String, dynamic> expectedDumpAftersetStprage = {
+    "quizz1": {
+      "all": 100,
+      "correct": 50,
+      "timeSpent": 300
+    },
+
+
+  };
+
+  ///tests method register() in User model
+  test('Test statistics storage adding 1 by 1', () async {
+    UserQuizzResult q1 = UserQuizzResult("quizz1", 50, 100, 300);
+    UserQuizzResult q2 = UserQuizzResult("quizz2", 1, 100, 300);
+    UserQuizzResult q3 = UserQuizzResult("quizz3", 50, 200, 300);
+    UserQuizzResult q5 = UserQuizzResult("quizz5", 50, 200, 300);
+    List<UserQuizzResult> l = [];
+    l.add(q1);
+
+    UserStatistics s = UserStatistics.test("TEST21", l, instance);
+    await s.saveStatistics();
+    Map<String, dynamic> data = jsonDecode(instance.dump())['UserStatistics'][user_test.username];
+    expect(s.toJson(), equals(expectedDumpAftersetStprage));
+  });
+
+
+
 
   ///tests method register() in User model
   test('Test statistics storage', () async {

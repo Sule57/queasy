@@ -1,13 +1,13 @@
-class UserAlreadyExistsException implements Exception {
-  String errMsg() => 'User with this username already exists';
+class UserDoesNotExistException implements Exception {
+  String errMsg() => 'This user does not exist';
+
 }
 
-/// Exception thrown when the user is not logged in.
 class UserNotLoggedInException implements Exception {
-  String errMsg() => 'User is not logged in';
+  String errMsg() => 'User is not logged ';
+
 }
 
-/// Exception thrown when JSON format is invalid.
-class InvalidJSONFormatException implements Exception {
-  String errMsg() => 'Invalid JSON format';
+class UserAlreadyExistsException implements Exception{
+  String errMsg() => 'User with this username already exist ';
 }
