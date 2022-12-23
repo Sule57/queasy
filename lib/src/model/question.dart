@@ -40,6 +40,7 @@ class Question {
     this.questionID
   });
 
+  /// Initializes the question ID of the question. This is used when the question is created and the ID is not yet known.
   Future<void> init() async{
     this.questionID = await getNextID();
   }
@@ -82,6 +83,9 @@ class Question {
     }
   }
 
+  /// Calculates the next ID for a question in the category.
+  ///
+  /// This is used to create a unique ID for a question in the category. It finds the highest ID and adds 1 to it.
   Future<String> getNextID() async{
     int count = -1;
     await FirebaseFirestore.instance
