@@ -22,15 +22,16 @@ class LeaderboardProvider with ChangeNotifier {
   }
 
   void initLeaderboardProvider() async {
-    _currentLeaderboard = await Leaderboard.create(_category, '');
+    _currentLeaderboard = await Leaderboard.createPublic(_category, '');
     _entries = _currentLeaderboard.getEntries();
     _totalEntries = _entries.length;
     _publicCategories = await CategoryRepo().getPublicCategories();
+    _publicCategories.add('All');
     notifyListeners();
   }
 
   void setLeaderboard(String category) async {
-    _currentLeaderboard = await Leaderboard.create(category, '');
+    _currentLeaderboard = await Leaderboard.createPublic(category, '');
     _entries = _currentLeaderboard.getEntries();
     _totalEntries = _entries.length;
     _category = category;
@@ -39,6 +40,7 @@ class LeaderboardProvider with ChangeNotifier {
 
   void setCategories() async {
     _publicCategories = await CategoryRepo().getPublicCategories();
+    _publicCategories.add('All');
     notifyListeners();
   }
 }

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:queasy/src/model/category_repo.dart';
 import 'package:queasy/src/model/statistics.dart';
 
 import '../../utils/exceptions.dart';
@@ -9,6 +10,17 @@ String? getCurrentUserID() {
     return FirebaseAuth.instance.currentUser?.uid;
   }
   return null;
+}
+Future<String?> getCurrentUserUsername() async {
+  String? id;
+  if (await FirebaseAuth.instance.currentUser != null) {
+    id = await FirebaseAuth.instance.currentUser?.uid;
+  }
+  String username = 'something';
+  await FirebaseFirestore.instance.collection('users').doc(id).get().then((value) {
+    username = value.data()!['username'];
+  });
+  return username;
 }
 
 ///Profile class is an extention of the firebase user
@@ -127,14 +139,20 @@ class Profile {
       }
     });
 
+
    if(getCurrentUserID() != null) {
-     firestore.collection('users').doc(getCurrentUserID()).set(this.toJson());
+     // create the document for categories created by the user
+     await firestore.collection('category').doc(getCurrentUserID()).set({});
+
+     await firestore.collection('users').doc(getCurrentUserID()).set(this.toJson());
      UserStatistics s = UserStatistics(this.username, []);
      //Adding the user to the statistics
      Map<String, dynamic> data = {};
-     firestore.collection('UserStatistics').doc(this.username).set(data);
+     await firestore.collection('UserStatistics').doc(this.username).set(data);
      return true;
    }
+
+
    return false;
   }
   /// gets the current profile from user uid
