@@ -65,6 +65,8 @@ class Category {
   }
 
   /// Changes the name of the current [Category].
+  ///
+  /// [newName] is the new name of the [Category].
   Future<void> changeNameOfCategory(String newName) async {
     String? username = getCurrentUserID();
     if (username == null) {
@@ -133,14 +135,13 @@ class Category {
   }
 
   /// Get the list of [Question]s in the current public [Category].
-  Future<List<Question>> getQuestionsFromPublicCategory(String cat) async {
+  Future<List<Question>> getQuestionsFromPublicCategory() async {
     String? username = getCurrentUserID();
     if (username == null) {
       throw UserNotLoggedInException();
     }
 
     List<Question> questions = [];
-
     // get all document id from public categories
     await _publicDoc
         .collection(_category)
@@ -152,6 +153,7 @@ class Category {
     });
     return questions;
   }
+
 
   /// Get the list of [Question]s in the current private [Category].
   Future<List<Question>> getQuestionsFromPrivateCategory() async {
@@ -173,10 +175,11 @@ class Category {
     return questions;
   }
 
-  /// deleteQuestion is used to delete a given question out of the category
+  /// Used to delete a given [Question] out of the category.
+  ///
+  /// [question] is the [Question] that should be deleted. [firestore] is not required instance of the database and is only used for testing.
   Future<void> deleteQuestion(Question question, {FirebaseFirestore? firestore}) async {
     String? username = getCurrentUserID();
-
     if (firestore == null) {
       firestore = FirebaseFirestore.instance;
     }
@@ -193,7 +196,9 @@ class Category {
         .delete();
   }
 
-  /// addQuestion is used to add a given question to the category
+  /// Used to add a given [Question] to the category in the database.
+  ///
+  /// [question] is the [Question] that should be added. [firestore] is not required instance of the database and is only used for testing.
   Future<void> addQuestion(Question question, {FirebaseFirestore? firestore}) async {
     String? username = getCurrentUserID();
 
@@ -205,7 +210,7 @@ class Category {
       throw UserNotLoggedInException();
     }
 
-    /// count how many questions already exist inside of the given category
+    // count how many questions already exist inside of the given category
     int count = 0;
     await firestore
         .collection('categories')
@@ -218,11 +223,11 @@ class Category {
       });
     });
 
-    /// create a variable newID from 'question' + count
+    // create a variable newID from 'question' + count
     String newID;
     print(question.questionID);
     if(question.questionID == null) {
-      newID = 'question' + (count+1).toString();
+      newID = await getNextID();
     } else {
       newID = question.questionID!;
     }
@@ -246,7 +251,7 @@ class Category {
     }
   }
 
-  /// getQuestion retrieves a question from the category with a given id
+  /// Retrieves a [Question] from the private category with a given [id].
   Future<Question> getPrivateQuestion(String id) async{
     String? username = getCurrentUserID();
     if (username == null) {
@@ -272,7 +277,7 @@ class Category {
     }
   }
 
-  /// getQuestion retrieves a question from the category with a given id
+  /// Retrieves a [Question] from the public category with a given [id].
   Future<Question> getPublicQuestion(String id) async{
     String? username = getCurrentUserID();
     if (username == null) {
@@ -296,6 +301,29 @@ class Category {
     else{
       return question;
     }
+  }
+
+  /// Calculates the next ID for a question in the category.
+  ///
+  /// This is used to create a unique ID for a question in the category. It finds the highest ID and adds 1 to it.
+  Future<String> getNextID() async{
+    int count = -1;
+    await FirebaseFirestore.instance
+        .collection('categories')
+        .doc(getCurrentUserID())
+        .collection(_category)
+        .get()
+        .then((QuerySnapshot querySnapshot) {
+      querySnapshot.docs.forEach((doc) {
+        // take the biggest ID and add 1 to it
+        if (int.parse(doc['ID'].substring(8)) > count) {
+          count = int.parse(doc['ID'].substring(8));
+          print("count: " + count.toString());
+        }
+      });
+    });
+    count = count + 1;
+    return 'question'+ count.toString();
   }
 
   Future<int> PublicRandomizer({FirebaseFirestore? firestore}) async {
