@@ -252,49 +252,40 @@ class Category {
   }
 
   /// Retrieves a [Question] from the private category with a given [id].
-  Future<Question> getPrivateQuestion(String id) async{
+  Future<Question> getQuestion(String id, {bool public = false}) async{
     String? username = getCurrentUserID();
     if (username == null) {
       throw UserNotLoggedInException();
     }
     late Question question;
-    await _privateDoc
-        .collection(_category)
-        .doc(id)
-        .get()
-        .then((DocumentSnapshot documentSnapshot) {
-      if (documentSnapshot.exists) {
-        question = Question.fromJson(documentSnapshot.data() as Map<String, dynamic>);
-      } else {
-        print('Document does not exist on the database');
-      }
-    });
-    if (question == null) {
-      throw Exception('Question is null');
-    }
-    else{
-      return question;
-    }
+
+    if (public == false) {
+      await _privateDoc
+          .collection(_category)
+          .doc(id)
+          .get()
+          .then((DocumentSnapshot documentSnapshot) {
+        if (documentSnapshot.exists) {
+          question =
+              Question.fromJson(documentSnapshot.data() as Map<String, dynamic>);
+        } else {
+          print('Document does not exist on the database');
+        }
+      });
+    } else {
+      await _publicDoc
+          .collection(_category)
+          .doc(id)
+          .get()
+          .then((DocumentSnapshot documentSnapshot) {
+        if (documentSnapshot.exists) {
+          question = Question.fromJson(documentSnapshot.data() as Map<String, dynamic>);
+        } else {
+          print('Document does not exist on the database');
+        }
+      });
   }
 
-  /// Retrieves a [Question] from the public category with a given [id].
-  Future<Question> getPublicQuestion(String id) async{
-    String? username = getCurrentUserID();
-    if (username == null) {
-      throw UserNotLoggedInException();
-    }
-    late Question question;
-    await _publicDoc
-        .collection(_category)
-        .doc(id)
-        .get()
-        .then((DocumentSnapshot documentSnapshot) {
-      if (documentSnapshot.exists) {
-        question = Question.fromJson(documentSnapshot.data() as Map<String, dynamic>);
-      } else {
-        print('Document does not exist on the database');
-      }
-    });
     if (question == null) {
       throw Exception('Question is null');
     }
@@ -326,7 +317,7 @@ class Category {
     return 'question'+ count.toString();
   }
 
-  Future<int> PublicRandomizer({FirebaseFirestore? firestore}) async {
+  Future<int> Randomizer({FirebaseFirestore? firestore, bool public = false}) async {
     String? username = getCurrentUserID();
     if (username == null) {
       throw UserNotLoggedInException();
@@ -338,45 +329,30 @@ class Category {
 
     // count the amount of documents in the public category
     int count = 0;
-    await firestore
-        .collection('categories')
-        .doc('public')
-        .collection(_category)
-        .get()
-        .then((QuerySnapshot querySnapshot) {
-      querySnapshot.docs.forEach((doc) {
-        count++;
+
+    if (public == true) {
+      await firestore
+          .collection('categories')
+          .doc('public')
+          .collection(_category)
+          .get()
+          .then((QuerySnapshot querySnapshot) {
+        querySnapshot.docs.forEach((doc) {
+          count++;
+        });
       });
-    });
-
-    // create a random integer between 0 and count
-    int random = Random().nextInt(count);
-
-    return random;
-  }
-
-Future<int> PrivateRandomizer({FirebaseFirestore? firestore}) async {
-    String? username = getCurrentUserID();
-    if (username == null) {
-      throw UserNotLoggedInException();
-    }
-
-    if (firestore == null) {
-      firestore = FirebaseFirestore.instance;
-    }
-
-    // count the amount of documents in the public category
-    int count = 0;
-    await firestore
-        .collection('categories')
-        .doc(username)
-        .collection(_category)
-        .get()
-        .then((QuerySnapshot querySnapshot) {
-      querySnapshot.docs.forEach((doc) {
-        count++;
+    } else {
+      await firestore
+          .collection('categories')
+          .doc(username)
+          .collection(_category)
+          .get()
+          .then((QuerySnapshot querySnapshot) {
+        querySnapshot.docs.forEach((doc) {
+          count++;
+        });
       });
-    });
+    }
 
     // create a random integer between 0 and count
     int random = Random().nextInt(count);

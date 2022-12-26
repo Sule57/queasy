@@ -5,23 +5,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:queasy/src/model/question.dart';
 import 'answer.dart';
 
-
-/// The class [Quiz] represents a playable quiz
-/// It consists of multiple variables that need to be correctly parsed in order for the class to be properly initialized
-///
-/// The variable [id] represents the unique id of a quiz in the database
-///
-/// The variable [noOfQuestions] represents the amount of questions that the quiz should have and is used to know how many questions to retrieve from the database
-///
-/// The variable [creatorUsername] defines the username of the person who originally created the quiz
-///
-/// The static List [_questions] is a private list that stores objects of type Questions, or to be exact, the actual questions of the quiz
-///
-/// The static list [_usedQuestions] is a private list that stores the indexes of the questions that have already been used in the quiz
-///
-/// The String variable [category] is a variable that stores the category of the quiz, so on which topic is the quiz
-///
-/// The variable [_firebaseFirestore] is a private variable that represents an instance of the firebase connection, used to manipulate the firebase database
 class Quiz {
   int id, noOfQuestions;
   String creatorUsername;
