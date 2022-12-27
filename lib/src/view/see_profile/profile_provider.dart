@@ -29,14 +29,16 @@ class ProfileProvider with ChangeNotifier {
 
   ProfileProvider() {}
 
-  void setProfile() async {
+  Future<bool> setProfile() async {
     if (getCurrentUserID() != null) {
       currentUID = getCurrentUserID()!;
       Profile? p = await Profile.getProfilefromUID(currentUID);
       if (p != null) {
         player = p;
         notifyListeners();
+        return true;
       }
     }
+    return false;
   }
 }

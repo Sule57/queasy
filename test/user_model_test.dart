@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:queasy/src/model/profile.dart';
 import 'package:queasy/utils/exceptions.dart';
@@ -7,6 +8,13 @@ import 'package:queasy/utils/exceptions.dart';
 
 /// Main function for testing the [Profile] class.
 void main() async {
+  TestWidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  // try {
+  //   await Firebase.initializeApp();
+  // } catch (e) {
+  //   print(e.toString());
+  // }
   final instance = FakeFirebaseFirestore();
   Profile user_test = Profile.test(
       username: 'TEST21',
@@ -61,15 +69,15 @@ void main() async {
     //Map<String, dynamic> data = await instance.collection('users').get() as Map<String, dynamic>;
 
     // a UserAlreadyExists exception is expected
-    expect(
-        () => usr.registerUser(), throwsA(isA<UserAlreadyExistsException>()));
+    expect(usr.registerUser(), throwsA(isA<UserAlreadyExistsException>()));
   });
 
   ///Tests for Profile Class methods that update database information
-  final profile_test = Profile(
+  final profile_test = Profile.test(
       username: 'profileTest',
       email: 'profileEmail@test.com',
-      hashPassword: 'profileTest');
+      hashPassword: 'profileTest',
+      firestore: instance);
   Map<String, dynamic> expectedDataAfterUpdates = {
     'username': 'testProfile',
     'firstName': 'profile',
@@ -86,42 +94,33 @@ void main() async {
   };
 
   /// Pushes testProfile into the fake firestore database
-  await instance.collection('users').doc("testProfileDocID").set(testProfile);
+  await profile_test.registerUser();
+  // await instance.collection('users').doc("testProfileDocID").set(testProfile);
 
   /// Testing update username in profile class
   test('Profile should have changed username', () {
-    expect(profile_test.updateUsername('testProfile', instance), true);
+    expect(profile_test.updateUsername('testProfile'), true);
   });
 
   /// Testing update name in profile class
   test('Profile should have changed first and last name', () {
-    expect(
-        profile_test.updateName(
-            "testProfileDocID", 'profile', 'test', instance),
-        true);
+    expect(profile_test.updateName('profile', 'test'), true);
   });
 
   /// Testing update picture in profile class
   test('Profile should have changed picture', () {
-    expect(
-        profile_test.updatePicture("testProfileDocID", 'profile.png', instance),
-        true);
+    expect(profile_test.updatePicture('profile.png'), true);
   });
 
   /// Testing update bio in profile class
   test('Profile should have changed bio', () {
-    expect(
-        profile_test.updateBio("testProfileDocID",
-            'This is the test for the profile class.', instance),
+    expect(profile_test.updateBio('This is the test for the profile class.'),
         true);
   });
 
   /// Testing update birthday in profile class
   test('Profile should have changed birthday month and day', () {
-    expect(
-        profile_test.updateBirthday(
-            "testProfileDocID", 'Jancember', 124, instance),
-        true);
+    expect(profile_test.updateBirthday('Jancember', 124), true);
   });
 
   /// Testing after all updates that profile information is correct

@@ -8,6 +8,7 @@ import 'package:queasy/src/view/see_profile/profile_view_controller.dart';
 
 import '../../theme_provider.dart';
 import '../registration/register_view.dart';
+import 'profile_provider.dart';
 
 ///This is UserProfileMobile view
 ///It displays mobile version of the profile page
@@ -144,7 +145,7 @@ class ProfileMobileState extends State<UserProfileMobile> {
               padding: EdgeInsets.only(
                 bottom: 7,
               ),
-              child: Text(controller.player.username),
+              child: Text(Provider.of<ProfileProvider>(context).username),
             ),
 
             ///[Container] to show first and last names of the user
@@ -153,7 +154,7 @@ class ProfileMobileState extends State<UserProfileMobile> {
                 bottom: 7,
               ),
               child: Text(
-                  "${controller.player.firstName} - ${controller.player.lastName}"),
+                  "${Provider.of<ProfileProvider>(context).firstName} - ${Provider.of<ProfileProvider>(context).lastName}"),
             ),
 
             ///[Container] to show email of the user
@@ -161,7 +162,7 @@ class ProfileMobileState extends State<UserProfileMobile> {
               padding: EdgeInsets.only(
                 bottom: 7,
               ),
-              child: Text(controller.player.email),
+              child: Text(Provider.of<ProfileProvider>(context).email),
             ),
 
             ///[Container] to display Bio of the user
@@ -173,7 +174,10 @@ class ProfileMobileState extends State<UserProfileMobile> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [Text("Bio"), Text(controller.player.bio)],
+                    children: [
+                      Text("Bio"),
+                      Text(Provider.of<ProfileProvider>(context).bio)
+                    ],
                   ),
                 ),
                 decoration: BoxDecoration(
@@ -294,33 +298,31 @@ class ProfileMobileState extends State<UserProfileMobile> {
                                                 .validate()) {
                                               if (username.text.isNotEmpty) {
                                                 controller.editUsername(
-                                                    controller.player.username,
                                                     username.text);
                                               }
                                               if (bio.text.isNotEmpty) {
-                                                controller.editBio(
-                                                    controller.player.username,
-                                                    bio.text);
+                                                controller.editBio(bio.text);
                                               }
                                               if (firstname.text.isNotEmpty &&
                                                   lastname.text.isNotEmpty) {
                                                 controller.editName(
-                                                    controller.player.username,
                                                     firstname.text,
                                                     lastname.text);
                                               }
                                               if (firstname.text.isNotEmpty &&
                                                   lastname.text.isEmpty) {
                                                 controller.editName(
-                                                    controller.player.username,
                                                     firstname.text,
-                                                    controller.player.lastName);
+                                                    Provider.of<ProfileProvider>(
+                                                            context)
+                                                        .lastName);
                                               }
                                               if (firstname.text.isEmpty &&
                                                   lastname.text.isNotEmpty) {
                                                 controller.editName(
-                                                  controller.player.username,
-                                                  controller.player.firstName,
+                                                  Provider.of<ProfileProvider>(
+                                                          context)
+                                                      .firstName,
                                                   lastname.text,
                                                 );
                                               }
@@ -328,12 +330,16 @@ class ProfileMobileState extends State<UserProfileMobile> {
                                                 controller.editPassword(
                                                     currentPassword.text,
                                                     newPassword.text,
-                                                    controller.player.email);
+                                                    Provider.of<ProfileProvider>(
+                                                            context)
+                                                        .email);
                                               }
                                               ;
                                               if (email.text.isNotEmpty) {
                                                 controller.editEmail(
-                                                    controller.player.email,
+                                                    Provider.of<ProfileProvider>(
+                                                            context)
+                                                        .email,
                                                     email.text,
                                                     currentPassword.text);
                                               }

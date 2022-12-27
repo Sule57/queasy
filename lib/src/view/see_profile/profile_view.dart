@@ -10,8 +10,6 @@ import 'profile_provider.dart';
 class ProfileView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    Provider.of<ProfileProvider>(context).setProfile();
-
     ///if width of the device is less than 700 then UserProfileMobile is shown
     ///if more than 700 then the user sees UserProfileDesktop
     return MediaQuery.of(context).size.width > 700

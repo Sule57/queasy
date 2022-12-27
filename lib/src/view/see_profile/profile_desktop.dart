@@ -212,11 +212,9 @@ class ProfileDesktopState extends State<UserProfileDesktop> {
                                                                 }
                                                                 if (bio.text
                                                                     .isNotEmpty) {
-                                                                  controller.editBio(
-                                                                      controller
-                                                                          .player
-                                                                          .username,
-                                                                      bio.text);
+                                                                  controller
+                                                                      .editBio(bio
+                                                                          .text);
                                                                 }
                                                                 if (firstname
                                                                         .text
@@ -225,9 +223,6 @@ class ProfileDesktopState extends State<UserProfileDesktop> {
                                                                         .text
                                                                         .isNotEmpty) {
                                                                   controller.editName(
-                                                                      controller
-                                                                          .player
-                                                                          .username,
                                                                       firstname
                                                                           .text,
                                                                       lastname
@@ -240,13 +235,10 @@ class ProfileDesktopState extends State<UserProfileDesktop> {
                                                                         .text
                                                                         .isEmpty) {
                                                                   controller.editName(
-                                                                      controller
-                                                                          .player
-                                                                          .username,
                                                                       firstname
                                                                           .text,
-                                                                      controller
-                                                                          .player
+                                                                      Provider.of<ProfileProvider>(
+                                                                              context)
                                                                           .lastName);
                                                                 }
                                                                 if (firstname
@@ -257,11 +249,8 @@ class ProfileDesktopState extends State<UserProfileDesktop> {
                                                                         .isNotEmpty) {
                                                                   controller
                                                                       .editName(
-                                                                    controller
-                                                                        .player
-                                                                        .username,
-                                                                    controller
-                                                                        .player
+                                                                    Provider.of<ProfileProvider>(
+                                                                            context)
                                                                         .firstName,
                                                                     lastname
                                                                         .text,
@@ -275,16 +264,16 @@ class ProfileDesktopState extends State<UserProfileDesktop> {
                                                                           .text,
                                                                       newPassword
                                                                           .text,
-                                                                      controller
-                                                                          .player
+                                                                      Provider.of<ProfileProvider>(
+                                                                              context)
                                                                           .email);
                                                                 }
                                                                 ;
                                                                 if (email.text
                                                                     .isNotEmpty) {
                                                                   controller.editEmail(
-                                                                      controller
-                                                                          .player
+                                                                      Provider.of<ProfileProvider>(
+                                                                              context)
                                                                           .email,
                                                                       email
                                                                           .text,
@@ -751,7 +740,7 @@ class ProfileDesktopState extends State<UserProfileDesktop> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text("Bio"),
-                              Text(controller.player.bio)
+                              Text(Provider.of<ProfileProvider>(context).bio)
                             ],
                           ),
                         ),
