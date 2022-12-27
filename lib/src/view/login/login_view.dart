@@ -1,8 +1,14 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:queasy/src/view/registration/register_view.dart';
 import 'package:queasy/src/view/widgets/rounded-button.dart';
 import '../../../services/auth.dart';
 
+/// This is the mobile version of the login view.
+///
+/// It is the view that the user sees when they are trying to sign in to
+/// use the app. It shows two fields for the user to fill in, and a button
+/// to sign up. When the login is over, the user is taken to [HomeView].
 class LogInView extends StatefulWidget {
   const LogInView({Key? key}) : super(key: key);
 
@@ -111,7 +117,7 @@ class _LogInViewState extends State<LogInView> {
                   ),
                 ),
                 const Text(
-                  "or sign up with",
+                  "or log in with",
                   style: TextStyle(fontSize: 16.0),
                 ),
                 Expanded(
@@ -144,6 +150,38 @@ class _LogInViewState extends State<LogInView> {
                 ),
               ],
             ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "New User? ",
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 10, bottom: 10),
+                  child: ElevatedButton(
+                    child: Text(
+                      'Register',
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.background,
+                      ),
+                    ),
+                    style: ButtonStyle(
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(18.0),
+                    ))),
+                    onPressed: () => {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => RegisterView()))
+                    },
+                  ),
+                ),
+              ],
+            )
           ],
         ),
       ),

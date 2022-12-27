@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:queasy/constants/app_themes.dart';
 import 'package:queasy/services/auth.dart';
 import 'package:queasy/src/view/home_view.dart';
+import 'package:queasy/src/view/registration/register_view.dart';
 
 /// This is the login view for web browser.
 ///
@@ -31,8 +32,8 @@ class _LogInDesktopState extends State<LogInDesktop> {
   bool passwordVisible = false;
 
   ///[signInWithEmailAndPassword] method calls signInWithEmailAndPassword from Auth.dart
-  ///@return true -> login successful
-  ///@return false -> login failed and errorMessage will be displayed
+  ///if returns true -> login successful
+  ///if returns false -> login failed and errorMessage will be displayed
   Future<bool> signInWithEmailAndPassword() async {
     try {
       await Auth().signInWithEmailAndPassword(
@@ -244,6 +245,38 @@ class _LogInDesktopState extends State<LogInDesktop> {
                         ),
                       ],
                     ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "New User? ",
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 10, bottom: 10),
+                          child: ElevatedButton(
+                            child: Text(
+                              'Register',
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.background,
+                              ),
+                            ),
+                            style: ButtonStyle(
+                                shape: MaterialStateProperty.all<
+                                        RoundedRectangleBorder>(
+                                    RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(18.0),
+                            ))),
+                            onPressed: () => {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => RegisterView()))
+                            },
+                          ),
+                        ),
+                      ],
+                    )
                   ],
                 )),
           ),
