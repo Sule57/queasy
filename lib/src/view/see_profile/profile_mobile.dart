@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_profile_picture/flutter_profile_picture.dart';
+import 'package:provider/provider.dart';
 import 'package:queasy/constants/app_themes.dart';
+import 'package:queasy/src/theme_button.dart';
 import 'package:queasy/src/view/login/login_view.dart';
 import 'package:queasy/src/view/see_profile/profile_view_controller.dart';
 
+import '../../theme_provider.dart';
 import '../registration/register_view.dart';
 
 ///This is UserProfileMobile view
@@ -174,7 +177,10 @@ class ProfileMobileState extends State<UserProfileMobile> {
                   ),
                 ),
                 decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: Provider.of<ThemeProvider>(context)
+                        .currentTheme
+                        .colorScheme
+                        .background,
                     borderRadius: BorderRadius.all(Radius.circular(20)),
                     border: Border.all(color: orange))),
 
@@ -210,7 +216,10 @@ class ProfileMobileState extends State<UserProfileMobile> {
                     ),
                   ),
                   decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: Provider.of<ThemeProvider>(context)
+                          .currentTheme
+                          .colorScheme
+                          .background,
                       borderRadius: BorderRadius.all(Radius.circular(20)),
                       border: Border.all(color: orange))),
             ),
@@ -1101,6 +1110,7 @@ class ProfileMobileState extends State<UserProfileMobile> {
                   ))),
                   child: Text("Delete Account"),
                 )),
+            ThemeButton(),
           ],
         ),
       )

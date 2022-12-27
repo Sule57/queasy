@@ -348,12 +348,13 @@ class _QuestionListTileState extends State<QuestionListTile> {
 /// The variable [question] is the question that is going to be edited.
 editQuestionToDatabase(Question question) async {
   print(questionController.text);
-  await question.editQuestionText(questionController.text.toString(), null);
-  await question.editAnswerText(0, answer1Controller.text, null);
-  await question.editAnswerText(1, answer2Controller.text, null);
-  await question.editAnswerText(2, answer3Controller.text, null);
-  await question.editAnswerText(3, answer4Controller.text, null);
-  await question.setCorrectAnswer(_selectedRadioAnswer.index, null);
+  question.setText(questionController.text.toString());
+  question.answers[0].setText(answer1Controller.text);
+  question.answers[1].setText(answer2Controller.text);
+  question.answers[2].setText(answer3Controller.text);
+  question.answers[3].setText(answer4Controller.text);
+  question.setCorrectAnswer(_selectedRadioAnswer.index);
+  await question.updateQuestion();
   print("Question edited");
 }
 
@@ -371,10 +372,9 @@ addQuestionToDatabase() async {
     ],
     // TODO: remove hard-code
     category: _category.getCategory(),
-    owner: 'Savo', // TODO: get the real owner
     questionID: '0',
   );
-  await question.addQuestion(null);
+  await _category.addQuestion(question);
   print("Question added");
 }
 
