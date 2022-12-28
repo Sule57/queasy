@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../theme_provider.dart';
 import '../quiz_provider.dart';
 
 /// Widget to display the score, the current question being answered, and the
@@ -34,9 +35,23 @@ class ScoreTracking extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(timeLeft),
-          Text(pointTracker),
-          Text(questionTracker),
+          Text(timeLeft,
+              style: TextStyle(
+                fontSize: 20,
+                color: Colors.black,
+              )),
+          Text(pointTracker,
+              style: TextStyle(
+                fontSize: 20,
+                color: Colors.black,
+              )),
+          Text(
+            questionTracker,
+            style: TextStyle(
+              fontSize: 20,
+              color: Colors.black,
+            ),
+          ),
         ],
       ),
     );

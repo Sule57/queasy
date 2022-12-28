@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../theme_provider.dart';
 import '../quiz_provider.dart';
 
 /// Widget to display questions of the quiz.
@@ -27,13 +28,11 @@ class QuestionContainer extends StatelessWidget {
         color: Theme.of(context).colorScheme.primary,
         borderRadius: BorderRadius.circular(25),
       ),
-      child: Text(
-        text,
-        style: Theme.of(context)
-            .textTheme
-            .headline3
-            ?.copyWith(color: Theme.of(context).colorScheme.onPrimary),
-      ),
+      child: Text(text,
+          style: TextStyle(
+            fontSize: 20,
+            color: Colors.white,
+          )),
     );
   }
 }

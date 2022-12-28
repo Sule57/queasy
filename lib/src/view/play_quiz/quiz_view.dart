@@ -73,9 +73,15 @@ class QuizViewBackground extends StatelessWidget {
     return Container(
       height: height / 3,
       width: double.infinity,
-      color: Theme.of(context).colorScheme.onPrimary,
       alignment: Alignment.topLeft,
       padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.only(
+          bottomRight: Radius.circular(30.0),
+          bottomLeft: Radius.circular(30.0),
+        ),
+        color: const Color(0xfff1ffe7),
+      ),
       child: SafeArea(
         child: Image.asset(
           "lib/assets/images/logo_horizontal.png",
@@ -184,7 +190,10 @@ class QuizViewDesktopContent extends StatelessWidget {
         children: [
           Text(
             Provider.of<QuizProvider>(context).category,
-            style: Theme.of(context).textTheme.headline2,
+            style: TextStyle(
+              fontSize: 40,
+              color: Colors.black,
+            ),
           ),
           const ScoreTracking(),
           const QuestionContainer(),
@@ -240,7 +249,10 @@ class QuizViewMobileContent extends StatelessWidget {
         children: [
           Text(
             Provider.of<QuizProvider>(context).category,
-            style: Theme.of(context).textTheme.headline1,
+            style: TextStyle(
+              fontSize: 40,
+              color: Colors.black,
+            ),
           ),
           const ScoreTracking(),
           const QuestionContainer(),

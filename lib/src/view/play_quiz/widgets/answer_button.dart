@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../theme_provider.dart';
 import '../quiz_provider.dart';
 
 /// Widget for every answer of the quiz.
@@ -67,8 +68,11 @@ class _AnswerButtonState extends State<AnswerButton>
     bool isCorrect = provider.isAnswerCorrect(widget.index);
 
     _colorTween = ColorTween(
-      begin: Colors.white,
-      end: isCorrect ? Colors.green : Colors.red,
+      begin: Provider.of<ThemeProvider>(context)
+          .currentTheme
+          .colorScheme
+          .background,
+      end: isCorrect ? const Color(0xff9fc490) : const Color(0xfff19c79),
     ).animate(_animationController);
     if (_animationController.status == AnimationStatus.completed) {
       _animationController.reverse();
@@ -105,7 +109,13 @@ class _AnswerButtonState extends State<AnswerButton>
             child: Text(
               text,
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodyText1,
+              style: TextStyle(
+                fontSize: 20,
+                color: Provider.of<ThemeProvider>(context)
+                    .currentTheme
+                    .colorScheme
+                    .onBackground,
+              ),
             ),
           ),
         ),
