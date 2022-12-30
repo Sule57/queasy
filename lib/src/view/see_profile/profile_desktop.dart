@@ -1,3 +1,5 @@
+import 'package:draw_graph/draw_graph.dart';
+import 'package:draw_graph/models/feature.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:queasy/constants/app_themes.dart';
@@ -6,6 +8,7 @@ import 'package:queasy/src/view/see_profile/profile_view_controller.dart';
 import 'package:flutter_profile_picture/flutter_profile_picture.dart';
 
 import '../../theme_provider.dart';
+import '../registration/register_view.dart';
 import 'profile_provider.dart';
 
 ///This is UserProfileDesktop view
@@ -33,6 +36,8 @@ class ProfileDesktopState extends State<UserProfileDesktop> {
   TextEditingController currentPassword = new TextEditingController();
   TextEditingController newPassword = new TextEditingController();
   TextEditingController email = new TextEditingController();
+  TextEditingController emailForDelete = new TextEditingController();
+  TextEditingController passwordForDelete = new TextEditingController();
 
   ///[passwordVisible] is for user to hide/show the entered password
   bool passwordVisible = false;
@@ -40,8 +45,26 @@ class ProfileDesktopState extends State<UserProfileDesktop> {
   ///[errorCurrentPassword] is to display error message when current password is not entered
   bool errorCurrentPassword = false;
 
-  ///[formKey] used for Form
+  ///[errorDeletePassword] is to display error message when password entered in delete account container is not entered
+  bool errorDeletePassword = false;
+
+  ///[errorDeleteEmail] is to display error message when email entered in delete account container is not entered
+  bool errorDeleteEmail = false;
+
+  ///[formKey] used for Form in EditProfile button
   final formKey = GlobalKey<FormState>();
+
+  ///[formKeyDelete] used for Form in DeleteAccount button
+  final formKeyDelete = GlobalKey<FormState>();
+
+  ///[features] is to store data used for line graph. Scores must be represented as decimals (eg. 3 points = 0.3).
+  final List<Feature> features = [
+    Feature(
+      title: "Public Quizzes",
+      color: purple,
+      data: [0.3, 0.6, 0.8, 0.9, 1, 1.2],
+    ),
+  ];
 
   @override
   void dispose() {
@@ -123,7 +146,7 @@ class ProfileDesktopState extends State<UserProfileDesktop> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        ///[ProfilePicture] to show user icon as a round circle with the first letters of their name inside
+                        ///[MouseRegion] to show user profile picture in a round circle, shows colored circle with first letter of username if  no profile picture has been selected before
                         MouseRegion(
                             cursor: SystemMouseCursors.click,
                             child: GestureDetector(
@@ -156,19 +179,23 @@ class ProfileDesktopState extends State<UserProfileDesktop> {
                                             .profilePicture ==
                                         ""
                                     ? ProfilePicture(
-                                        name: 'Username',
+                                        name: Provider.of<ProfileProvider>(
+                                                context)
+                                            .username,
                                         radius: 100,
                                         fontsize: 25,
-                                        // img: '',
                                       )
                                     : CircleAvatar(
                                         radius: 100,
+                                        backgroundColor:
+                                            Provider.of<ThemeProvider>(context)
+                                                .currentTheme
+                                                .colorScheme
+                                                .background,
                                         backgroundImage: NetworkImage(
                                             Provider.of<ProfileProvider>(
                                                     context)
                                                 .profilePicture)))),
-                        // Image.network(
-                        //     "https://picsum.photos/250?image=9")),
                         Container(
                             alignment: Alignment.center,
                             padding: EdgeInsets.only(
@@ -189,12 +216,31 @@ class ProfileDesktopState extends State<UserProfileDesktop> {
                                 ),
 
                                 ///[Container] to show the number of user's followers and following
+                                // Container(
+                                //   padding: EdgeInsets.only(
+                                //     bottom: 7,
+                                //   ),
+                                //   child: Text("1 Followers - 2 Following",
+                                //       style: TextStyle(fontSize: 30)),
+                                // ),
+
+                                ///[Container] to show first and last names of the user
                                 Container(
                                   padding: EdgeInsets.only(
                                     bottom: 7,
                                   ),
-                                  child: Text("1 Followers - 2 Following",
-                                      style: TextStyle(fontSize: 30)),
+                                  child: Text(
+                                      "${Provider.of<ProfileProvider>(context).firstName} ${Provider.of<ProfileProvider>(context).lastName}"),
+                                ),
+
+                                ///[Container] to show email of the user
+                                Container(
+                                  padding: EdgeInsets.only(
+                                    bottom: 7,
+                                  ),
+                                  child: Text(
+                                      Provider.of<ProfileProvider>(context)
+                                          .email),
                                 ),
 
                                 ///[ElevatedButton] to enable the user to edit their profile info
@@ -798,15 +844,322 @@ class ProfileDesktopState extends State<UserProfileDesktop> {
                                         },
 
                                     ///[ButtonStyle] to customise the button
-                                    style: ButtonStyle(
-                                        shape: MaterialStateProperty.all<
-                                                RoundedRectangleBorder>(
-                                            RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(18.0),
-                                    ))),
+                                    style: ElevatedButton.styleFrom(
+                                        backgroundColor: purple,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(18.0),
+                                        )),
 
                                     ///[Text] to set the name of the button
-                                    child: Text("Edit Profile"))
+                                    child: Text(
+                                      "Edit Profile",
+                                      style: TextStyle(color: Colors.white),
+                                    )),
+                                Container(
+                                    padding: EdgeInsets.only(top: 7),
+                                    child: ElevatedButton(
+                                      onPressed: () => {
+                                        showDialog(
+                                            context: context,
+                                            builder: (context) {
+                                              return StatefulBuilder(builder:
+                                                  (context,
+                                                      StateSetter setState) {
+                                                return AlertDialog(
+                                                  backgroundColor: purple,
+                                                  scrollable: true,
+                                                  title: Container(
+                                                    alignment:
+                                                        Alignment.topCenter,
+                                                    child: Text(
+                                                      "Delete Account",
+                                                      style: TextStyle(
+                                                          color: Colors.white),
+                                                    ),
+                                                  ),
+                                                  actions: [
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceEvenly,
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .end,
+                                                      children: [
+                                                        ElevatedButton(
+                                                          child: Text("Cancel",
+                                                              style: TextStyle(
+                                                                  color:
+                                                                      black)),
+                                                          onPressed: () => {
+                                                            Navigator.of(
+                                                                    context)
+                                                                .pop()
+                                                          },
+                                                          style: ButtonStyle(
+                                                              backgroundColor:
+                                                                  MaterialStateProperty
+                                                                      .all<Color>(
+                                                                          orange),
+                                                              shape: MaterialStateProperty.all<
+                                                                      RoundedRectangleBorder>(
+                                                                  RoundedRectangleBorder(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            18.0),
+                                                              ))),
+                                                        ),
+                                                        ElevatedButton(
+                                                          child: Text("Confirm",
+                                                              style: TextStyle(
+                                                                  color:
+                                                                      black)),
+                                                          onPressed: () {
+                                                            bool success = controller
+                                                                .deleteAccount(
+                                                                    emailForDelete
+                                                                        .text,
+                                                                    passwordForDelete
+                                                                        .text);
+                                                            if (formKeyDelete
+                                                                .currentState!
+                                                                .validate()) {
+                                                              if (success) {
+                                                                Navigator.of(
+                                                                        context)
+                                                                    .push(MaterialPageRoute(
+                                                                        builder:
+                                                                            (context) =>
+                                                                                RegisterView()));
+                                                                emailForDelete
+                                                                    .clear();
+                                                                passwordForDelete
+                                                                    .clear();
+                                                              } else {
+                                                                ScaffoldMessenger.of(
+                                                                        context)
+                                                                    .showSnackBar(
+                                                                  const SnackBar(
+                                                                      content: Text(
+                                                                          'Failed to delete account!'),
+                                                                      backgroundColor:
+                                                                          Colors
+                                                                              .red,
+                                                                      behavior:
+                                                                          SnackBarBehavior
+                                                                              .floating,
+                                                                      width:
+                                                                          200,
+                                                                      shape:
+                                                                          StadiumBorder()),
+                                                                );
+                                                              }
+                                                            }
+                                                          },
+                                                          style: ButtonStyle(
+                                                              backgroundColor:
+                                                                  MaterialStateProperty
+                                                                      .all<Color>(
+                                                                          green),
+                                                              shape: MaterialStateProperty.all<
+                                                                      RoundedRectangleBorder>(
+                                                                  RoundedRectangleBorder(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            18.0),
+                                                              ))),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ],
+                                                  content: Container(
+                                                      height:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .height *
+                                                              .25,
+                                                      width:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .width /
+                                                              1.5,
+                                                      child: Form(
+                                                        key: formKeyDelete,
+                                                        child: Row(
+                                                          children: [
+                                                            Column(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .spaceEvenly,
+                                                              children: [
+                                                                Text("Email",
+                                                                    style: TextStyle(
+                                                                        color: Colors
+                                                                            .white)),
+                                                                Text("Password",
+                                                                    style: TextStyle(
+                                                                        color: Colors
+                                                                            .white)),
+                                                              ],
+                                                            ),
+                                                            SizedBox(width: 25),
+                                                            Column(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .spaceEvenly,
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .start,
+                                                              children: [
+                                                                Stack(
+                                                                    children: [
+                                                                      Container(
+                                                                        height:
+                                                                            30,
+                                                                        width:
+                                                                            MediaQuery.of(context).size.width /
+                                                                                3,
+                                                                        child:
+                                                                            TextFormField(
+                                                                          ///if the user hasn't entered anything, validation fails
+                                                                          validator:
+                                                                              (value) {
+                                                                            setState(() {
+                                                                              errorDeleteEmail = false;
+                                                                            });
+                                                                            if (value == null ||
+                                                                                value.isEmpty) {
+                                                                              setState(() {
+                                                                                errorDeleteEmail = true;
+                                                                              });
+                                                                              return null;
+                                                                            }
+                                                                            return null;
+                                                                          },
+                                                                          controller:
+                                                                              emailForDelete,
+                                                                          decoration:
+                                                                              InputDecoration(
+                                                                            contentPadding:
+                                                                                EdgeInsets.only(bottom: 15, left: 20),
+                                                                            filled:
+                                                                                true,
+                                                                            fillColor:
+                                                                                Colors.white,
+                                                                            border:
+                                                                                UnderlineInputBorder(
+                                                                              borderSide: BorderSide(color: Colors.white),
+                                                                              borderRadius: BorderRadius.circular(25.7),
+                                                                            ),
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                      errorDeleteEmail
+                                                                          ? Container(
+                                                                              padding: EdgeInsets.only(top: 30, left: 20),
+                                                                              child: Container(
+                                                                                  width: MediaQuery.of(context).size.width / 4,
+                                                                                  child: Text(
+                                                                                    "Please enter email",
+                                                                                    style: TextStyle(
+                                                                                      color: white,
+                                                                                    ),
+                                                                                  )),
+                                                                            )
+                                                                          : Container()
+                                                                    ]),
+                                                                Stack(
+                                                                    children: [
+                                                                      Container(
+                                                                          height:
+                                                                              30,
+                                                                          width: MediaQuery.of(context).size.width /
+                                                                              3,
+                                                                          child:
+                                                                              TextFormField(
+                                                                            ///hides/shows password based on user click
+                                                                            obscureText:
+                                                                                !passwordVisible,
+
+                                                                            ///if the user hasn't entered anything, validation fails
+                                                                            validator:
+                                                                                (value) {
+                                                                              setState(() {
+                                                                                errorDeletePassword = false;
+                                                                              });
+                                                                              if (value == null || value.isEmpty) {
+                                                                                setState(() {
+                                                                                  errorDeletePassword = true;
+                                                                                });
+                                                                                return null;
+                                                                              }
+                                                                              return null;
+                                                                            },
+                                                                            controller:
+                                                                                passwordForDelete,
+                                                                            decoration:
+                                                                                InputDecoration(
+                                                                              labelText: 'Password',
+                                                                              contentPadding: EdgeInsets.only(bottom: 15, left: 20),
+                                                                              filled: true,
+                                                                              fillColor: Colors.white,
+                                                                              border: UnderlineInputBorder(
+                                                                                borderSide: BorderSide(color: Colors.white),
+                                                                                borderRadius: BorderRadius.circular(25.7),
+                                                                              ),
+
+                                                                              ///[IconButton] to click when user wants to see/hide password
+                                                                              suffixIcon: IconButton(
+                                                                                icon: Icon(
+                                                                                  passwordVisible ? Icons.visibility : Icons.visibility_off,
+                                                                                  color: Theme.of(context).primaryColorDark,
+                                                                                ),
+                                                                                onPressed: () {
+                                                                                  setState(() {
+                                                                                    passwordVisible = !passwordVisible;
+                                                                                  });
+                                                                                },
+                                                                              ),
+                                                                            ),
+                                                                          )),
+                                                                      errorDeletePassword
+                                                                          ? Container(
+                                                                              padding: EdgeInsets.only(top: 30, left: 20),
+                                                                              child: Container(
+                                                                                  width: MediaQuery.of(context).size.width / 4,
+                                                                                  child: Text(
+                                                                                    "Please enter password",
+                                                                                    style: TextStyle(
+                                                                                      color: white,
+                                                                                    ),
+                                                                                  )),
+                                                                            )
+                                                                          : Container()
+                                                                    ]),
+                                                              ],
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      )),
+                                                );
+                                              });
+                                            })
+                                      },
+                                      style: ButtonStyle(
+                                          shape: MaterialStateProperty.all<
+                                                  RoundedRectangleBorder>(
+                                              RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(18.0),
+                                      ))),
+                                      child: Text("Delete Account"),
+                                    )),
+                                Container(
+                                    padding: EdgeInsets.only(top: 7),
+                                    child: ThemeButton()),
                               ],
                             ))
                       ],
@@ -815,73 +1168,133 @@ class ProfileDesktopState extends State<UserProfileDesktop> {
 
                   ///[Container] to display Bio of the user
                   Container(
-                    padding: EdgeInsets.only(
-                      top: MediaQuery.of(context).size.height * .05,
-                    ),
+                    // padding: EdgeInsets.only(
+                    //   top: MediaQuery.of(context).size.height * .05,
+                    // ),
                     child: Container(
-                        padding: EdgeInsets.all(20),
+                        margin: EdgeInsets.all(7),
+                        padding: EdgeInsets.all(7),
                         child: SingleChildScrollView(
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Text("Bio"),
-                              Text(Provider.of<ProfileProvider>(context).bio)
+                              Padding(
+                                padding: EdgeInsets.all(7),
+                                child: Text("Bio"),
+                              ),
+                              Padding(
+                                  padding: EdgeInsets.all(7),
+                                  child: Text(
+                                      Provider.of<ProfileProvider>(context)
+                                          .bio))
                             ],
                           ),
                         ),
                         decoration: BoxDecoration(
-                            color: Provider.of<ThemeProvider>(context)
-                                .currentTheme
-                                .colorScheme
-                                .background,
-                            borderRadius: BorderRadius.all(Radius.circular(20)),
-                            border: Border.all(color: orange))),
+                          color: Provider.of<ThemeProvider>(context)
+                              .currentTheme
+                              .colorScheme
+                              .background,
+                          borderRadius: BorderRadius.all(Radius.circular(20)),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Provider.of<ThemeProvider>(context)
+                                  .currentTheme
+                                  .colorScheme
+                                  .onBackground
+                                  .withOpacity(0.05), //color of shadow
+                              spreadRadius: 0, //spread radius
+                              blurRadius: 10, // blur radius
+                              offset: Offset(
+                                  0, 4), // changes position of shadow (x, y)
+                            ),
+                          ],
+                        )),
                   ),
 
                   ///[Container] to display Personal Statistics of the user
                   Container(
-                    padding: EdgeInsets.only(
-                      top: MediaQuery.of(context).size.height * .05,
-                      // left: MediaQuery.of(context).size.width / 6
-                    ),
+                    // padding: EdgeInsets.only(
+                    //   top: MediaQuery.of(context).size.height * .05,
+                    //   // left: MediaQuery.of(context).size.width / 6
+                    // ),
                     alignment: Alignment.center,
                     child: Container(
-                        width: MediaQuery.of(context).size.width / 2.2,
-                        height: MediaQuery.of(context).size.height * .40,
-                        padding: EdgeInsets.all(20),
+                        // width: MediaQuery.of(context).size.width / 2.2,
+                        // height: MediaQuery.of(context).size.height * .40,
+                        margin: EdgeInsets.all(7),
+                        padding: EdgeInsets.all(7),
                         child: SingleChildScrollView(
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Text("Personal Statistics"),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Column(
-                                    children: [Text("5"), Text("completed")],
-                                  ),
-                                  SizedBox(width: 50),
-                                  Column(
-                                    children: [Text("5"), Text("10/10 %")],
-                                  ),
+                              Padding(
+                                  padding: EdgeInsets.all(7),
+                                  child: Text("Personal Statistics")),
+                              Padding(
+                                  padding: EdgeInsets.all(7),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Column(
+                                        children: [
+                                          Text("5"),
+                                          Text("completed")
+                                        ],
+                                      ),
+                                      SizedBox(width: 50),
+                                      Column(
+                                        children: [Text("5"), Text("10/10 %")],
+                                      ),
+                                    ],
+                                  )),
+                              Padding(
+                                  padding: EdgeInsets.all(7),
+                                  child: Text("Score Distribution")),
+                              LineGraph(
+                                features: features,
+                                size: Size(420, 450),
+                                labelX: [
+                                  'Quiz 1',
+                                  'Quiz 2',
+                                  'Quiz 3',
+                                  'Quiz 4',
+                                  'Quiz 5',
+                                  'Quiz 6'
                                 ],
+                                labelY: ['2', '4', '6', '8', '10'],
+                                showDescription: true,
+                                graphColor: Provider.of<ThemeProvider>(context)
+                                    .currentTheme
+                                    .colorScheme
+                                    .onBackground,
                               ),
-                              Text("Score Distribution"),
                             ],
                           ),
                         ),
                         decoration: BoxDecoration(
-                            color: Provider.of<ThemeProvider>(context)
-                                .currentTheme
-                                .colorScheme
-                                .background,
-                            borderRadius: BorderRadius.all(Radius.circular(20)),
-                            border: Border.all(color: orange))),
+                          color: Provider.of<ThemeProvider>(context)
+                              .currentTheme
+                              .colorScheme
+                              .background,
+                          borderRadius: BorderRadius.all(Radius.circular(20)),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Provider.of<ThemeProvider>(context)
+                                  .currentTheme
+                                  .colorScheme
+                                  .onBackground
+                                  .withOpacity(0.05), //color of shadow
+                              spreadRadius: 0, //spread radius
+                              blurRadius: 10, // blur radius
+                              offset: Offset(
+                                  0, 4), // changes position of shadow (x, y)
+                            ),
+                          ],
+                        )),
                   ),
-                  Container(
-                      padding: EdgeInsets.only(top: 7), child: ThemeButton()),
                 ]),
           ),
         ],

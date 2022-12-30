@@ -1,3 +1,4 @@
+import 'package:draw_graph/models/feature.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_profile_picture/flutter_profile_picture.dart';
 import 'package:provider/provider.dart';
@@ -5,7 +6,7 @@ import 'package:queasy/constants/app_themes.dart';
 import 'package:queasy/src/theme_button.dart';
 import 'package:queasy/src/view/login/login_view.dart';
 import 'package:queasy/src/view/see_profile/profile_view_controller.dart';
-
+import 'package:draw_graph/draw_graph.dart';
 import '../../theme_provider.dart';
 import '../registration/register_view.dart';
 import 'profile_provider.dart';
@@ -56,6 +57,15 @@ class ProfileMobileState extends State<UserProfileMobile> {
   ///[formKeyDelete] used for Form in DeleteAccount button
   final formKeyDelete = GlobalKey<FormState>();
 
+  ///[features] is to store data used for line graph. Scores must be represented as decimals (eg. 3 points = 0.3).
+  final List<Feature> features = [
+    Feature(
+      title: "Public Quizzes",
+      color: purple,
+      data: [0.3, 0.6, 0.8, 0.9, 1, 1.2],
+    ),
+  ];
+
   @override
   void dispose() {
     /// Cleans up the controllers when the widget is disposed.
@@ -94,13 +104,13 @@ class ProfileMobileState extends State<UserProfileMobile> {
       ///[Container] used for design
       Container(
         alignment: Alignment.bottomRight,
-        padding: EdgeInsets.only(
-          top: MediaQuery.of(context).size.height * .25,
-          right: MediaQuery.of(context).size.width / 40,
-        ),
+        // padding: EdgeInsets.only(
+        //   top: MediaQuery.of(context).size.height * .25,
+        //   right: MediaQuery.of(context).size.width / 40,
+        // ),
         child: Container(
-          width: MediaQuery.of(context).size.width / 1.3,
-          height: MediaQuery.of(context).size.height * .66,
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height * .5,
           decoration: BoxDecoration(
               color: orange,
               borderRadius: const BorderRadius.only(
@@ -113,7 +123,7 @@ class ProfileMobileState extends State<UserProfileMobile> {
         alignment: Alignment.bottomLeft,
         child: Container(
           height: MediaQuery.of(context).size.height * .70,
-          width: MediaQuery.of(context).size.width / 15,
+          width: MediaQuery.of(context).size.width * .2,
           decoration: BoxDecoration(
               color: white,
               borderRadius:
@@ -131,13 +141,47 @@ class ProfileMobileState extends State<UserProfileMobile> {
               padding: EdgeInsets.only(
                   top: MediaQuery.of(context).size.height * .07, bottom: 7),
 
-              ///[ProfilePicture] to show user icon as a round circle with the first letters of their name inside
-              child: ProfilePicture(
-                name: 'Username',
-                radius: 40,
-                fontsize: 25,
-                //img: '',
-              ),
+              ///[MouseRegion] to show user profile picture in a round circle, shows colored circle with first letter of username if  no profile picture has been selected before
+              child: MouseRegion(
+                  cursor: SystemMouseCursors.click,
+                  child: GestureDetector(
+                      onTap: () => {
+                            controller.pickProfilePicture().then((value) => {
+                                  if (value)
+                                    {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        const SnackBar(
+                                          content: Text('Successful!'),
+                                          backgroundColor:
+                                              const Color(0xff9fc490),
+                                          behavior: SnackBarBehavior.floating,
+                                          width: 200,
+                                          shape: StadiumBorder(),
+                                        ),
+                                      )
+                                    }
+                                })
+                          },
+                      child: Provider.of<ProfileProvider>(context)
+                                  .profilePicture ==
+                              ""
+                          ? ProfilePicture(
+                              name: Provider.of<ProfileProvider>(context)
+                                  .username,
+                              radius: 100,
+                              fontsize: 25,
+                            )
+                          : CircleAvatar(
+                              radius: 60,
+                              backgroundColor:
+                                  Provider.of<ThemeProvider>(context)
+                                      .currentTheme
+                                      .colorScheme
+                                      .background,
+                              backgroundImage: NetworkImage(
+                                  Provider.of<ProfileProvider>(context)
+                                      .profilePicture)))),
             ),
 
             ///[Container] to show username
@@ -145,7 +189,10 @@ class ProfileMobileState extends State<UserProfileMobile> {
               padding: EdgeInsets.only(
                 bottom: 7,
               ),
-              child: Text(Provider.of<ProfileProvider>(context).username),
+              child: Text(
+                Provider.of<ProfileProvider>(context).username,
+                style: TextStyle(fontSize: 40, color: purple),
+              ),
             ),
 
             ///[Container] to show first and last names of the user
@@ -154,7 +201,7 @@ class ProfileMobileState extends State<UserProfileMobile> {
                 bottom: 7,
               ),
               child: Text(
-                  "${Provider.of<ProfileProvider>(context).firstName} - ${Provider.of<ProfileProvider>(context).lastName}"),
+                  "${Provider.of<ProfileProvider>(context).firstName} ${Provider.of<ProfileProvider>(context).lastName}"),
             ),
 
             ///[Container] to show email of the user
@@ -167,65 +214,122 @@ class ProfileMobileState extends State<UserProfileMobile> {
 
             ///[Container] to display Bio of the user
             Container(
-                width: MediaQuery.of(context).size.width / 2,
-                height: MediaQuery.of(context).size.height * .15,
-                padding: EdgeInsets.all(20),
+                // width: MediaQuery.of(context).size.width / 2,
+                // height: MediaQuery.of(context).size.height * .15,
+                margin: EdgeInsets.all(7),
+                padding: EdgeInsets.all(7),
                 child: SingleChildScrollView(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Text("Bio"),
-                      Text(Provider.of<ProfileProvider>(context).bio)
+                      Padding(
+                        padding: EdgeInsets.all(7),
+                        child: Text("Bio"),
+                      ),
+                      Padding(
+                          padding: EdgeInsets.all(7),
+                          child:
+                              Text(Provider.of<ProfileProvider>(context).bio))
                     ],
                   ),
                 ),
                 decoration: BoxDecoration(
-                    color: Provider.of<ThemeProvider>(context)
-                        .currentTheme
-                        .colorScheme
-                        .background,
-                    borderRadius: BorderRadius.all(Radius.circular(20)),
-                    border: Border.all(color: orange))),
+                  color: Provider.of<ThemeProvider>(context)
+                      .currentTheme
+                      .colorScheme
+                      .background,
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Provider.of<ThemeProvider>(context)
+                          .currentTheme
+                          .colorScheme
+                          .onBackground
+                          .withOpacity(0.05), //color of shadow
+                      spreadRadius: 0, //spread radius
+                      blurRadius: 10, // blur radius
+                      offset: Offset(0, 4), // changes position of shadow (x, y)
+                    ),
+                  ],
+                )),
 
             ///[Container] to display Personal Statistics of the user
             Container(
-              padding: EdgeInsets.only(
-                top: MediaQuery.of(context).size.height * .05,
-              ),
+              // padding: EdgeInsets.only(
+              //   top: MediaQuery.of(context).size.height * .05,
+              // ),
               child: Container(
-                  width: MediaQuery.of(context).size.width / 1.2,
-                  height: MediaQuery.of(context).size.height * .40,
-                  padding: EdgeInsets.all(20),
+                  // width: MediaQuery.of(context).size.width / 1.2,
+                  // height: MediaQuery.of(context).size.height * .40,
+                  margin: EdgeInsets.all(7),
+                  padding: EdgeInsets.all(7),
                   child: SingleChildScrollView(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Text("Personal Statistics"),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Column(
-                              children: [Text("5"), Text("completed")],
-                            ),
-                            SizedBox(width: 50),
-                            Column(
-                              children: [Text("5"), Text("10/10 %")],
-                            ),
+                        Padding(
+                            padding: EdgeInsets.all(7),
+                            child: Text("Personal Statistics")),
+                        Padding(
+                            padding: EdgeInsets.all(7),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Column(
+                                  children: [Text("5"), Text("completed")],
+                                ),
+                                SizedBox(width: 50),
+                                Column(
+                                  children: [Text("5"), Text("10/10 %")],
+                                ),
+                              ],
+                            )),
+                        Padding(
+                            padding: EdgeInsets.all(7),
+                            child: Text("Score Distribution")),
+                        LineGraph(
+                          features: features,
+                          size: Size(420, 450),
+                          labelX: [
+                            'Quiz 1',
+                            'Quiz 2',
+                            'Quiz 3',
+                            'Quiz 4',
+                            'Quiz 5',
+                            'Quiz 6'
                           ],
+                          labelY: ['2', '4', '6', '8', '10'],
+                          showDescription: true,
+                          graphColor: Provider.of<ThemeProvider>(context)
+                              .currentTheme
+                              .colorScheme
+                              .onBackground,
                         ),
-                        Text("Score Distribution"),
                       ],
                     ),
                   ),
                   decoration: BoxDecoration(
-                      color: Provider.of<ThemeProvider>(context)
-                          .currentTheme
-                          .colorScheme
-                          .background,
-                      borderRadius: BorderRadius.all(Radius.circular(20)),
-                      border: Border.all(color: orange))),
+                    color: Provider.of<ThemeProvider>(context)
+                        .currentTheme
+                        .colorScheme
+                        .background,
+                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Provider.of<ThemeProvider>(context)
+                            .currentTheme
+                            .colorScheme
+                            .onBackground
+                            .withOpacity(0.05), //color of shadow
+                        spreadRadius: 0, //spread radius
+                        blurRadius: 10, // blur radius
+                        offset:
+                            Offset(0, 4), // changes position of shadow (x, y)
+                      ),
+                    ],
+                  )),
             ),
             Container(
               padding: EdgeInsets.only(top: 7),
