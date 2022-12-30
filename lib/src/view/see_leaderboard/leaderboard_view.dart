@@ -41,9 +41,6 @@ class LeaderboardDesktopViewBackground extends StatelessWidget {
   const LeaderboardDesktopViewBackground({Key? key}) : super(key: key);
 
   /// Builds the background.
-  ///
-  /// It shows a container of size one third of the screen and with the main
-  /// color of [AppThemes].
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
