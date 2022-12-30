@@ -127,27 +127,4 @@ void main() async {
             element.getPosition == 5),
         true);
   });
-  //
-  // /// Testing if question0 is in the returned list
-  // test('One of the questions should have the text \'What is the capital of France?\'', () {
-  //   expect(_questions.any((element) => element.text == 'What is the capital of France?'), true);
-  // });
-  //
-  // /// Testing if question1 is in the returned list
-  // test('One of the questions should have the text \'What is the capital of Germany?\'', () {
-  //   expect(_questions.any((element) => element.text == 'What is the capital of Germany?'), true);
-  // });
-  //
-  // ///  Testing if question2 is in the returned list
-  // test('One of the questions should have the text \'What is the capital of Italy?\'', () {
-  //   expect(_questions.any((element) => element.text == 'What is the capital of Italy?'), true);
-  // });
-  // /// Testing if question3 is in the returned list
-  // test('One of the questions should have the text \'What is the capital of England?\'', () {
-  //   expect(_questions.any((element) => element.text == 'What is the capital of England?'), true);
-  // });
-  // /// Testing if question4 is in the returned list
-  // test('One of the questions should have the text \'What is the capital of Spain?\'', () {
-  //   expect(_questions.any((element) => element.text == 'What is the capital of Spain?'), true);
-  // });
 }

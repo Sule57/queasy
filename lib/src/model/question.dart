@@ -28,7 +28,7 @@ class Question {
   String text = "";
   List<Answer> answers = [];
   String category = "";
-  String? questionID = "";
+  late String? questionID = "";
 
 
   /// This is the constructor of the class, it takes the text of the question, the list of answers, the category of the question the ID of the question and the owner of the question as parameters
@@ -37,8 +37,13 @@ class Question {
     required this.text,
     required this.answers,
     required this.category,
-    required this.questionID,
+    this.questionID
   });
+
+  /// Initializes the question ID of the question. This is used when the question is created and the ID is not yet known.
+  Future<void> init() async{
+    this.questionID = await getNextID();
+  }
 
   /// Question.fromJson is a constructor used to initialize an object of type [Question] from a json object,
   /// these objects are usually provided by firebase, so to retrieve a question, this would be the most optimal way to do it
@@ -76,6 +81,29 @@ class Question {
         answers[i].setCorrect(false);
       }
     }
+  }
+
+  /// Calculates the next ID for a question in the category.
+  ///
+  /// This is used to create a unique ID for a question in the category. It finds the highest ID and adds 1 to it.
+  Future<String> getNextID() async{
+    int count = -1;
+    await FirebaseFirestore.instance
+        .collection('categories')
+        .doc(getCurrentUserID())
+        .collection(category)
+        .get()
+        .then((QuerySnapshot querySnapshot) {
+      querySnapshot.docs.forEach((doc) {
+        // take the biggest ID and add 1 to it
+        if (int.parse(doc['ID'].substring(8)) > count) {
+          count = int.parse(doc['ID'].substring(8));
+          print("count: " + count.toString());
+        }
+      });
+    });
+    count = count + 1;
+    return 'question'+ count.toString();
   }
 
   /// updateQuestion function takes all the parameters of the question and updates the question in the firebase as a json
