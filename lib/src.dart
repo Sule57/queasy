@@ -1,3 +1,11 @@
 export 'src/theme_button.dart';
 export 'src/theme_provider.dart';
 export 'src/model/statistics.dart';
+export 'src/model/answer.dart';
+export 'src/model/category.dart';
+export 'src/model/category_repo.dart';
+export 'src/model/leaderboard.dart';
+export 'src/model/leaderboard_entry.dart';
+export 'src/model/profile.dart';
+export 'src/model/question.dart';
+export 'src/model/quiz.dart';
