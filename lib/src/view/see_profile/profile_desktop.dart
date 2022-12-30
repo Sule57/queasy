@@ -67,27 +67,108 @@ class ProfileDesktopState extends State<UserProfileDesktop> {
     return Scaffold(
       body: Stack(
         children: <Widget>[
+          ///[Container] used for design
+          Container(
+              alignment: Alignment.topRight,
+              child: Container(
+                  height: MediaQuery.of(context).size.height * .30,
+                  width: MediaQuery.of(context).size.width / 3,
+                  decoration: BoxDecoration(
+                      color: green,
+                      borderRadius: const BorderRadius.only(
+                        bottomLeft: Radius.circular(20),
+                      )))),
+
+          ///[Container] used for design
+          Container(
+            alignment: Alignment.centerRight,
+            padding: EdgeInsets.only(
+              bottom: MediaQuery.of(context).size.height * .20,
+            ),
+            child: Container(
+              width: MediaQuery.of(context).size.width / 9,
+              height: MediaQuery.of(context).size.height * .50,
+              decoration: BoxDecoration(
+                  color: orange,
+                  borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(20),
+                      bottomLeft: Radius.circular(20))),
+            ),
+          ),
+
+          ///[Container] used for design
+          Container(
+            alignment: Alignment.bottomRight,
+            child: Container(
+              height: MediaQuery.of(context).size.height * .12,
+              width: MediaQuery.of(context).size.width / 1.7,
+              decoration: BoxDecoration(
+                  color: white,
+                  borderRadius:
+                      const BorderRadius.only(topLeft: Radius.circular(20))),
+            ),
+          ),
+
           ///[SingleChildScrollView] to avoid overflow
           SingleChildScrollView(
             child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Container(
-                    alignment: Alignment.topCenter,
                     padding: EdgeInsets.only(
                       top: MediaQuery.of(context).size.height * .05,
-                      left: MediaQuery.of(context).size.width / 2.8,
+                      // left: MediaQuery.of(context).size.width / 2.8,
                     ),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         ///[ProfilePicture] to show user icon as a round circle with the first letters of their name inside
-                        ProfilePicture(
-                          name: 'Username',
-                          radius: 30,
-                          fontsize: 25,
-                          //img: '',
-                        ),
+                        MouseRegion(
+                            cursor: SystemMouseCursors.click,
+                            child: GestureDetector(
+                                onTap: () => {
+                                      controller
+                                          .pickProfilePicture()
+                                          .then((value) => {
+                                                if (value)
+                                                  {
+                                                    ScaffoldMessenger.of(
+                                                            context)
+                                                        .showSnackBar(
+                                                      const SnackBar(
+                                                        content:
+                                                            Text('Successful!'),
+                                                        backgroundColor:
+                                                            const Color(
+                                                                0xff9fc490),
+                                                        behavior:
+                                                            SnackBarBehavior
+                                                                .floating,
+                                                        width: 200,
+                                                        shape: StadiumBorder(),
+                                                      ),
+                                                    )
+                                                  }
+                                              })
+                                    },
+                                child: Provider.of<ProfileProvider>(context)
+                                            .profilePicture ==
+                                        ""
+                                    ? ProfilePicture(
+                                        name: 'Username',
+                                        radius: 100,
+                                        fontsize: 25,
+                                        // img: '',
+                                      )
+                                    : CircleAvatar(
+                                        radius: 100,
+                                        backgroundImage: NetworkImage(
+                                            Provider.of<ProfileProvider>(
+                                                    context)
+                                                .profilePicture)))),
+                        // Image.network(
+                        //     "https://picsum.photos/250?image=9")),
                         Container(
                             alignment: Alignment.center,
                             padding: EdgeInsets.only(
@@ -101,8 +182,10 @@ class ProfileDesktopState extends State<UserProfileDesktop> {
                                     bottom: 7,
                                   ),
                                   child: Text(
-                                      Provider.of<ProfileProvider>(context)
-                                          .username),
+                                    Provider.of<ProfileProvider>(context)
+                                        .username,
+                                    style: TextStyle(fontSize: 40),
+                                  ),
                                 ),
 
                                 ///[Container] to show the number of user's followers and following
@@ -110,7 +193,8 @@ class ProfileDesktopState extends State<UserProfileDesktop> {
                                   padding: EdgeInsets.only(
                                     bottom: 7,
                                   ),
-                                  child: Text("1 Followers - 2 Following"),
+                                  child: Text("1 Followers - 2 Following",
+                                      style: TextStyle(fontSize: 30)),
                                 ),
 
                                 ///[ElevatedButton] to enable the user to edit their profile info
@@ -133,13 +217,15 @@ class ProfileDesktopState extends State<UserProfileDesktop> {
                                                     backgroundColor: purple,
                                                     scrollable: true,
                                                     title: Container(
+                                                      width: 200,
+                                                      height: 50,
                                                       alignment:
                                                           Alignment.topCenter,
                                                       child: Text(
                                                         "Edit Profile",
                                                         style: TextStyle(
-                                                            color:
-                                                                Colors.white),
+                                                            color: Colors.white,
+                                                            fontSize: 30),
                                                       ),
                                                     ),
                                                     actions: [
@@ -301,8 +387,8 @@ class ProfileDesktopState extends State<UserProfileDesktop> {
                                                                       content: Text(
                                                                           'Successful!'),
                                                                       backgroundColor:
-                                                                          Colors
-                                                                              .teal,
+                                                                          const Color(
+                                                                              0xff9fc490),
                                                                       behavior:
                                                                           SnackBarBehavior
                                                                               .floating,
@@ -737,7 +823,7 @@ class ProfileDesktopState extends State<UserProfileDesktop> {
                         child: SingleChildScrollView(
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Text("Bio"),
                               Text(Provider.of<ProfileProvider>(context).bio)
@@ -756,8 +842,10 @@ class ProfileDesktopState extends State<UserProfileDesktop> {
                   ///[Container] to display Personal Statistics of the user
                   Container(
                     padding: EdgeInsets.only(
-                        top: MediaQuery.of(context).size.height * .05,
-                        left: MediaQuery.of(context).size.width / 6),
+                      top: MediaQuery.of(context).size.height * .05,
+                      // left: MediaQuery.of(context).size.width / 6
+                    ),
+                    alignment: Alignment.center,
                     child: Container(
                         width: MediaQuery.of(context).size.width / 2.2,
                         height: MediaQuery.of(context).size.height * .40,
@@ -796,48 +884,6 @@ class ProfileDesktopState extends State<UserProfileDesktop> {
                       padding: EdgeInsets.only(top: 7), child: ThemeButton()),
                 ]),
           ),
-
-          ///[Container] used for design
-          Container(
-              alignment: Alignment.topRight,
-              child: Container(
-                  height: MediaQuery.of(context).size.height * .30,
-                  width: MediaQuery.of(context).size.width / 3,
-                  decoration: BoxDecoration(
-                      color: green,
-                      borderRadius: const BorderRadius.only(
-                        bottomLeft: Radius.circular(20),
-                      )))),
-
-          ///[Container] used for design
-          Container(
-            alignment: Alignment.centerRight,
-            padding: EdgeInsets.only(
-              bottom: MediaQuery.of(context).size.height * .20,
-            ),
-            child: Container(
-              width: MediaQuery.of(context).size.width / 9,
-              height: MediaQuery.of(context).size.height * .50,
-              decoration: BoxDecoration(
-                  color: orange,
-                  borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(20),
-                      bottomLeft: Radius.circular(20))),
-            ),
-          ),
-
-          ///[Container] used for design
-          Container(
-            alignment: Alignment.bottomRight,
-            child: Container(
-              height: MediaQuery.of(context).size.height * .12,
-              width: MediaQuery.of(context).size.width / 1.7,
-              decoration: BoxDecoration(
-                  color: white,
-                  borderRadius:
-                      const BorderRadius.only(topLeft: Radius.circular(20))),
-            ),
-          )
         ],
       ),
     );

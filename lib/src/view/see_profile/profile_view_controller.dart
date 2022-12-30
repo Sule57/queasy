@@ -11,7 +11,7 @@ class ProfileViewController {
       lastName: "",
       age: 0,
       bio: "",
-      profilePicture: "https://www.peakpx.com/en/hd-wallpaper-desktop-vsviy");
+      profilePicture: "");
 
   ///constructor for the controller
   ProfileViewController();
@@ -106,5 +106,14 @@ class ProfileViewController {
       success.clear();
     }
     return false;
+  }
+
+  Future<bool> pickProfilePicture() async {
+    try {
+      await player.pickProfileImage();
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 }

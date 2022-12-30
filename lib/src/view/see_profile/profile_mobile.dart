@@ -360,7 +360,8 @@ class ProfileMobileState extends State<UserProfileMobile> {
                                                       content:
                                                           Text('Successful!'),
                                                       backgroundColor:
-                                                          Colors.teal,
+                                                          const Color(
+                                                              0xff9fc490),
                                                       behavior: SnackBarBehavior
                                                           .floating,
                                                       width: 200,

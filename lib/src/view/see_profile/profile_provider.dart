@@ -7,15 +7,15 @@ class ProfileProvider with ChangeNotifier {
 
   ///@param [player] For now a dummy data used as a user
   Profile player = Profile(
-      username: "Dummy",
-      email: "dummy@gmail.com",
-      hashPassword: "dummyPassword",
-      firstName: "Dummy",
-      lastName: "Whatever",
-      bio: "Dummy likes playing quizzes",
-      birthdayMonth: 'January',
+      username: "",
+      email: "",
+      hashPassword: "",
+      firstName: "",
+      lastName: "",
+      bio: "",
+      birthdayMonth: "",
       birthdayDay: 1,
-      profilePicture: "https://www.peakpx.com/en/hd-wallpaper-desktop-vsviy");
+      profilePicture: "");
 
   Profile get user => player;
   String get username => player.username;

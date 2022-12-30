@@ -1,7 +1,11 @@
+import 'dart:io';
+import 'dart:typed_data';
+import 'package:path_provider/path_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:queasy/src/model/statistics.dart';
-
 import '../../utils/exceptions.dart';
 
 String? getCurrentUserID() {
@@ -344,6 +348,83 @@ class Profile {
       return false;
     }
   }
+
+  Future<void> pickProfileImage() async {
+    final image = await ImagePicker().pickImage(
+      source: ImageSource.gallery,
+      maxWidth: 512,
+      maxHeight: 512,
+      imageQuality: 75,
+    );
+    Reference ref = FirebaseStorage.instance
+        .ref()
+        .child("profilePictures/${getCurrentUserID()}");
+    // File file = File(image!.path);
+    // print(file.path);
+    // final metadata = SettableMetadata(
+    //     contentType: 'imange/png',
+    //     customMetadata: {'picked-file-path': file.path});
+    // final uploadTask = ref.putData(await file.readAsBytes(), metadata);
+    // ref.getDownloadURL().then((value) {
+    //   print(value);
+    //   firestore
+    //       .collection('users')
+    //       .doc(getCurrentUserID())
+    //       .update({'profilePicture': value});
+    // });
+    // try {
+    //   await ref.putFile(file);
+    // } catch (e) {
+    //   print(e);
+    // }
+    final fileBytes = await image!.readAsBytes();
+// var now = DateTime.now().millisecondsSinceEpoch;
+// StorageReference reference =
+//   FirebaseStorage.instance.ref().child("images/$now");
+
+    try {
+      await ref.putData(fileBytes);
+      ref.getDownloadURL().then((value) {
+        print(value);
+        firestore
+            .collection('users')
+            .doc(getCurrentUserID())
+            .update({'profilePicture': value});
+      });
+    } catch (e) {
+      print(e);
+    }
+
+    // uploadTask.snapshotEvents.listen((TaskSnapshot taskSnapshot) {
+    //   switch (taskSnapshot.state) {
+    //     case TaskState.running:
+    //       final progress =
+    //           100.0 * (taskSnapshot.bytesTransferred / taskSnapshot.totalBytes);
+    //       print("Upload is $progress% complete.");
+    //       break;
+    //     case TaskState.paused:
+    //       print("Upload is paused.");
+    //       break;
+    //     case TaskState.canceled:
+    //       print("Upload was canceled");
+    //       break;
+    //     case TaskState.error:
+    //       // Handle unsuccessful uploads
+    //       print("Upload FAILED");
+    //       break;
+    //     case TaskState.success:
+    //       // Handle successful uploads on complete
+    //       // ...
+    //       break;
+    //   }
+    // });
+  }
+
+  // File getProfilePicture(){
+  //   Reference ref = FirebaseStorage.instance
+  //       .ref()
+  //       .child("profilePictures/${getCurrentUserID()}")
+  // }
   //END OF METHODS FOR PROFILE VIEW
 
 }
