@@ -1,103 +1,163 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+// DO NOT USE THESE COLORS IN YOUR CODE. USE THE THEME INSTEAD.
+//
+// These colors are used to have consistency through the colors of the theme,
+// so later it's easier for us to change them. If you want to use one of
+// these colors, you should use Theme.of(context).colorScheme...
 Color orange = const Color(0xfff19c79);
 Color green = const Color(0xff9fc490);
 Color purple = const Color(0xff72479d);
-Color white = const Color(0xfff1ffe7);
-Color black = const Color(0xff0d0106);
+Color light = const Color(0xfff1ffe7);
+Color dark = const Color(0xff0d0106);
 
-ThemeData lightTheme = ThemeData(
-    scaffoldBackgroundColor: Colors.white,
-    backgroundColor: Colors.white,
-    colorScheme: ColorScheme.light(
-      primary: const Color(0xff72479d), //purple
-      secondary: const Color(0xfff19c79), //orange
-      tertiary: const Color(0xff9fc490), //dark green
-      onTertiary: const Color(0xfff1ffe7), //light green
-      background: Colors.white,
-      onBackground: Colors.black,
-    ));
-
-ThemeData darkTheme = ThemeData(
-    scaffoldBackgroundColor: Colors.black,
-    backgroundColor: Colors.black,
-    colorScheme: ColorScheme.dark(
-      primary: const Color(0xff72479d), //purple
-      secondary: const Color(0xfff19c79), //orange
-      tertiary: const Color(0xff9fc490), //dark green
-      onTertiary: const Color(0xfff1ffe7), //light green
-      background: Colors.black,
-      onBackground: Colors.white,
-    ));
-
+/// Defines the themes of the app.
+///
+/// The [lightTheme] is the default theme of the app, selected at the start.
+/// The [darkTheme] is the theme that is selected when the user presses the
+/// dark mode button.
 class AppThemes {
+  // Theme taken by the app if user has selects the light theme.
   ThemeData lightTheme = ThemeData(
-      colorScheme: ColorScheme.light(
-    primary: const Color(0xff72479d), //purple
-    onPrimary: Colors.white,
-    secondary: const Color(0xfff19c79), //orange
-    onSecondary: Colors.black,
-    tertiary: const Color(0xff9fc490), //dark green
-    onTertiary: const Color(0xfff1ffe7), //light green
-    background: Colors.white,
-    onBackground: Colors.black,
-  ));
-
-  ThemeData darkTheme = ThemeData(
-      colorScheme: ColorScheme.dark(
-    primary: const Color(0xff72479d), //purple
-    onPrimary: Colors.white,
-    secondary: const Color(0xfff19c79), //orange
-    onSecondary: Colors.black,
-    tertiary: const Color(0xff9fc490), //dark green
-    onTertiary: const Color(0xfff1ffe7), //light green
-    background: Colors.black,
-    onBackground: Colors.white,
-  ));
-
-  ThemeData themeData = ThemeData(
-    //COLOR
     colorScheme: ColorScheme.light(
       primary: purple,
-      onPrimary: white,
+      onPrimary: Colors.white,
       secondary: orange,
-      onSecondary: black,
+      onSecondary: dark,
       tertiary: green,
-      onTertiary: black,
-      background: white,
-      onBackground: black,
+      onTertiary: light,
+      background: Colors.white,
+      onBackground: dark,
     ),
-
-    //TEXT
     fontFamily: GoogleFonts.nunito().fontFamily,
-    textTheme: TextTheme(
+    textTheme: GoogleFonts.nunitoTextTheme().copyWith(
       headline1: TextStyle(
         fontSize: 40,
         fontWeight: FontWeight.bold,
-        color: black,
+        color: dark,
       ),
       headline2: TextStyle(
-        fontSize: 16,
-        fontWeight: FontWeight.w500,
-        color: white,
+        fontSize: 30,
+        fontWeight: FontWeight.bold,
+        color: dark,
       ),
       headline3: TextStyle(
-        fontSize: 20,
+        fontSize: 24,
         fontWeight: FontWeight.bold,
-        color: black,
+        color: dark,
       ),
       headline4: TextStyle(
-        fontSize: 24,
-        color: purple,
+        fontSize: 20,
+        fontWeight: FontWeight.bold,
+        color: dark,
+      ),
+      headline5: TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.bold,
+        color: dark,
+      ),
+      headline6: TextStyle(
+        fontSize: 14,
+        fontWeight: FontWeight.bold,
+        color: dark,
+      ),
+      subtitle1: TextStyle(
+        fontSize: 16,
+        color: dark,
+      ),
+      subtitle2: TextStyle(
+        fontSize: 14,
+        color: dark,
       ),
       bodyText1: TextStyle(
-        fontSize: 16,
-        color: black,
+        fontSize: 12,
+        color: dark,
       ),
       bodyText2: TextStyle(
+        fontSize: 10,
+        color: dark,
+      ),
+      button: TextStyle(
         fontSize: 14,
-        color: black,
+        fontWeight: FontWeight.bold,
+        color: dark,
+      ),
+      caption: TextStyle(
+        fontSize: 14,
+        fontWeight: FontWeight.bold,
+        color: Colors.white,
+      ),
+    ),
+    inputDecorationTheme: const InputDecorationTheme(
+      counterStyle: TextStyle(fontSize: 16),
+    ),
+  );
+
+  // Theme taken by the app if user has selects the dark theme.
+  ThemeData darkTheme = ThemeData(
+    colorScheme: ColorScheme.dark(
+      primary: purple,
+      onPrimary: Colors.white,
+      secondary: orange,
+      onSecondary: dark,
+      tertiary: green,
+      onTertiary: light,
+      background: dark,
+      onBackground: Colors.white,
+    ),
+    fontFamily: GoogleFonts.nunito().fontFamily,
+    textTheme: GoogleFonts.nunitoTextTheme().copyWith(
+      headline1: TextStyle(
+        fontSize: 40,
+        fontWeight: FontWeight.bold,
+        color: Colors.white,
+      ),
+      headline2: TextStyle(
+        fontSize: 30,
+        fontWeight: FontWeight.bold,
+        color: Colors.white,
+      ),
+      headline3: TextStyle(
+        fontSize: 24,
+        fontWeight: FontWeight.bold,
+        color: Colors.white,
+      ),
+      headline4: TextStyle(
+        fontSize: 20,
+        fontWeight: FontWeight.bold,
+        color: Colors.white,
+      ),
+      headline5: TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.bold,
+        color: Colors.white,
+      ),
+      headline6: TextStyle(
+        fontSize: 14,
+        fontWeight: FontWeight.bold,
+        color: Colors.white,
+      ),
+      subtitle1: TextStyle(
+        fontSize: 16,
+        color: Colors.white,
+      ),
+      subtitle2: TextStyle(
+        fontSize: 14,
+        color: Colors.white,
+      ),
+      bodyText1: TextStyle(
+        fontSize: 12,
+        color: Colors.white,
+      ),
+      bodyText2: TextStyle(
+        fontSize: 10,
+        color: Colors.white,
+      ),
+      button: TextStyle(
+        fontSize: 14,
+        fontWeight: FontWeight.bold,
+        color: Colors.white,
       ),
       caption: TextStyle(
         fontSize: 14,
@@ -105,14 +165,8 @@ class AppThemes {
         color: purple,
       ),
     ),
-
-    //TEXT FIELD
     inputDecorationTheme: const InputDecorationTheme(
       counterStyle: TextStyle(fontSize: 16),
     ),
-
-    //BUTTONS
-
-    //OTHER
   );
 }

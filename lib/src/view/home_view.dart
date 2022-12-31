@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_profile_picture/flutter_profile_picture.dart';
 import 'package:motion_tab_bar_v2/motion-tab-bar.dart';
 import 'package:queasy/constants/app_themes.dart';
 import 'package:provider/provider.dart';
@@ -60,6 +59,7 @@ class _HomeViewState extends State<HomeView> {
         useSafeArea: true,
         tabIconColor: Colors.grey,
         tabSelectedColor: Theme.of(context).colorScheme.primary,
+        tabBarColor: Theme.of(context).colorScheme.background,
         textStyle: Theme.of(context).textTheme.caption,
         onTabItemSelected: (index) {
           /// This method checks if the chosen page has already been built.
@@ -120,7 +120,7 @@ class HomeWidgets extends StatelessWidget {
                 ),
               ),
               style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(white),
+                backgroundColor: MaterialStateProperty.all<Color>(light),
               ),
             ),
             SizedBox(
@@ -128,7 +128,7 @@ class HomeWidgets extends StatelessWidget {
             ),
             ElevatedButton(
               style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(white),
+                backgroundColor: MaterialStateProperty.all<Color>(light),
               ),
               child: Text(
                 'Join Quiz',
@@ -176,8 +176,8 @@ class HomeWidgets extends StatelessWidget {
                           children: [
                             ///[ElevatedButton] to close the dialog if user wants to exit
                             ElevatedButton(
-                              child: Text("Cancel",
-                                  style: TextStyle(color: black)),
+                              child:
+                                  Text("Cancel", style: TextStyle(color: dark)),
 
                               ///if clicked clears all the text editing controllers
                               onPressed: () => {
@@ -196,7 +196,7 @@ class HomeWidgets extends StatelessWidget {
                             ///[ElevatedButton] to confirm the entered key
                             ElevatedButton(
                               child:
-                                  Text("Join", style: TextStyle(color: black)),
+                                  Text("Join", style: TextStyle(color: dark)),
                               onPressed: () {
                                 if (textController.text.isNotEmpty) {
                                   ///confirmKey method is called from the controller
@@ -243,7 +243,7 @@ class HomeWidgets extends StatelessWidget {
                 ),
               ),
               style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(white),
+                backgroundColor: MaterialStateProperty.all<Color>(light),
               ),
             )
           ],
