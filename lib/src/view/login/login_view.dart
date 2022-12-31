@@ -44,7 +44,6 @@ class _LogInViewState extends State<LogInView> {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Padding(
@@ -86,227 +85,219 @@ class _LogInViewState extends State<LogInView> {
                         Text(errorMessage == '' ? '' : 'Humm? $errorMessage'),
                         TextField(
                           controller: _controllerEmail,
+                          textInputAction: TextInputAction.next,
                           decoration: InputDecoration(
                               labelText: 'Email',
                               hintText: 'yourname@example.com'),
+                          onSubmitted: (value) {
+                            signInWithEmailAndPassword();
+                          },
                         ),
                         TextField(
                           controller: _controllerPassword,
                           obscureText: true,
+                          textInputAction: TextInputAction.done,
                           decoration: InputDecoration(
                             labelText: 'Enter Password',
                             hintText: 'Password',
                           ),
+                          onSubmitted: (value) {
+                            signInWithEmailAndPassword();
+                          },
                         ),
                         Container(
                           alignment: Alignment.centerLeft,
                           //padding: EdgeInsets.all(),
                           child: TextButton(
-                              onPressed: () => {
-                                    showDialog(
-                                        context: context,
-                                        builder: (context) {
-                                          return StatefulBuilder(builder:
-                                              (context, StateSetter setState) {
-                                            if (MediaQuery.of(context)
-                                                    .size
-                                                    .width >
-                                                700) {
-                                              Navigator.of(context).pop();
-                                            }
-                                            return AlertDialog(
-                                              backgroundColor: Theme.of(context)
-                                                  .colorScheme
-                                                  .primary,
-                                              scrollable: true,
-                                              title: Container(
-                                                alignment: Alignment.topCenter,
-                                                child: Text(
-                                                  "Reset password",
-                                                  style: TextStyle(
-                                                      color: Colors.white),
-                                                ),
+                            child: const Text("Forgot Password?"),
+                            onPressed: () => {
+                              showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return StatefulBuilder(builder:
+                                        (context, StateSetter setState) {
+                                      if (MediaQuery.of(context).size.width >
+                                          700) {
+                                        Navigator.of(context).pop();
+                                      }
+                                      return AlertDialog(
+                                        backgroundColor: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
+                                        scrollable: true,
+                                        title: Container(
+                                          alignment: Alignment.topCenter,
+                                          child: Text(
+                                            "Reset password",
+                                            style:
+                                                TextStyle(color: Colors.white),
+                                          ),
+                                        ),
+                                        actions: [
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceEvenly,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.end,
+                                            children: [
+                                              ElevatedButton(
+                                                child: Text("Cancel",
+                                                    style: TextStyle(
+                                                        color: Theme.of(context)
+                                                            .colorScheme
+                                                            .onBackground)),
+                                                onPressed: () => {
+                                                  Navigator.of(context).pop()
+                                                },
+                                                style: ButtonStyle(
+                                                    backgroundColor:
+                                                        MaterialStateProperty
+                                                            .all<Color>(
+                                                                Theme.of(
+                                                                        context)
+                                                                    .colorScheme
+                                                                    .secondary),
+                                                    shape: MaterialStateProperty
+                                                        .all<RoundedRectangleBorder>(
+                                                            RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              18.0),
+                                                    ))),
                                               ),
-                                              actions: [
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceEvenly,
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.end,
-                                                  children: [
-                                                    ElevatedButton(
-                                                      child: Text("Cancel",
+                                              ElevatedButton(
+                                                child: Text("Confirm",
+                                                    style: TextStyle(
+                                                        color: Theme.of(context)
+                                                            .colorScheme
+                                                            .onBackground)),
+                                                onPressed: () {
+                                                  if (formKey.currentState!
+                                                      .validate()) {}
+                                                },
+                                                style: ButtonStyle(
+                                                    backgroundColor:
+                                                        MaterialStateProperty
+                                                            .all<Color>(
+                                                                Theme.of(
+                                                                        context)
+                                                                    .colorScheme
+                                                                    .tertiary),
+                                                    shape: MaterialStateProperty
+                                                        .all<RoundedRectangleBorder>(
+                                                            RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              18.0),
+                                                    ))),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                        content: Container(
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                .10,
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width /
+                                                2,
+                                            child: Form(
+                                              key: formKey,
+                                              child: Stack(
+                                                children: [
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceEvenly,
+                                                    children: [
+                                                      Text("Email",
                                                           style: TextStyle(
-                                                              color: Theme.of(
-                                                                      context)
-                                                                  .colorScheme
-                                                                  .onBackground)),
-                                                      onPressed: () => {
-                                                        Navigator.of(context)
-                                                            .pop()
-                                                      },
-                                                      style: ButtonStyle(
-                                                          backgroundColor:
-                                                              MaterialStateProperty.all<
-                                                                  Color>(Theme.of(
-                                                                      context)
-                                                                  .colorScheme
-                                                                  .secondary),
-                                                          shape: MaterialStateProperty.all<
-                                                                  RoundedRectangleBorder>(
-                                                              RoundedRectangleBorder(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        18.0),
-                                                          ))),
-                                                    ),
-                                                    ElevatedButton(
-                                                      child: Text("Confirm",
-                                                          style: TextStyle(
-                                                              color: Theme.of(
-                                                                      context)
-                                                                  .colorScheme
-                                                                  .onBackground)),
-                                                      onPressed: () {
-                                                        if (formKey
-                                                            .currentState!
-                                                            .validate()) {}
-                                                      },
-                                                      style: ButtonStyle(
-                                                          backgroundColor:
-                                                              MaterialStateProperty.all<
-                                                                  Color>(Theme.of(
-                                                                      context)
-                                                                  .colorScheme
-                                                                  .tertiary),
-                                                          shape: MaterialStateProperty.all<
-                                                                  RoundedRectangleBorder>(
-                                                              RoundedRectangleBorder(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        18.0),
-                                                          ))),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ],
-                                              content: Container(
-                                                  height: MediaQuery.of(context)
-                                                          .size
-                                                          .height *
-                                                      .10,
-                                                  width: MediaQuery.of(context)
-                                                          .size
-                                                          .width /
-                                                      2,
-                                                  child: Form(
-                                                    key: formKey,
-                                                    child: Stack(
-                                                      children: [
-                                                        Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .spaceEvenly,
-                                                          children: [
-                                                            Text("Email",
-                                                                style: TextStyle(
-                                                                    color: Colors
-                                                                        .white)),
-                                                            SizedBox(width: 25),
-                                                            Container(
-                                                              height: MediaQuery.of(
-                                                                          context)
-                                                                      .size
-                                                                      .height *
-                                                                  .05,
-                                                              width: MediaQuery.of(
-                                                                          context)
-                                                                      .size
-                                                                      .width /
-                                                                  3,
-                                                              child:
-                                                                  TextFormField(
-                                                                ///if the user hasn't entered anything, validation fails
-                                                                validator:
-                                                                    (value) {
-                                                                  setState(() {
-                                                                    errorForgotPassword =
-                                                                        false;
-                                                                  });
-                                                                  if (value ==
-                                                                          null ||
-                                                                      value
-                                                                          .isEmpty) {
-                                                                    setState(
-                                                                        () {
-                                                                      errorForgotPassword =
-                                                                          true;
-                                                                    });
-                                                                    return null;
-                                                                  }
-                                                                  return null;
-                                                                },
-                                                                controller:
-                                                                    emailForgotPassword,
-                                                                decoration:
-                                                                    InputDecoration(
-                                                                  contentPadding:
-                                                                      EdgeInsets.only(
-                                                                          bottom:
-                                                                              15,
-                                                                          left:
-                                                                              20),
-                                                                  filled: true,
-                                                                  fillColor:
-                                                                      Colors
-                                                                          .white,
-                                                                  border:
-                                                                      UnderlineInputBorder(
-                                                                    borderSide:
-                                                                        BorderSide(
-                                                                            color:
-                                                                                Colors.white),
-                                                                    borderRadius:
-                                                                        BorderRadius.circular(
-                                                                            25.7),
-                                                                  ),
-                                                                ),
-                                                              ),
+                                                              color: Colors
+                                                                  .white)),
+                                                      SizedBox(width: 25),
+                                                      Container(
+                                                        height: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .height *
+                                                            .05,
+                                                        width: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .width /
+                                                            3,
+                                                        child: TextFormField(
+                                                          ///if the user hasn't entered anything, validation fails
+                                                          validator: (value) {
+                                                            setState(() {
+                                                              errorForgotPassword =
+                                                                  false;
+                                                            });
+                                                            if (value == null ||
+                                                                value.isEmpty) {
+                                                              setState(() {
+                                                                errorForgotPassword =
+                                                                    true;
+                                                              });
+                                                              return null;
+                                                            }
+                                                            return null;
+                                                          },
+                                                          controller:
+                                                              emailForgotPassword,
+                                                          decoration:
+                                                              InputDecoration(
+                                                            contentPadding:
+                                                                EdgeInsets.only(
+                                                                    bottom: 15,
+                                                                    left: 20),
+                                                            filled: true,
+                                                            fillColor:
+                                                                Colors.white,
+                                                            border:
+                                                                UnderlineInputBorder(
+                                                              borderSide: BorderSide(
+                                                                  color: Colors
+                                                                      .white),
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          25.7),
                                                             ),
-                                                          ],
+                                                          ),
                                                         ),
-                                                        errorForgotPassword
-                                                            ? Container(
-                                                                padding: EdgeInsets
-                                                                    .only(
-                                                                        top: 30,
-                                                                        left:
-                                                                            90),
-                                                                child: Container(
-                                                                    //width: MediaQuery.of(context).size.width / 4,
-                                                                    child: Text(
-                                                                  "Please enter email",
-                                                                  style:
-                                                                      TextStyle(
-                                                                    color: Theme.of(
-                                                                            context)
-                                                                        .colorScheme
-                                                                        .onTertiary,
-                                                                  ),
-                                                                )),
-                                                              )
-                                                            : Container()
-                                                      ],
-                                                    ),
-                                                  )),
-                                            );
-                                          });
-                                        })
-                                  },
-                              child: const Text("Forgot Password?")),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  errorForgotPassword
+                                                      ? Container(
+                                                          padding:
+                                                              EdgeInsets.only(
+                                                                  top: 30,
+                                                                  left: 90),
+                                                          child: Container(
+                                                              //width: MediaQuery.of(context).size.width / 4,
+                                                              child: Text(
+                                                            "Please enter email",
+                                                            style: TextStyle(
+                                                              color: Theme.of(
+                                                                      context)
+                                                                  .colorScheme
+                                                                  .onTertiary,
+                                                            ),
+                                                          )),
+                                                        )
+                                                      : Container()
+                                                ],
+                                              ),
+                                            )),
+                                      );
+                                    });
+                                  })
+                            },
+                          ),
                         ),
                         Padding(
                           padding: const EdgeInsets.only(top: 10, bottom: 10),
