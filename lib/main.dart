@@ -1,4 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -18,20 +19,29 @@ Future<void> main() async {
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
   try {
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
+    if (kIsWeb) {
+      await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
+    } else {
+      await Firebase.initializeApp(
+        name: 'Queasy',
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
+    }
 
-    runApp(MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => QuizProvider()),
-        ChangeNotifierProvider(create: (_) => LeaderboardProvider()),
-        ChangeNotifierProvider(create: (_) => ProfileProvider()),
-        ChangeNotifierProvider(
-            create: (_) => ThemeProvider(AppThemes().lightTheme)),
-      ],
-      child: const Qeasy(),
-    ));
+    runApp(
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (_) => QuizProvider()),
+          ChangeNotifierProvider(create: (_) => LeaderboardProvider()),
+          ChangeNotifierProvider(create: (_) => ProfileProvider()),
+          ChangeNotifierProvider(
+              create: (_) => ThemeProvider(AppThemes().lightTheme)),
+        ],
+        child: const Qeasy(),
+      ),
+    );
   } catch (e) {
     print(e.toString());
   }
