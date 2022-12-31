@@ -54,7 +54,7 @@ class DefaultFirebaseOptions {
     authDomain: 'quizzapp-eb0f2.firebaseapp.com',
     databaseURL:
         'https://quizzapp-eb0f2-default-rtdb.europe-west1.firebasedatabase.app',
-    storageBucket: 'quizzapp-eb0f2.appspot.com',
+    storageBucket: 'gs://quizzapp-eb0f2.appspot.com',
     measurementId: 'G-MSF5DXS9QN',
   );
 
@@ -65,7 +65,7 @@ class DefaultFirebaseOptions {
     projectId: 'quizzapp-eb0f2',
     databaseURL:
         'https://quizzapp-eb0f2-default-rtdb.europe-west1.firebasedatabase.app',
-    storageBucket: 'quizzapp-eb0f2.appspot.com',
+    storageBucket: 'gs://quizzapp-eb0f2.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
@@ -75,7 +75,7 @@ class DefaultFirebaseOptions {
     projectId: 'quizzapp-eb0f2',
     databaseURL:
         'https://quizzapp-eb0f2-default-rtdb.europe-west1.firebasedatabase.app',
-    storageBucket: 'quizzapp-eb0f2.appspot.com',
+    storageBucket: 'gs://quizzapp-eb0f2.appspot.com',
     iosClientId:
         '17686953226-0dictdama32iud20bvdkq6t57n35t83a.apps.googleusercontent.com',
     iosBundleId: 'de.queasy.queasy',

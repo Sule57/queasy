@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:queasy/src/view/see_profile/profile_desktop.dart';
 import 'package:queasy/src/view/see_profile/profile_mobile.dart';
+
+import 'profile_provider.dart';
 
 ///This is Profile View
 ///It displays Mobile or Desktop versions of Profile View depending on width of the screen

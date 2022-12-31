@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_profile_picture/flutter_profile_picture.dart';
 import 'package:motion_tab_bar_v2/motion-tab-bar.dart';
 import 'package:queasy/constants/app_themes.dart';
+import 'package:provider/provider.dart';
 import 'package:queasy/src/view/see_leaderboard/leaderboard_view.dart';
 import 'package:queasy/src/view/category_selection_view.dart';
 import 'package:queasy/src/view/see_profile/profile_view.dart';
 import 'package:queasy/src/view/quiz_selection_view.dart';
+
+import 'see_profile/profile_provider.dart';
 
 /// This is the base view for navigation. It contains the bottom navigation bar
 /// and the [pages] that are navigated to when the bottom navigation bar is tapped.
@@ -93,6 +96,7 @@ class HomeWidgets extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Provider.of<ProfileProvider>(context).setProfile();
     return SafeArea(
       child: Center(
         child: Column(

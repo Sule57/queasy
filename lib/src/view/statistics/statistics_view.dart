@@ -1,7 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:queasy/src/view/home_view.dart';
 import 'package:queasy/src/view/statistics/statistic_view_controller.dart';
+
+import '../../theme_provider.dart';
 
 class StatisticsView extends StatefulWidget {
   const StatisticsView({Key? key}) : super(key: key);
@@ -44,8 +47,8 @@ class StatisticsDesktopViewBackground extends StatelessWidget {
 
     return width > 700
         ? Scaffold(
-        backgroundColor: Color(0xfff1ffe7),
-        )
+            backgroundColor: Color(0xfff1ffe7),
+          )
         : Container(); //empty container for mobile view
   }
 }
@@ -86,156 +89,180 @@ class _StatisticsViewContentState extends State<StatisticsViewContent> {
   }
 }
 
-
-
-
-
 class StatisticsMobileContent extends StatelessWidget {
   StatisticsMobileContent({Key? key}) : super(key: key);
   final StatisticsViewController controller = StatisticsViewController();
 
   @override
   Widget build(BuildContext context) {
-
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     final int correct = controller.getCorrectAnswers();
     final int points = controller.getPoints();
     final int secondsSpent = controller.getSecondsSpent();
     final int correctPercentage = controller.getCorrectPercentage();
 
     return Scaffold(
-      
-        backgroundColor: const Color(0xfff1ffe7),
+        // backgroundColor: const Color(0xfff1ffe7),
         body: Center(
             child: Stack(children: [
-              Container(
-                color: Colors.white,
-                constraints: const BoxConstraints(
-                    minWidth: double.infinity, maxWidth: double.infinity),
-                height: 450,
+      Container(
+        constraints: const BoxConstraints(
+            minWidth: double.infinity, maxWidth: double.infinity),
+        height: 450,
+      ),
+      //light green rectangle at the bottom of the screen
+      Column(
+        children: [
+          Expanded(
+            child: Align(
+              alignment: FractionalOffset.bottomLeft,
+              child: Container(
+                width: width,
+                height: height / 2,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(30.0),
+                    topLeft: Radius.circular(30.0),
+                  ),
+                  color: const Color(0xfff1ffe7),
+                ),
               ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+            ),
+          )
+        ],
+      ),
+      Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            const Image(image: AssetImage('lib/assets/images/logo.png')),
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 20.0),
+              width: 350,
+              height: 300,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(15),
+                color: const Color(0xff72479d),
+              ),
+              child: Column(
                 children: [
-                  const Image(image: AssetImage('lib/assets/images/logo.png')),
-                  Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 20.0),
-                    width: 350,
-                    height: 300,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
-                      color: const Color(0xff72479d),
+                  Text(
+                    'Statistics',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Provider.of<ThemeProvider>(context)
+                          .currentTheme
+                          .colorScheme
+                          .background,
+                      fontSize: 40,
                     ),
-                    child: Column(
-                      children: [
-                        const Text(
-                          'Statistics',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 40,
+                  ),
+                  Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 5.0),
+                      width: 325,
+                      height: 240,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15),
+                        color: Provider.of<ThemeProvider>(context)
+                            .currentTheme
+                            .colorScheme
+                            .background,
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Row(
+                            children: <Widget>[
+                              Expanded(
+                                child: Text(
+                                  correct.toString() + '\n Correct',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                child: Text(
+                                  points.toString() + '\n Points',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                child: Text(
+                                  secondsSpent.toString() + '\n Seconds',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                        ),
-                        Container(
-                            margin: const EdgeInsets.symmetric(horizontal: 5.0),
-                            width: 325,
-                            height: 240,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(15),
-                              color: Colors.white,
-                            ),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                Row(
-                                  children: <Widget>[
-                                    Expanded(
-                                      child: Text(
-                                        correct.toString() + '\n Correct',
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          fontSize: 20,
-                                        ),
-                                      ),
+                          Container(
+                              width: 150,
+                              height: 150,
+                              decoration: const BoxDecoration(
+                                  color: Color(0xfff1ffe7),
+                                  shape: BoxShape.circle),
+                              child: Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      correctPercentage.toString() + '%',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          fontSize: 20, color: Colors.black),
                                     ),
-                                    Expanded(
-                                      child: Text(
-                                        points.toString() + '\n Points',
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          fontSize: 20,
-                                        ),
-                                      ),
-                                    ),
-                                    Expanded(
-                                      child: Text(
-                                        secondsSpent.toString() + '\n Seconds',
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          fontSize: 20,
-                                        ),
-                                      ),
+                                    Text(
+                                      'Correct',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          fontSize: 10, color: Colors.black),
                                     ),
                                   ],
                                 ),
-                                Container(
-                                    width: 150,
-                                    height: 150,
-                                    decoration: const BoxDecoration(
-                                        color: Color(0xfff1ffe7),
-                                        shape: BoxShape.circle),
-                                    child: Center(
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                        children: [
-                                          Text(
-                                            correctPercentage.toString()+'%',
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                              fontSize: 20,
-                                            ),
-                                          ),
-                                          Text(
-                                            'Correct',
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                              fontSize: 10,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ))
-                              ],
-                            )),
-                      ],
-                    ),
-                  ),
-                  ElevatedButton(
-                    style: ButtonStyle(
-                        backgroundColor:
-                        MaterialStateProperty.all(const Color(0xff72479d)),
-                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30.0),
-                            ))),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const HomeView()),
-                      );
-                    },
-                    child: const Text(
-                      'Continue',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 40,
-                      ),
-                    ),
-                  ),
+                              ))
+                        ],
+                      )),
                 ],
               ),
-            ])));
+            ),
+            ElevatedButton(
+              style: ButtonStyle(
+                  backgroundColor:
+                      MaterialStateProperty.all(const Color(0xff72479d)),
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30.0),
+                  ))),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const HomeView()),
+                );
+              },
+              child: Text(
+                'Continue',
+                style: TextStyle(
+                  color: Provider.of<ThemeProvider>(context)
+                      .currentTheme
+                      .colorScheme
+                      .background,
+                  fontSize: 40,
+                ),
+              ),
+            ),
+          ],
+        ),
+      )
+    ])));
   }
 }
 
@@ -245,7 +272,6 @@ class StatisticsDesktopContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     final int correct = controller.getCorrectAnswers();
     final int points = controller.getPoints();
     final int secondsSpent = controller.getSecondsSpent();
@@ -255,19 +281,27 @@ class StatisticsDesktopContent extends StatelessWidget {
         backgroundColor: const Color(0xfff1ffe7),
         appBar: AppBar(
           backgroundColor: const Color(0xff72479d),
-          title: const Center(
+          title: Center(
             child: Text('Statistics',
-                style: TextStyle(fontSize: 40, color: Colors.white)),
+                style: TextStyle(
+                    fontSize: 40,
+                    color: Provider.of<ThemeProvider>(context)
+                        .currentTheme
+                        .colorScheme
+                        .background)),
           ),
         ),
         body: Stack(children: <Widget>[
           Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(15),
-                color: Colors.white,
+                color: Provider.of<ThemeProvider>(context)
+                    .currentTheme
+                    .colorScheme
+                    .background,
               ),
-              margin:
-              const EdgeInsets.only(left: 80.0, right: 80, top: 20, bottom: 65),
+              margin: const EdgeInsets.only(
+                  left: 80.0, right: 80, top: 20, bottom: 65),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
@@ -275,8 +309,7 @@ class StatisticsDesktopContent extends StatelessWidget {
                     children: <Widget>[
                       Expanded(
                         child: Text(
-                          correct.toString() +
-                          '\n Correct',
+                          correct.toString() + '\n Correct',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 30,
@@ -285,8 +318,7 @@ class StatisticsDesktopContent extends StatelessWidget {
                       ),
                       Expanded(
                         child: Text(
-                          points.toString() +
-                          '\n Points',
+                          points.toString() + '\n Points',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 30,
@@ -295,8 +327,7 @@ class StatisticsDesktopContent extends StatelessWidget {
                       ),
                       Expanded(
                         child: Text(
-                          secondsSpent.toString() +
-                          '\n Seconds',
+                          secondsSpent.toString() + '\n Seconds',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 30,
@@ -316,49 +347,49 @@ class StatisticsDesktopContent extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Text(
-                              correctPercentage.toString()+
-                              '%',
+                              correctPercentage.toString() + '%',
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontSize: 30,
+                                color: Colors.black,
                               ),
                             ),
                             Text(
                               'Correct',
                               textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 20,
-                              ),
+                              style:
+                                  TextStyle(fontSize: 20, color: Colors.black),
                             ),
                           ],
                         ),
                       ))
-
                 ],
               )),
           Container(
-            margin:
-            const EdgeInsets.symmetric(vertical: 10),
+            margin: const EdgeInsets.symmetric(vertical: 10),
             child: Align(
               alignment: FractionalOffset.bottomCenter,
               child: ElevatedButton(
                 style: ButtonStyle(
                     backgroundColor:
-                    MaterialStateProperty.all(const Color(0xff72479d)),
+                        MaterialStateProperty.all(const Color(0xff72479d)),
                     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                         RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30.0),
-                        ))),
+                      borderRadius: BorderRadius.circular(30.0),
+                    ))),
                 onPressed: () {
                   //Navigator.push(
                   //  context,
                   //  MaterialPageRoute(builder: (context) => const HomeView()),
                   //);
                 },
-                child: const Text(
+                child: Text(
                   '          Continue           ',
                   style: TextStyle(
-                    color: Colors.white,
+                    color: Provider.of<ThemeProvider>(context)
+                        .currentTheme
+                        .colorScheme
+                        .background,
                     fontSize: 40,
                   ),
                 ),

@@ -1,8 +1,12 @@
+import 'dart:io';
+import 'dart:typed_data';
+import 'package:path_provider/path_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:queasy/src/model/category_repo.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:queasy/src/model/statistics.dart';
-
 import '../../utils/exceptions.dart';
 
 String? getCurrentUserID() {
@@ -11,13 +15,18 @@ String? getCurrentUserID() {
   }
   return null;
 }
+
 Future<String?> getCurrentUserUsername() async {
   String? id;
   if (await FirebaseAuth.instance.currentUser != null) {
     id = await FirebaseAuth.instance.currentUser?.uid;
   }
   String username = 'something';
-  await FirebaseFirestore.instance.collection('users').doc(id).get().then((value) {
+  await FirebaseFirestore.instance
+      .collection('users')
+      .doc(id)
+      .get()
+      .then((value) {
     username = value.data()!['username'];
   });
   return username;
@@ -104,7 +113,6 @@ class Profile {
         privatecScore = json['privateScore'],
         publicScore = json['scores'];
 
-
   @override
   String toString() {
     return 'User{ username: $username, hashPassword: $hashPassword, firstName: $firstName, lastName: $lastName, bio: $bio, age: $age, }';
@@ -127,7 +135,6 @@ class Profile {
   /// returns true if successful
   /// throws an [UserAlreadyExistsException] if the user with the same username already exists in the database
   Future<bool> registerUser() async {
-
     await this
         .firestore
         .collection('users')
@@ -139,22 +146,24 @@ class Profile {
       }
     });
 
+    if (getCurrentUserID() != null) {
+      // create the document for categories created by the user
+      await firestore.collection('category').doc(getCurrentUserID()).set({});
 
-   if(getCurrentUserID() != null) {
-     // create the document for categories created by the user
-     await firestore.collection('category').doc(getCurrentUserID()).set({});
+      await firestore
+          .collection('users')
+          .doc(getCurrentUserID())
+          .set(this.toJson());
+      UserStatistics s = UserStatistics(this.username, []);
+      //Adding the user to the statistics
+      Map<String, dynamic> data = {};
+      await firestore.collection('UserStatistics').doc(this.username).set(data);
+      return true;
+    }
 
-     await firestore.collection('users').doc(getCurrentUserID()).set(this.toJson());
-     UserStatistics s = UserStatistics(this.username, []);
-     //Adding the user to the statistics
-     Map<String, dynamic> data = {};
-     await firestore.collection('UserStatistics').doc(this.username).set(data);
-     return true;
-   }
-
-
-   return false;
+    return false;
   }
+
   /// gets the current profile from user uid
   /// [uid] is the firebase user uid
   /// returns a Profile instance
@@ -165,13 +174,11 @@ class Profile {
         .doc(uid)
         .get()
         .then((DocumentSnapshot documentSnapshot) {
-        Map<String, dynamic> j =  documentSnapshot.data() as Map<String, dynamic>;
-        result = new Profile.fromJson(j);
+      Map<String, dynamic> j = documentSnapshot.data() as Map<String, dynamic>;
+      result = new Profile.fromJson(j);
     });
     return result;
   }
-
-
 
   /// gets a UserStatistics object from the current user
   /// the objects contains all user results from played quizzes
@@ -186,8 +193,7 @@ class Profile {
       if (documentSnapshot.exists) {
         s = UserStatistics.fromJson(
             this.username, documentSnapshot.data() as Map<String, dynamic>);
-
-      }else{
+      } else {
         print("This should never happen");
         s = UserStatistics.fromJson(this.username, {});
       }
@@ -210,12 +216,11 @@ class Profile {
   /// @param [newUsername] - username to change the current username to
   /// @return true - username was updated successfully
   /// @return false - username was not updated successfully
-  bool updateUsername(
-      String currentUsername, String newUsername, FirebaseFirestore firestore) {
+  bool updateUsername(String newUsername) {
     try {
       firestore
           .collection('users')
-          .doc(currentUsername)
+          .doc(getCurrentUserID())
           .update({'username': newUsername});
       return true;
     } catch (e) {
@@ -228,9 +233,12 @@ class Profile {
   ///@param [newBio] - the new bio information
   ///@return true - bio was updated successfully
   ///@return false - bio was not updated successfully
-  bool updateBio(String username, String newBio, FirebaseFirestore firestore) {
+  bool updateBio(String newBio) {
     try {
-      firestore.collection('users').doc(username).update({'bio': newBio});
+      firestore
+          .collection('users')
+          .doc(getCurrentUserID())
+          .update({'bio': newBio});
       return true;
     } catch (e) {
       return false;
@@ -243,12 +251,11 @@ class Profile {
   ///@param [newLastName] - the new lastname
   ///@return true - name was updated successfully
   ///@return false - name was not updated successfully
-  bool updateName(String username, String newFirstName, String newLastName,
-      FirebaseFirestore firestore) {
+  bool updateName(String newFirstName, String newLastName) {
     try {
       firestore
           .collection('users')
-          .doc(username)
+          .doc(getCurrentUserID())
           .update({'firstName': newFirstName, 'lastName': newLastName});
       return true;
     } catch (e) {
@@ -262,12 +269,11 @@ class Profile {
   ///@param [newDay] - the new day of birth
   ///@return true - birthday was updated successfully
   ///@return false - birthday couldn't be updated
-  bool updateBirthday(String username, String newMonth, int newDay,
-      FirebaseFirestore firestore) {
+  bool updateBirthday(String newMonth, int newDay) {
     try {
       firestore
           .collection('users')
-          .doc(username)
+          .doc(getCurrentUserID())
           .update({'birthdayMonth': newMonth, 'birthdayDay': newDay});
       return true;
     } catch (e) {
@@ -280,12 +286,11 @@ class Profile {
   ///@param [newPic] - the new picture
   ///@return true - picture was updated successfully
   ///@return false - picture couldn't be updated
-  bool updatePicture(
-      String username, String newPic, FirebaseFirestore firestore) {
+  bool updatePicture(String newPic) {
     try {
       firestore
           .collection('users')
-          .doc(username)
+          .doc(getCurrentUserID())
           .update({'profilePicture': newPic});
       return true;
     } catch (e) {
@@ -367,6 +372,83 @@ class Profile {
       return false;
     }
   }
+
+  Future<void> pickProfileImage() async {
+    final image = await ImagePicker().pickImage(
+      source: ImageSource.gallery,
+      maxWidth: 512,
+      maxHeight: 512,
+      imageQuality: 75,
+    );
+    Reference ref = FirebaseStorage.instance
+        .ref()
+        .child("profilePictures/${getCurrentUserID()}");
+    // File file = File(image!.path);
+    // print(file.path);
+    // final metadata = SettableMetadata(
+    //     contentType: 'imange/png',
+    //     customMetadata: {'picked-file-path': file.path});
+    // final uploadTask = ref.putData(await file.readAsBytes(), metadata);
+    // ref.getDownloadURL().then((value) {
+    //   print(value);
+    //   firestore
+    //       .collection('users')
+    //       .doc(getCurrentUserID())
+    //       .update({'profilePicture': value});
+    // });
+    // try {
+    //   await ref.putFile(file);
+    // } catch (e) {
+    //   print(e);
+    // }
+    final fileBytes = await image!.readAsBytes();
+// var now = DateTime.now().millisecondsSinceEpoch;
+// StorageReference reference =
+//   FirebaseStorage.instance.ref().child("images/$now");
+
+    try {
+      await ref.putData(fileBytes);
+      ref.getDownloadURL().then((value) {
+        print(value);
+        firestore
+            .collection('users')
+            .doc(getCurrentUserID())
+            .update({'profilePicture': value});
+      });
+    } catch (e) {
+      print(e);
+    }
+
+    // uploadTask.snapshotEvents.listen((TaskSnapshot taskSnapshot) {
+    //   switch (taskSnapshot.state) {
+    //     case TaskState.running:
+    //       final progress =
+    //           100.0 * (taskSnapshot.bytesTransferred / taskSnapshot.totalBytes);
+    //       print("Upload is $progress% complete.");
+    //       break;
+    //     case TaskState.paused:
+    //       print("Upload is paused.");
+    //       break;
+    //     case TaskState.canceled:
+    //       print("Upload was canceled");
+    //       break;
+    //     case TaskState.error:
+    //       // Handle unsuccessful uploads
+    //       print("Upload FAILED");
+    //       break;
+    //     case TaskState.success:
+    //       // Handle successful uploads on complete
+    //       // ...
+    //       break;
+    //   }
+    // });
+  }
+
+  // File getProfilePicture(){
+  //   Reference ref = FirebaseStorage.instance
+  //       .ref()
+  //       .child("profilePictures/${getCurrentUserID()}")
+  // }
   //END OF METHODS FOR PROFILE VIEW
 
 }

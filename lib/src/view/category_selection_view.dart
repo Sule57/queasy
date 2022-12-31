@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:queasy/src/model/category_repo.dart';
 import 'package:queasy/src/view/play_quiz/quiz_view.dart';
+
+import '../theme_provider.dart';
 
 /// View for selecting a category.
 ///
@@ -64,6 +67,7 @@ class _CategorySelectionViewState extends State<CategorySelectionView> {
       return Scaffold(
         backgroundColor: Theme.of(context).colorScheme.primary,
         appBar: AppBar(
+          backgroundColor: Theme.of(context).colorScheme.primary,
           elevation: 0,
           leading: Padding(
             padding: const EdgeInsets.all(8.0),
@@ -91,7 +95,10 @@ class _CategorySelectionViewState extends State<CategorySelectionView> {
               height: MediaQuery.of(context).size.height / 8,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.white,
+                  backgroundColor: Provider.of<ThemeProvider>(context)
+                      .currentTheme
+                      .colorScheme
+                      .background,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
                   ),
@@ -108,7 +115,13 @@ class _CategorySelectionViewState extends State<CategorySelectionView> {
                 child: Center(
                     child: Text(
                   categoryName,
-                  style: Theme.of(context).textTheme.headline3,
+                  style: TextStyle(
+                    fontSize: 40,
+                    color: Provider.of<ThemeProvider>(context)
+                        .currentTheme
+                        .colorScheme
+                        .onBackground,
+                  ),
                 )),
               ),
             );

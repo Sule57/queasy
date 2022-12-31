@@ -41,9 +41,6 @@ class LeaderboardDesktopViewBackground extends StatelessWidget {
   const LeaderboardDesktopViewBackground({Key? key}) : super(key: key);
 
   /// Builds the background.
-  ///
-  /// It shows a container of size one third of the screen and with the main
-  /// color of [AppThemes].
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
@@ -153,6 +150,7 @@ class _LeaderboardViewContentState extends State<LeaderboardViewContent> {
 
 class LeaderboardMobileContent extends StatelessWidget {
   const LeaderboardMobileContent({Key? key}) : super(key: key);
+  //TODO: manually add all public category names to this list
   static const List<String> list = <String>['All', 'Science'];
 
   @override

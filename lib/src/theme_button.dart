@@ -20,23 +20,19 @@ class ThemeButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final themeNotifier = Provider.of<ThemeProvider>(context);
     _darkTheme = (themeNotifier.currentTheme == AppThemes().darkTheme);
-    return TextButton(
-        style: TextButton.styleFrom(
-          backgroundColor: Provider.of<ThemeProvider>(context)
-              .currentTheme
-              .colorScheme
-              .primary,
-        ),
+    return ElevatedButton(
+        style: ElevatedButton.styleFrom(
+            backgroundColor: purple,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(18.0),
+            )),
         onPressed: () {
           onThemeChanged(_darkTheme, themeNotifier);
         },
         child: Text(
           'Change Theme',
           style: TextStyle(
-            color: Provider.of<ThemeProvider>(context)
-                .currentTheme
-                .colorScheme
-                .onPrimary,
+            color: Colors.white,
           ),
         ));
   }

@@ -4,14 +4,14 @@ import 'package:queasy/src/model/profile.dart';
 class ProfileViewController {
   ///@param [player] For now a dummy data used as a user
   Profile player = Profile(
-      username: "Dummy",
-      email: "dummy@gmail.com",
-      hashPassword: "dummyPassword",
-      firstName: "Dummy",
-      lastName: "Whatever",
-      age: 99,
-      bio: "Dummy likes playing quizzes",
-      profilePicture: "https://www.peakpx.com/en/hd-wallpaper-desktop-vsviy");
+      username: "",
+      email: "",
+      hashPassword: "",
+      firstName: "",
+      lastName: "",
+      age: 0,
+      bio: "",
+      profilePicture: "");
 
   ///constructor for the controller
   ProfileViewController();
@@ -31,12 +31,8 @@ class ProfileViewController {
 
   ///changes the [currentUsername] with the given new [newUsername]
   ///and the value is added to the [success] list
-  void editUsername(String currentUsername, String newUsername) {
-    success = [
-      ...success,
-      player.updateUsername(
-          currentUsername, newUsername, FirebaseFirestore.instance)
-    ];
+  void editUsername(String newUsername) {
+    success = [...success, player.updateUsername(newUsername)];
   }
 
   ///changes the [currentEmail] with the given [newEmail] and confirms it through [password]
@@ -49,31 +45,21 @@ class ProfileViewController {
   }
 
   ///changes the current name with the given [newFirstname] and [newLastname] and requires [username]
-  ///and the value is added to the [success] list
-  void editName(String username, String newFirstname, String newLastname) {
-    success = [
-      ...success,
-      player.updateName(
-          username, newFirstname, newLastname, FirebaseFirestore.instance)
-    ];
+  ///and the valufe is added to the [success] list
+  void editName(String newFirstname, String newLastname) {
+    success = [...success, player.updateName(newFirstname, newLastname)];
   }
 
   ///changes the current bio with the given [newBio] and requires [username]
   ///and the value is added to the [success] list
-  void editBio(String username, String newBio) {
-    success = [
-      ...success,
-      player.updateBio(username, newBio, FirebaseFirestore.instance)
-    ];
+  void editBio(String newBio) {
+    success = [...success, player.updateBio(newBio)];
   }
 
   ///changes the current profile picture with the given [newPic]
   ///and the value is added to the [success] list
   void editProfilePic(String newPic) {
-    success = [
-      ...success,
-      player.updatePicture(username, newPic, FirebaseFirestore.instance)
-    ];
+    success = [...success, player.updatePicture(newPic)];
   }
 
   ///changes the current password [currentPassword] with the given [newPassword] and confirms it through [email]
@@ -120,5 +106,14 @@ class ProfileViewController {
       success.clear();
     }
     return false;
+  }
+
+  Future<bool> pickProfilePicture() async {
+    try {
+      await player.pickProfileImage();
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 }
