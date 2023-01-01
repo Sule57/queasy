@@ -6,6 +6,7 @@ import 'package:queasy/src/view/see_leaderboard/leaderboard_view.dart';
 import 'package:queasy/src/view/category_selection_view.dart';
 import 'package:queasy/src/view/see_profile/profile_view.dart';
 import 'package:queasy/src/view/quiz_selection_view.dart';
+import 'package:queasy/src/view/widgets/side_navigation.dart';
 
 import 'see_profile/profile_provider.dart';
 
@@ -47,40 +48,53 @@ class _HomeViewState extends State<HomeView> {
   /// The index of the screen to be displayed is specified by the [index] property.
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      bottomNavigationBar: MotionTabBar(
-        labels: const ['Home', 'Leaderboard', 'Profile'],
-        initialSelectedTab: 'Home',
-        icons: const [
-          Icons.home_outlined,
-          Icons.leaderboard_outlined,
-          Icons.person_outline,
-        ],
-        useSafeArea: true,
-        tabIconColor: Colors.grey,
-        tabSelectedColor: Theme.of(context).colorScheme.primary,
-        tabBarColor: Theme.of(context).colorScheme.background,
-        textStyle: Theme.of(context).textTheme.caption,
-        onTabItemSelected: (index) {
-          /// This method checks if the chosen page has already been built.
-          /// If it hasn't, then it still is a SizedBox and won't be rebuilt.
-          setState(() {
-            if (pages[index] is SizedBox) {
-              if (index == 1) {
-                pages[index] = const LeaderboardView();
-              } else if (index == 2) {
-                pages[index] = ProfileView();
-              }
-            }
-            selectedPage = index;
-          });
-        },
-      ),
-      body: IndexedStack(
-        index: selectedPage,
-        children: pages,
-      ),
-    );
+    double width = MediaQuery.of(context).size.width;
+
+    return width > 700
+        ? Scaffold(
+            body: Row(
+            children: [
+              SideNavigation(),
+              SizedBox(
+                width: width - SideNavigation().width,
+                child: HomeWidgets(),
+              ),
+            ],
+          ))
+        : Scaffold(
+            bottomNavigationBar: MotionTabBar(
+              labels: const ['Home', 'Leaderboard', 'Profile'],
+              initialSelectedTab: 'Home',
+              icons: const [
+                Icons.home_outlined,
+                Icons.leaderboard_outlined,
+                Icons.person_outline,
+              ],
+              useSafeArea: true,
+              tabIconColor: Colors.grey,
+              tabSelectedColor: Theme.of(context).colorScheme.primary,
+              tabBarColor: Theme.of(context).colorScheme.background,
+              textStyle: Theme.of(context).textTheme.caption,
+              onTabItemSelected: (index) {
+                /// This method checks if the chosen page has already been built.
+                /// If it hasn't, then it still is a SizedBox and won't be rebuilt.
+                setState(() {
+                  if (pages[index] is SizedBox) {
+                    if (index == 1) {
+                      pages[index] = const LeaderboardView();
+                    } else if (index == 2) {
+                      pages[index] = ProfileView();
+                    }
+                  }
+                  selectedPage = index;
+                });
+              },
+            ),
+            body: IndexedStack(
+              index: selectedPage,
+              children: pages,
+            ),
+          );
   }
 }
 

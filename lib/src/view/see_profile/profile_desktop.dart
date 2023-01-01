@@ -6,10 +6,10 @@ import 'package:queasy/constants/app_themes.dart';
 import 'package:queasy/src/theme_button.dart';
 import 'package:queasy/src/view/see_profile/profile_view_controller.dart';
 import 'package:flutter_profile_picture/flutter_profile_picture.dart';
+import 'package:queasy/src/view/widgets/side_navigation.dart';
 
 import '../../theme_provider.dart';
 import '../registration/register_view.dart';
-import '../widgets/desktop_navigation.dart';
 import 'profile_provider.dart';
 
 ///This is UserProfileDesktop view
@@ -191,14 +191,7 @@ class _ProfileDesktopViewContentState extends State<ProfileDesktopViewContent> {
       body: Center(
           child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
         //Left Column
-        DesktopNavigation(
-          controller: controller,
-        ),
-        VerticalDivider(
-          color: Colors.grey,
-          thickness: 2,
-          width: 0,
-        ),
+        SideNavigation(),
         //Right Column
         Stack(
           children: <Widget>[
