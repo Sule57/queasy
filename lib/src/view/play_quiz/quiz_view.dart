@@ -7,6 +7,7 @@ import 'package:queasy/src/view/play_quiz/widgets/answer_button.dart';
 import 'package:queasy/src/view/play_quiz/widgets/question_container.dart';
 import 'package:queasy/src/view/play_quiz/widgets/score_tracking.dart';
 import 'package:queasy/src/view/statistics/statistics_view.dart';
+import 'package:queasy/src/view/widgets/rounded-button.dart';
 
 /// This is the main quiz view.
 ///
@@ -188,6 +189,17 @@ class QuizViewDesktopContent extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
+          Align(
+            alignment: Alignment.topRight,
+            child: RoundedButton(
+              buttonName: 'Exit',
+              fontSize: 18,
+              onPressed: () {
+                Navigator.pop(context);
+                Navigator.pop(context);
+              },
+            ),
+          ),
           Text(
             Provider.of<QuizProvider>(context).category,
             style: Theme.of(context).textTheme.headline2,
@@ -244,6 +256,17 @@ class QuizViewMobileContent extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
+          Align(
+            alignment: Alignment.topRight,
+            child: RoundedButton(
+              buttonName: 'Exit',
+              fontSize: 15,
+              onPressed: () {
+                Navigator.pop(context);
+                Navigator.pop(context);
+              },
+            ),
+          ),
           Text(
             Provider.of<QuizProvider>(context).category,
             style: Theme.of(context).textTheme.headline2,
