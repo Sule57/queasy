@@ -125,7 +125,7 @@ class ProfileMobileState extends State<UserProfileMobile> {
           height: MediaQuery.of(context).size.height * .70,
           width: MediaQuery.of(context).size.width * .2,
           decoration: BoxDecoration(
-              color: white,
+              color: light,
               borderRadius:
                   const BorderRadius.only(topRight: Radius.circular(20))),
         ),
@@ -366,7 +366,7 @@ class ProfileMobileState extends State<UserProfileMobile> {
                                         ///[ElevatedButton] to close the dialog if user wants to exit
                                         ElevatedButton(
                                           child: Text("Cancel",
-                                              style: TextStyle(color: black)),
+                                              style: TextStyle(color: dark)),
 
                                           ///if clicked clears all the text editing controllers
                                           onPressed: () => {
@@ -394,7 +394,7 @@ class ProfileMobileState extends State<UserProfileMobile> {
                                         ///[ElevatedButton] to confirm the changes to the profile info
                                         ElevatedButton(
                                           child: Text("Confirm",
-                                              style: TextStyle(color: black)),
+                                              style: TextStyle(color: dark)),
                                           onPressed: () {
                                             ///when clicked, if form has been successfully validated then
                                             ///it calls different edit methods depending on which text field is not empty
@@ -836,7 +836,7 @@ class ProfileMobileState extends State<UserProfileMobile> {
                                                                     style:
                                                                         TextStyle(
                                                                       color:
-                                                                          white,
+                                                                          light,
                                                                     ),
                                                                   )),
                                                             )
@@ -971,7 +971,7 @@ class ProfileMobileState extends State<UserProfileMobile> {
                                   children: [
                                     ElevatedButton(
                                       child: Text("Cancel",
-                                          style: TextStyle(color: black)),
+                                          style: TextStyle(color: dark)),
                                       onPressed: () =>
                                           {Navigator.of(context).pop()},
                                       style: ButtonStyle(
@@ -987,7 +987,7 @@ class ProfileMobileState extends State<UserProfileMobile> {
                                     ),
                                     ElevatedButton(
                                       child: Text("Confirm",
-                                          style: TextStyle(color: black)),
+                                          style: TextStyle(color: dark)),
                                       onPressed: () {
                                         bool success = controller.deleteAccount(
                                             emailForDelete.text,
@@ -1112,7 +1112,7 @@ class ProfileMobileState extends State<UserProfileMobile> {
                                                           child: Text(
                                                             "Please enter email",
                                                             style: TextStyle(
-                                                              color: white,
+                                                              color: light,
                                                             ),
                                                           )),
                                                     )
@@ -1199,7 +1199,7 @@ class ProfileMobileState extends State<UserProfileMobile> {
                                                           child: Text(
                                                             "Please enter password",
                                                             style: TextStyle(
-                                                              color: white,
+                                                              color: light,
                                                             ),
                                                           )),
                                                     )

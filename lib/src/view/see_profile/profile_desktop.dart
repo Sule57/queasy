@@ -64,7 +64,7 @@ class ProfileDesktopViewBackground extends StatelessWidget {
                   height: height * .30,
                   width: width / 3,
                   decoration: BoxDecoration(
-                      color: green,
+                      color: Theme.of(context).colorScheme.tertiary,
                       borderRadius: const BorderRadius.only(
                         bottomLeft: Radius.circular(20),
                       )))),
@@ -79,7 +79,7 @@ class ProfileDesktopViewBackground extends StatelessWidget {
               width: width / 9,
               height: height * .50,
               decoration: BoxDecoration(
-                  color: orange,
+                  color: Theme.of(context).colorScheme.secondary,
                   borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(20),
                       bottomLeft: Radius.circular(20))),
@@ -93,7 +93,7 @@ class ProfileDesktopViewBackground extends StatelessWidget {
               height: height * .12,
               width: width / 1.7,
               decoration: BoxDecoration(
-                  color: white,
+                  color: Theme.of(context).colorScheme.onTertiary,
                   borderRadius:
                       const BorderRadius.only(topLeft: Radius.circular(20))),
             ),
@@ -362,9 +362,13 @@ class _ProfileDesktopViewContentState extends State<ProfileDesktopViewContent> {
                                                             ElevatedButton(
                                                               child: Text(
                                                                   "Cancel",
-                                                                  style: TextStyle(
-                                                                      color:
-                                                                          black)),
+                                                                  style:
+                                                                      TextStyle(
+                                                                    color: Theme.of(
+                                                                            context)
+                                                                        .colorScheme
+                                                                        .onSecondary,
+                                                                  )),
 
                                                               ///if clicked clears all the text editing controllers
                                                               onPressed: () => {
@@ -402,9 +406,13 @@ class _ProfileDesktopViewContentState extends State<ProfileDesktopViewContent> {
                                                             ElevatedButton(
                                                               child: Text(
                                                                   "Confirm",
-                                                                  style: TextStyle(
-                                                                      color:
-                                                                          black)),
+                                                                  style:
+                                                                      TextStyle(
+                                                                    color: Theme.of(
+                                                                            context)
+                                                                        .colorScheme
+                                                                        .onSecondary,
+                                                                  )),
                                                               onPressed: () {
                                                                 ///when clicked, if form has been successfully validated then
                                                                 ///it calls different edit methods depending on which text field is not empty
@@ -839,7 +847,7 @@ class _ProfileDesktopViewContentState extends State<ProfileDesktopViewContent> {
                                                                                   child: Text(
                                                                                     "Please enter password",
                                                                                     style: TextStyle(
-                                                                                      color: white,
+                                                                                      color: Theme.of(context).colorScheme.onTertiary,
                                                                                     ),
                                                                                   ),
                                                                                 )
@@ -948,9 +956,13 @@ class _ProfileDesktopViewContentState extends State<ProfileDesktopViewContent> {
                                                           ElevatedButton(
                                                             child: Text(
                                                                 "Cancel",
-                                                                style: TextStyle(
-                                                                    color:
-                                                                        black)),
+                                                                style:
+                                                                    TextStyle(
+                                                                  color: Theme.of(
+                                                                          context)
+                                                                      .colorScheme
+                                                                      .onSecondary,
+                                                                )),
                                                             onPressed: () => {
                                                               Navigator.of(
                                                                       context)
@@ -973,9 +985,13 @@ class _ProfileDesktopViewContentState extends State<ProfileDesktopViewContent> {
                                                           ElevatedButton(
                                                             child: Text(
                                                                 "Confirm",
-                                                                style: TextStyle(
-                                                                    color:
-                                                                        black)),
+                                                                style:
+                                                                    TextStyle(
+                                                                  color: Theme.of(
+                                                                          context)
+                                                                      .colorScheme
+                                                                      .onSecondary,
+                                                                )),
                                                             onPressed: () {
                                                               bool success =
                                                                   controller.deleteAccount(
@@ -1121,7 +1137,7 @@ class _ProfileDesktopViewContentState extends State<ProfileDesktopViewContent> {
                                                                                     child: Text(
                                                                                       "Please enter email",
                                                                                       style: TextStyle(
-                                                                                        color: white,
+                                                                                        color: Theme.of(context).colorScheme.onTertiary,
                                                                                       ),
                                                                                     )),
                                                                               )
@@ -1185,7 +1201,7 @@ class _ProfileDesktopViewContentState extends State<ProfileDesktopViewContent> {
                                                                                     child: Text(
                                                                                       "Please enter password",
                                                                                       style: TextStyle(
-                                                                                        color: white,
+                                                                                        color: Theme.of(context).colorScheme.onTertiary,
                                                                                       ),
                                                                                     )),
                                                                               )

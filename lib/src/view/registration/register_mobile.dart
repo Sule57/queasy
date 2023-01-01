@@ -59,7 +59,7 @@ class RegisterViewMobileState extends State<RegisterViewMobile> {
 
       /// This [SingleChildScrollView] enables the user to scroll up/down when keyboard is open
       /// it contains a [Column] to display the logo and name of the app.
-      body: SingleChildScrollView(
+      body: SafeArea(
         child: Form(
           key: formKey,
           child: Column(
@@ -223,6 +223,13 @@ class RegisterViewMobileState extends State<RegisterViewMobile> {
                                           MaterialPageRoute(
                                               builder: (context) =>
                                                   const HomeView()));
+                                    } else {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        const SnackBar(
+                                          content: Text('Login incorrect'),
+                                        ),
+                                      );
                                     }
                                   }
                                 },

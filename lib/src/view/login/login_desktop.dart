@@ -79,7 +79,7 @@ class _LogInDesktopState extends State<LogInDesktop> {
                   height: MediaQuery.of(context).size.height * .25,
                   width: MediaQuery.of(context).size.width / 5.5,
                   decoration: BoxDecoration(
-                      color: white,
+                      color: light,
                       borderRadius: const BorderRadius.only(
                         bottomLeft: Radius.circular(20),
                       )))),
@@ -130,6 +130,11 @@ class _LogInDesktopState extends State<LogInDesktop> {
                       decoration: const InputDecoration(
                         labelText: 'Email',
                       ),
+                      onFieldSubmitted: (value) {
+                        if (formKey.currentState!.validate()) {
+                          signInWithEmailAndPassword();
+                        }
+                      },
                     ),
                     Padding(
                       padding: EdgeInsets.only(
@@ -166,6 +171,11 @@ class _LogInDesktopState extends State<LogInDesktop> {
                             },
                           ),
                         ),
+                        onFieldSubmitted: (value) {
+                          if (formKey.currentState!.validate()) {
+                            signInWithEmailAndPassword();
+                          }
+                        },
                       ),
                     ),
 
@@ -518,7 +528,7 @@ class _LogInDesktopState extends State<LogInDesktop> {
                 height: MediaQuery.of(context).size.height * .35,
                 width: MediaQuery.of(context).size.width / 10,
                 decoration: BoxDecoration(
-                    color: white,
+                    color: light,
                     borderRadius: const BorderRadius.only(
                       topRight: Radius.circular(20),
                       bottomRight: Radius.circular(20),

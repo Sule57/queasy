@@ -190,10 +190,7 @@ class QuizViewDesktopContent extends StatelessWidget {
         children: [
           Text(
             Provider.of<QuizProvider>(context).category,
-            style: TextStyle(
-              fontSize: 40,
-              color: Colors.black,
-            ),
+            style: Theme.of(context).textTheme.headline2,
           ),
           const ScoreTracking(),
           const QuestionContainer(),
@@ -249,10 +246,7 @@ class QuizViewMobileContent extends StatelessWidget {
         children: [
           Text(
             Provider.of<QuizProvider>(context).category,
-            style: TextStyle(
-              fontSize: 40,
-              color: Colors.black,
-            ),
+            style: Theme.of(context).textTheme.headline2,
           ),
           const ScoreTracking(),
           const QuestionContainer(),

@@ -74,7 +74,7 @@ class _RegisterDesktopState extends State<RegisterDesktop> {
                   height: MediaQuery.of(context).size.height * .90,
                   width: MediaQuery.of(context).size.width / 2.3,
                   decoration: BoxDecoration(
-                      color: white,
+                      color: light,
                       borderRadius:
                           const BorderRadius.all(Radius.circular(20))))),
           SingleChildScrollView(
@@ -321,7 +321,7 @@ class _RegisterDesktopState extends State<RegisterDesktop> {
                 height: MediaQuery.of(context).size.height * .35,
                 width: MediaQuery.of(context).size.width / 10,
                 decoration: BoxDecoration(
-                    color: white,
+                    color: light,
                     borderRadius: const BorderRadius.only(
                       topRight: Radius.circular(20),
                       bottomRight: Radius.circular(20),

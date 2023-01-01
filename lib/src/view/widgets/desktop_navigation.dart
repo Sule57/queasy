@@ -125,7 +125,10 @@ class DesktopNavigation extends StatelessWidget {
                               ///[ElevatedButton] to close the dialog if user wants to exit
                               ElevatedButton(
                                 child: Text("Cancel",
-                                    style: TextStyle(color: black)),
+                                    style: TextStyle(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onSecondary)),
 
                                 ///if clicked clears all the text editing controllers
                                 onPressed: () => {
@@ -145,7 +148,10 @@ class DesktopNavigation extends StatelessWidget {
                               ///[ElevatedButton] to confirm the entered key
                               ElevatedButton(
                                 child: Text("Join",
-                                    style: TextStyle(color: black)),
+                                    style: TextStyle(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onSecondary)),
                                 onPressed: () {
                                   if (textController.text.isNotEmpty) {
                                     ///confirmKey method is called from the controller
