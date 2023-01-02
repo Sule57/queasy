@@ -66,8 +66,9 @@ class _CategorySelectionViewState extends State<CategorySelectionView> {
     } else {
       return Scaffold(
         backgroundColor: Theme.of(context).colorScheme.primary,
+        extendBodyBehindAppBar: true,
         appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.primary,
+          backgroundColor: Colors.transparent,
           elevation: 0,
           leading: Padding(
             padding: const EdgeInsets.all(8.0),
@@ -83,49 +84,74 @@ class _CategorySelectionViewState extends State<CategorySelectionView> {
             ),
           ),
         ),
-        body: ListView.builder(
-          itemCount: list.length,
-          itemBuilder: (BuildContext context, int index) {
-            String categoryName = list[index];
-
-            return Container(
-              padding:
-                  const EdgeInsets.only(left: 30.0, right: 30.0, top: 20.0),
-              width: 70,
-              height: MediaQuery.of(context).size.height / 8,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Provider.of<ThemeProvider>(context)
-                      .currentTheme
-                      .colorScheme
-                      .background,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
+        body: Stack(
+          children: [
+            Align(
+              alignment: Alignment.topLeft,
+              child: Container(
+                height: MediaQuery.of(context).size.height / 2,
+                width: MediaQuery.of(context).size.width / 3,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.tertiary,
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
                 ),
-                onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => QuizView(
-                        category: categoryName,
+              ),
+            ),
+            Align(
+              alignment: Alignment.bottomRight,
+              child: Container(
+                height: MediaQuery.of(context).size.height / 4,
+                width: MediaQuery.of(context).size.width / 3,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.onTertiary,
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                ),
+              ),
+            ),
+            ListView.builder(
+              itemCount: list.length,
+              itemBuilder: (BuildContext context, int index) {
+                String categoryName = list[index];
+                return Container(
+                  padding:
+                      const EdgeInsets.only(left: 30.0, right: 30.0, top: 20.0),
+                  width: 70,
+                  height: MediaQuery.of(context).size.height / 8,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Provider.of<ThemeProvider>(context)
+                          .currentTheme
+                          .colorScheme
+                          .background,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
                       ),
                     ),
-                  );
-                },
-                child: Center(
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => QuizView(
+                            category: categoryName,
+                          ),
+                        ),
+                      );
+                    },
                     child: Text(
-                  categoryName,
-                  style: TextStyle(
-                    fontSize: 40,
-                    color: Provider.of<ThemeProvider>(context)
-                        .currentTheme
-                        .colorScheme
-                        .onBackground,
+                      categoryName,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 40,
+                        color: Provider.of<ThemeProvider>(context)
+                            .currentTheme
+                            .colorScheme
+                            .onBackground,
+                      ),
+                    ),
                   ),
-                )),
-              ),
-            );
-          },
+                );
+              },
+            ),
+          ],
         ),
       );
     }
