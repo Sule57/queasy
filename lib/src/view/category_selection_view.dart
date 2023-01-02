@@ -103,7 +103,7 @@ class _CategorySelectionViewState extends State<CategorySelectionView> {
                 height: MediaQuery.of(context).size.height / 4,
                 width: MediaQuery.of(context).size.width / 3,
                 decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.onTertiary,
+                  color: Theme.of(context).colorScheme.secondary,
                   borderRadius: BorderRadius.all(Radius.circular(20)),
                 ),
               ),
