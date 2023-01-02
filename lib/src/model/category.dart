@@ -317,7 +317,7 @@ class Category {
     return 'question'+ count.toString();
   }
 
-  Future<int> Randomizer({FirebaseFirestore? firestore, bool public = false}) async {
+  Future<String> randomizer({FirebaseFirestore? firestore, bool public = false}) async {
     String? username = getCurrentUserID();
     if (username == null) {
       throw UserNotLoggedInException();
@@ -357,6 +357,8 @@ class Category {
     // create a random integer between 0 and count
     int random = Random().nextInt(count);
 
-    return random;
+    String id = 'question' + random.toString();
+
+    return id;
   }
 }
