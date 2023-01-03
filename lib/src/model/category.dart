@@ -24,6 +24,7 @@ class Category {
   late Color _color;
   late String _category;
   late bool _isPublic;
+  late Profile owner;
 
   /// Constructor for the [Category] class.
   ///
@@ -179,18 +180,22 @@ class Category {
   ///
   /// [question] is the [Question] that should be deleted. [firestore] is not required instance of the database and is only used for testing.
   Future<void> deleteQuestion(Question question, {FirebaseFirestore? firestore}) async {
-    String? username = getCurrentUserID();
     if (firestore == null) {
       firestore = FirebaseFirestore.instance;
     }
 
-    if (username == null) {
+    String? userID = getCurrentUserID();
+    owner = (await Profile.getProfilefromUID(userID!))!;
+    String? ownerUsername = owner.username;
+
+    if (ownerUsername == null) {
       throw UserNotLoggedInException();
     }
+
     // delete the question from the private category
     await firestore
         .collection('categories')
-        .doc(username)
+        .doc(ownerUsername)
         .collection(_category)
         .doc(question.ID)
         .delete();
@@ -200,13 +205,16 @@ class Category {
   ///
   /// [question] is the [Question] that should be added. [firestore] is not required instance of the database and is only used for testing.
   Future<void> addQuestion(Question question, {FirebaseFirestore? firestore}) async {
-    String? username = getCurrentUserID();
 
     if (firestore == null) {
       firestore = FirebaseFirestore.instance;
     }
 
-    if (username == null) {
+    String? userID = getCurrentUserID();
+    owner = (await Profile.getProfilefromUID(userID!))!;
+    String? ownerUsername = owner.username;
+
+    if (ownerUsername == null) {
       throw UserNotLoggedInException();
     }
 
@@ -214,7 +222,7 @@ class Category {
     int count = 0;
     await firestore
         .collection('categories')
-        .doc(username)
+        .doc(ownerUsername)
         .collection(_category)
         .get()
         .then((QuerySnapshot querySnapshot) {
@@ -234,7 +242,7 @@ class Category {
     print(newID);
     await firestore
         .collection('categories')
-        .doc(username)
+        .doc(ownerUsername)
         .collection(_category)
         .doc(newID)
         .set(question.toJson());
@@ -244,7 +252,7 @@ class Category {
       // delete the question from the public category which is called question-1
       await firestore
           .collection('categories')
-          .doc(username)
+          .doc(ownerUsername)
           .collection(_category)
           .doc('question-1')
           .delete();
@@ -253,8 +261,11 @@ class Category {
 
   /// Retrieves a [Question] from the private category with a given [id].
   Future<Question> getQuestion(String id, {bool public = false}) async{
-    String? username = getCurrentUserID();
-    if (username == null) {
+    String? userID = getCurrentUserID();
+    owner = (await Profile.getProfilefromUID(userID!))!;
+    String? ownerUsername = owner.username;
+
+    if (ownerUsername == null) {
       throw UserNotLoggedInException();
     }
     late Question question;
@@ -298,10 +309,19 @@ class Category {
   ///
   /// This is used to create a unique ID for a question in the category. It finds the highest ID and adds 1 to it.
   Future<String> getNextID() async{
+
+    String? userID = getCurrentUserID();
+    owner = (await Profile.getProfilefromUID(userID!))!;
+    String? ownerUsername = owner.username;
+
+    if (ownerUsername == null) {
+      throw UserNotLoggedInException();
+    }
+
     int count = -1;
     await FirebaseFirestore.instance
         .collection('categories')
-        .doc(getCurrentUserID())
+        .doc(ownerUsername)
         .collection(_category)
         .get()
         .then((QuerySnapshot querySnapshot) {
@@ -318,8 +338,11 @@ class Category {
   }
 
   Future<String> randomizer({FirebaseFirestore? firestore, bool public = false}) async {
-    String? username = getCurrentUserID();
-    if (username == null) {
+    String? userID = getCurrentUserID();
+    owner = (await Profile.getProfilefromUID(userID!))!;
+    String? ownerUsername = owner.username;
+
+    if (ownerUsername == null) {
       throw UserNotLoggedInException();
     }
 
@@ -344,7 +367,7 @@ class Category {
     } else {
       await firestore
           .collection('categories')
-          .doc(username)
+          .doc(ownerUsername)
           .collection(_category)
           .get()
           .then((QuerySnapshot querySnapshot) {
