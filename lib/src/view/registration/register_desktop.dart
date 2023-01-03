@@ -35,6 +35,7 @@ class _RegisterDesktopState extends State<RegisterDesktop> {
 
   ///[_passwordVisible] are to hide/show the passwords
   bool passwordVisible = false;
+  bool _isGoogleSigningIn = false;
 
   Future<bool> signInWithEmailAndPassword() async {
     try {
@@ -268,13 +269,41 @@ class _RegisterDesktopState extends State<RegisterDesktop> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
+                        _isGoogleSigningIn
+                            ? CircularProgressIndicator(
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                    Theme.of(context).colorScheme.primary),
+                              )
+                            : IconButton(
+                                icon:
+                                    Image.asset('lib/assets/images/google.png'),
+                                onPressed: () async {
+                                  setState(() {
+                                    _isGoogleSigningIn = true;
+                                  });
+                                  User? user = await controller
+                                      .signInWithGoogle(context: context);
+                                  setState(() {
+                                    _isGoogleSigningIn = false;
+                                  });
+                                  if (user != null) {
+                                    Navigator.of(context).pushReplacement(
+                                      MaterialPageRoute(
+                                        builder: (context) => HomeView(),
+                                      ),
+                                    );
+                                  }
+                                },
+                              ),
                         IconButton(
-                          icon: Image.asset('lib/assets/images/google.png'),
+                          icon: Image.asset(
+                            'lib/assets/images/facebook.png',
+                          ),
                           onPressed: () {},
                         ),
                         IconButton(
                           icon: Image.asset(
-                            'lib/assets/images/facebook.png',
+                            'lib/assets/images/twitter.png',
                           ),
                           onPressed: () {},
                         ),
