@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:queasy/src/model/profile.dart';
+import 'package:queasy/utils/exceptions.dart';
 import 'answer.dart';
 
 /// This class represents a question in the quiz, it has direct access to the firebase and is used to manipulate questions inside the firebase (for now, later category will do this)
@@ -29,6 +30,7 @@ class Question {
   List<Answer> answers = [];
   String category = "";
   late String? questionID = "";
+  late Profile owner;
 
 
   /// This is the constructor of the class, it takes the text of the question, the list of answers, the category of the question the ID of the question and the owner of the question as parameters
@@ -87,10 +89,20 @@ class Question {
   ///
   /// This is used to create a unique ID for a question in the category. It finds the highest ID and adds 1 to it.
   Future<String> getNextID() async{
+
+    String? userID = getCurrentUserID();
+    owner = (await Profile.getProfilefromUID(userID!))!;
+    String? ownerUsername = owner.username;
+
+    if (ownerUsername == null) {
+      throw UserNotLoggedInException();
+    }
+
+
     int count = -1;
     await FirebaseFirestore.instance
         .collection('categories')
-        .doc(getCurrentUserID())
+        .doc(ownerUsername)
         .collection(category)
         .get()
         .then((QuerySnapshot querySnapshot) {
@@ -114,9 +126,17 @@ class Question {
       firestore = FirebaseFirestore.instance;
     }
 
+    String? userID = getCurrentUserID();
+    owner = (await Profile.getProfilefromUID(userID!))!;
+    String? ownerUsername = owner.username;
+
+    if (ownerUsername == null) {
+      throw UserNotLoggedInException();
+    }
+
     await firestore
         .collection('categories')
-        .doc(getCurrentUserID())
+        .doc(ownerUsername)
         .collection(category)
         .doc(questionID)
         .update({
