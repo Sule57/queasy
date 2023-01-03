@@ -392,7 +392,7 @@ class Category {
     }
 
     await firestore
-        ?.collection('quizzes')
+        .collection('quizzes')
         .doc(id)
         .delete();
   }
