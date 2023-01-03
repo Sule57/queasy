@@ -153,10 +153,4 @@ class Quiz {
     }
   }
 
-  Future<void> deleteQuiz() async {
-    await firestore
-        ?.collection('quizzes')
-        .doc(id)
-        .delete();
-  }
 }

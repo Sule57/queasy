@@ -384,4 +384,16 @@ class Category {
 
     return id;
   }
+
+  Future<void> deleteQuiz(String id, {FirebaseFirestore? firestore}) async {
+
+    if (firestore == null) {
+      firestore = FirebaseFirestore.instance;
+    }
+
+    await firestore
+        ?.collection('quizzes')
+        .doc(id)
+        .delete();
+  }
 }
