@@ -51,13 +51,11 @@ class QuizProvider with ChangeNotifier {
   // QuizProvider._internal();
 
   // static final QuizProvider _instance = QuizProvider._internal();
-  //
-
 
   late Quiz _quiz;
 
   late Profile player;
-  late String _category;
+  late Category _category;
   late int _totalQuestions;
   int _currentQuestionIndex = 0;
   int _currentPoints = 0;
@@ -68,7 +66,6 @@ class QuizProvider with ChangeNotifier {
   get category => _category;
   get quiz => _quiz;
   get timeLeft => _timeLeft.inSeconds.toString();
-
 
 // assign the current user to the app
   QuizProvider() {
@@ -98,7 +95,6 @@ class QuizProvider with ChangeNotifier {
         //exception is recommended but tests needed
         //TODO TEST FUNCTIONALITY WITH EXCEPTION
         throw UserDoesNotExistException();
-
       }
     } else {
       // default player
@@ -109,8 +105,6 @@ class QuizProvider with ChangeNotifier {
     }
   }
 
-
-
   /// Starts the quiz.
   ///
   /// This method is called when the user enters the quiz view. It uses the
@@ -120,7 +114,7 @@ class QuizProvider with ChangeNotifier {
   /// [_currentPoints] and [_currentQuestionAnswered].
   void startQuiz({
     int? id,
-    required String category,
+    required Category category,
     required int numberOfQuestions,
     String? creatorUsername,
   }) {
@@ -130,32 +124,28 @@ class QuizProvider with ChangeNotifier {
     _currentPoints = 0;
     _currentQuestionAnswered = false;
 
-    _quiz = Quiz.normal(
-      id: id ?? 1,
+    _quiz = Quiz(
       noOfQuestions: _totalQuestions,
       category: _category,
-      creatorUsername: creatorUsername ?? 'public',
+      isPublic: true,
     );
   }
 
   /// Returns the current question text to be displayed in the UI.
   String getCurrentQuestionText() {
-    return _quiz.getQuestions()[_currentQuestionIndex].getText();
+    return _quiz.questions[_currentQuestionIndex].getText();
   }
 
   /// Returns the current question answer text to be displayed in the UI. It
   /// takes the parameter [index] to determine which answer to return.
   String getAnswerText(int index) {
-    return _quiz.getQuestions()[_currentQuestionIndex].getAnswer(index).text;
+    return _quiz.questions[_currentQuestionIndex].getAnswer(index).text;
   }
 
   /// Returns the current question answer isCorrect value. It takes the
   /// parameter [index] to determine which answer to return.
   bool isAnswerCorrect(int index) {
-    return _quiz
-        .getQuestions()[_currentQuestionIndex]
-        .getAnswer(index)
-        .isCorrect;
+    return _quiz.questions[_currentQuestionIndex].getAnswer(index).isCorrect;
   }
 
   /// Returns the current points as a string to be displayed in the UI.
@@ -182,8 +172,8 @@ class QuizProvider with ChangeNotifier {
       //TODO WHEN QUIZZES NAMES ARE IMPLEMENTED ADD NAME TO THE QUIZZREQULT
       //TODO GET THE REAL TIME SPENT
       Random rand = Random();
-      UserQuizzResult r = UserQuizzResult(
-          "Test" + rand.nextInt(50).toString(), correctAnswers, _totalQuestions, _timeLeft.inSeconds);
+      UserQuizzResult r = UserQuizzResult("Test" + rand.nextInt(50).toString(),
+          correctAnswers, _totalQuestions, _timeLeft.inSeconds);
       UserStatistics? stat = await player.getUserStatistics();
       if (stat != null) {
         stat.addUserQuizzResult(r);
@@ -198,7 +188,7 @@ class QuizProvider with ChangeNotifier {
   /// the user to the [StatisticsView].
   Future<void> endQuiz() async {
     stopTimer();
-    player.updateScore("Savo", _category, _currentPoints);
+    player.updateScore("Savo", _category.name, _currentPoints);
     navigator.currentState?.pop();
     navigator.currentState?.push(
       MaterialPageRoute(builder: (_) => StatisticsView()),

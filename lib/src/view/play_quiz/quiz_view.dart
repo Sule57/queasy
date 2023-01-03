@@ -189,8 +189,9 @@ class QuizViewDesktopContent extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          Align(
+          Container(
             alignment: Alignment.topRight,
+            width: width / 3,
             child: RoundedButton(
               buttonName: 'Exit',
               fontSize: 18,
@@ -250,46 +251,56 @@ class QuizViewMobileContent extends StatelessWidget {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
 
-    return Container(
-      width: width,
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          Align(
-            alignment: Alignment.topRight,
-            child: RoundedButton(
-              buttonName: 'Exit',
-              fontSize: 15,
-              onPressed: () {
-                Navigator.pop(context);
-                Navigator.pop(context);
-              },
+    return SafeArea(
+      child: Container(
+        width: width,
+        padding: const EdgeInsets.only(
+          bottom: 20,
+          left: 20,
+          right: 20,
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Align(
+              alignment: Alignment.topRight,
+              child: Container(
+                width: width / 5,
+                height: 40,
+                child: RoundedButton(
+                  buttonName: 'Exit',
+                  fontSize: 15,
+                  onPressed: () {
+                    Navigator.pop(context);
+                    Navigator.pop(context);
+                  },
+                ),
+              ),
             ),
-          ),
-          Text(
-            Provider.of<QuizProvider>(context).category,
-            style: Theme.of(context).textTheme.headline2,
-          ),
-          const ScoreTracking(),
-          const QuestionContainer(),
-          SizedBox(
-            height: height / 3,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: const [
-                AnswerButton(index: 0),
-                SizedBox(height: 10),
-                AnswerButton(index: 1),
-                SizedBox(height: 10),
-                AnswerButton(index: 2),
-                SizedBox(height: 10),
-                AnswerButton(index: 3),
-              ],
+            Text(
+              Provider.of<QuizProvider>(context).category,
+              style: Theme.of(context).textTheme.headline2,
             ),
-          ),
-        ],
+            const ScoreTracking(),
+            const QuestionContainer(),
+            SizedBox(
+              height: height / 3,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: const [
+                  AnswerButton(index: 0),
+                  SizedBox(height: 10),
+                  AnswerButton(index: 1),
+                  SizedBox(height: 10),
+                  AnswerButton(index: 2),
+                  SizedBox(height: 10),
+                  AnswerButton(index: 3),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
