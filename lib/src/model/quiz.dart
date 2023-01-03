@@ -8,7 +8,9 @@ import '../../utils/exceptions.dart';
 
 class Quiz {
   late int noOfQuestions;
-  late String id, creatorUsername;
+  late String id;
+  late String? ownerUsername;
+  late Profile owner;
   static List<Question> _questions = [];
   static List<String> _usedQuestions = [];
   late Category category;
@@ -76,20 +78,22 @@ class Quiz {
   }
 
   Future<void> initializeQuiz() async{
+    String? userID = getCurrentUserID();
+    owner = (await Profile.getProfilefromUID(userID!))!;
+    ownerUsername = owner.username;
 
     if (isPublic == false) {
-      String? creatorUsername = getCurrentUserID();
 
-      if (creatorUsername == null) {
+      if (ownerUsername == null) {
         throw UserNotLoggedInException();
       }
-      this.creatorUsername = creatorUsername;
+      this.ownerUsername = ownerUsername;
 
       await assignUniqueID();
 
     }
     else {
-      this.creatorUsername = 'public';
+      this.ownerUsername = 'public';
       this.id = 'whatever';
     }
 
@@ -117,7 +121,7 @@ class Quiz {
         .doc(id)
         .set({
       'id': id,
-      'creatorUsername': creatorUsername,
+      'creatorUsername': ownerUsername,
       'category': category,
       'questionIds': _questions,
     });
@@ -132,7 +136,7 @@ class Quiz {
         .then((DocumentSnapshot documentSnapshot) {
       if (documentSnapshot.exists) {
         print('Document data: ${documentSnapshot.data()}');
-        this.creatorUsername = documentSnapshot['creatorUsername'];
+        this.ownerUsername = documentSnapshot['creatorUsername'];
         this.category = documentSnapshot['category'];
         this.noOfQuestions = documentSnapshot['questionIds'].length;
         for (int i = 0; i < noOfQuestions; i++) {
@@ -149,10 +153,4 @@ class Quiz {
     }
   }
 
-  Future<void> deleteQuiz() async {
-    await firestore
-        ?.collection('quizzes')
-        .doc(id)
-        .delete();
-  }
 }
