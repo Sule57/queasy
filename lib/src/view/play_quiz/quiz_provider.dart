@@ -19,7 +19,7 @@ import '../../model/quiz.dart';
 ///
 /// The parameter [player] is the player that is playing the quiz.
 ///
-/// The late parameter [_category] is the category of the quiz. It is
+/// The late parameter [_quizCategory] is the category of the quiz. It is
 /// initialized in the method [startQuiz].
 ///
 /// The late parameter [_totalQuestions] is the total number of questions in the
@@ -51,24 +51,21 @@ class QuizProvider with ChangeNotifier {
   // QuizProvider._internal();
 
   // static final QuizProvider _instance = QuizProvider._internal();
-  //
-
 
   late Quiz _quiz;
-
   late Profile player;
-  late String _category;
+  late String? _quizCategory;
+  late String? _quizId;
   late int _totalQuestions;
   int _currentQuestionIndex = 0;
   int _currentPoints = 0;
   int correctAnswers = 0;
   bool _currentQuestionAnswered = false;
-  static Timer? countdownTimer;
-  static Duration _timeLeft = const Duration(seconds: 15);
-  get category => _category;
+  Timer? countdownTimer;
+  Duration _timeLeft = const Duration(seconds: 15);
+  get category => _quizCategory;
   get quiz => _quiz;
   get timeLeft => _timeLeft.inSeconds.toString();
-
 
 // assign the current user to the app
   QuizProvider() {
@@ -84,21 +81,20 @@ class QuizProvider with ChangeNotifier {
   //player = Profile.getProfilefromUID(getCurrentUserID());
   /// initializes [player] as the current logged in user
   void init() async {
-    String? uid = getCurrentUserID();
-    Profile? p;
-    if (uid != null) {
+    String? userId = getCurrentUserID();
+    Profile? profile;
+    if (userId != null) {
       // very important class method creating Profile instance
       // from profile UID !!!!
-      p = await Profile.getProfilefromUID(uid);
-      if (p != null) {
-        player = p;
+      profile = await Profile.getProfilefromUID(userId);
+      if (profile != null) {
+        player = profile;
       } else {
         //default player
 
         //exception is recommended but tests needed
         //TODO TEST FUNCTIONALITY WITH EXCEPTION
         throw UserDoesNotExistException();
-
       }
     } else {
       // default player
@@ -109,53 +105,64 @@ class QuizProvider with ChangeNotifier {
     }
   }
 
-
-
   /// Starts the quiz.
   ///
   /// This method is called when the user enters the quiz view. It uses the
   /// parameter from the widget to send the category to the model and get
   /// the correct questions from the quiz. It initailizes the parameters
-  /// [_quiz], [_category], [_totalQuestions], [_currentQuestionIndex],
+  /// [_quiz], [_quizCategory], [_totalQuestions], [_currentQuestionIndex],
   /// [_currentPoints] and [_currentQuestionAnswered].
-  void startQuiz({
-    int? id,
-    required String category,
+  Future<bool> startQuiz({
+    String? id,
+    String? category,
     required int numberOfQuestions,
     String? creatorUsername,
-  }) {
-    _category = category;
+  }) async {
+    _quizId = id;
+    _quizCategory = category;
     _totalQuestions = numberOfQuestions;
     _currentQuestionIndex = 0;
     _currentPoints = 0;
     _currentQuestionAnswered = false;
+    bool isLoading = true;
 
-    _quiz = Quiz.normal(
-      id: id ?? 1,
-      noOfQuestions: _totalQuestions,
-      category: _category,
-      creatorUsername: creatorUsername ?? 'public',
-    );
+    if (_quizCategory != null && _quizId == null) {
+      _quiz = await Quiz.createRandom(
+        category: Category(
+          name: _quizCategory!,
+          color: Colors.transparent,
+        ),
+        noOfQuestions: _totalQuestions,
+        isPublic: true,
+      ).getRandomQuestions();
+      isLoading = false;
+    } else if (_quizId != null && _quizCategory == null) {
+      _quiz = await Quiz.retrieveFromID(
+        id: _quizId!,
+        noOfQuestions: _totalQuestions,
+      ).retrieveQuizFromId();
+      isLoading = false;
+    } else {
+      throw Exception('_category == null || _id == null');
+    }
+    return isLoading;
   }
 
   /// Returns the current question text to be displayed in the UI.
   String getCurrentQuestionText() {
-    return _quiz.getQuestions()[_currentQuestionIndex].getText();
+    return _quiz.questions[_currentQuestionIndex].getText();
   }
 
   /// Returns the current question answer text to be displayed in the UI. It
   /// takes the parameter [index] to determine which answer to return.
   String getAnswerText(int index) {
-    return _quiz.getQuestions()[_currentQuestionIndex].getAnswer(index).text;
+    return _quiz.questions[_currentQuestionIndex].getAnswer(index).text;
   }
 
   /// Returns the current question answer isCorrect value. It takes the
   /// parameter [index] to determine which answer to return.
   bool isAnswerCorrect(int index) {
-    return _quiz
-        .getQuestions()[_currentQuestionIndex]
-        .getAnswer(index)
-        .isCorrect;
+    return _quiz.questions[_currentQuestionIndex].getAnswer(index).isCorrect;
   }
 
   /// Returns the current points as a string to be displayed in the UI.
@@ -182,8 +189,8 @@ class QuizProvider with ChangeNotifier {
       //TODO WHEN QUIZZES NAMES ARE IMPLEMENTED ADD NAME TO THE QUIZZREQULT
       //TODO GET THE REAL TIME SPENT
       Random rand = Random();
-      UserQuizzResult r = UserQuizzResult(
-          "Test" + rand.nextInt(50).toString(), correctAnswers, _totalQuestions, _timeLeft.inSeconds);
+      UserQuizzResult r = UserQuizzResult("Test" + rand.nextInt(50).toString(),
+          correctAnswers, _totalQuestions, _timeLeft.inSeconds);
       UserStatistics? stat = await player.getUserStatistics();
       if (stat != null) {
         stat.addUserQuizzResult(r);
@@ -198,7 +205,10 @@ class QuizProvider with ChangeNotifier {
   /// the user to the [StatisticsView].
   Future<void> endQuiz() async {
     stopTimer();
-    player.updateScore("Savo", _category, _currentPoints);
+
+    if (_quizCategory != null) {
+      player.updateScore("Savo", _quizCategory!, _currentPoints);
+    }
     navigator.currentState?.pop();
     navigator.currentState?.push(
       MaterialPageRoute(builder: (_) => StatisticsView()),
@@ -246,6 +256,7 @@ class QuizProvider with ChangeNotifier {
   /// Stops the timer. It is called when the user clicks on an answer button
   /// of the last question.
   void stopTimer() {
+    _timeLeft = const Duration(seconds: 15);
     countdownTimer?.cancel();
   }
 

@@ -1,9 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:queasy/constants/app_themes.dart';
 import 'package:queasy/src/view/play_quiz/quiz_provider.dart';
 import 'package:queasy/src/view/play_quiz/widgets/answer_button.dart';
+import 'package:queasy/src/view/play_quiz/widgets/exit_button.dart';
 import 'package:queasy/src/view/play_quiz/widgets/question_container.dart';
 import 'package:queasy/src/view/play_quiz/widgets/score_tracking.dart';
 import 'package:queasy/src/view/statistics/statistics_view.dart';
@@ -19,10 +19,11 @@ import 'package:queasy/src/view/widgets/rounded-button.dart';
 /// The widget takes a parameter [category] when it is created. This parameter
 /// is used to get the questions from the database.
 class QuizView extends StatefulWidget {
-  final String category;
+  final String? category;
+  final String? id;
 
   /// Constructor for [QuizView].
-  const QuizView({Key? key, required this.category}) : super(key: key);
+  const QuizView({Key? key, this.category, this.id}) : super(key: key);
 
   /// Creates a [QuizView] state.
   @override
@@ -38,6 +39,7 @@ class QuizView extends StatefulWidget {
 /// is used to get the questions from the database.
 class _QuizViewState extends State<QuizView> {
   get category => widget.category;
+  get id => widget.id;
 
   /// Builds the view.
   ///
@@ -49,7 +51,7 @@ class _QuizViewState extends State<QuizView> {
       body: Stack(
         children: [
           QuizViewBackground(),
-          QuizViewContent(category: category),
+          QuizViewContent(category: category, id: id),
         ],
       ),
     );
@@ -98,9 +100,10 @@ class QuizViewBackground extends StatelessWidget {
 /// Uses a [StatefulWidget] to display questions and answers and update the
 /// text contained in the widgets.
 class QuizViewContent extends StatefulWidget {
-  const QuizViewContent({Key? key, required this.category}) : super(key: key);
+  const QuizViewContent({Key? key, this.category, this.id}) : super(key: key);
 
-  final String category;
+  final String? category;
+  final String? id;
 
   /// Creates a [QuizViewContent] state.
   @override
@@ -110,65 +113,68 @@ class QuizViewContent extends StatefulWidget {
 /// State for [QuizViewContent].
 class _QuizViewContentState extends State<QuizViewContent> {
   get category => widget.category;
+  get id => widget.id;
+  bool isLoading = true;
+
+  init() async {
+    isLoading = await context
+        .read<QuizProvider>()
+        .startQuiz(category: category, numberOfQuestions: 5, id: id);
+    Provider.of<QuizProvider>(context, listen: false).startTimer();
+    setState(() {});
+  }
 
   /// Constructs the quiz from the database and starts the timer for the first
   /// time.
   @override
   void initState() {
-    context
-        .read<QuizProvider>()
-        .startQuiz(category: category, numberOfQuestions: 5);
-    Provider.of<QuizProvider>(context, listen: false).startTimer();
+    init();
     super.initState();
   }
 
-  /// Function called when [QuizView] is active again on screen. It restarts the
-  /// timer and starts the quiz.
   @override
-  void didChangeDependencies() {
-    print('Quiz view activated');
-    Provider.of<QuizProvider>(context, listen: false).resetTimer();
-    context
-        .read<QuizProvider>()
-        .startQuiz(category: category, numberOfQuestions: 5);
-    super.didChangeDependencies();
+  void dispose() {
+    super.dispose();
   }
 
-  /// Builds the content depending on the screen size, with a threshold of 700
-  /// pixels. If the screen is smaller than 700 pixels, the function displays
-  /// [QuizViewMobileContent]. Otherwise, it displays [QuizViewDesktopContent].
-  /// The builder takes a stream of [QuerySnapshot]s from the database and
-  /// displays the questions only when they are loaded. Until then, it displays
-  /// a [CircularProgressIndicator].
-  @override
-  Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
+  // /// Function called when [QuizView] is active again on screen. It restarts the
+  // /// timer and starts the quiz.
+  // @override
+  // void didChangeDependencies() {
+  //   print('Quiz view activated');
+  //   Provider.of<QuizProvider>(context, listen: false).resetTimer();
+  //   context
+  //       .read<QuizProvider>()
+  //       .startQuiz(category: category, numberOfQuestions: 5);
+  //   super.didChangeDependencies();
+  // }
 
-    return StreamBuilder<QuerySnapshot>(
-      stream: FirebaseFirestore.instance
-          .collection('categories')
-          .doc('public')
-          .collection(category)
-          .snapshots(),
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          return width < 700
-              ? const QuizViewMobileContent()
-              : const QuizViewDesktopContent();
-        } else {
-          return const Center(child: CircularProgressIndicator());
-        }
-      },
-    );
-  }
-
-  /// This function is called everytime [QuizView] stops being displayed on
+  /// This function is called every time [QuizView] stops being displayed on
   /// screen. It stops the timer.
   @override
   void deactivate() {
     print("Quiz View deactivated");
     Provider.of<QuizProvider>(context, listen: false).stopTimer();
     super.deactivate();
+  }
+
+  /// Builds the content depending on the screen size, with a threshold of 700
+  /// pixels. If the screen is smaller than 700 pixels, the function displays
+  /// [QuizViewMobileContent]. Otherwise, it displays [QuizViewDesktopContent].
+  /// It also displays a [CircularProgressIndicator] while the quiz is loading.
+  /// When the quiz is loaded, the [CircularProgressIndicator] is replaced by
+  /// the content.
+  @override
+  Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+
+    return isLoading
+        ? const Center(
+            child: CircularProgressIndicator(),
+          )
+        : width < 700
+            ? QuizViewMobileContent()
+            : QuizViewDesktopContent();
   }
 }
 
@@ -189,8 +195,9 @@ class QuizViewDesktopContent extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          Align(
+          Container(
             alignment: Alignment.topRight,
+            width: width / 3,
             child: RoundedButton(
               buttonName: 'Exit',
               fontSize: 18,
@@ -250,46 +257,45 @@ class QuizViewMobileContent extends StatelessWidget {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
 
-    return Container(
-      width: width,
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          Align(
-            alignment: Alignment.topRight,
-            child: RoundedButton(
-              buttonName: 'Exit',
-              fontSize: 15,
-              onPressed: () {
-                Navigator.pop(context);
-                Navigator.pop(context);
-              },
+    return SafeArea(
+      child: Container(
+        width: width,
+        padding: const EdgeInsets.only(
+          bottom: 20,
+          left: 20,
+          right: 20,
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Align(
+              alignment: Alignment.topRight,
+              child: ExitButton(),
             ),
-          ),
-          Text(
-            Provider.of<QuizProvider>(context).category,
-            style: Theme.of(context).textTheme.headline2,
-          ),
-          const ScoreTracking(),
-          const QuestionContainer(),
-          SizedBox(
-            height: height / 3,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: const [
-                AnswerButton(index: 0),
-                SizedBox(height: 10),
-                AnswerButton(index: 1),
-                SizedBox(height: 10),
-                AnswerButton(index: 2),
-                SizedBox(height: 10),
-                AnswerButton(index: 3),
-              ],
+            Text(
+              Provider.of<QuizProvider>(context).category,
+              style: Theme.of(context).textTheme.headline2,
             ),
-          ),
-        ],
+            const ScoreTracking(),
+            const QuestionContainer(),
+            SizedBox(
+              height: height / 3,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: const [
+                  AnswerButton(index: 0),
+                  SizedBox(height: 10),
+                  AnswerButton(index: 1),
+                  SizedBox(height: 10),
+                  AnswerButton(index: 2),
+                  SizedBox(height: 10),
+                  AnswerButton(index: 3),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

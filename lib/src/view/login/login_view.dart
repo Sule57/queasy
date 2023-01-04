@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:queasy/src/view/registration/register_view.dart';
 import 'package:queasy/src/view/widgets/rounded-button.dart';
 import '../../../services/auth.dart';
+import '../home_view.dart';
 
 /// This is the mobile version of the login view.
 ///
@@ -29,16 +30,18 @@ class _LogInViewState extends State<LogInView> {
   ///[formKey] used for Form in EditProfile button
   final formKey = GlobalKey<FormState>();
 
-  Future<void> signInWithEmailAndPassword() async {
+  Future<bool> signInWithEmailAndPassword() async {
     try {
       await Auth().signInWithEmailAndPassword(
         email: _controllerEmail.text,
         password: _controllerPassword.text,
       );
+      return true;
     } on FirebaseAuthException catch (e) {
       setState(() {
         errorMessage = e.message;
       });
+      return false;
     }
   }
 
@@ -91,6 +94,11 @@ class _LogInViewState extends State<LogInView> {
                               hintText: 'yourname@example.com'),
                           onSubmitted: (value) {
                             signInWithEmailAndPassword();
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const HomeView()),
+                            );
                           },
                         ),
                         TextField(
@@ -103,6 +111,11 @@ class _LogInViewState extends State<LogInView> {
                           ),
                           onSubmitted: (value) {
                             signInWithEmailAndPassword();
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const HomeView()),
+                            );
                           },
                         ),
                         Container(
@@ -306,7 +319,14 @@ class _LogInViewState extends State<LogInView> {
                             backgroundColor:
                                 Theme.of(context).colorScheme.primary,
                             textColor: Theme.of(context).colorScheme.background,
-                            onPressed: signInWithEmailAndPassword,
+                            onPressed: () {
+                              signInWithEmailAndPassword();
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const HomeView()),
+                              );
+                            },
                           ),
                         ),
                       ],
