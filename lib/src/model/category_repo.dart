@@ -11,7 +11,7 @@ import 'package:queasy/src/model/profile.dart';
 /// created by the user.
 ///
 class CategoryRepo {
-  List<Category> categoryList = [];
+  // List<Category> categoryList = [];
   DocumentReference _publicDoc =
       FirebaseFirestore.instance.collection('categories').doc('public');
   DocumentReference _privateDoc = FirebaseFirestore.instance
@@ -33,16 +33,15 @@ class CategoryRepo {
       cat: color.value,
     });
 
-
-    await _privateDoc.collection(cat).doc('question-1').set({'ID': 'question-1'});
+    await _privateDoc
+        .collection(cat)
+        .doc('question-1')
+        .set({'ID': 'question-1'});
     await FirebaseFirestore.instance
         .collection('leaderboard')
         .doc(id + '-' + cat)
         .set({
-      username: {
-        'points': 0,
-        'position': 1
-      }
+      username: {'points': 0, 'position': 1}
     });
   }
 

@@ -7,39 +7,37 @@ import 'package:queasy/src/model/question.dart';
 import '../../utils/exceptions.dart';
 
 class Quiz {
-  late int noOfQuestions;
   late String id;
+  late Category category;
+  late int noOfQuestions;
   late String? ownerUsername;
   late Profile owner;
-  static List<Question> _questions = [];
-  static List<String> _usedQuestions = [];
-  late Category category;
+  List<Question> _questions = [];
+  List<String> _usedQuestions = [];
   late FirebaseFirestore? firestore;
   late bool isPublic;
 
-  Quiz(
-      {
-        required this.noOfQuestions,
-        required this.category,
-        required this.isPublic,
-        this.firestore}) {
-    if (firestore == null) {
-      firestore = FirebaseFirestore.instance;
-    }
-    initializeQuiz();
-  }
-
-  Quiz.fromID(
-      {
-        required this.id,
-        this.firestore}) {
-    if (firestore == null) {
-      firestore = FirebaseFirestore.instance;
-    }
-    initializeQuizFromID();
-  }
-
   get questions => _questions;
+
+  Quiz.createRandom({
+    required this.category,
+    required this.noOfQuestions,
+    required this.isPublic,
+    this.firestore,
+  }) {
+    firestore ?? FirebaseFirestore.instance;
+    getRandomQuestions();
+  }
+
+  Quiz.retrieveFromID({
+    required this.id,
+    required this.noOfQuestions,
+    this.firestore,
+  }) {
+    isPublic = false;
+    firestore ?? FirebaseFirestore.instance;
+    retrieveQuizFromId();
+  }
 
   /// This method is supposed to create a random 8 character String
   /// This is used to create the ID of the quiz
@@ -59,7 +57,7 @@ class Quiz {
     return id;
   }
 
-  Future<void> assignUniqueID() async{
+  Future<void> assignUniqueID() async {
     String tempID = createID();
 
     // count how many questions already exist inside of the given category
@@ -77,22 +75,19 @@ class Quiz {
     this.id = tempID;
   }
 
-  Future<void> initializeQuiz() async{
+  Future<Quiz> getRandomQuestions() async {
     String? userID = getCurrentUserID();
     owner = (await Profile.getProfilefromUID(userID!))!;
     ownerUsername = owner.username;
 
     if (isPublic == false) {
-
       if (ownerUsername == null) {
         throw UserNotLoggedInException();
       }
       this.ownerUsername = ownerUsername;
 
       await assignUniqueID();
-
-    }
-    else {
+    } else {
       this.ownerUsername = 'public';
       this.id = 'whatever';
     }
@@ -104,22 +99,24 @@ class Quiz {
       /// if it is, create a new id
       /// if it is not, add it to the list of used questions
       /// add the question to the list of questions
-      String tempID = await category.randomizer(firestore: firestore, public: isPublic);
+      String tempID =
+          await category.randomizer(firestore: firestore, public: isPublic);
       while (_usedQuestions.contains(tempID)) {
-        tempID = await category.randomizer(firestore: firestore, public: isPublic);
+        tempID =
+            await category.randomizer(firestore: firestore, public: isPublic);
       }
       _usedQuestions.add(tempID);
-      Question tempQuestion = await category.getQuestion(tempID, public: isPublic);
+      Question tempQuestion =
+          await category.getQuestion(tempID, public: isPublic);
       _questions.add(tempQuestion);
     }
+
+    return this;
   }
 
-  /// This method is used to store the quiz into the databse
+  /// This method is used to store the quiz into the database
   Future<void> storeQuiz() async {
-    await firestore
-        ?.collection('quizzes')
-        .doc(id)
-        .set({
+    await firestore?.collection('quizzes').doc(id).set({
       'id': id,
       'creatorUsername': ownerUsername,
       'category': category,
@@ -127,13 +124,18 @@ class Quiz {
     });
   }
 
-  Future<void> initializeQuizFromID() async{
+  Future<Quiz> retrieveQuizFromId() async {
+    print('inside retrieveQuizFromId method. Id: $id');
     this.isPublic = false;
+
+    firestore ?? FirebaseFirestore.instance;
+
     await firestore
         ?.collection('quizzes')
         .doc(id)
         .get()
         .then((DocumentSnapshot documentSnapshot) {
+      print('it got the collection');
       if (documentSnapshot.exists) {
         print('Document data: ${documentSnapshot.data()}');
         this.ownerUsername = documentSnapshot['creatorUsername'];
@@ -148,9 +150,11 @@ class Quiz {
     });
 
     for (int i = 0; i < noOfQuestions; i++) {
-      Question tempQuestion = await category.getQuestion(_usedQuestions[i], public: isPublic);
+      Question tempQuestion =
+          await category.getQuestion(_usedQuestions[i], public: isPublic);
       _questions.add(tempQuestion);
     }
-  }
 
+    return this;
+  }
 }

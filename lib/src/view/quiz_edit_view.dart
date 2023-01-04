@@ -17,7 +17,7 @@ import '../model/question.dart';
 enum AnswersRadioButton { ans1, ans2, ans3, ans4 }
 
 // TODO: get the category from the previous view and delete dummy data
-Category _category = Category(category: 'technology', color: Colors.blue);
+Category _category = Category(name: 'technology', color: Colors.blue);
 
 /// The variables [questionController], [ans1Controller], [ans2Controller], [ans3Controller], [ans4Controller]
 /// are used to store and manage the text that the user inputs in the text fields.
@@ -42,7 +42,6 @@ class QuizEditView extends StatefulWidget {
 }
 
 class _QuizEditViewState extends State<QuizEditView> {
-
   @override
   void dispose() {
     // Clean up the controllers when the widget is removed from the widget tree.
@@ -59,7 +58,7 @@ class _QuizEditViewState extends State<QuizEditView> {
 
   init() async {
     _isLoading = true;
-    _questions = await _category.getQuestionsFromPrivateCategory();
+    _questions = await _category.getAllQuestions();
     setState(() {
       _isLoading = false;
     });
@@ -75,7 +74,7 @@ class _QuizEditViewState extends State<QuizEditView> {
   Future<void> deleteThisCategory() async {
     print('Category deleted');
     // TODO: TEST IT
-    await CategoryRepo().deleteCategory(_category.getCategory());
+    await CategoryRepo().deleteCategory(_category.getName());
   }
 
   @override
@@ -96,7 +95,7 @@ class _QuizEditViewState extends State<QuizEditView> {
       return Scaffold(
         appBar: AppBar(
           title: Text(
-            _category.getCategory(), // Show the category name
+            _category.getName(), // Show the category name
             style: Theme.of(context).textTheme.headline4,
           ),
           elevation: 0.0,
@@ -146,7 +145,9 @@ class _QuizEditViewState extends State<QuizEditView> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AddOrEditQuestionPopUp(action: () {addQuestionToDatabase();});
+        return AddOrEditQuestionPopUp(action: () {
+          addQuestionToDatabase();
+        });
       },
     );
   }
@@ -237,7 +238,8 @@ class QuestionListEmpty extends StatelessWidget {
       children: [
         const SizedBox(height: 100),
         Container(
-          child: Text('There are questions yet...\nWhy don\'t you create one?', textAlign: TextAlign.center),
+          child: Text('There are questions yet...\nWhy don\'t you create one?',
+              textAlign: TextAlign.center),
         ),
       ],
     );
@@ -336,7 +338,11 @@ class _QuestionListTileState extends State<QuestionListTile> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AddOrEditQuestionPopUp(action: () {editQuestionToDatabase(question);}, question: question);
+        return AddOrEditQuestionPopUp(
+            action: () {
+              editQuestionToDatabase(question);
+            },
+            question: question);
       },
     );
   }
@@ -365,16 +371,20 @@ addQuestionToDatabase() async {
   Question question = Question(
     text: questionController.text,
     answers: [
-      Answer(answer1Controller.text, _selectedRadioAnswer.index == 0 ? true : false),
-      Answer(answer2Controller.text, _selectedRadioAnswer.index == 1 ? true : false),
-      Answer(answer3Controller.text , _selectedRadioAnswer.index == 2 ? true : false),
-      Answer(answer4Controller.text, _selectedRadioAnswer.index == 3 ? true : false),
+      Answer(answer1Controller.text,
+          _selectedRadioAnswer.index == 0 ? true : false),
+      Answer(answer2Controller.text,
+          _selectedRadioAnswer.index == 1 ? true : false),
+      Answer(answer3Controller.text,
+          _selectedRadioAnswer.index == 2 ? true : false),
+      Answer(answer4Controller.text,
+          _selectedRadioAnswer.index == 3 ? true : false),
     ],
     // TODO: remove hard-code
-    category: _category.getCategory(),
-    questionID: '0',
+    category: _category.getName(),
+    questionId: '0',
   );
-  await _category.addQuestion(question);
+  await _category.createQuestion(question);
   print("Question added");
 }
 
@@ -508,7 +518,8 @@ class _AddOrEditQuestionPopUpState extends State<AddOrEditQuestionPopUp> {
                   Row(children: [
                     Expanded(
                       child: TextFormField(
-                        controller: questionController ..text = question == null ? '' : question.getText(),
+                        controller: questionController
+                          ..text = question == null ? '' : question.getText(),
                         inputFormatters: [
                           LengthLimitingTextInputFormatter(MAX_INPUT_LENGTH)
                         ],
@@ -551,7 +562,10 @@ class _AddOrEditQuestionPopUpState extends State<AddOrEditQuestionPopUp> {
                     children: [
                       Expanded(
                         child: TextFormField(
-                          controller: answer1Controller ..text = question == null ? '' : question.answers[0].text,
+                          controller: answer1Controller
+                            ..text = question == null
+                                ? ''
+                                : question.answers[0].text,
                           inputFormatters: [
                             LengthLimitingTextInputFormatter(MAX_INPUT_LENGTH)
                           ],
@@ -597,7 +611,10 @@ class _AddOrEditQuestionPopUpState extends State<AddOrEditQuestionPopUp> {
                     children: [
                       Expanded(
                         child: TextFormField(
-                          controller: answer2Controller ..text = question == null ? '' : question.answers[1].text,
+                          controller: answer2Controller
+                            ..text = question == null
+                                ? ''
+                                : question.answers[1].text,
                           inputFormatters: [
                             LengthLimitingTextInputFormatter(MAX_INPUT_LENGTH)
                           ],
@@ -643,7 +660,10 @@ class _AddOrEditQuestionPopUpState extends State<AddOrEditQuestionPopUp> {
                     children: [
                       Expanded(
                         child: TextFormField(
-                          controller: answer3Controller ..text = question == null ? '' : question.answers[2].text,
+                          controller: answer3Controller
+                            ..text = question == null
+                                ? ''
+                                : question.answers[2].text,
                           inputFormatters: [
                             LengthLimitingTextInputFormatter(MAX_INPUT_LENGTH)
                           ],
@@ -689,7 +709,10 @@ class _AddOrEditQuestionPopUpState extends State<AddOrEditQuestionPopUp> {
                     children: [
                       Expanded(
                         child: TextFormField(
-                          controller: answer4Controller ..text = question == null ? '' : question.answers[3].text,
+                          controller: answer4Controller
+                            ..text = question == null
+                                ? ''
+                                : question.answers[3].text,
                           inputFormatters: [
                             LengthLimitingTextInputFormatter(MAX_INPUT_LENGTH)
                           ],

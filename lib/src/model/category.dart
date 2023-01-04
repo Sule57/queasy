@@ -18,8 +18,11 @@ import 'package:queasy/utils/exceptions.dart';
 ///
 /// [_isPublic] is a boolean that determines if the category is public or private.
 class Category {
-  DocumentReference _publicDoc = FirebaseFirestore.instance.collection('categories').doc('public');
-  DocumentReference _privateDoc = FirebaseFirestore.instance.collection('categories').doc(getCurrentUserID());
+  DocumentReference _publicDoc =
+      FirebaseFirestore.instance.collection('categories').doc('public');
+  DocumentReference _privateDoc = FirebaseFirestore.instance
+      .collection('categories')
+      .doc(getCurrentUserID());
 
   late String _name;
   late Color _color;
@@ -31,9 +34,9 @@ class Category {
 
   /// Constructor for the [Category] class.
   ///
-  /// [category] is the name of the [Category] and [color] is the color of the [Category].
-  Category({required String category, required Color color}) {
-    _name = category;
+  /// [name] is the name of the [Category] and [color] is the color of the [Category].
+  Category({required String name, required Color color}) {
+    _name = name;
     _color = color;
   }
 
@@ -121,7 +124,7 @@ class Category {
   }
 
   /// Get the name of the current [Category].
-  String getCategory() {
+  String getName() {
     String? username = getCurrentUserID();
     if (username == null) {
       throw UserNotLoggedInException();
@@ -139,27 +142,27 @@ class Category {
   }
 
   /// Get the list of [Question]s in the current public [Category].
-  Future<List<Question>> getQuestionsFromPublicCategory() async {
-    String? username = getCurrentUserID();
-    if (username == null) {
-      throw UserNotLoggedInException();
-    }
-
-    List<Question> questions = [];
-    // get all document id from public categories
-    await _publicDoc
-        .collection(_name)
-        .get()
-        .then((QuerySnapshot querySnapshot) {
-      querySnapshot.docs.forEach((doc) {
-        questions.add(Question.fromJson(doc.data() as Map<String, dynamic>));
-      });
-    });
-    return questions;
-  }
+  // Future<List<Question>> getAllQuestionsFromPublicCategory() async {
+  //   String? username = getCurrentUserID();
+  //   if (username == null) {
+  //     throw UserNotLoggedInException();
+  //   }
+  //
+  //   List<Question> questions = [];
+  //   // get all document id from public categories
+  //   await _publicDoc
+  //       .collection(_name)
+  //       .get()
+  //       .then((QuerySnapshot querySnapshot) {
+  //     querySnapshot.docs.forEach((doc) {
+  //       questions.add(Question.fromJson(doc.data() as Map<String, dynamic>));
+  //     });
+  //   });
+  //   return questions;
+  // }
 
   /// Get the list of [Question]s in the current private [Category].
-  Future<List<Question>> getQuestionsFromPrivateCategory() async {
+  Future<List<Question>> getAllQuestions() async {
     String? username = getCurrentUserID();
     if (username == null) {
       throw UserNotLoggedInException();
@@ -200,15 +203,15 @@ class Category {
         .collection('categories')
         .doc(ownerUsername)
         .collection(_name)
-        .doc(question.ID)
+        .doc(question.id)
         .delete();
   }
 
   /// Used to add a given [Question] to the category in the database.
   ///
   /// [question] is the [Question] that should be added. [firestore] is not required instance of the database and is only used for testing.
-  Future<void> addQuestion(Question question, {FirebaseFirestore? firestore}) async {
-
+  Future<void> createQuestion(Question question,
+      {FirebaseFirestore? firestore}) async {
     if (firestore == null) {
       firestore = FirebaseFirestore.instance;
     }
@@ -236,11 +239,11 @@ class Category {
 
     // create a variable newID from 'question' + count
     String newID;
-    print(question.questionID);
-    if (question.questionID == null) {
+    print(question.questionId);
+    if (question.questionId == null) {
       newID = await getNextID();
     } else {
-      newID = question.questionID!;
+      newID = question.questionId!;
     }
     print(newID);
     await firestore
@@ -263,7 +266,7 @@ class Category {
   }
 
   /// Retrieves a [Question] from the private category with a given [id].
-  Future<Question> getQuestion(String id, {bool public = false}) async{
+  Future<Question> getQuestion(String id, {bool public = false}) async {
     String? userID = getCurrentUserID();
     owner = (await Profile.getProfilefromUID(userID!))!;
     String? ownerUsername = owner.username;
@@ -280,8 +283,8 @@ class Category {
           .get()
           .then((DocumentSnapshot documentSnapshot) {
         if (documentSnapshot.exists) {
-          question =
-              Question.fromJson(documentSnapshot.data() as Map<String, dynamic>);
+          question = Question.fromJson(
+              documentSnapshot.data() as Map<String, dynamic>);
         } else {
           print('Document does not exist on the database');
         }
@@ -312,7 +315,6 @@ class Category {
   ///
   /// This is used to create a unique ID for a question in the category. It finds the highest ID and adds 1 to it.
   Future<String> getNextID() async {
-
     String? userID = getCurrentUserID();
     owner = (await Profile.getProfilefromUID(userID!))!;
     String? ownerUsername = owner.username;
@@ -389,14 +391,10 @@ class Category {
   }
 
   Future<void> deleteQuiz(String id, {FirebaseFirestore? firestore}) async {
-
     if (firestore == null) {
       firestore = FirebaseFirestore.instance;
     }
 
-    await firestore
-        .collection('quizzes')
-        .doc(id)
-        .delete();
+    await firestore.collection('quizzes').doc(id).delete();
   }
 }

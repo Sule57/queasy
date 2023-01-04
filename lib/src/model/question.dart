@@ -19,7 +19,7 @@ import 'answer.dart';
 /// The parameter [category] represents the category of which this question is, so for instance if the question is about geography, the category would be "Geography"
 /// This will later be manipulated by a special class Category which will be responsible for manipulating the questions inside the firebase
 ///
-/// The parameter [questionID] is the ID of the question, it is used to identify the question inside the firebase
+/// The parameter [questionId] is the ID of the question, it is used to identify the question inside the firebase
 ///
 /// The parameter [owner] is the username of the user who created the question, it is used to identify the user who created the question,
 /// and to know where exactly in the firebase this question should be stored, due to questions by users being private
@@ -29,33 +29,33 @@ class Question {
   String text = "";
   List<Answer> answers = [];
   String category = "";
-  late String? questionID = "";
+  late String? questionId = "";
   late Profile owner;
 
+  get id => questionId;
 
   /// This is the constructor of the class, it takes the text of the question, the list of answers, the category of the question the ID of the question and the owner of the question as parameters
   /// and assigns them to the corresponding parameters of the class
-  Question({
-    required this.text,
-    required this.answers,
-    required this.category,
-    this.questionID
-  });
+  Question(
+      {required this.text,
+      required this.answers,
+      required this.category,
+      this.questionId});
 
   /// Initializes the question ID of the question. This is used when the question is created and the ID is not yet known.
-  Future<void> init() async{
-    this.questionID = await getNextID();
+  Future<void> init() async {
+    this.questionId = await getNextID();
   }
 
   /// Question.fromJson is a constructor used to initialize an object of type [Question] from a json object,
   /// these objects are usually provided by firebase, so to retrieve a question, this would be the most optimal way to do it
-  Question.fromJson(Map<String, dynamic> json){
+  Question.fromJson(Map<String, dynamic> json) {
     answers.add(Answer.fromJson(json['answer1']));
     answers.add(Answer.fromJson(json['answer2']));
     answers.add(Answer.fromJson(json['answer3']));
     answers.add(Answer.fromJson(json['answer4']));
     text = json['text'];
-    questionID = json['ID'];
+    questionId = json['ID'];
   }
 
   /// The [getText] method is used to retrieve the text of a Question object
@@ -67,8 +67,6 @@ class Question {
   void setText(String text) {
     this.text = text;
   }
-
-  get ID => questionID;
 
   /// The [getAnswer] method is used to retrieve an answer from the list of answers of a Question object, it takes the index of the answer as a parameter
   Answer getAnswer(int index) {
@@ -88,8 +86,7 @@ class Question {
   /// Calculates the next ID for a question in the category.
   ///
   /// This is used to create a unique ID for a question in the category. It finds the highest ID and adds 1 to it.
-  Future<String> getNextID() async{
-
+  Future<String> getNextID() async {
     String? userID = getCurrentUserID();
     owner = (await Profile.getProfilefromUID(userID!))!;
     String? ownerUsername = owner.username;
@@ -97,7 +94,6 @@ class Question {
     if (ownerUsername == null) {
       throw UserNotLoggedInException();
     }
-
 
     int count = -1;
     await FirebaseFirestore.instance
@@ -115,14 +111,13 @@ class Question {
       });
     });
     count = count + 1;
-    return 'question'+ count.toString();
+    return 'question' + count.toString();
   }
 
   /// updateQuestion function takes all the parameters of the question and updates the question in the firebase as a json
   /// this function is used to update the question in the firebase
   Future<void> updateQuestion({FirebaseFirestore? firestore}) async {
-
-    if(firestore == null){
+    if (firestore == null) {
       firestore = FirebaseFirestore.instance;
     }
 
@@ -138,7 +133,7 @@ class Question {
         .collection('categories')
         .doc(ownerUsername)
         .collection(category)
-        .doc(questionID)
+        .doc(questionId)
         .update({
       'text': text,
       'answer1': {
@@ -163,7 +158,7 @@ class Question {
   /// turns the question into a json object
   Map<String, dynamic> toJson() {
     return {
-      'ID': questionID,
+      'ID': questionId,
       'text': text,
       'answer1': {
         'text': answers[0].text,
