@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:motion_tab_bar_v2/motion-tab-bar.dart';
 import 'package:queasy/constants/app_themes.dart';
 import 'package:provider/provider.dart';
+import 'package:queasy/src/view/play_quiz/quiz_view.dart';
 import 'package:queasy/src/view/see_leaderboard/leaderboard_view.dart';
 import 'package:queasy/src/view/category_selection_view.dart';
 import 'package:queasy/src/view/see_profile/profile_view.dart';
@@ -215,18 +216,32 @@ class HomeWidgets extends StatelessWidget {
                                 if (textController.text.isNotEmpty) {
                                   ///confirmKey method is called from the controller
                                   ///result is saved in [success] variable
-                                  bool success =
-                                      confirmKey(textController.text);
+                                  // bool success =
+                                  //     confirmKey(textController.text);
+
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) => QuizView(
+                                        id: textController.text,
+                                      ),
+                                    ),
+                                  );
 
                                   ///if successful the user is taken to the corresponding Quiz
-                                  if (success) {
-                                    // Navigator.of(context).push(
-                                    //     MaterialPageRoute(
-                                    //         builder: (context) =>
-                                    //             QuizView()))
-                                  } else {
-                                    Navigator.pop(context);
-                                  }
+                                  // if (success) {
+                                  //   //TODO take user to private quiz
+                                  //   MaterialPageRoute(
+                                  //     builder: (context) => QuizView(
+                                  //       id: textController.text,
+                                  //     ),
+                                  //   );
+                                  //   // Navigator.of(context).push(
+                                  //   //     MaterialPageRoute(
+                                  //   //         builder: (context) =>
+                                  //   //             QuizView()))
+                                  // } else {
+                                  //   Navigator.pop(context);
+                                  // }
                                 }
                               },
                               style: ButtonStyle(
@@ -270,8 +285,8 @@ class HomeWidgets extends StatelessWidget {
   }
 
   /// Confirms whether the entered key is valid (not yet implemented)
-  /// TODO
   bool confirmKey(String text) {
+    /// TODO: implement a communication with Firebase that checks if the key exists
     return false;
   }
 }
