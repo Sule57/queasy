@@ -42,7 +42,6 @@ class StatisticsDesktopViewBackground extends StatelessWidget {
   /// Builds the background.
   @override
   Widget build(BuildContext context) {
-    double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
 
     return width > 700
@@ -243,7 +242,7 @@ class StatisticsMobileContent extends StatelessWidget {
                     borderRadius: BorderRadius.circular(30.0),
                   ))),
               onPressed: () {
-                Navigator.push(
+                Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(builder: (context) => const HomeView()),
                 );
@@ -378,10 +377,10 @@ class StatisticsDesktopContent extends StatelessWidget {
                       borderRadius: BorderRadius.circular(30.0),
                     ))),
                 onPressed: () {
-                  //Navigator.push(
-                  //  context,
-                  //  MaterialPageRoute(builder: (context) => const HomeView()),
-                  //);
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => const HomeView()),
+                  );
                 },
                 child: Text(
                   '          Continue           ',
