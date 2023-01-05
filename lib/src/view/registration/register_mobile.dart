@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:queasy/src/view/login/login_view.dart';
 import 'package:queasy/src/view/registration/register_view_controller.dart';
 import 'package:queasy/src/view/home_view.dart';
 
@@ -300,6 +301,38 @@ class RegisterViewMobileState extends State<RegisterViewMobile> {
                   ),
                 ],
               ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Already a user? ",
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 10, bottom: 10),
+                    child: ElevatedButton(
+                      child: Text(
+                        'Log In',
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.background,
+                        ),
+                      ),
+                      style: ButtonStyle(
+                          shape:
+                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(18.0),
+                      ))),
+                      onPressed: () => {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => LogInView()))
+                      },
+                    ),
+                  ),
+                ],
+              )
             ],
           ),
         ),
