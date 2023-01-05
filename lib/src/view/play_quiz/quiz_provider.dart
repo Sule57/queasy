@@ -140,7 +140,7 @@ class QuizProvider with ChangeNotifier {
       _quiz = await Quiz.retrieveFromID(
         id: _quizId!,
         noOfQuestions: _totalQuestions,
-      ).retrieveQuizFromId();
+      );
       isLoading = false;
     } else {
       throw Exception('_category == null || _id == null');

@@ -10,8 +10,7 @@ class Quiz {
   late String id;
   late Category category;
   late int noOfQuestions;
-  late String? ownerUsername;
-  late Profile owner;
+  late String? ownerID, categoryName;
   List<Question> _questions = [];
   List<String> _usedQuestions = [];
   late FirebaseFirestore? firestore;
@@ -35,7 +34,9 @@ class Quiz {
     this.firestore,
   }) {
     isPublic = false;
-    firestore ?? FirebaseFirestore.instance;
+    if (firestore == null) {
+      firestore = FirebaseFirestore.instance;
+    }
     retrieveQuizFromId();
   }
 
@@ -76,19 +77,16 @@ class Quiz {
   }
 
   Future<Quiz> getRandomQuestions() async {
-    String? userID = getCurrentUserID();
-    owner = (await Profile.getProfilefromUID(userID!))!;
-    ownerUsername = owner.username;
 
     if (isPublic == false) {
-      if (ownerUsername == null) {
+      if (getCurrentUserID() == null) {
         throw UserNotLoggedInException();
       }
-      this.ownerUsername = ownerUsername;
+      this.ownerID = getCurrentUserID();
 
       await assignUniqueID();
     } else {
-      this.ownerUsername = 'public';
+      this.ownerID = 'public';
       this.id = 'whatever';
     }
 
@@ -118,8 +116,8 @@ class Quiz {
   Future<void> storeQuiz() async {
     await firestore?.collection('quizzes').doc(id).set({
       'id': id,
-      'creatorUsername': ownerUsername,
-      'category': category,
+      'creatorID': ownerID,
+      'category': category.name,
       'questionIds': _questions,
     });
   }
@@ -138,9 +136,11 @@ class Quiz {
       print('it got the collection');
       if (documentSnapshot.exists) {
         print('Document data: ${documentSnapshot.data()}');
-        this.ownerUsername = documentSnapshot['creatorUsername'];
-        this.category = documentSnapshot['category'];
+        this.id = documentSnapshot['id'];
+        this.ownerID = documentSnapshot['creatorID'];
+        this.categoryName = documentSnapshot['category'];
         this.noOfQuestions = documentSnapshot['questionIds'].length;
+        /// add all questionIds to the list of used questions
         for (int i = 0; i < noOfQuestions; i++) {
           _usedQuestions.add(documentSnapshot['questionIds'][i]);
         }
@@ -149,12 +149,15 @@ class Quiz {
       }
     });
 
+    String catName = categoryName!;
+
     for (int i = 0; i < noOfQuestions; i++) {
       Question tempQuestion =
-          await category.getQuestion(_usedQuestions[i], public: isPublic);
+          await category.getQuestion(_usedQuestions[i], public: isPublic, categoryName: catName);
       _questions.add(tempQuestion);
     }
 
     return this;
   }
 }
+
