@@ -149,11 +149,11 @@ class Quiz {
       }
     });
 
-    String catName = categoryName!;
+    this.category = new Category(name: categoryName!);
 
     for (int i = 0; i < noOfQuestions; i++) {
       Question tempQuestion =
-          await category.getQuestion(_usedQuestions[i], public: isPublic, categoryName: catName);
+          await category.getPrivateQuestion(_usedQuestions[i], ownerID!);
       _questions.add(tempQuestion);
     }
 
