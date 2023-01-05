@@ -121,17 +121,13 @@ class Question {
       firestore = FirebaseFirestore.instance;
     }
 
-    String? userID = getCurrentUserID();
-    owner = (await Profile.getProfilefromUID(userID!))!;
-    String? ownerUsername = owner.username;
-
-    if (ownerUsername == null) {
+    if (getCurrentUserID() == null) {
       throw UserNotLoggedInException();
     }
 
     await firestore
         .collection('categories')
-        .doc(ownerUsername)
+        .doc(getCurrentUserID())
         .collection(category)
         .doc(questionId)
         .update({

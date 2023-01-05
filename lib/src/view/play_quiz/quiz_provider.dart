@@ -63,6 +63,7 @@ class QuizProvider with ChangeNotifier {
   bool _currentQuestionAnswered = false;
   Timer? countdownTimer;
   Duration _timeLeft = const Duration(seconds: 15);
+  int _secondsPassed = 0;
   get category => _quizCategory;
   get quiz => _quiz;
   get timeLeft => _timeLeft.inSeconds.toString();
@@ -140,7 +141,7 @@ class QuizProvider with ChangeNotifier {
       _quiz = await Quiz.retrieveFromID(
         id: _quizId!,
         noOfQuestions: _totalQuestions,
-      ).retrieveQuizFromId();
+      );
       isLoading = false;
     } else {
       throw Exception('_category == null || _id == null');
@@ -186,16 +187,6 @@ class QuizProvider with ChangeNotifier {
       resetTimer();
       notifyListeners();
     } else {
-      //TODO WHEN QUIZZES NAMES ARE IMPLEMENTED ADD NAME TO THE QUIZZREQULT
-      //TODO GET THE REAL TIME SPENT
-      Random rand = Random();
-      UserQuizzResult r = UserQuizzResult("Test" + rand.nextInt(50).toString(),
-          correctAnswers, _totalQuestions, _timeLeft.inSeconds);
-      UserStatistics? stat = await player.getUserStatistics();
-      if (stat != null) {
-        stat.addUserQuizzResult(r);
-        await stat.saveStatistics();
-      }
       await endQuiz();
     }
   }
@@ -206,8 +197,20 @@ class QuizProvider with ChangeNotifier {
   Future<void> endQuiz() async {
     stopTimer();
 
+    //TODO WHEN QUIZZES NAMES ARE IMPLEMENTED ADD NAME TO THE QUIZZREQULT
+    //TODO GET THE REAL TIME SPENT
+    Random rand = Random();
+    UserQuizzResult r = UserQuizzResult("Test" + rand.nextInt(50).toString(),
+        correctAnswers, _totalQuestions, _secondsPassed);
+    UserStatistics? stat = await player.getUserStatistics();
+    if (stat != null) {
+      stat.addUserQuizzResult(r);
+      await stat.saveStatistics();
+    }
+
     if (_quizCategory != null) {
       player.updateScore("Savo", _quizCategory!, _currentPoints);
+      print('seconds passed at the end of the quizz: $_secondsPassed');
     }
     navigator.currentState?.pop();
     navigator.currentState?.push(
@@ -272,6 +275,8 @@ class QuizProvider with ChangeNotifier {
       nextQuestion();
     } else {
       _timeLeft = Duration(seconds: seconds);
+      _secondsPassed++;
+      print('$_secondsPassed seconds passed');
       notifyListeners();
     }
   }
