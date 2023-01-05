@@ -156,147 +156,135 @@ class LeaderboardMobileContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Center(
-            child: Stack(children: [
-      //violet rectangle at the top of the screen
-      Container(
-        alignment: Alignment.topCenter,
-        constraints: const BoxConstraints(
-            minWidth: double.infinity, maxWidth: double.infinity),
-        height: 330,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(30),
-          color: const Color(0xff72479d),
-        ),
-      ),
-      //dark green rectangle at the right side of the screen
-      Column(
-        children: [
-          Expanded(
-            child: Align(
-              alignment: FractionalOffset.centerRight,
-              child: Container(
-                width: 200,
-                height: 220,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(30),
-                  color: const Color(0xff9fc490),
-                ),
+      body: Center(
+        child: Stack(
+          children: [
+            //violet rectangle at the top of the screen
+            Container(
+              alignment: Alignment.topCenter,
+              constraints: const BoxConstraints(
+                  minWidth: double.infinity, maxWidth: double.infinity),
+              height: 330,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(30),
+                color: const Color(0xff72479d),
               ),
             ),
-          )
-        ],
-      ),
-      //light green rectangle at the bottom of the screen
-      Column(
-        children: [
-          Expanded(
-            child: Align(
-              alignment: FractionalOffset.bottomLeft,
-              child: Container(
-                width: 200,
-                height: 220,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(30),
-                  color: const Color(0xfff1ffe7),
-                ),
-              ),
-            ),
-          )
-        ],
-      ),
-      //ListTiles
-      Container(
-        padding: const EdgeInsets.all(20),
-        child: CustomScrollView(
-          slivers: <Widget>[
-            SliverAppBar(
-              toolbarHeight: 75,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15)),
-              backgroundColor: const Color(0xff72479d),
-              pinned: true,
-              flexibleSpace: FlexibleSpaceBar(
-                centerTitle: true,
-                title: Text(Provider.of<LeaderboardProvider>(context).category,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 50.0,
-                    ) //TextStyle
+            //dark green rectangle at the right side of the screen
+            Column(
+              children: [
+                Expanded(
+                  child: Align(
+                    alignment: FractionalOffset.centerRight,
+                    child: Container(
+                      width: 200,
+                      height: 220,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(30),
+                        color: const Color(0xff9fc490),
+                      ),
                     ),
-              ),
-              //drop down menu
-              actions: [
-                Center(
-                    child: DropdownButton<String>(
-                  hint: Text("Category",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20.0,
-                      )),
-                  icon: const Icon(Icons.arrow_downward),
-                  iconEnabledColor: Colors.white,
-                  iconDisabledColor: Colors.white,
-                  items:
-                      list.map<DropdownMenuItem<String>>((final String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                  onChanged: (value) {
-                    Provider.of<LeaderboardProvider>(context, listen: false)
-                        .setLeaderboard(value!);
-                  },
-                ))
+                  ),
+                )
               ],
             ),
-            SliverList(
-              delegate: SliverChildBuilderDelegate(
-                (BuildContext context, int index) {
-                  return Column(
-                    children: <Widget>[
-                      const Divider(
-                        color: Colors.transparent,
-                        height: 10,
+            //light green rectangle at the bottom of the screen
+            Column(
+              children: [
+                Expanded(
+                  child: Align(
+                    alignment: FractionalOffset.bottomLeft,
+                    child: Container(
+                      width: 200,
+                      height: 220,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(30),
+                        color: const Color(0xfff1ffe7),
                       ),
-                      Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15),
-                          color: Provider.of<ThemeProvider>(context)
-                              .currentTheme
-                              .colorScheme
-                              .background,
-                        ),
-                        child: ListTile(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15)),
-                          tileColor: Provider.of<ThemeProvider>(context)
-                              .currentTheme
-                              .colorScheme
-                              .background,
-                          textColor: const Color(0xFFFF8C66),
-                          iconColor: Colors.white,
-                          leading: index == 0
-                              ? const Text('')
-                              : Container(
-                                  height: 25,
-                                  width: 25,
-                                  decoration: const BoxDecoration(
-                                      color: Color(0xFFFF8C66),
-                                      shape: BoxShape.circle),
-                                  child: Center(
-                                      child: Text(
-                                    (index + 1).toString(),
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      color: Colors.white,
-                                    ),
-                                  ))),
-                          title: index == 0
-                              ? Column(
-                                  children: [
-                                    Container(
+                    ),
+                  ),
+                )
+              ],
+            ),
+            //ListTiles
+            Container(
+              padding: const EdgeInsets.all(20),
+              child: CustomScrollView(
+                slivers: <Widget>[
+                  SliverAppBar(
+                    toolbarHeight: 75,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(30),
+                            bottomRight: Radius.circular(30))),
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    pinned: true,
+                    flexibleSpace: FlexibleSpaceBar(
+                      centerTitle: true,
+                      title: Text(
+                          Provider.of<LeaderboardProvider>(context).category,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 50.0,
+                          ) //TextStyle
+                          ),
+                    ),
+                    //drop down menu
+                    actions: [
+                      Center(
+                          child: DropdownButton<String>(
+                        hint: Text("Category",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 20.0,
+                            )),
+                        icon: const Icon(Icons.arrow_downward),
+                        iconEnabledColor: Colors.white,
+                        iconDisabledColor: Colors.white,
+                        items: list.map<DropdownMenuItem<String>>(
+                            (final String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                        onChanged: (value) {
+                          Provider.of<LeaderboardProvider>(context,
+                                  listen: false)
+                              .setLeaderboard(value!);
+                        },
+                      ))
+                    ],
+                  ),
+                  SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (BuildContext context, int index) {
+                        return Column(
+                          children: <Widget>[
+                            const Divider(
+                              color: Colors.transparent,
+                              height: 10,
+                            ),
+                            Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(15),
+                                color: Provider.of<ThemeProvider>(context)
+                                    .currentTheme
+                                    .colorScheme
+                                    .background,
+                              ),
+                              child: ListTile(
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15)),
+                                tileColor: Provider.of<ThemeProvider>(context)
+                                    .currentTheme
+                                    .colorScheme
+                                    .background,
+                                textColor: const Color(0xFFFF8C66),
+                                iconColor: Colors.white,
+                                leading: index == 0
+                                    ? const Text('')
+                                    : Container(
                                         height: 25,
                                         width: 25,
                                         decoration: const BoxDecoration(
@@ -310,62 +298,88 @@ class LeaderboardMobileContent extends StatelessWidget {
                                             color: Colors.white,
                                           ),
                                         ))),
-                                    Text(
-                                      Provider.of<LeaderboardProvider>(context)
-                                          .entries[index]
-                                          .getName,
-                                      style: TextStyle(
-                                          color: Provider.of<ThemeProvider>(
-                                                  context)
-                                              .currentTheme
-                                              .colorScheme
-                                              .onBackground,
-                                          fontSize: 26),
-                                    ),
-                                  ],
-                                )
-                              : Text(
-                                  Provider.of<LeaderboardProvider>(context)
-                                      .entries[index]
-                                      .getName,
-                                  style: TextStyle(
-                                      color: Provider.of<ThemeProvider>(context)
-                                          .currentTheme
-                                          .colorScheme
-                                          .onBackground,
-                                      fontSize: 26),
-                                ),
-                          subtitle: index == 0
-                              ? Text(
-                                  Provider.of<LeaderboardProvider>(context)
-                                          .entries[index]
-                                          .getScore
-                                          .toString() +
-                                      'points',
-                                  textAlign: TextAlign.center,
-                                )
-                              : Text(
-                                  Provider.of<LeaderboardProvider>(context)
-                                          .entries[index]
-                                          .getScore
-                                          .toString() +
-                                      'points',
-                                ),
-                          //const Icon(Icons.back_hand_outlined),
-                          //subtitle: index == 0 ? const Text('username', textAlign: TextAlign.center,style:TextStyle(color: Colors.black, fontSize: 26),): null,
-                        ),
-                      ),
-                    ],
-                  );
-                },
-                childCount:
-                    Provider.of<LeaderboardProvider>(context).totalEntries,
+                                title: index == 0
+                                    ? Column(
+                                        children: [
+                                          Container(
+                                              height: 25,
+                                              width: 25,
+                                              decoration: const BoxDecoration(
+                                                  color: Color(0xFFFF8C66),
+                                                  shape: BoxShape.circle),
+                                              child: Center(
+                                                  child: Text(
+                                                (index + 1).toString(),
+                                                style: const TextStyle(
+                                                  fontSize: 16,
+                                                  color: Colors.white,
+                                                ),
+                                              ))),
+                                          Text(
+                                            Provider.of<LeaderboardProvider>(
+                                                    context)
+                                                .entries[index]
+                                                .getName,
+                                            style: TextStyle(
+                                                color:
+                                                    Provider.of<ThemeProvider>(
+                                                            context)
+                                                        .currentTheme
+                                                        .colorScheme
+                                                        .onBackground,
+                                                fontSize: 26),
+                                          ),
+                                        ],
+                                      )
+                                    : Text(
+                                        Provider.of<LeaderboardProvider>(
+                                                context)
+                                            .entries[index]
+                                            .getName,
+                                        style: TextStyle(
+                                            color: Provider.of<ThemeProvider>(
+                                                    context)
+                                                .currentTheme
+                                                .colorScheme
+                                                .onBackground,
+                                            fontSize: 26),
+                                      ),
+                                subtitle: index == 0
+                                    ? Text(
+                                        Provider.of<LeaderboardProvider>(
+                                                    context)
+                                                .entries[index]
+                                                .getScore
+                                                .toString() +
+                                            'points',
+                                        textAlign: TextAlign.center,
+                                      )
+                                    : Text(
+                                        Provider.of<LeaderboardProvider>(
+                                                    context)
+                                                .entries[index]
+                                                .getScore
+                                                .toString() +
+                                            'points',
+                                      ),
+                                //const Icon(Icons.back_hand_outlined),
+                                //subtitle: index == 0 ? const Text('username', textAlign: TextAlign.center,style:TextStyle(color: Colors.black, fontSize: 26),): null,
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                      childCount: Provider.of<LeaderboardProvider>(context)
+                          .totalEntries,
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
         ),
       ),
-    ])));
+    );
   }
 }
 
