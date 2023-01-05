@@ -42,6 +42,7 @@ class _AnswerButtonState extends State<AnswerButton>
     _animationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 300),
+      reverseDuration: const Duration(milliseconds: 0),
     );
     super.initState();
   }
@@ -79,47 +80,49 @@ class _AnswerButtonState extends State<AnswerButton>
     }
 
     return Expanded(
-      child: Container(
-        height: double.infinity,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: AnimatedBuilder(
-          animation: _colorTween,
-          builder: (context, child) => ElevatedButton(
-            onPressed: () {
-              if (_animationController.status == AnimationStatus.completed) {
-                _animationController.reverse();
-              } else {
-                _animationController.forward();
-                Future.delayed(const Duration(milliseconds: 500)).then((_) {
-                  context.read<QuizProvider>().editScore(isCorrect);
-
+      child: Consumer<QuizProvider>(builder: (context, quizProvider, _) {
+        return Container(
+          height: double.infinity,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: AnimatedBuilder(
+            animation: _colorTween,
+            builder: (context, child) => ElevatedButton(
+              onPressed: () {
+                if (_animationController.status == AnimationStatus.completed) {
                   _animationController.reverse();
-                  context.read<QuizProvider>().nextQuestion();
-                });
-              }
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: _colorTween.value,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
+                } else {
+                  _animationController.forward();
+                  Future.delayed(const Duration(milliseconds: 500)).then((_) {
+                    quizProvider.editScore(isCorrect);
+
+                    _animationController.reverse();
+                    quizProvider.nextQuestion();
+                  });
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: _colorTween.value,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
               ),
-            ),
-            child: Text(
-              text,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 20,
-                color: Provider.of<ThemeProvider>(context)
-                    .currentTheme
-                    .colorScheme
-                    .onBackground,
+              child: Text(
+                text,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 20,
+                  color: Provider.of<ThemeProvider>(context)
+                      .currentTheme
+                      .colorScheme
+                      .onBackground,
+                ),
               ),
             ),
           ),
-        ),
-      ),
+        );
+      }),
     );
   }
 }
