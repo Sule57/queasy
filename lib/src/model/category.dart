@@ -174,7 +174,9 @@ class Category {
         .get()
         .then((QuerySnapshot querySnapshot) {
       querySnapshot.docs.forEach((doc) {
-        questions.add(Question.fromJson(doc.data() as Map<String, dynamic>));
+        if(doc.data() != null && (doc.data() as Map<String, dynamic>)["ID"] != "question-1") {
+          questions.add(Question.fromJson(doc.data() as Map<String, dynamic>));
+        }
       });
     });
     return questions;
@@ -231,11 +233,8 @@ class Category {
     // create a variable newID from 'question' + count
     String newID;
     print(question.questionId);
-    if (question.questionId == null) {
-      newID = await getNextID();
-    } else {
-      newID = question.questionId!;
-    }
+    newID = await getNextID();
+    question.questionId = newID;
     print(newID);
     await firestore
         .collection('categories')
