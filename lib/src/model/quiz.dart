@@ -10,7 +10,7 @@ class Quiz {
   late String id;
   late Category category;
   late int noOfQuestions;
-  late String? ownerID, categoryName;
+  late String? ownerID, name;
   List<Question> _questions = [];
   List<String> _usedQuestions = [];
   late FirebaseFirestore? firestore;
@@ -22,22 +22,23 @@ class Quiz {
     required this.category,
     required this.noOfQuestions,
     required this.isPublic,
+    this.name,
     this.firestore,
   }) {
     firestore ?? FirebaseFirestore.instance;
     getRandomQuestions();
   }
 
-  Quiz.retrieveFromID({
-    required this.id,
-    required this.noOfQuestions,
+  Quiz({
+    // required this.id,
     this.firestore,
   }) {
-    isPublic = false;
+    category = Category(name: 'default');
+    // isPublic = false;
     if (firestore == null) {
       firestore = FirebaseFirestore.instance;
     }
-    retrieveQuizFromId();
+    // retrieveQuizFromId();
   }
 
   /// This method is supposed to create a random 8 character String
@@ -77,7 +78,6 @@ class Quiz {
   }
 
   Future<Quiz> getRandomQuestions() async {
-
     if (isPublic == false) {
       if (getCurrentUserID() == null) {
         throw UserNotLoggedInException();
@@ -116,13 +116,14 @@ class Quiz {
   Future<void> storeQuiz() async {
     await firestore?.collection('quizzes').doc(id).set({
       'id': id,
+      'name': name,
       'creatorID': ownerID,
       'category': category.name,
       'questionIds': _questions,
     });
   }
 
-  Future<Quiz> retrieveQuizFromId() async {
+  Future<Quiz> retrieveQuizFromId({required String id}) async {
     print('inside retrieveQuizFromId method. Id: $id');
     this.isPublic = false;
 
@@ -136,10 +137,13 @@ class Quiz {
       print('it got the collection');
       if (documentSnapshot.exists) {
         print('Document data: ${documentSnapshot.data()}');
+        this.name = documentSnapshot['name'];
         this.id = documentSnapshot['id'];
         this.ownerID = documentSnapshot['creatorID'];
-        this.categoryName = documentSnapshot['category'];
+        this.category = new Category(name: documentSnapshot['category']!);
+        // this.categoryName = ;
         this.noOfQuestions = documentSnapshot['questionIds'].length;
+
         /// add all questionIds to the list of used questions
         for (int i = 0; i < noOfQuestions; i++) {
           _usedQuestions.add(documentSnapshot['questionIds'][i]);
@@ -148,8 +152,6 @@ class Quiz {
         print('Document does not exist on the database');
       }
     });
-
-    this.category = new Category(name: categoryName!);
 
     for (int i = 0; i < noOfQuestions; i++) {
       Question tempQuestion =
@@ -160,4 +162,3 @@ class Quiz {
     return this;
   }
 }
-

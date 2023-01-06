@@ -64,7 +64,7 @@ class QuizProvider with ChangeNotifier {
   Timer? countdownTimer;
   Duration _timeLeft = const Duration(seconds: 15);
   int _secondsPassed = 0;
-  get category => _quizCategory;
+  get quizCategory => _quizCategory;
   get quiz => _quiz;
   get timeLeft => _timeLeft.inSeconds.toString();
 
@@ -116,12 +116,11 @@ class QuizProvider with ChangeNotifier {
   Future<bool> startQuiz({
     String? id,
     String? category,
-    required int numberOfQuestions,
+    int? numberOfQuestions = 5,
     String? creatorUsername,
   }) async {
     _quizId = id;
     _quizCategory = category;
-    _totalQuestions = numberOfQuestions;
     _currentQuestionIndex = 0;
     _currentPoints = 0;
     _currentQuestionAnswered = false;
@@ -131,17 +130,17 @@ class QuizProvider with ChangeNotifier {
       _quiz = await Quiz.createRandom(
         category: Category(
           name: _quizCategory!,
-          color: Colors.transparent,
         ),
         noOfQuestions: _totalQuestions,
         isPublic: true,
       ).getRandomQuestions();
       isLoading = false;
     } else if (_quizId != null && _quizCategory == null) {
-      _quiz = await Quiz.retrieveFromID(
+      _quiz = await Quiz().retrieveQuizFromId(
         id: _quizId!,
-        noOfQuestions: _totalQuestions,
       );
+      _quizCategory = _quiz.category.name;
+      _totalQuestions = _quiz.noOfQuestions;
       isLoading = false;
     } else {
       throw Exception('_category == null || _id == null');
@@ -209,6 +208,7 @@ class QuizProvider with ChangeNotifier {
     }
 
     if (_quizCategory != null) {
+      //TODO check this
       player.updateScore("Savo", _quizCategory!, _currentPoints);
       print('seconds passed at the end of the quizz: $_secondsPassed');
     }
