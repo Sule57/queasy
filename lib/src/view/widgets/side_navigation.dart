@@ -4,7 +4,7 @@ import 'package:queasy/src/view/home_view.dart';
 import 'package:queasy/src/view/login/login_desktop.dart';
 import 'package:queasy/src/view/see_leaderboard/leaderboard_view.dart';
 import 'package:queasy/src/view/see_profile/profile_view.dart';
-import 'package:queasy/src/view/see_profile/profile_view_controller.dart';
+import 'package:queasy/src/view/see_profile/profile_controller.dart';
 
 /// Defines the navigation bar used in big screens.
 ///
@@ -41,15 +41,18 @@ class SideNavigation extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Align(
-              alignment: Alignment.center,
-              child: Image.asset(
-                "lib/assets/images/logo_horizontal.png",
-                height: 50,
-              ),
-            ),
             Column(
               children: [
+                Align(
+                  alignment: Alignment.center,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    child: Image.asset(
+                      "lib/assets/images/logo_horizontal.png",
+                      height: 50,
+                    ),
+                  ),
+                ),
                 ListTile(
                   leading: Icon(Icons.home_outlined),
                   title: Text(
@@ -108,12 +111,12 @@ class SideNavigation extends StatelessWidget {
                 ),
               ],
             ),
-            Divider(
-              color: Colors.grey,
-              thickness: 0.5,
-            ),
             Column(
               children: [
+                Divider(
+                  color: Colors.grey,
+                  thickness: 0.5,
+                ),
                 ListTile(
                   leading: Icon(Icons.person),
                   title: Text(
@@ -125,16 +128,6 @@ class SideNavigation extends StatelessWidget {
                       builder: (context) => ProfileView(),
                     ),
                   ),
-                ),
-                ListTile(
-                  leading: Icon(Icons.info_outline),
-                  title: Text(
-                    "Support",
-                    style: textStyle,
-                  ),
-                  onTap: () {
-                    //TODO about
-                  },
                 ),
                 ListTile(
                   leading: Icon(
