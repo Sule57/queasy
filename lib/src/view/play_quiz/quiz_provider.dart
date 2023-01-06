@@ -74,7 +74,6 @@ class QuizProvider with ChangeNotifier {
     player = Profile(
       username: 'Savo',
       email: 'savo@email.com',
-      hashPassword: '1234',
     );
     init();
   }

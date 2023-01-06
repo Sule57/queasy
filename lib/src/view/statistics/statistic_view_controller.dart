@@ -1,15 +1,17 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+
+import 'package:flutter/material.dart';
 import 'package:queasy/src/model/profile.dart';
 import 'package:queasy/src/model/statistics.dart';
 
 import '../../../utils/exceptions.dart';
 
 
-class StatisticsViewController {
+class StatisticsViewController with ChangeNotifier {
   UserStatistics? statistics;
 
   StatisticsViewController(){
     init();
+
   }
 /// initializes the statistics with data from firebase
   void init() async {
@@ -26,6 +28,7 @@ class StatisticsViewController {
       }
     }else
       throw UserNotLoggedInException();
+    notifyListeners();
   }
   int getCorrectAnswers(){
     var quiz = statistics?.userQuizzes.last;

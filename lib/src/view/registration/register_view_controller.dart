@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -22,7 +24,6 @@ class RegisterViewController {
     Profile newUser = Profile(
       username: username,
       email: email,
-      hashPassword: password,
     );
     try {
       // always use register user with try catch since it throws
@@ -32,7 +33,7 @@ class RegisterViewController {
           .createUserWithEmailAndPassword(email: email, password: password);
       Auth a = Auth();
       a.signInWithEmailAndPassword(
-          email: newUser.email, password: newUser.hashPassword);
+          email: newUser.email, password: password);
       return newUser.registerUser();
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
@@ -99,6 +100,32 @@ class RegisterViewController {
           // handle the error here
           print(e);
         }
+      }
+    }
+    Random rand = Random();
+    String? usernamen;
+    String? email;
+    if(user != null) {
+      if(user.email != null){
+        usernamen = user.email;
+
+        email = user.email;
+      }
+    }
+    String username = "default" + rand.nextInt(10000).toString();
+    if(usernamen != null) {
+      username = usernamen;
+      username = username.substring(0, username.indexOf("@"));
+    }
+    if(email != null) {
+      Profile newUser = Profile(
+        username: username,
+        email: email,
+      );
+      try {
+        newUser.registerUser();
+      }catch(e){
+        print(e);
       }
     }
     return user;
