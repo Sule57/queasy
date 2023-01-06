@@ -209,7 +209,7 @@ class QuizProvider with ChangeNotifier {
 
     if (_quizCategory != null) {
       //TODO check this
-      player.updateScore("Savo", _quizCategory!, _currentPoints);
+      player.updateScore(_quizCategory!, _currentPoints);
       print('seconds passed at the end of the quizz: $_secondsPassed');
     }
     navigator.currentState?.pop();
