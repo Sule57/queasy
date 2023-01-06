@@ -20,7 +20,7 @@ class CategoryRepo {
 
   /// Creates a new [Category] in the database.
   ///
-  /// [category] is the name of the [Category] and [color] is the color of the [Category].
+  /// [quizCategory] is the name of the [Category] and [color] is the color of the [Category].
   /// Checking if category already exists in the database is done before calling this function.
   Future<void> createCategory(String cat, Color color) async {
     String? id = await getCurrentUserID();

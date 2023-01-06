@@ -116,15 +116,17 @@ class _LogInViewState extends State<LogInView> {
                             hintText: 'Password',
                           ),
                           onSubmitted: (value) async {
-                            bool success = await signInWithEmailAndPassword();
+                            if (formKey.currentState!.validate()) {
+                              bool success = await signInWithEmailAndPassword();
 
-                            ///if signInWithEmailAndPassword is successful, user is taken to [HomeView]
-                            if (success) {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => const HomeView()));
-                            } else {
-                              ///if signInWithEmailAndPassword is not successful, then error message is printed
-                              print(errorMessage);
+                              ///if signInWithEmailAndPassword is successful, user is taken to [HomeView]
+                              if (success) {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => const HomeView()));
+                              } else {
+                                ///if signInWithEmailAndPassword is not successful, then error message is printed
+                                print(errorMessage);
+                              }
                             }
                           },
                         ),

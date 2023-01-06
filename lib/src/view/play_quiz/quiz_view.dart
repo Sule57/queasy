@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:queasy/constants/app_themes.dart';
+import 'package:queasy/src.dart';
 import 'package:queasy/src/view/play_quiz/quiz_provider.dart';
 import 'package:queasy/src/view/play_quiz/widgets/answer_button.dart';
 import 'package:queasy/src/view/play_quiz/widgets/exit_button.dart';
@@ -112,15 +113,22 @@ class QuizViewContent extends StatefulWidget {
 
 /// State for [QuizViewContent].
 class _QuizViewContentState extends State<QuizViewContent> {
-  get category => widget.category;
-  get id => widget.id;
+  String? category;
+  String? id;
   bool isLoading = true;
 
   init() async {
+    category = widget.category;
+    id = widget.id;
+
     isLoading = await context
         .read<QuizProvider>()
-        .startQuiz(category: category, numberOfQuestions: 5, id: id);
+        .startQuiz(category: category, id: id);
+
+    category = context.read<QuizProvider>().quizCategory;
+
     Provider.of<QuizProvider>(context, listen: false).startTimer();
+
     setState(() {});
   }
 
@@ -208,7 +216,7 @@ class QuizViewDesktopContent extends StatelessWidget {
             ),
           ),
           Text(
-            Provider.of<QuizProvider>(context).category,
+            Provider.of<QuizProvider>(context).quizCategory,
             style: Theme.of(context).textTheme.headline2,
           ),
           const ScoreTracking(),
@@ -273,7 +281,7 @@ class QuizViewMobileContent extends StatelessWidget {
               child: ExitButton(),
             ),
             Text(
-              Provider.of<QuizProvider>(context).category,
+              Provider.of<QuizProvider>(context).quizCategory,
               style: Theme.of(context).textTheme.headline2,
             ),
             const ScoreTracking(),
