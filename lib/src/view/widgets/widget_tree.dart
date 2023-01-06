@@ -4,6 +4,7 @@ import 'package:queasy/src/view/login/login_view.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import '../../../services/auth.dart';
 import '../login/login_desktop.dart';
+import '../quiz_edit_view.dart';
 
 class WidgetTree extends StatefulWidget {
   const WidgetTree({Key? key}) : super(key: key);

@@ -101,4 +101,23 @@ class CategoryRepo {
     });
     return list;
   }
+
+  /// Returns a category from the database with the given name [_category].
+  ///
+  /// If the category is not found, returns null.
+  Future<Category> getCategory(String _category) async {
+    String? username = getCurrentUserID();
+    if (username == null) {
+      throw UserNotLoggedInException();
+    }
+    DocumentSnapshot doc = await _privateDoc.get();
+    if (doc.exists) {
+      Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+      if (data.containsKey(_category)) {
+        return Category(
+            name: _category, color: Color(data[_category] as int));
+      }
+    }
+    return throw CategoryNotFoundException();
+  }
 }
