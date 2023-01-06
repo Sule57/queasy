@@ -1,9 +1,6 @@
-import 'dart:io';
-import 'dart:typed_data';
-import 'package:path_provider/path_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:queasy/src/model/category_repo.dart';
+import 'package:queasy/src.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:queasy/src/model/statistics.dart';
@@ -196,13 +193,14 @@ class Profile {
     return s;
   }
 
-  /// Increment the score of the user in the firebase by the score achieved in the current quiz
-  /// [username] The username of the user
-  void updateScore(String username, String category, int score) {
+  /// Increment the score of the user in the firebase by the score achieved in the current quiz.
+  void updateScore(String category, int score) {
     final firebaseFirestore = FirebaseFirestore.instance;
     firebaseFirestore.collection('users').doc(getCurrentUserID()).update({
       'scores.$category': FieldValue.increment(score),
     });
+    //TODO
+    // Leaderboard().updateCurrentUserPoints(score);
   }
 
   //START OF METHODS FOR PROFILE VIEW
