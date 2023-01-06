@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:queasy/constants/app_themes.dart';
+import 'package:queasy/src/view/login/login_desktop.dart';
 import 'package:queasy/src/view/registration/register_view_controller.dart';
 import 'package:queasy/services/auth.dart';
 import 'package:queasy/src/view/home_view.dart';
@@ -280,6 +281,38 @@ class _RegisterDesktopState extends State<RegisterDesktop> {
                         ),
                       ],
                     ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "Already a user? ",
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 10, bottom: 10),
+                          child: ElevatedButton(
+                            child: Text(
+                              'Log In',
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.background,
+                              ),
+                            ),
+                            style: ButtonStyle(
+                                shape: MaterialStateProperty.all<
+                                        RoundedRectangleBorder>(
+                                    RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(18.0),
+                            ))),
+                            onPressed: () => {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => LogInDesktop()))
+                            },
+                          ),
+                        ),
+                      ],
+                    )
                   ],
                 )),
           ),

@@ -145,7 +145,7 @@ class Profile {
 
     if (getCurrentUserID() != null) {
       // create the document for categories created by the user
-      await firestore.collection('category').doc(getCurrentUserID()).set({});
+      await firestore.collection('categories').doc(getCurrentUserID()).set({});
 
       await firestore
           .collection('users')

@@ -92,13 +92,19 @@ class _LogInViewState extends State<LogInView> {
                           decoration: InputDecoration(
                               labelText: 'Email',
                               hintText: 'yourname@example.com'),
-                          onSubmitted: (value) {
-                            signInWithEmailAndPassword();
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const HomeView()),
-                            );
+                          onSubmitted: (value) async {
+                            if (formKey.currentState!.validate()) {
+                              bool success = await signInWithEmailAndPassword();
+
+                              ///if signInWithEmailAndPassword is successful, user is taken to [HomeView]
+                              if (success) {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => const HomeView()));
+                              } else {
+                                ///if signInWithEmailAndPassword is not successful, then error message is printed
+                                print(errorMessage);
+                              }
+                            }
                           },
                         ),
                         TextField(
@@ -109,13 +115,17 @@ class _LogInViewState extends State<LogInView> {
                             labelText: 'Enter Password',
                             hintText: 'Password',
                           ),
-                          onSubmitted: (value) {
-                            signInWithEmailAndPassword();
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const HomeView()),
-                            );
+                          onSubmitted: (value) async {
+                            bool success = await signInWithEmailAndPassword();
+
+                            ///if signInWithEmailAndPassword is successful, user is taken to [HomeView]
+                            if (success) {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => const HomeView()));
+                            } else {
+                              ///if signInWithEmailAndPassword is not successful, then error message is printed
+                              print(errorMessage);
+                            }
                           },
                         ),
                         Container(
@@ -319,13 +329,20 @@ class _LogInViewState extends State<LogInView> {
                             backgroundColor:
                                 Theme.of(context).colorScheme.primary,
                             textColor: Theme.of(context).colorScheme.background,
-                            onPressed: () {
-                              signInWithEmailAndPassword();
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const HomeView()),
-                              );
+                            onPressed: () async {
+                              if (formKey.currentState!.validate()) {
+                                bool success =
+                                    await signInWithEmailAndPassword();
+
+                                ///if signInWithEmailAndPassword is successful, user is taken to [HomeView]
+                                if (success) {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) => const HomeView()));
+                                } else {
+                                  ///if signInWithEmailAndPassword is not successful, then error message is printed
+                                  print(errorMessage);
+                                }
+                              }
                             },
                           ),
                         ),
