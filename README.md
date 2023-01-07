@@ -2,10 +2,10 @@
 
 Queasy is a Mobile Quiz Application developed by a group of 9 students (referenced at the bottom of the README.md) as part of a Software Project class in the Winter Semester 22/23.
 
-University: Technische Hochschule Ulm / University Of Applied Sciences Ulm
-Location: Ulm, Germany
-Professor: Baer, Klaus, Prof.Dr.-Ing.
-Time Frame: WS 22/23
+University: Technische Hochschule Ulm / University Of Applied Sciences Ulm <br/>
+Location: Ulm, Germany <br/>
+Professor: Baer, Klaus, Prof.Dr.-Ing. <br/>
+Time Frame: WS 22/23 <br/>
 
 ## Prerequisites
 
