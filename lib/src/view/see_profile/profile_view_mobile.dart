@@ -931,7 +931,9 @@ class ProfileMobileState extends State<ProfileViewMobile> {
                   onPressed: () {
                     bool success = controller.signOut();
                     if (success) {
-                      Navigator.pop(context);
+                      if (Navigator.canPop(context)){
+                        Navigator.pop(context);
+                      }
                       Navigator.of(context).pushReplacement(
                         MaterialPageRoute(
                           builder: (context) => LoginView(),
