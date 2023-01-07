@@ -31,7 +31,7 @@ class Question {
   String category = "";
   late String? questionId = "";
   late Profile owner;
-  String? UID = getCurrentUserID();
+  String? UID;
   late FirebaseFirestore? firestore;
 
   get id => questionId;
@@ -43,11 +43,13 @@ class Question {
         required this.answers,
         required this.category,
         this.questionId,
-        this.firestore}) {
+        firestore}) {
     if (firestore == null) {
       firestore = FirebaseFirestore.instance;
+      UID = getCurrentUserID();
     }
     else {
+      this.firestore = firestore;
       UID = "test123456789";
     }
   }
