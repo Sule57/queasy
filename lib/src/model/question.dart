@@ -13,12 +13,12 @@ class Question {
   /// London,
   /// Berlin,
   /// Rome.
-  /// the text would be "What is the capital of France?".
+  /// The text would be "What is the capital of France?".
   String text = "";
   /// The parameter answers is a list of objects of type [Answer] which
-  /// represent the possible answers to the question, so in the previously given
-  /// example this list would store 4 objects of type [Answer] with the text
-  /// "Paris", "London", "Berlin" and "Rome".
+  /// represent the possible answers to the question, so in the example given in
+  /// the definition of [text] this list would store 4 objects of type [Answer]
+  /// with the text "Paris", "London", "Berlin" and "Rome".
   List<Answer> answers = [];
   /// The parameter category represents the category of which this question is,
   /// so for instance if the question is about geography, the category would be
