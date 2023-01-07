@@ -5,7 +5,6 @@ class ProfileViewController {
   Profile player = Profile(
       username: "",
       email: "",
-      hashPassword: "",
       firstName: "",
       lastName: "",
       age: 0,

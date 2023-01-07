@@ -9,7 +9,7 @@ import 'package:queasy/utils/exceptions.dart';
 /// Main function for testing the [Profile] class.
 void main() async {
   TestWidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+ // await Firebase.initializeApp();
   // try {
   //   await Firebase.initializeApp();
   // } catch (e) {
@@ -19,7 +19,6 @@ void main() async {
   Profile user_test = Profile.test(
       username: 'TEST21',
       email: 'email@test.com',
-      hashPassword: 'nothashedpassword',
       firestore: instance);
   Map<String, dynamic> expectedDumpAfterset = {
     'username': 'TEST21',
@@ -38,7 +37,6 @@ void main() async {
     Profile usr = Profile.test(
         username: 'TEST21',
         email: 'email@test.com',
-        hashPassword: 'nothashedpassword',
         firestore: instance);
     await usr.registerUser();
     //Map<String, dynamic> data = await instance.collection('users').get(). as Map<String, dynamic>;
@@ -52,7 +50,6 @@ void main() async {
     final usr = new Profile.test(
         username: 'TEST21',
         email: 'email@test.com',
-        hashPassword: 'nothashedpassword',
         firestore: instance);
     //Map<String, dynamic> data = await instance.collection('users').get() as Map<String, dynamic>;
     Map<String, dynamic> data = jsonDecode(instance.dump())['users'];
@@ -64,7 +61,6 @@ void main() async {
     Profile usr = new Profile.test(
         username: 'TEST21',
         email: 'email@test.com',
-        hashPassword: 'nothashedpassword',
         firestore: instance);
     //Map<String, dynamic> data = await instance.collection('users').get() as Map<String, dynamic>;
 
@@ -76,7 +72,6 @@ void main() async {
   final profile_test = Profile.test(
       username: 'profileTest',
       email: 'profileEmail@test.com',
-      hashPassword: 'profileTest',
       firestore: instance);
   Map<String, dynamic> expectedDataAfterUpdates = {
     'username': 'testProfile',

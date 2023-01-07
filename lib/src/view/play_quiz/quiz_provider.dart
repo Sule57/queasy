@@ -74,7 +74,6 @@ class QuizProvider with ChangeNotifier {
     player = Profile(
       username: 'Savo',
       email: 'savo@email.com',
-      hashPassword: '1234',
     );
     init();
   }
@@ -199,14 +198,19 @@ class QuizProvider with ChangeNotifier {
     //TODO WHEN QUIZZES NAMES ARE IMPLEMENTED ADD NAME TO THE QUIZZREQULT
     //TODO GET THE REAL TIME SPENT
     Random rand = Random();
-    UserQuizzResult r = UserQuizzResult("Test" + rand.nextInt(50).toString(),
-        correctAnswers, _totalQuestions, _secondsPassed);
-    UserStatistics? stat = await player.getUserStatistics();
-    if (stat != null) {
-      stat.addUserQuizzResult(r);
-      await stat.saveStatistics();
-    }
+    if(_quizCategory != null) {
 
+      UserStatistics? stat = await player.getUserStatistics();
+      if (stat != null) {
+        String name = _quizCategory! + (stat.userQuizzes.length + 1).toString();
+
+        UserQuizzResult r = UserQuizzResult(name,
+            correctAnswers, _totalQuestions, _secondsPassed);
+
+        stat.addUserQuizzResult(r);
+        await stat.saveStatistics();
+      }
+    }
     if (_quizCategory != null) {
       //TODO check this
       player.updateScore(_quizCategory!, _currentPoints);
