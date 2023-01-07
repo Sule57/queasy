@@ -42,7 +42,7 @@ class Auth with ChangeNotifier {
 
       // Obtain the auth details from the request
       final GoogleSignInAuthentication? googleAuth =
-          await googleUser?.authentication;
+      await googleUser?.authentication;
 
       // Create a new credential
       final credential = GoogleAuthProvider.credential(
@@ -76,7 +76,8 @@ class Auth with ChangeNotifier {
     //TODO register user in firestore with email and give him a choice for username
   }
 
-  void sendPasswordResetEmail(String emailAddress) {
-    //TODO implement
+  /// Sends a password reset email to the user with the given [emailAddress].
+  void sendPasswordResetEmail(String emailAddress) async {
+    await _firebaseAuth.sendPasswordResetEmail(email: emailAddress);
   }
 }
