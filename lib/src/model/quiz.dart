@@ -5,41 +5,37 @@ import 'package:queasy/src/model/profile.dart';
 import 'package:queasy/src/model/question.dart';
 import '../../utils/exceptions.dart';
 
-/// The class that is responsible for being an object of quiz.
-///
-/// The Quiz class is also responsible for filling the quiz with questions
-/// whether it is a private or a public quiz. This is done by using either the
-/// [getRandomQuestions] or the [retrieveQuizFromId] methods.
-///
-/// The [id] represents the id of the quiz, this will be set only if the quiz is
-/// private, since public quizzes aren't stored.
-///
-/// [noOfQuestions] represents the number of questions that the quiz will have.
-///
-/// The [_questions] list stores the retrieved questions which will be displayed
-/// to the user to answer and the [_usedQuestions] list stores the IDs
-/// of these questions.
-///
-/// The [category] represents the category of the quiz, this is used to retrieve
-/// the questions from the firebase.
-///
-/// [isPublic] represents whether the quiz is public or private.
-///
-/// The [firestore] represents an instance of firebase connection,
-/// it is used to manipulate the firebase.
-///
-/// The [name] represents the name of the quiz
-///
-/// The [UID] represents the ID of the user who created the quiz
+/// The Quiz class is responsible for being an instance of a quiz and also,
+/// for filling the quiz with questionswhether it is a private or a public quiz.
+/// This is done by using either the[getRandomQuestions] or the
+/// [retrieveQuizFromId] methods.
 
 class Quiz {
+  /// The id represents the id of the quiz, this will be set only if the quiz is
+  /// private, since public quizzes aren't stored.
   late String id;
+  /// The category represents the category of the quiz, this is used to retrieve
+  /// the questions from the firebase.
   late Category category;
+  /// noOfQuestions represents the number of questions that the quiz will have.
   late int noOfQuestions;
-  late String? ownerID, name,UID;
+  /// The ownerID represents the ID of the user who created the quiz or the word
+  /// 'public' used to reference public quizzes.
+  late String? ownerID;
+  /// The name variable stores the name of the quiz.
+  late String? name;
+  /// The UID represents the ID of the user who created the quiz.
+  late String? UID;
+  /// The _questions list stores the retrieved questions which will be displayed
+  /// to the user to answer.
   List<Question> _questions = [];
+  /// The _usedQuestions list stores the IDs of the questions already used in the
+  /// quiz.
   List<String> _usedQuestions = [];
+  /// The firestore represents an instance of firebase connection,
+  /// it is used to manipulate the firebase.
   late FirebaseFirestore? firestore;
+  /// isPublic represents whether the quiz is public or private.
   late bool isPublic;
 
   /// A getter for the list of questions.
@@ -131,10 +127,10 @@ class Quiz {
 
   /// Gives the quiz a random unique ID.
   /// This method is an asynchronous, recursive method that will store a random
-  /// ID by using the [createID] method into the [tempID] variable and then
+  /// ID by using the [createID] method into the "tempID" variable and then
   /// it will check if the ID is already used by another quiz, if it is, it will
   /// call itself again, otherwise it will set the [id] parameter to the
-  /// [tempID] and return.
+  /// "tempID" and return.
   Future<void> assignUniqueID() async {
     String tempID = createID();
 
@@ -190,14 +186,14 @@ class Quiz {
       /// if it is not, add it to the list of used questions
       /// add the question to the list of questions
       String tempID =
-          await category.randomizer(public: isPublic);
+      await category.randomizer(public: isPublic);
       while (_usedQuestions.contains(tempID)) {
         tempID =
-            await category.randomizer(public: isPublic);
+        await category.randomizer(public: isPublic);
       }
       _usedQuestions.add(tempID);
       Question tempQuestion =
-          await category.getQuestion(tempID, public: isPublic);
+      await category.getQuestion(tempID, public: isPublic);
       _questions.add(tempQuestion);
     }
 
@@ -227,7 +223,7 @@ class Quiz {
   /// variables [id], [name], [ownerID], [category], [noOfQuestions] and
   /// [_usedQuestions] will be retrieved from firebase.
   ///
-  /// After this is retrieved, the method will call a method [getPrivateQuestions]
+  /// After this is retrieved, the method will call a method "getPrivateQuestions"
   /// from [Category] class which will retrieve the questions from the firebase
   /// for the amount of times specified by the [noOfQuestions] variable, and the
   /// question IDs stored in the [_usedQuestions] variable.
@@ -261,7 +257,7 @@ class Quiz {
 
     for (int i = 0; i < noOfQuestions; i++) {
       Question tempQuestion =
-          await category.getPrivateQuestion(_usedQuestions[i], ownerID!);
+      await category.getPrivateQuestion(_usedQuestions[i], ownerID!);
       _questions.add(tempQuestion);
     }
 

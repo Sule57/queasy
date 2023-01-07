@@ -5,60 +5,48 @@ import 'answer.dart';
 
 /// This class represents a question in the quiz, it has direct access to the
 /// firebase and is used to store a question or update it in the database.
-///
-/// The parameter [text] represents the actual question, so for instance a
-/// question could look like
-/// What is the capial of France?
-///
-/// Paris
-///
-/// London
-///
-/// Berlin
-///
-/// Rome
-///
-/// the text would be "What is the capital of France?"
-///
-/// The parameter [answers] is a list of objects of type [Answer] which
-/// represent the possible answers to the question, so in the previously given
-/// example this list would store 4 objects of type [Answer] with the text
-/// "Paris", "London", "Berlin" and "Rome".
-///
-/// The parameter [category] represents the category of which this question is,
-/// so for instance if the question is about geography, the category would be
-/// "Geography". This will later be manipulated by a special class Category
-/// which will be responsible for manipulating the questions inside the firebase.
-///
-/// The parameter [questionId] is the ID of the question, it is used to identify
-/// the question inside the firebase.
-///
-/// The parameter [UID] is the unique ID of the user who is currently logged in,
-/// but since functions of this class should only be accessible to the user who
-/// created the question, it represents the unique id of the user who created
-/// the question. It is used to know who created the question, and to know where
-/// exactly in the firebase this question should be stored, due to questions by
-/// users being private.
-///
-/// The late parameter [firestore] is used to represent an instance of firebase
-/// connection, it is used to manipulate the firebase.
 class Question {
+  /// The parameter text represents the actual question, so for instance a
+  /// question could look like
+  /// What is the capial of France?:
+  /// Paris,
+  /// London,
+  /// Berlin,
+  /// Rome.
+  /// the text would be "What is the capital of France?".
   String text = "";
+  /// The parameter answers is a list of objects of type [Answer] which
+  /// represent the possible answers to the question, so in the previously given
+  /// example this list would store 4 objects of type [Answer] with the text
+  /// "Paris", "London", "Berlin" and "Rome".
   List<Answer> answers = [];
+  /// The parameter category represents the category of which this question is,
+  /// so for instance if the question is about geography, the category would be
+  /// "Geography". This will later be manipulated by a special class Category
+  /// which will be responsible for manipulating the questions inside the firebase.
   String category = "";
+  /// The parameter questionId is the ID of the question, it is used to identify
+  /// the question inside the firebase.
   late String? questionId = "";
+  /// The parameter UID is the unique ID of the user who is currently logged in,
+  /// but since functions of this class should only be accessible to the user who
+  /// created the question, it represents the unique id of the user who created
+  /// the question. It is used to know who created the question, and to know where
+  /// exactly in the firebase this question should be stored, due to questions by
+  /// users being private.
   String? UID;
+  /// The late parameter firestore is used to represent an instance of firebase
+  /// connection, it is used to manipulate the firebase.
   late FirebaseFirestore? firestore;
 
+  /// The getter for the id of the question.
   get id => questionId;
 
   /// This is the constructor of the class, it's used to create a new instance
   /// of the class, it takes the parameters [text], [answers], [category] and
   /// optionally [questionId] and [firestore].
-  ///
   /// The optional parameter [questionId] is used when the id is known, because
   /// the question already exists in the firebase.
-  ///
   /// The optional parameter [firestore] is used for testing purposes, if it is
   /// passed the constructor will assume that the developer is in testing.
   /// Therefore the [UID] will be set to a default value. If it is not passed
