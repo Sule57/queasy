@@ -7,20 +7,26 @@ import '../../utils/exceptions.dart';
 
 /// The class that is responsible for being an object of quiz.
 ///
-/// The Quiz class is also responsible for filling the quiz with questions whether it is a private or a public quiz.
-/// This is done by using either the [getRandomQuestions] or the [retrieveQuizFromId] methods.
+/// The Quiz class is also responsible for filling the quiz with questions
+/// whether it is a private or a public quiz. This is done by using either the
+/// [getRandomQuestions] or the [retrieveQuizFromId] methods.
 ///
-/// The [id] represents the id of the quiz, this will be set only if the quiz is private, since public quizzes aren't stored.
+/// The [id] represents the id of the quiz, this will be set only if the quiz is
+/// private, since public quizzes aren't stored.
 ///
 /// [noOfQuestions] represents the number of questions that the quiz will have.
 ///
-/// The [_questions] list stores the retrieved questions which will be displayed to the user to answer and the [_usedQuestions] list stores the IDs of these questions.
+/// The [_questions] list stores the retrieved questions which will be displayed
+/// to the user to answer and the [_usedQuestions] list stores the IDs
+/// of these questions.
 ///
-/// The [category] represents the category of the quiz, this is used to retrieve the questions from the firebase.
+/// The [category] represents the category of the quiz, this is used to retrieve
+/// the questions from the firebase.
 ///
 /// [isPublic] represents whether the quiz is public or private.
 ///
-/// The [firestore] represents an instance of firebase connection, it is used to manipulate the firebase.
+/// The [firestore] represents an instance of firebase connection,
+/// it is used to manipulate the firebase.
 ///
 /// The [name] represents the name of the quiz
 ///
@@ -175,7 +181,8 @@ class Quiz {
       this.id = 'whatever';
     }
 
-    /// for the number of questions in the quiz, get a random question from the category
+    /// for the number of questions in the quiz,
+    /// get a random question from the category.
     for (int i = 0; i < noOfQuestions; i++) {
       /// create a random id from category.randomizer
       /// check if the id is already in the list of used questions
