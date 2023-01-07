@@ -75,7 +75,7 @@ Time Frame: WS 22/23
 
 ### Log In View
 
-![image](https://user-images.githubusercontent.com/76959652/211169417-df220389-46b8-46fa-bf94-51435b476429.png)
+<img src="https://user-images.githubusercontent.com/76959652/211169417-df220389-46b8-46fa-bf94-51435b476429.png" height=500>
 
 * The user can log in with their data that was previously registered
 * The user can reset their password if forgotten
@@ -84,14 +84,15 @@ Time Frame: WS 22/23
 
 ### Register View
 
-![image](https://user-images.githubusercontent.com/76959652/211169549-71fc4947-024e-4467-9d2b-58beaa795e3c.png)
+<img src="https://user-images.githubusercontent.com/76959652/211169549-71fc4947-024e-4467-9d2b-58beaa795e3c.png" height=500>
+
 
 * The user can register by using the traditional way of providing information (Email, Username, Password, cPassword)
 * The user can register by using a Google or a Facebook account
 
 ### Home View
 
-![image](https://user-images.githubusercontent.com/76959652/211169786-2e0bf255-3e95-473b-ae36-26c400be9397.png)
+<img src="https://user-images.githubusercontent.com/76959652/211169786-2e0bf255-3e95-473b-ae36-26c400be9397.png" height=500>
 
 * The user can go to the Public Tournaments View
 * The user can open the Join Quiz popUp
