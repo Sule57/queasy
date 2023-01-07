@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:queasy/src/model/category_repo.dart';
 import 'package:queasy/src/view/play_quiz/quiz_view.dart';
-
+import 'package:queasy/src/view/widgets/side_navigation.dart';
 import '../theme_provider.dart';
 
 /// View for selecting a category.
@@ -61,10 +61,138 @@ class _CategorySelectionViewState extends State<CategorySelectionView> {
   /// parameter.
   @override
   Widget build(BuildContext context) {
-    if (_isLoading) {
-      return const Center(child: CircularProgressIndicator());
-    } else {
-      return Scaffold(
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
+
+    return width > 700
+        ? Scaffold(
+        body: Center(
+            child: Stack(
+              children: [
+                Column(
+                  children: [
+                    Expanded(
+                        child: Align(
+                          alignment: FractionalOffset.topLeft,
+                          child: Container(
+                            width: width / 1.5,
+                            height: height / 4,
+                            //alignment: Alignment.bottomLeft,
+                            decoration: BoxDecoration(
+                              color: const Color(0xfff1ffe7),
+                            ),
+                          ),
+                        ))
+                  ],
+                ),
+                Column(
+                  children: [
+                    Expanded(
+                        child: Align(
+                          alignment: FractionalOffset.topLeft,
+                          child: Container(
+                            margin: const EdgeInsets.only(top: 130),
+                            width: width / 3,
+                            height: height / 1,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(30),
+                                bottomLeft: Radius.circular(30),
+                              ),
+                              color: const Color(0xffF19C79),
+                            ),
+                          ),
+                        ))
+                  ],
+                ),
+                Column(
+                  children: [
+                    Expanded(
+                      child: Align(
+                        alignment: FractionalOffset.bottomRight,
+                        child: Container(
+                          width: width / 7,
+                          height: height / 2,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(30),
+                            ),
+                            color: const Color(0xffF19C79),
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+                Column(
+                  children: [
+                    Expanded(
+                      child: Align(
+                        alignment: FractionalOffset.bottomRight,
+                        child: Container(
+                          width: width / 2.5,
+                          height: height / 6,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(30),
+                            ),
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+                ListView.builder(
+                  itemCount: list.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    String categoryName = list[index];
+                    return Container(
+                      padding:
+                      const EdgeInsets.only(left: 30.0, right: 30.0, top: 20.0),
+                      width: 70,
+                      height: MediaQuery.of(context).size.height / 8,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Provider.of<ThemeProvider>(context)
+                              .currentTheme
+                              .colorScheme
+                              .background,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                        ),
+                        onPressed: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => QuizView(
+                                category: categoryName,
+                              ),
+                            ),
+                          );
+                        },
+                        child: Text(
+                          categoryName,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 40,
+                            color: Provider.of<ThemeProvider>(context)
+                                .currentTheme
+                                .colorScheme
+                                .onBackground,
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+                SideNavigation(),
+                SizedBox(
+                  width: width - SideNavigation().width,
+                ),
+              ],
+            )))
+        : Scaffold(
         backgroundColor: Theme.of(context).colorScheme.primary,
         extendBodyBehindAppBar: true,
         appBar: AppBar(
@@ -156,4 +284,3 @@ class _CategorySelectionViewState extends State<CategorySelectionView> {
       );
     }
   }
-}

@@ -50,18 +50,105 @@ class _HomeViewState extends State<HomeView> {
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
 
     return width > 700
         ? Scaffold(
-            body: Row(
+            body: Center(
+                child: Stack(
             children: [
+              Column(
+                children: [
+                  Expanded(
+                      child: Align(
+                    alignment: FractionalOffset.topRight,
+                    child: Container(
+                      width: width / 3.5,
+                      height: height / 4,
+                      //alignment: Alignment.bottomLeft,
+                      decoration: BoxDecoration(
+                        color: const Color(0xff9fc490),
+                      ),
+                    ),
+                  ))
+                ],
+              ),
+              Column(
+                children: [
+                  Expanded(
+                      child: Align(
+                    alignment: FractionalOffset.topRight,
+                    child: Container(
+                      margin: const EdgeInsets.only(top: 130),
+                      width: width / 9,
+                      height: height / 2,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(30),
+                          bottomLeft: Radius.circular(30),
+                        ),
+                        color: const Color(0xffF19C79),
+                      ),
+                    ),
+                  ))
+                ],
+              ),
+              Column(
+                children: [
+                  Expanded(
+                    child: Align(
+                      alignment: FractionalOffset.bottomRight,
+                      child: Container(
+                        width: width / 1.7,
+                        height: height / 6,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(30),
+                          color: const Color(0xfff1ffe7),
+                        ),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+              Column(
+                children: [
+                  Expanded(
+                    child: Align(
+                      alignment: FractionalOffset.center,
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 200, top: 50),
+                        child: Container(
+                          width: width / 2.5,
+                          height: height / 1.4,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(30),
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(20),
+                            child: RichText(
+                              text: TextSpan(
+                                text: 'Text your knowledge',
+                                style: const TextStyle(
+                                    color: const Color(0xffF1FFE7),
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 40),
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
               SideNavigation(),
               SizedBox(
                 width: width - SideNavigation().width,
-                child: HomeWidgets(),
               ),
             ],
-          ))
+          )))
         : Scaffold(
             bottomNavigationBar: MotionTabBar(
               labels: const ['Home', 'Leaderboard', 'Profile'],
