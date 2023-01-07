@@ -58,9 +58,9 @@ class LoginViewMobile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
     double height =
         MediaQuery.of(context).size.height - MediaQuery.of(context).padding.top;
+    double verticalPadding = height / 20;
     TextStyle? titleTextStyle = Provider.of<ThemeProvider>(context)
         .currentTheme
         .textTheme
@@ -71,29 +71,34 @@ class LoginViewMobile extends StatelessWidget {
 
     return Scaffold(
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Container(
-            height: height,
-            width: width,
-            padding: const EdgeInsets.symmetric(vertical: 50, horizontal: 20),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Image.asset(
-                  'lib/assets/images/logo_vertical.png',
-                  height: height / 4,
-                  fit: BoxFit.fitHeight,
-                ),
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    'Log in',
-                    style: titleTextStyle,
+        child: Padding(
+          padding:
+              EdgeInsets.symmetric(vertical: verticalPadding, horizontal: 20),
+          child: SingleChildScrollView(
+            child: Container(
+              height: height - verticalPadding * 2,
+              constraints: BoxConstraints(
+                minHeight: 550,
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    'lib/assets/images/logo_vertical.png',
+                    height: height / 4,
+                    fit: BoxFit.fitHeight,
                   ),
-                ),
-                Expanded(child: LoginInfo()),
-              ],
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      'Log in',
+                      style: titleTextStyle,
+                    ),
+                  ),
+                  Expanded(child: LoginInfo()),
+                ],
+              ),
             ),
           ),
         ),
@@ -109,6 +114,13 @@ class LoginViewDesktop extends StatelessWidget {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
+    TextStyle? titleTextStyle = Provider.of<ThemeProvider>(context)
+        .currentTheme
+        .textTheme
+        .headline1
+        ?.copyWith(
+          height: 1,
+        );
 
     return Scaffold(
       body: Stack(
@@ -131,7 +143,17 @@ class LoginViewDesktop extends StatelessWidget {
                   ),
                   SizedBox(
                     width: width / 3,
-                    child: LoginInfo(),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Log in',
+                          style: titleTextStyle,
+                        ),
+                        LoginInfo(),
+                      ],
+                    ),
                   ),
                 ],
               ),

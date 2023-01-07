@@ -50,7 +50,7 @@ class _LoginInfoState extends State<LoginInfo> {
               TextFormField(
                 controller: controller.emailController,
                 decoration: const InputDecoration(
-                  labelText: 'Email',
+                  hintText: 'Email',
                 ),
                 validator: controller.validateEmail,
                 onEditingComplete: () => FocusScope.of(context).nextFocus(),
@@ -64,7 +64,7 @@ class _LoginInfoState extends State<LoginInfo> {
               TextFormField(
                 controller: controller.passwordController,
                 decoration: InputDecoration(
-                  labelText: 'Password',
+                  hintText: 'Password',
                   suffixIcon: IconButton(
                     icon: Icon(
                       controller.isPasswordObscured
