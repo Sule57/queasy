@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:queasy/src/view/category_selection_view.dart';
 import 'package:queasy/src/view/home_view.dart';
-import 'package:queasy/src/view/login/login_desktop.dart';
 import 'package:queasy/src/view/see_leaderboard/leaderboard_view.dart';
 import 'package:queasy/src/view/see_profile/profile_view.dart';
-import 'package:queasy/src/view/see_profile/profile_controller.dart';
+import 'package:queasy/src/view/see_profile/profile_view_controller.dart';
+import '../login/login_view.dart';
 
 /// Defines the navigation bar used in big screens.
 ///
@@ -143,9 +143,9 @@ class SideNavigation extends StatelessWidget {
                   onTap: () {
                     bool success = ProfileViewController().signOut();
                     if (success) {
-                      Navigator.of(context).push(
+                      Navigator.of(context).pushReplacement(
                         MaterialPageRoute(
-                          builder: (context) => const LogInDesktop(),
+                          builder: (context) => LoginView(),
                         ),
                       );
                     } else {
