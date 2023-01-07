@@ -6,6 +6,8 @@ import 'package:queasy/src/model/profile.dart';
 import 'package:queasy/src/model/question.dart';
 import 'package:queasy/utils/exceptions.dart';
 
+import '../../src.dart';
+
 /// This is the model of the Category.
 ///
 /// [name] is the name of the category.
@@ -27,6 +29,8 @@ class Category {
   late String _name;
   late Color _color;
   late bool _isPublic;
+  String? UID = getCurrentUserID();
+  FirebaseFirestore? firestore = null;
 
   get name => _name;
   get color => _color;
@@ -34,9 +38,15 @@ class Category {
   /// Constructor for the [Category] class.
   ///
   /// [name] is the name of the [Category] and [color] is the color of the [Category].
-  Category({required String name, Color color = Colors.blue}) {
+  Category({required String name, Color color = Colors.blue, FirebaseFirestore? firestore = null}) {
     _name = name;
     _color = color;
+    if(firestore == null) {
+      this.firestore = FirebaseFirestore.instance;
+    }
+    else {
+      UID = "test123456789";
+    }
   }
 
   /// Constructor for the [Category] class for testing.
@@ -185,43 +195,70 @@ class Category {
   /// Used to delete a given [Question] out of the category.
   ///
   /// [question] is the [Question] that should be deleted. [firestore] is not required instance of the database and is only used for testing.
-  Future<void> deleteQuestion(Question question,
-      {FirebaseFirestore? firestore}) async {
-    if (firestore == null) {
-      firestore = FirebaseFirestore.instance;
-    }
+  Future<void> deleteQuestion(Question question) async {
 
-    if (getCurrentUserID() == null) {
+    if (UID == null) {
       throw UserNotLoggedInException();
     }
 
     // delete the question from the private category
     await firestore
-        .collection('categories')
-        .doc(getCurrentUserID())
+        ?.collection('categories')
+        .doc(UID)
         .collection(_name)
         .doc(question.id)
         .delete();
+
+    List<String> questionIDs = [];
+    String currentQuizId = "";
+    await firestore
+        ?.collection('quizzes')
+        .where('creatorID', isEqualTo: UID)
+        .where('category', isEqualTo: question.category)
+        .get()
+        .then((QuerySnapshot querySnapshot) {
+      querySnapshot.docs.forEach((doc) {
+        currentQuizId = doc.id;
+        Map<String, dynamic> quiz = doc.data() as Map<String, dynamic>;
+        questionIDs = quiz["questionIds"] as List<String>;
+        for (int i = 0; i < questionIDs.length; i++) {
+          if (questionIDs[i] == question.id) {
+            questionIDs.removeAt(i);
+            break;
+          }
+        }
+        if (questionIDs.isEmpty) {
+          firestore
+              ?.collection('quizzes')
+              .doc(currentQuizId)
+              .delete();
+        } else {
+          firestore
+              ?.collection('quizzes')
+              .doc(currentQuizId)
+              .update({
+            "questionIds": questionIDs,
+          });
+        }
+      });
+    });
+
   }
 
   /// Used to add a given [Question] to the category in the database.
   ///
   /// [question] is the [Question] that should be added. [firestore] is not required instance of the database and is only used for testing.
-  Future<void> createQuestion(Question question,
-      {FirebaseFirestore? firestore}) async {
-    if (firestore == null) {
-      firestore = FirebaseFirestore.instance;
-    }
+  Future<void> createQuestion(Question question) async {
 
-    if (getCurrentUserID() == null) {
+    if (UID == null) {
       throw UserNotLoggedInException();
     }
 
     // count how many questions already exist inside of the given category
     int count = 0;
     await firestore
-        .collection('categories')
-        .doc(getCurrentUserID())
+        ?.collection('categories')
+        .doc(UID)
         .collection(_name)
         .get()
         .then((QuerySnapshot querySnapshot) {
@@ -237,8 +274,8 @@ class Category {
     question.questionId = newID;
     print(newID);
     await firestore
-        .collection('categories')
-        .doc(getCurrentUserID())
+        ?.collection('categories')
+        .doc(UID)
         .collection(_name)
         .doc(newID)
         .set(question.toJson());
@@ -247,8 +284,8 @@ class Category {
     if (count == 1) {
       // delete the question from the public category which is called question-1
       await firestore
-          .collection('categories')
-          .doc(getCurrentUserID())
+          ?.collection('categories')
+          .doc(UID)
           .collection(_name)
           .doc('question-1')
           .delete();
@@ -262,13 +299,15 @@ class Category {
       categoryName = _name;
     }
 
-    if (getCurrentUserID() == null) {
+    if (UID == null) {
       throw UserNotLoggedInException();
     }
     late Question question;
 
     if (public == false) {
-      await _privateDoc
+      await firestore
+          ?.collection('categories')
+          .doc(UID)
           .collection(categoryName)
           .doc(id)
           .get()
@@ -281,7 +320,9 @@ class Category {
         }
       });
     } else {
-      await _publicDoc
+      await firestore
+          ?.collection('categories')
+          .doc('public')
           .collection(categoryName)
           .doc(id)
           .get()
@@ -304,12 +345,12 @@ class Category {
 
   Future<Question> getPrivateQuestion(String id, String ownerID) async {
 
-    if (getCurrentUserID() == null) {
+    if (UID == null) {
       throw UserNotLoggedInException();
     }
     late Question question;
-    await FirebaseFirestore.instance
-        .collection('categories')
+    await firestore
+        ?.collection('categories')
         .doc(ownerID)
         .collection(_name)
         .doc(id)
@@ -330,84 +371,77 @@ class Category {
     }
   }
 
-/// Calculates the next ID for a question in the category.
-///
-/// This is used to create a unique ID for a question in the category. It finds the highest ID and adds 1 to it.
-Future<String> getNextID() async {
+  /// Calculates the next ID for a question in the category.
+  ///
+  /// This is used to create a unique ID for a question in the category. It finds the highest ID and adds 1 to it.
+  Future<String> getNextID() async {
 
-  if (getCurrentUserID() == null) {
-    throw UserNotLoggedInException();
-  }
-  int count = -1;
-  await FirebaseFirestore.instance
-      .collection('categories')
-      .doc(getCurrentUserID())
-      .collection(_name)
-      .get()
-      .then((QuerySnapshot querySnapshot) {
-    querySnapshot.docs.forEach((doc) {
-      // take the biggest ID and add 1 to it
-      if (int.parse(doc['ID'].substring(8)) > count) {
-        count = int.parse(doc['ID'].substring(8));
-        print("count: " + count.toString());
-      }
-    });
-  });
-  count = count + 1;
-  return 'question' + count.toString();
-}
-
-Future<String> randomizer(
-    {FirebaseFirestore? firestore, bool public = false}) async {
-
-  if (getCurrentUserID() == null) {
-    throw UserNotLoggedInException();
-  }
-
-  if (firestore == null) {
-    firestore = FirebaseFirestore.instance;
-  }
-
-  // count the amount of documents in the public category
-  int count = 0;
-
-  if (public == true) {
+    if (UID == null) {
+      throw UserNotLoggedInException();
+    }
+    int count = -1;
     await firestore
-        .collection('categories')
-        .doc('public')
+        ?.collection('categories')
+        .doc(UID)
         .collection(_name)
         .get()
         .then((QuerySnapshot querySnapshot) {
       querySnapshot.docs.forEach((doc) {
-        count++;
+        // take the biggest ID and add 1 to it
+        if (int.parse(doc['ID'].substring(8)) > count) {
+          count = int.parse(doc['ID'].substring(8));
+          print("count: " + count.toString());
+        }
       });
     });
-  } else {
+    count = count + 1;
+    return 'question' + count.toString();
+  }
+
+  Future<String> randomizer({bool public = false}) async {
+
+    if (UID == null) {
+      throw UserNotLoggedInException();
+    }
+
+    // count the amount of documents in the public category
+    int count = 0;
+
+    if (public == true) {
+      await firestore
+          ?.collection('categories')
+          .doc('public')
+          .collection(_name)
+          .get()
+          .then((QuerySnapshot querySnapshot) {
+        querySnapshot.docs.forEach((doc) {
+          count++;
+        });
+      });
+    } else {
+      await firestore
+          ?.collection('categories')
+          .doc(UID)
+          .collection(_name)
+          .get()
+          .then((QuerySnapshot querySnapshot) {
+        querySnapshot.docs.forEach((doc) {
+          count++;
+        });
+      });
+    }
+
+    // create a random integer between 0 and count
+    int random = Random().nextInt(count);
+
+    String id = 'question' + random.toString();
+
+    return id;
+  }
+
+  Future<void> deleteQuiz(String id) async {
+
     await firestore
-        .collection('categories')
-        .doc(getCurrentUserID())
-        .collection(_name)
-        .get()
-        .then((QuerySnapshot querySnapshot) {
-      querySnapshot.docs.forEach((doc) {
-        count++;
-      });
-    });
+        ?.collection('quizzes').doc(id).delete();
   }
-
-  // create a random integer between 0 and count
-  int random = Random().nextInt(count);
-
-  String id = 'question' + random.toString();
-
-  return id;
-}
-
-Future<void> deleteQuiz(String id, {FirebaseFirestore? firestore}) async {
-  if (firestore == null) {
-    firestore = FirebaseFirestore.instance;
-  }
-
-  await firestore.collection('quizzes').doc(id).delete();
-}
 }

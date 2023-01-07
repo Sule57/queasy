@@ -15,6 +15,7 @@ class Quiz {
   List<String> _usedQuestions = [];
   late FirebaseFirestore? firestore;
   late bool isPublic;
+  String? UID = getCurrentUserID();
 
   get questions => _questions;
 
@@ -25,12 +26,17 @@ class Quiz {
     this.name,
     this.firestore,
   }) {
-    firestore ?? FirebaseFirestore.instance;
+    if (firestore == null) {
+      firestore = FirebaseFirestore.instance;
+    }
+    else {
+      UID = "test123456789";
+    }
     getRandomQuestions();
   }
 
   Quiz({
-    // required this.id,
+    //required this.id,
     this.firestore,
   }) {
     category = Category(name: 'default');
@@ -38,7 +44,24 @@ class Quiz {
     if (firestore == null) {
       firestore = FirebaseFirestore.instance;
     }
+    else {
+      UID = "test123456789";
+    }
     // retrieveQuizFromId();
+  }
+
+  ///DO NOT USE THIS!!!
+  Quiz.fromJson(Map<String, dynamic> json) {
+    this.id = json['id'];
+    this.name = json['name'];
+    this.ownerID = json['creatorID'];
+    this.category = new Category(name: json['category']);
+    this.noOfQuestions = json['questionIds'].length;
+
+    /// add all questionIds to the list of used questions
+    for (int i = 0; i < noOfQuestions; i++) {
+      _usedQuestions.add(json['questionIds'][i]);
+    }
   }
 
   /// This method is supposed to create a random 8 character String
@@ -79,10 +102,10 @@ class Quiz {
 
   Future<Quiz> getRandomQuestions() async {
     if (isPublic == false) {
-      if (getCurrentUserID() == null) {
+      if (UID == null) {
         throw UserNotLoggedInException();
       }
-      this.ownerID = getCurrentUserID();
+      this.ownerID = UID;
 
       await assignUniqueID();
     } else {
@@ -98,10 +121,10 @@ class Quiz {
       /// if it is not, add it to the list of used questions
       /// add the question to the list of questions
       String tempID =
-          await category.randomizer(firestore: firestore, public: isPublic);
+          await category.randomizer(public: isPublic);
       while (_usedQuestions.contains(tempID)) {
         tempID =
-            await category.randomizer(firestore: firestore, public: isPublic);
+            await category.randomizer(public: isPublic);
       }
       _usedQuestions.add(tempID);
       Question tempQuestion =
@@ -119,15 +142,13 @@ class Quiz {
       'name': name,
       'creatorID': ownerID,
       'category': category.name,
-      'questionIds': _questions,
+      'questionIds': _usedQuestions,
     });
   }
 
   Future<Quiz> retrieveQuizFromId({required String id}) async {
     print('inside retrieveQuizFromId method. Id: $id');
     this.isPublic = false;
-
-    firestore ?? FirebaseFirestore.instance;
 
     await firestore
         ?.collection('quizzes')
