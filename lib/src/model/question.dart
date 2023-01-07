@@ -31,6 +31,8 @@ class Question {
   String category = "";
   late String? questionId = "";
   late Profile owner;
+  String? UID = getCurrentUserID();
+  late FirebaseFirestore? firestore;
 
   get id => questionId;
 
@@ -38,9 +40,17 @@ class Question {
   /// and assigns them to the corresponding parameters of the class
   Question(
       {required this.text,
-      required this.answers,
-      required this.category,
-      this.questionId});
+        required this.answers,
+        required this.category,
+        this.questionId,
+        this.firestore}) {
+    if (firestore == null) {
+      firestore = FirebaseFirestore.instance;
+    }
+    else {
+      UID = "test123456789";
+    }
+  }
 
   /// Initializes the question ID of the question. This is used when the question is created and the ID is not yet known.
   Future<void> init() async {
@@ -91,18 +101,15 @@ class Question {
   ///
   /// This is used to create a unique ID for a question in the category. It finds the highest ID and adds 1 to it.
   Future<String> getNextID() async {
-    String? userID = getCurrentUserID();
-    owner = (await Profile.getProfilefromUID(userID!))!;
-    String? ownerUsername = owner.username;
 
-    if (ownerUsername == null) {
+    if (UID == null) {
       throw UserNotLoggedInException();
     }
 
     int count = -1;
-    await FirebaseFirestore.instance
-        .collection('categories')
-        .doc(ownerUsername)
+    await firestore
+        ?.collection('categories')
+        .doc(UID)
         .collection(category)
         .get()
         .then((QuerySnapshot querySnapshot) {
@@ -120,21 +127,19 @@ class Question {
 
   /// updateQuestion function takes all the parameters of the question and updates the question in the firebase as a json
   /// this function is used to update the question in the firebase
-  Future<void> updateQuestion({FirebaseFirestore? firestore}) async {
-    if (firestore == null) {
-      firestore = FirebaseFirestore.instance;
-    }
+  Future<void> updateQuestion() async {
 
-    if (getCurrentUserID() == null) {
+    if (UID == null) {
       throw UserNotLoggedInException();
     }
 
     await firestore
-        .collection('categories')
-        .doc(getCurrentUserID())
+        ?.collection('categories')
+        .doc(UID)
         .collection(category)
         .doc(questionId)
         .update({
+      'category': category,
       'text': text,
       'answer1': {
         'text': answers[0].text,
@@ -159,6 +164,7 @@ class Question {
   Map<String, dynamic> toJson() {
     return {
       'ID': questionId,
+      'category': category,
       'text': text,
       'answer1': {
         'text': answers[0].text,
