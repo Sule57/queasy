@@ -20,17 +20,14 @@ import '../../src.dart';
 ///
 /// [_isPublic] is a boolean that determines if the category is public or private.
 class Category {
-  DocumentReference _publicDoc =
-  FirebaseFirestore.instance.collection('categories').doc('public');
-  DocumentReference _privateDoc = FirebaseFirestore.instance
-      .collection('categories')
-      .doc(getCurrentUserID());
+  late DocumentReference _publicDoc;
+  late DocumentReference _privateDoc;
 
   late String _name;
   late Color _color;
   late bool _isPublic;
-  String? UID = getCurrentUserID();
-  FirebaseFirestore? firestore = null;
+  late String? UID;
+  late FirebaseFirestore? firestore;
 
   get name => _name;
   get color => _color;
@@ -38,14 +35,21 @@ class Category {
   /// Constructor for the [Category] class.
   ///
   /// [name] is the name of the [Category] and [color] is the color of the [Category].
-  Category({required String name, Color color = Colors.blue, FirebaseFirestore? firestore = null}) {
+  Category({required String name, Color color = Colors.blue, FirebaseFirestore? firestore}) {
     _name = name;
     _color = color;
     if(firestore == null) {
+      UID = getCurrentUserID();
       this.firestore = FirebaseFirestore.instance;
+      this._publicDoc = FirebaseFirestore.instance.collection('categories').doc('public');
+      this._privateDoc = FirebaseFirestore.instance
+          .collection('categories')
+          .doc(getCurrentUserID());
     }
     else {
       UID = "test123456789";
+      _publicDoc = firestore.collection('categories').doc('public');
+      _privateDoc = firestore.collection('categories').doc(UID);
     }
   }
 
