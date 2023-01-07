@@ -21,9 +21,9 @@ class LoginProvider with ChangeNotifier {
   final forgotPasswordFormKey =
       GlobalKey<FormState>(debugLabel: '_forgotPasswordFormKey');
 
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
-  TextEditingController forgotPasswordController = TextEditingController();
+  late TextEditingController emailController;
+  late TextEditingController passwordController;
+  late TextEditingController forgotPasswordController;
 
   bool _isPasswordObscured = true;
   get isPasswordObscured => _isPasswordObscured;
