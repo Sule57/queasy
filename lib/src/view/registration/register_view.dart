@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:queasy/src/view/registration/register_desktop.dart';
-import 'package:queasy/src/view/registration/register_mobile.dart';
+import 'package:queasy/src/view/registration/register_view_desktop.dart';
+import 'package:queasy/src/view/registration/register_view_mobile.dart';
 
 class RegisterView extends StatefulWidget {
   RegisterView({Key? key}) : super(key: key);
@@ -24,7 +24,7 @@ class RegisterViewState extends State<RegisterView> {
     ///if width of the device is less than 700 then UserProfileMobile is shown
     ///if more than 700 then the user sees UserProfileDesktop
     return MediaQuery.of(context).size.width > 700
-        ? RegisterDesktop()
+        ? RegisterViewDesktop()
         : RegisterViewMobile();
   }
 }

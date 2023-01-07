@@ -32,7 +32,7 @@ class RoundedButton extends StatelessWidget {
       alignment: Alignment.center,
       width: width ?? size.width * 0.5,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(40),
         color: backgroundColor ?? Theme.of(context).colorScheme.primary,
         border: Border.all(
           color: borderColor ?? Colors.transparent,
@@ -43,7 +43,7 @@ class RoundedButton extends StatelessWidget {
         child: Text(
           buttonName,
           style: TextStyle(
-            fontSize: fontSize ?? 24,
+            fontSize: fontSize ?? 22,
             color: textColor ?? Theme.of(context).colorScheme.onPrimary,
             fontWeight: fontWeight ?? FontWeight.bold,
           ),

@@ -43,7 +43,6 @@ class Profile {
   static int globalCounter = 0;
   String email;
   String username;
-  String hashPassword;
   String? firstName;
   String? lastName;
   String? profilePicture;
@@ -59,7 +58,6 @@ class Profile {
   Profile({
     required this.username,
     required this.email,
-    required this.hashPassword,
     this.firstName = '',
     this.lastName = '',
     this.profilePicture = '',
@@ -72,7 +70,6 @@ class Profile {
   Profile.test({
     required this.username,
     required this.email,
-    required this.hashPassword,
     this.firstName = '',
     this.lastName = '',
     this.profilePicture = '',
@@ -100,7 +97,6 @@ class Profile {
       // bio = json[json.keys.toList()[0]]['bio'],
       // age = json[json.keys.toList()[0]]['age'];
       : username = json['username'],
-        hashPassword = json['hashPassword'],
         email = json['email'],
         firstName = json['firstName'],
         lastName = json['lastName'],
@@ -112,7 +108,7 @@ class Profile {
 
   @override
   String toString() {
-    return 'User{ username: $username, hashPassword: $hashPassword, firstName: $firstName, lastName: $lastName, bio: $bio, age: $age, }';
+    return 'User{ username: $username, firstName: $firstName, lastName: $lastName, bio: $bio, age: $age, }';
   }
 
   /// converts user object to json object
@@ -121,7 +117,6 @@ class Profile {
         'lastName': lastName,
         'firstName': firstName,
         'email': email,
-        'hashPassword': hashPassword,
         'bio': bio,
         'age': age,
         'scores': publicScore,

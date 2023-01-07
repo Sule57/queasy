@@ -1,5 +1,5 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:queasy/src/view/login/login_view.dart';
 import 'package:queasy/src/view/registration/register_view_controller.dart';
 import 'package:queasy/src/view/home_view.dart';
 
@@ -34,6 +34,8 @@ class RegisterViewMobileState extends State<RegisterViewMobile> {
   ///[textController] a list of TextEditingControllers to receive user inputs
   List<TextEditingController> textController =
       List.generate(5, (i) => TextEditingController());
+
+  bool _isGoogleSigningIn = false;
 
   @override
   void initState() {
@@ -283,10 +285,31 @@ class RegisterViewMobileState extends State<RegisterViewMobile> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  IconButton(
-                    icon: Image.asset('lib/assets/images/google.png'),
-                    onPressed: () {},
-                  ),
+                  _isGoogleSigningIn
+                      ? CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                              Theme.of(context).colorScheme.primary),
+                        )
+                      : IconButton(
+                          icon: Image.asset('lib/assets/images/google.png'),
+                          onPressed: () async {
+                            setState(() {
+                              _isGoogleSigningIn = true;
+                            });
+                            User? user = await controller.signInWithGoogle(
+                                context: context);
+                            setState(() {
+                              _isGoogleSigningIn = false;
+                            });
+                            if (user != null) {
+                              Navigator.of(context).pushReplacement(
+                                MaterialPageRoute(
+                                  builder: (context) => HomeView(),
+                                ),
+                              );
+                            }
+                          },
+                        ),
                   IconButton(
                     icon: Image.asset(
                       'lib/assets/images/facebook.png',
@@ -326,8 +349,7 @@ class RegisterViewMobileState extends State<RegisterViewMobile> {
                         borderRadius: BorderRadius.circular(18.0),
                       ))),
                       onPressed: () => {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => LogInView()))
+                        Navigator.of(context).pop(),
                       },
                     ),
                   ),

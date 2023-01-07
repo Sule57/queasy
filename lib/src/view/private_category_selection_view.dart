@@ -3,7 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:queasy/src/model/category_repo.dart';
 import 'package:queasy/src/view/play_quiz/quiz_view.dart';
 import 'package:queasy/src/view/quiz_edit_view.dart';
-import '../theme_provider.dart';
+
+import '../../constants/theme_provider.dart';
 
 // TODO: update comments
 /// View for selecting a private quiz.
@@ -113,11 +114,10 @@ class _PrivateCategorySelectionViewState
                 onPressed: () {
                   // Create an alert dialog to add a new category
                   showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return NewCategoryPopUp();
-                      }
-                    );
+                      context: context,
+                      builder: (BuildContext context) {
+                        return NewCategoryPopUp();
+                      });
                 },
                 iconSize: 30,
               ),
@@ -177,7 +177,10 @@ class _NewCategoryPopUpState extends State<NewCategoryPopUp> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Add a new category', style: TextStyle(color: Colors.white, fontSize: 16),),
+      title: const Text(
+        'Add a new category',
+        style: TextStyle(color: Colors.white, fontSize: 16),
+      ),
       content: TextField(
         controller: newCategoryController,
         style: const TextStyle(color: Colors.white),
@@ -227,7 +230,8 @@ class _NewCategoryPopUpState extends State<NewCategoryPopUp> {
                   );
                 } else {
                   // Add the new category to the database
-                  await CategoryRepo().createCategory(newCategoryController.text, Colors.blue);
+                  await CategoryRepo()
+                      .createCategory(newCategoryController.text, Colors.blue);
                   Navigator.pop(context); // Close the alert dialog
                   // Refresh the view
                   Navigator.pushReplacement(
@@ -251,7 +255,7 @@ class _NewCategoryPopUpState extends State<NewCategoryPopUp> {
           ],
         ),
       ],
-      );
+    );
   }
 }
 

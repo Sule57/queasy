@@ -9,7 +9,6 @@ class ProfileProvider with ChangeNotifier {
   Profile player = Profile(
       username: "",
       email: "",
-      hashPassword: "",
       firstName: "",
       lastName: "",
       bio: "",

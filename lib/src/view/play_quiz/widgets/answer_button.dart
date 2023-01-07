@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../theme_provider.dart';
+import '../../../../constants/theme_provider.dart';
 import '../quiz_provider.dart';
 
 /// Widget for every answer of the quiz.

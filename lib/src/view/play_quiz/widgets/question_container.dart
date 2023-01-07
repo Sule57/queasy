@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../theme_provider.dart';
 import '../quiz_provider.dart';
 
 /// Widget to display questions of the quiz.
