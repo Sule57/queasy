@@ -5,22 +5,10 @@ import 'package:queasy/src/model/profile.dart';
 import 'package:queasy/src/model/question.dart';
 import '../../utils/exceptions.dart';
 
-/// The class that is responsible for being an object of quiz.
-///
-/// The Quiz class is also responsible for filling the quiz with questions
-/// whether it is a private or a public quiz. This is done by using either the
-/// [getRandomQuestions] or the [retrieveQuizFromId] methods.
-///
-///
-/// The [_questions] list stores the retrieved questions which will be displayed
-/// to the user to answer and the [_usedQuestions] list stores the IDs
-/// of these questions.
-///
-
-///
-/// The [name] represents the name of the quiz
-///
-/// The [UID] represents the ID of the user who created the quiz
+/// The Quiz class is responsible for being an instance of a quiz and also,
+/// for filling the quiz with questionswhether it is a private or a public quiz.
+/// This is done by using either the[getRandomQuestions] or the
+/// [retrieveQuizFromId] methods.
 
 class Quiz {
   /// The id represents the id of the quiz, this will be set only if the quiz is
