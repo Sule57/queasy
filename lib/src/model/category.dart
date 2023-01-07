@@ -7,7 +7,6 @@ import 'package:queasy/src/model/question.dart';
 import 'package:queasy/utils/exceptions.dart';
 
 import '../../src.dart';
-
 /// This is the model of the Category.
 ///
 /// [name] is the name of the category.
@@ -15,8 +14,6 @@ import '../../src.dart';
 /// [color] is the color of the category.
 ///
 /// [_publicDoc] is the reference to the public categories in Firestore.
-///
-/// [_Doc] is the reference to the private categories in Firestore where categories of the current user are stored.
 ///
 /// [_isPublic] is a boolean that determines if the category is public or private.
 class Category {
@@ -35,6 +32,15 @@ class Category {
   /// Constructor for the [Category] class.
   ///
   /// [name] is the name of the [Category] and [color] is the color of the [Category].
+  ///
+  /// [firestore] is the instance of the Firestore database. If it is passed,
+  /// the constructor assumes that the developer is in testing and will
+  /// initialize the [UID] with a default value and [_privateDoc] and [_publicDoc]
+  /// with the references in the test database.
+  ///
+  /// If it is not passed, the constructor will initialize the [UID] with the
+  /// current user's [UID] and [_privateDoc] and [_publicDoc] with the references
+  /// in the production database.
   Category({required String name, Color color = Colors.blue, FirebaseFirestore? firestore}) {
     _name = name;
     _color = color;
@@ -53,11 +59,6 @@ class Category {
       _privateDoc = firestore.collection('categories').doc(UID);
     }
   }
-
-  /// Constructor for the [Category] class for testing.
-  ///
-  /// [category] is the name of the [Category], [color] is the color of the [Category]
-  /// and [FirebaseFirestore] is the Fake instance of the database
 
   /// Constructor for the [Category] from JSON data.
   ///

@@ -33,7 +33,6 @@ Future<String?> getCurrentUserUsername() async {
 ///adapted for the needs of the quizz application
 /// [email] email field
 /// [username] username
-/// [hashPassword] password
 /// [firstName] user first name
 /// [lastName] user last name
 /// [profilePicture] path to the profile picture
@@ -205,7 +204,6 @@ class Profile {
 
   //START OF METHODS FOR PROFILE VIEW
   /// Updates the user's username in the Firebase Database
-  /// @param [currentUsername] - username of the user whose username to change
   /// @param [newUsername] - username to change the current username to
   /// @return true - username was updated successfully
   /// @return false - username was not updated successfully
