@@ -151,10 +151,14 @@ class _LeaderboardViewContentState extends State<LeaderboardViewContent> {
 class LeaderboardMobileContent extends StatelessWidget {
   const LeaderboardMobileContent({Key? key}) : super(key: key);
   //TODO: manually add all public category names to this list
-  static const List<String> list = <String>['All', 'Science'];
+  static const List<String> list = <String>['All', 'Science','History', 'Geography', 'Entertainment',
+    'Art & Literature'];
 
   @override
   Widget build(BuildContext context) {
+    final double statusBarHeight = MediaQuery
+      .of(context)
+      .padding.top;
     return Scaffold(
       body: Center(
         child: Stack(
@@ -212,49 +216,55 @@ class LeaderboardMobileContent extends StatelessWidget {
               child: CustomScrollView(
                 slivers: <Widget>[
                   SliverAppBar(
-                    toolbarHeight: 75,
+                    title: Center(child:Text(
+                        Provider.of<LeaderboardProvider>(context).category,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 50.0,
+                        ) //TextStyle
+                    )),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.only(
                             bottomLeft: Radius.circular(30),
                             bottomRight: Radius.circular(30))),
-                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    //backgroundColor: Theme.of(context).colorScheme.primary,
                     pinned: true,
+                    expandedHeight: 120,
                     flexibleSpace: FlexibleSpaceBar(
-                      centerTitle: true,
-                      title: Text(
-                          Provider.of<LeaderboardProvider>(context).category,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 50.0,
-                          ) //TextStyle
-                          ),
+                      background: Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: <Widget>[
+                              Container(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    DropdownButton<String>(
+                                      hint: Text("Category",
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 20.0,
+                                          )),
+                                      icon: const Icon(Icons.arrow_downward),
+                                      iconEnabledColor: Colors.white,
+                                      iconDisabledColor: Colors.white,
+                                      items: list.map<DropdownMenuItem<String>>(
+                                              (final String value) {
+                                            return DropdownMenuItem<String>(
+                                              value: value,
+                                              child: Text(value),
+                                            );
+                                          }).toList(),
+                                      onChanged: (value) {
+                                        Provider.of<LeaderboardProvider>(context,
+                                            listen: false)
+                                            .setLeaderboard(value!);
+                                      },
+                                    )
+                                  ],),),
+                            ],)
+                      ),
                     ),
-                    //drop down menu
-                    actions: [
-                      Center(
-                          child: DropdownButton<String>(
-                        hint: Text("Category",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 20.0,
-                            )),
-                        icon: const Icon(Icons.arrow_downward),
-                        iconEnabledColor: Colors.white,
-                        iconDisabledColor: Colors.white,
-                        items: list.map<DropdownMenuItem<String>>(
-                            (final String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value),
-                          );
-                        }).toList(),
-                        onChanged: (value) {
-                          Provider.of<LeaderboardProvider>(context,
-                                  listen: false)
-                              .setLeaderboard(value!);
-                        },
-                      ))
-                    ],
                   ),
                   SliverList(
                     delegate: SliverChildBuilderDelegate(
@@ -283,7 +293,7 @@ class LeaderboardMobileContent extends StatelessWidget {
                                 textColor: const Color(0xFFFF8C66),
                                 iconColor: Colors.white,
                                 leading: index == 0
-                                    ? const Text('')
+                                    ? null
                                     : Container(
                                         height: 25,
                                         width: 25,
@@ -382,6 +392,7 @@ class LeaderboardMobileContent extends StatelessWidget {
     );
   }
 }
+
 
 class LeaderboardDesktopContent extends StatelessWidget {
   LeaderboardDesktopContent({Key? key}) : super(key: key);
