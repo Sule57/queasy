@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:queasy/src/model/profile.dart';
 
 class ProfileViewController {

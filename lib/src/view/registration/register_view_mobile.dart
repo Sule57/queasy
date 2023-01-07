@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:queasy/src/view/login/login_view.dart';
 import 'package:queasy/src/view/registration/register_view_controller.dart';
 import 'package:queasy/src/view/home_view.dart';
 
@@ -326,8 +325,7 @@ class RegisterViewMobileState extends State<RegisterViewMobile> {
                         borderRadius: BorderRadius.circular(18.0),
                       ))),
                       onPressed: () => {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => LogInView()))
+                        Navigator.of(context).pop(),
                       },
                     ),
                   ),

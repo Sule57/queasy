@@ -8,21 +8,21 @@ import 'package:queasy/src/view/see_profile/profile_view_controller.dart';
 import 'package:flutter_profile_picture/flutter_profile_picture.dart';
 import 'package:queasy/src/view/widgets/side_navigation.dart';
 
-import '../../theme_provider.dart';
+import '../../../constants/theme_provider.dart';
 import '../registration/register_view.dart';
 import 'profile_provider.dart';
 
 ///This is UserProfileDesktop view
 ///It displays web version of the profile page
-class UserProfileDesktop extends StatefulWidget {
-  UserProfileDesktop({Key? key}) : super(key: key);
+class ProfileViewDesktop extends StatefulWidget {
+  ProfileViewDesktop({Key? key}) : super(key: key);
 
   ///creates UserProfileDesktop class
   @override
-  State<UserProfileDesktop> createState() => ProfileDesktopState();
+  State<ProfileViewDesktop> createState() => ProfileDesktopState();
 }
 
-class ProfileDesktopState extends State<UserProfileDesktop> {
+class ProfileDesktopState extends State<ProfileViewDesktop> {
   // Builds the view.
   ///
   /// Uses a [Stack] to display the

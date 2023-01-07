@@ -1,22 +1,21 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:queasy/constants/app_themes.dart';
-import 'package:queasy/src/view/login/login_desktop.dart';
 import 'package:queasy/src/view/registration/register_view_controller.dart';
 import 'package:queasy/services/auth.dart';
 import 'package:queasy/src/view/home_view.dart';
 
-class RegisterDesktop extends StatefulWidget {
+class RegisterViewDesktop extends StatefulWidget {
   ///[controller] register-view controller
   final RegisterViewController controller = RegisterViewController();
 
-  RegisterDesktop({Key? key}) : super(key: key);
+  RegisterViewDesktop({Key? key}) : super(key: key);
 
   @override
-  State<RegisterDesktop> createState() => _RegisterDesktopState();
+  State<RegisterViewDesktop> createState() => _RegisterViewDesktopState();
 }
 
-class _RegisterDesktopState extends State<RegisterDesktop> {
+class _RegisterViewDesktopState extends State<RegisterViewDesktop> {
   ///[controller] register-view controller
   get controller => widget.controller;
 
@@ -306,8 +305,7 @@ class _RegisterDesktopState extends State<RegisterDesktop> {
                               borderRadius: BorderRadius.circular(18.0),
                             ))),
                             onPressed: () => {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => LogInDesktop()))
+                              Navigator.of(context).pop(),
                             },
                           ),
                         ),
