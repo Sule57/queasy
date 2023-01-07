@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:queasy/main.dart';
 import 'package:queasy/src/model/category.dart';
@@ -48,10 +47,6 @@ import '../../model/quiz.dart';
 /// It gets reset to 15 seconds for every new question. It is used to display
 /// the time left in the UI. It is also used to calculate the score.
 class QuizProvider with ChangeNotifier {
-  // QuizProvider._internal();
-
-  // static final QuizProvider _instance = QuizProvider._internal();
-
   late Quiz _quiz;
   late Profile player;
   late String? _quizCategory;
@@ -197,15 +192,13 @@ class QuizProvider with ChangeNotifier {
 
     //TODO WHEN QUIZZES NAMES ARE IMPLEMENTED ADD NAME TO THE QUIZZREQULT
     //TODO GET THE REAL TIME SPENT
-    Random rand = Random();
-    if(_quizCategory != null) {
-
+    if (_quizCategory != null) {
       UserStatistics? stat = await player.getUserStatistics();
       if (stat != null) {
         String name = _quizCategory! + (stat.userQuizzes.length + 1).toString();
 
-        UserQuizzResult r = UserQuizzResult(name,
-            correctAnswers, _totalQuestions, _secondsPassed);
+        UserQuizzResult r = UserQuizzResult(
+            name, correctAnswers, _totalQuestions, _secondsPassed);
 
         stat.addUserQuizzResult(r);
         await stat.saveStatistics();

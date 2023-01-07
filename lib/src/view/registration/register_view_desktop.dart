@@ -101,21 +101,26 @@ class _RegisterViewDesktopState extends State<RegisterViewDesktop> {
                         ),
                       ),
                     ),
-                    TextFormField(
-                      ///if the user hasn't entered anything, validation fails
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter email';
-                        }
-                        return null;
-                      },
-                      controller: controllerEmail,
-                      decoration: const InputDecoration(
-                        labelText: 'Email',
+                    Padding(
+                      padding: EdgeInsets.symmetric(vertical: 5),
+                      child: TextFormField(
+                        ///if the user hasn't entered anything, validation fails
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter email';
+                          }
+                          return null;
+                        },
+                        controller: controllerEmail,
+                        decoration: const InputDecoration(
+                          hintText: 'Email',
+                          filled: true,
+                          fillColor: Colors.white,
+                        ),
                       ),
                     ),
                     Padding(
-                      padding: EdgeInsets.only(),
+                      padding: EdgeInsets.symmetric(vertical: 5),
                       child: TextFormField(
                         ///if the user hasn't entered anything, validation fails
                         validator: (value) {
@@ -126,12 +131,14 @@ class _RegisterViewDesktopState extends State<RegisterViewDesktop> {
                         },
                         controller: controllerUsername,
                         decoration: const InputDecoration(
-                          labelText: 'Username',
+                          hintText: 'Username',
+                          filled: true,
+                          fillColor: Colors.white,
                         ),
                       ),
                     ),
                     Padding(
-                      padding: EdgeInsets.only(),
+                      padding: EdgeInsets.symmetric(vertical: 5),
                       child: TextFormField(
                         ///hides/shows password based on user click
                         obscureText: !passwordVisible,
@@ -145,7 +152,9 @@ class _RegisterViewDesktopState extends State<RegisterViewDesktop> {
                         },
                         controller: controllerPassword,
                         decoration: InputDecoration(
-                          labelText: 'Password',
+                          hintText: 'Password',
+                          filled: true,
+                          fillColor: Colors.white,
 
                           ///[IconButton] to click when user wants to see/hide password
                           suffixIcon: IconButton(
@@ -165,8 +174,7 @@ class _RegisterViewDesktopState extends State<RegisterViewDesktop> {
                       ),
                     ),
                     Padding(
-                      padding: EdgeInsets.only(
-                          bottom: MediaQuery.of(context).size.height * .05),
+                      padding: EdgeInsets.symmetric(vertical: 5),
                       child: TextFormField(
                         ///hides/shows password based on user click
                         obscureText: !passwordVisible,
@@ -186,7 +194,9 @@ class _RegisterViewDesktopState extends State<RegisterViewDesktop> {
                         },
                         controller: controllerConfirmPassword,
                         decoration: InputDecoration(
-                          labelText: 'Confirm Password',
+                          hintText: 'Confirm Password',
+                          filled: true,
+                          fillColor: Colors.white,
 
                           ///[IconButton] to click when user wants to see/hide password
                           suffixIcon: IconButton(
