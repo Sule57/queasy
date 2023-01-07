@@ -1,9 +1,6 @@
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:queasy/src.dart';
-import 'package:queasy/src/model/category.dart';
-import 'package:queasy/src/model/question.dart';
-import 'package:queasy/src/model/quiz.dart';
 
 /// Main function for testing the [Quiz] class.
 void main() async {
