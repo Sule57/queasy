@@ -56,7 +56,7 @@ class QuizProvider with ChangeNotifier {
   late Profile player;
   late String? _quizCategory;
   late String? _quizId;
-  late int _totalQuestions;
+  late int _totalQuestions = 5;
   int _currentQuestionIndex = 0;
   int _currentPoints = 0;
   int correctAnswers = 0;
@@ -116,7 +116,7 @@ class QuizProvider with ChangeNotifier {
   Future<bool> startQuiz({
     String? id,
     String? category,
-    int? numberOfQuestions = 5,
+    int? numberOfQuestions,
     String? creatorUsername,
   }) async {
     _quizId = id;

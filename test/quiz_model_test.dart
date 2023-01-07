@@ -104,7 +104,7 @@ void main() async {
       .doc('question4')
       .set(question4);
 
-  Category category = Category(name:'geography');
+  Category category = Category(name:'geography', firestore: instance);
 
   /// Initializes the test constructor for the [Quiz] class
   Quiz quiz = Quiz.createRandom(category: category, noOfQuestions: 5, isPublic: true, firestore: instance);

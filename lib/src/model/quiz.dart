@@ -15,7 +15,7 @@ class Quiz {
   List<String> _usedQuestions = [];
   late FirebaseFirestore? firestore;
   late bool isPublic;
-  String? UID = getCurrentUserID();
+  late String? UID;
 
   get questions => _questions;
 
@@ -27,6 +27,7 @@ class Quiz {
     this.firestore,
   }) {
     if (firestore == null) {
+      UID = getCurrentUserID();
       firestore = FirebaseFirestore.instance;
     }
     else {
@@ -42,6 +43,7 @@ class Quiz {
     category = Category(name: 'default');
     // isPublic = false;
     if (firestore == null) {
+      UID = getCurrentUserID();
       firestore = FirebaseFirestore.instance;
     }
     else {
