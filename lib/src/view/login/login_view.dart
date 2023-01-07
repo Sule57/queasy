@@ -18,28 +18,28 @@ class LoginView extends StatefulWidget {
 }
 
 class _LoginViewState extends State<LoginView> {
+  late LoginProvider controller;
+
   @override
-  void initState() {
-    final provider = Provider.of<LoginProvider>(context, listen: false);
-    provider.forgotPasswordController = TextEditingController();
-    provider.passwordController = TextEditingController();
-    provider.emailController = TextEditingController();
-    super.initState();
+  void didChangeDependencies() {
+    controller = Provider.of<LoginProvider>(context, listen: false);
+    controller.forgotPasswordController = TextEditingController();
+    controller.passwordController = TextEditingController();
+    controller.emailController = TextEditingController();
+    super.didChangeDependencies();
   }
 
   @override
   void dispose() {
-    final provider = Provider.of<LoginProvider>(context, listen: false);
-    provider.forgotPasswordController.dispose();
-    provider.passwordController.dispose();
-    provider.emailController.dispose();
+    controller.forgotPasswordController.dispose();
+    controller.passwordController.dispose();
+    controller.emailController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
-
     return width > 700 ? LoginViewDesktop() : LoginViewMobile();
   }
 }

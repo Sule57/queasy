@@ -301,12 +301,12 @@ class _RegisterViewDesktopState extends State<RegisterViewDesktop> {
                           ),
                           onPressed: () {},
                         ),
-                        IconButton(
-                          icon: Image.asset(
-                            'lib/assets/images/twitter.png',
-                          ),
-                          onPressed: () {},
-                        ),
+                        // IconButton(
+                        //   icon: Image.asset(
+                        //     'lib/assets/images/twitter.png',
+                        //   ),
+                        //   onPressed: () {},
+                        // ),
                       ],
                     ),
                     Row(

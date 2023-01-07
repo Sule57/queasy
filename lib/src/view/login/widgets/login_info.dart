@@ -69,13 +69,16 @@ class _LoginInfoState extends State<LoginInfo> {
                 ),
                 obscureText: controller.isPasswordObscured,
                 validator: controller.validatePassword,
-                onFieldSubmitted: (value) {
+                onFieldSubmitted: (value) async {
                   if (_formKey.currentState!.validate()) {
-                    controller.signInWithEmailAndPassword();
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => HomeView()),
-                    );
+                    bool success =
+                        await controller.signInWithEmailAndPassword();
+                    if (success) {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => HomeView()),
+                      );
+                    }
                   }
                 },
               ),
@@ -95,11 +98,14 @@ class _LoginInfoState extends State<LoginInfo> {
                 buttonName: 'Log in',
                 onPressed: () async {
                   if (_formKey.currentState!.validate()) {
-                    controller.signInWithEmailAndPassword();
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => HomeView()),
-                    );
+                    bool success =
+                        await controller.signInWithEmailAndPassword();
+                    if (success) {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => HomeView()),
+                      );
+                    }
                   }
                 },
               ),
