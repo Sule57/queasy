@@ -3,7 +3,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:queasy/src/theme_provider.dart';
+import 'package:queasy/constants/theme_provider.dart';
+import 'package:queasy/src/view/login/login_provider.dart';
 import 'package:queasy/src/view/play_quiz/quiz_provider.dart';
 import 'package:queasy/src/view/widgets/widget_tree.dart';
 
@@ -38,6 +39,7 @@ Future<void> main() async {
           ChangeNotifierProvider(create: (_) => ProfileProvider()),
           ChangeNotifierProvider(
               create: (_) => ThemeProvider(AppThemes().lightTheme)),
+          ChangeNotifierProvider(create: (_) => LoginProvider()),
         ],
         child: const Qeasy(),
       ),
