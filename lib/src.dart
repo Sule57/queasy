@@ -1,5 +1,5 @@
 export 'src/theme_button.dart';
-export 'src/theme_provider.dart';
+export 'constants/theme_provider.dart';
 export 'src/model/statistics.dart';
 export 'src/model/answer.dart';
 export 'src/model/category.dart';
