@@ -58,16 +58,6 @@ class Category {
   ///
   /// [category] is the name of the [Category], [color] is the color of the [Category]
   /// and [FirebaseFirestore] is the Fake instance of the database
-  Category.test(
-      {required String category,
-        required Color color,
-        required FirebaseFirestore firestore}) {
-    _name = category;
-    _color = color;
-    _publicDoc = firestore.collection('categories').doc('public');
-    _privateDoc = firestore.collection('categories').doc(getCurrentUserID());
-    // this._createNewCategory(_category, _color);
-  }
 
   /// Constructor for the [Category] from JSON data.
   ///
