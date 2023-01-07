@@ -3,41 +3,69 @@ import 'package:queasy/src/model/profile.dart';
 import 'package:queasy/utils/exceptions.dart';
 import 'answer.dart';
 
-/// This class represents a question in the quiz, it has direct access to the firebase and is used to manipulate questions inside the firebase (for now, later category will do this)
+/// This class represents a question in the quiz, it has direct access to the
+/// firebase and is used to store a question or update it in the database.
 ///
-/// The parameter [text] represents the actual question, so for instance a question could look like
+/// The parameter [text] represents the actual question, so for instance a
+/// question could look like
 /// What is the capial of France?
+///
 /// Paris
+///
 /// London
+///
 /// Berlin
+///
 /// Rome
+///
 /// the text would be "What is the capital of France?"
 ///
-/// The parameter [answers] is a list of objects of type [Answer] which represent the possible answers to the question,
-/// so in the previously given example this list would store 4 objects of type [Answer] with the text "Paris", "London", "Berlin" and "Rome"
+/// The parameter [answers] is a list of objects of type [Answer] which
+/// represent the possible answers to the question, so in the previously given
+/// example this list would store 4 objects of type [Answer] with the text
+/// "Paris", "London", "Berlin" and "Rome".
 ///
-/// The parameter [category] represents the category of which this question is, so for instance if the question is about geography, the category would be "Geography"
-/// This will later be manipulated by a special class Category which will be responsible for manipulating the questions inside the firebase
+/// The parameter [category] represents the category of which this question is,
+/// so for instance if the question is about geography, the category would be
+/// "Geography". This will later be manipulated by a special class Category
+/// which will be responsible for manipulating the questions inside the firebase.
 ///
-/// The parameter [questionId] is the ID of the question, it is used to identify the question inside the firebase
+/// The parameter [questionId] is the ID of the question, it is used to identify
+/// the question inside the firebase.
 ///
-/// The parameter [owner] is the username of the user who created the question, it is used to identify the user who created the question,
-/// and to know where exactly in the firebase this question should be stored, due to questions by users being private
+/// The parameter [UID] is the unique ID of the user who is currently logged in,
+/// but since functions of this class should only be accessible to the user who
+/// created the question, it represents the unique id of the user who created
+/// the question. It is used to know who created the question, and to know where
+/// exactly in the firebase this question should be stored, due to questions by
+/// users being private.
 ///
-/// The late parameter [firestore] is used to represent an instance of firebase connection, it is used to manipulate the firebase
+/// The late parameter [firestore] is used to represent an instance of firebase
+/// connection, it is used to manipulate the firebase.
 class Question {
   String text = "";
   List<Answer> answers = [];
   String category = "";
   late String? questionId = "";
-  late Profile owner;
   String? UID;
   late FirebaseFirestore? firestore;
 
   get id => questionId;
 
-  /// This is the constructor of the class, it takes the text of the question, the list of answers, the category of the question the ID of the question and the owner of the question as parameters
-  /// and assigns them to the corresponding parameters of the class
+  /// This is the constructor of the class, it's used to create a new instance
+  /// of the class, it takes the parameters [text], [answers], [category] and
+  /// optionally [questionId] and [firestore].
+  ///
+  /// The optional parameter [questionId] is used when the id is known, because
+  /// the question already exists in the firebase.
+  ///
+  /// The optional parameter [firestore] is used for testing purposes, if it is
+  /// passed the constructor will assume that the developer is in testing.
+  /// Therefore the [UID] will be set to a default value. If it is not passed
+  /// the constructor will assume that the developer is not in testing, and
+  /// therefore the [UID] will be set to the value of the currently logged in
+  /// user, and [firestore] will be set to a new connection instance to the
+  /// real firebase.
   Question(
       {required this.text,
         required this.answers,
@@ -54,8 +82,11 @@ class Question {
     }
   }
 
-  /// Question.fromJson is a constructor used to initialize an object of type [Question] from a json object,
-  /// these objects are usually provided by firebase, so to retrieve a question, this would be the most optimal way to do it
+  /// Question.fromJson is a constructor that takes a [json] object as a
+  /// parameter and creates a new instance of the class [Question] from it.
+  /// Since, the questions in the firebase do not contain a category, the
+  /// constructor will take a parameter [category] which will be used to set
+  /// the category of the question.
   Question.fromJson(Map<String, dynamic> json, String category) {
     this.answers.add(Answer.fromJson(json['answer1']));
     this.answers.add(Answer.fromJson(json['answer2']));
@@ -66,24 +97,31 @@ class Question {
     this.category = category;
   }
 
-  /// The [getText] method is used to retrieve the text of a Question object
+  /// The [getText] method is used to retrieve the text of a Question object.
   String getText() {
     return text;
   }
 
-  /// setter for the text of the question
+  /// Sets the local text of the question to the value of the parameter [text].
   void setText(String text) {
     this.text = text;
   }
 
-  /// The [getAnswer] method is used to retrieve an answer from the list of answers of a Question object, it takes the index of the answer as a parameter
+  /// Returns the answer at the index [index] of the list of answers.
   Answer getAnswer(int index) {
     return answers[index];
   }
-  void setAnswer(int index, Answer a) {
-    answers[index] = a;
+
+  /// Sets the answer in the list of answers at the index [index] to the value
+  /// of the parameter [answer] which is of type [Answer].
+  void setAnswer(int index, Answer answer) {
+    answers[index] = answer;
   }
 
+  /// Sets the correct answer to the one at the index [index] of the list of
+  /// answers. It does this by setting the correct answer of the answer at the
+  /// index [index] to true. It also sets the correct answer of all the other
+  /// answers to false, because there is supposed to be only one correct answer.
   void setCorrectAnswer(int index) {
     for (int i = 0; i < answers.length; i++) {
       if (i == index) {
@@ -94,8 +132,18 @@ class Question {
     }
   }
 
-  /// updateQuestion function takes all the parameters of the question and updates the question in the firebase as a json
-  /// this function is used to update the question in the firebase
+  /// Updates the question in firebase by using the [firestore] instance. It
+  /// finds the question at the id of [id] and updates it with the values of
+  /// the current instance of the class.
+  ///
+  /// The way this class would be used is, after retrieval of an already
+  /// existing question from the firebase and storing it to an instance of type
+  /// [Question], the user would change the local values of the instance and
+  /// then call this function to update the question in the firebase.
+  ///
+  /// The function also contains a check, if the [UID] is null, which would
+  /// mean that a user is not logged in, and therefore the function would throw
+  /// a [UserNotLoggedInException].
   Future<void> updateQuestion() async {
 
     if (UID == null) {
@@ -129,7 +177,8 @@ class Question {
     });
   }
 
-  /// turns the question into a json object
+  /// Returns a map of the question, which can be used to store the question
+  /// in the firebase.
   Map<String, dynamic> toJson() {
     return {
       'ID': questionId,
