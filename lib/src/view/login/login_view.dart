@@ -1,5 +1,14 @@
+/// ****************************************************************************
+/// Created by Julia Agüero
+/// Collaborators: Gullu Gasimova,
+///
+/// This file is part of the project "Qeasy"
+/// Software Project on Technische Hochschule Ulm
+/// ****************************************************************************
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:queasy/constants/theme_provider.dart';
 import 'package:queasy/src/view/login/widgets/desktop_background.dart';
 import 'package:queasy/src/view/login/widgets/login_info.dart';
 
@@ -52,6 +61,13 @@ class LoginViewMobile extends StatelessWidget {
     double width = MediaQuery.of(context).size.width;
     double height =
         MediaQuery.of(context).size.height - MediaQuery.of(context).padding.top;
+    TextStyle? titleTextStyle = Provider.of<ThemeProvider>(context)
+        .currentTheme
+        .textTheme
+        .headline1
+        ?.copyWith(
+          height: 1,
+        );
 
     return Scaffold(
       body: SafeArea(
@@ -69,7 +85,13 @@ class LoginViewMobile extends StatelessWidget {
                   height: height / 4,
                   fit: BoxFit.fitHeight,
                 ),
-                const SizedBox(height: 20),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    'Log in',
+                    style: titleTextStyle,
+                  ),
+                ),
                 Expanded(child: LoginInfo()),
               ],
             ),

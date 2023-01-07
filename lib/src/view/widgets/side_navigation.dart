@@ -1,3 +1,10 @@
+/// ****************************************************************************
+/// Created by Julia Agüero
+///
+/// This file is part of the project "Qeasy"
+/// Software Project on Technische Hochschule Ulm
+/// ****************************************************************************
+
 import 'package:flutter/material.dart';
 import 'package:queasy/src/view/category_selection_view.dart';
 import 'package:queasy/src/view/home_view.dart';
@@ -16,7 +23,7 @@ import '../login/login_view.dart';
 //TODO make nav bar show what is the current page being displayed
 class SideNavigation extends StatelessWidget {
   const SideNavigation({Key? key}) : super(key: key);
-  final double width = 300;
+  static final double width = 300;
 
   @override
   Widget build(BuildContext context) {

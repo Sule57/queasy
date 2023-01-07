@@ -1,3 +1,11 @@
+/// ****************************************************************************
+/// Created by Gullu Gasimova
+/// Collaborators: Sophia Soares, Julia Agüero
+///
+/// This file is part of the project "Qeasy"
+/// Software Project on Technische Hochschule Ulm
+/// ****************************************************************************
+
 import 'package:flutter/material.dart';
 import 'package:motion_tab_bar_v2/motion-tab-bar.dart';
 import 'package:queasy/constants/app_themes.dart';
@@ -57,7 +65,7 @@ class _HomeViewState extends State<HomeView> {
             children: [
               SideNavigation(),
               SizedBox(
-                width: width - SideNavigation().width,
+                width: width - SideNavigation.width,
                 child: HomeWidgets(),
               ),
             ],
