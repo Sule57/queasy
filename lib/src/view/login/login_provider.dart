@@ -1,3 +1,11 @@
+/// ****************************************************************************
+/// Created by Julia Agüero
+/// Collaborators: Gullu Gasimova
+///
+/// This file is part of the project "Qeasy"
+/// Software Project on Technische Hochschule Ulm
+/// ****************************************************************************
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:queasy/services/auth.dart';

@@ -1,3 +1,10 @@
+/// ****************************************************************************
+/// Created by Endia Clark
+///
+/// This file is part of the project "Qeasy"
+/// Software Project on Technische Hochschule Ulm
+/// ****************************************************************************
+
 export 'src/view/see_profile/widgets/theme_button.dart';
 export 'constants/theme_provider.dart';
 export 'src/model/statistics.dart';

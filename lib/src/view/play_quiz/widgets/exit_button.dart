@@ -1,3 +1,10 @@
+/// ****************************************************************************
+/// Created by Julia Agüero
+///
+/// This file is part of the project "Qeasy"
+/// Software Project on Technische Hochschule Ulm
+/// ****************************************************************************
+
 import 'package:flutter/material.dart';
 import 'package:queasy/src/view/home_view.dart';
 import 'package:queasy/src/view/widgets/rounded-button.dart';

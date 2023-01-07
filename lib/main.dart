@@ -1,3 +1,12 @@
+/// ****************************************************************************
+/// Created by Julia Agüero
+/// Collaborators: Marin Sušić, Sophia Soares, Savo Simeunović, Anika Kraus,
+/// Stanislav Dolapchiev, Nikol Kreshpaj, Gullu Gasimova, Endia Clark
+///
+/// This file is part of the project "Qeasy"
+/// Software Project on Technische Hochschule Ulm
+/// ****************************************************************************
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
