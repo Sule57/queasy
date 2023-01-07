@@ -47,6 +47,7 @@ class Category {
           .doc(getCurrentUserID());
     }
     else {
+      this.firestore = firestore;
       UID = "test123456789";
       _publicDoc = firestore.collection('categories').doc('public');
       _privateDoc = firestore.collection('categories').doc(UID);

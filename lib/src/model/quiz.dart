@@ -19,18 +19,21 @@ class Quiz {
 
   get questions => _questions;
 
+
+  /// name is for private quizzes only
   Quiz.createRandom({
     required this.category,
     required this.noOfQuestions,
     required this.isPublic,
     this.name,
-    this.firestore,
+    firestore,
   }) {
     if (firestore == null) {
       UID = getCurrentUserID();
       firestore = FirebaseFirestore.instance;
     }
     else {
+      this.firestore = firestore;
       UID = "test123456789";
     }
     getRandomQuestions();
@@ -38,32 +41,19 @@ class Quiz {
 
   Quiz({
     //required this.id,
-    this.firestore,
+    firestore,
   }) {
-    category = Category(name: 'default');
+    category = Category(name: 'default', firestore: firestore);
     // isPublic = false;
     if (firestore == null) {
       UID = getCurrentUserID();
-      firestore = FirebaseFirestore.instance;
+      this.firestore = FirebaseFirestore.instance;
     }
     else {
+      this.firestore = firestore;
       UID = "test123456789";
     }
     // retrieveQuizFromId();
-  }
-
-  ///DO NOT USE THIS!!!
-  Quiz.fromJson(Map<String, dynamic> json) {
-    this.id = json['id'];
-    this.name = json['name'];
-    this.ownerID = json['creatorID'];
-    this.category = new Category(name: json['category']);
-    this.noOfQuestions = json['questionIds'].length;
-
-    /// add all questionIds to the list of used questions
-    for (int i = 0; i < noOfQuestions; i++) {
-      _usedQuestions.add(json['questionIds'][i]);
-    }
   }
 
   /// This method is supposed to create a random 8 character String
@@ -108,8 +98,8 @@ class Quiz {
         throw UserNotLoggedInException();
       }
       this.ownerID = UID;
-
       await assignUniqueID();
+
     } else {
       this.ownerID = 'public';
       this.id = 'whatever';
@@ -163,7 +153,7 @@ class Quiz {
         this.name = documentSnapshot['name'];
         this.id = documentSnapshot['id'];
         this.ownerID = documentSnapshot['creatorID'];
-        this.category = new Category(name: documentSnapshot['category']!);
+        this.category = new Category(name: documentSnapshot['category']!, firestore: firestore);
         // this.categoryName = ;
         this.noOfQuestions = documentSnapshot['questionIds'].length;
 
