@@ -49,13 +49,14 @@ class Question {
 
   /// Question.fromJson is a constructor used to initialize an object of type [Question] from a json object,
   /// these objects are usually provided by firebase, so to retrieve a question, this would be the most optimal way to do it
-  Question.fromJson(Map<String, dynamic> json) {
+  Question.fromJson(Map<String, dynamic> json, String category) {
     answers.add(Answer.fromJson(json['answer1']));
     answers.add(Answer.fromJson(json['answer2']));
     answers.add(Answer.fromJson(json['answer3']));
     answers.add(Answer.fromJson(json['answer4']));
     text = json['text'];
     questionId = json['ID'];
+    this.category = category;
   }
 
   /// The [getText] method is used to retrieve the text of a Question object
@@ -71,6 +72,9 @@ class Question {
   /// The [getAnswer] method is used to retrieve an answer from the list of answers of a Question object, it takes the index of the answer as a parameter
   Answer getAnswer(int index) {
     return answers[index];
+  }
+  void setAnswer(int index, Answer a) {
+    answers[index] = a;
   }
 
   void setCorrectAnswer(int index) {

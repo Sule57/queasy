@@ -78,6 +78,7 @@ class AppThemes {
         fontSize: 10,
         color: dark,
       ),
+
       button: TextStyle(
         fontSize: 14,
         fontWeight: FontWeight.bold,

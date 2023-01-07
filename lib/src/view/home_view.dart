@@ -6,7 +6,7 @@ import 'package:queasy/src/view/play_quiz/quiz_view.dart';
 import 'package:queasy/src/view/see_leaderboard/leaderboard_view.dart';
 import 'package:queasy/src/view/category_selection_view.dart';
 import 'package:queasy/src/view/see_profile/profile_view.dart';
-import 'package:queasy/src/view/quiz_selection_view.dart';
+import 'package:queasy/src/view/private_category_selection_view.dart';
 import 'package:queasy/src/view/widgets/side_navigation.dart';
 
 import 'see_profile/profile_provider.dart';
@@ -264,7 +264,7 @@ class HomeWidgets extends StatelessWidget {
             ),
             ElevatedButton(
               onPressed: () => Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => const QuizSelectionView())),
+                  builder: (context) => PrivateCategorySelectionView())),
               child: Text(
                 'My Quizzes',
                 style: TextStyle(

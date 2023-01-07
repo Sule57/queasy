@@ -174,7 +174,9 @@ class Category {
         .get()
         .then((QuerySnapshot querySnapshot) {
       querySnapshot.docs.forEach((doc) {
-        questions.add(Question.fromJson(doc.data() as Map<String, dynamic>));
+        if(doc.data() != null && (doc.data() as Map<String, dynamic>)["ID"] != "question-1") {
+          questions.add(Question.fromJson(doc.data() as Map<String, dynamic>, _name));
+        }
       });
     });
     return questions;
@@ -231,11 +233,8 @@ class Category {
     // create a variable newID from 'question' + count
     String newID;
     print(question.questionId);
-    if (question.questionId == null) {
-      newID = await getNextID();
-    } else {
-      newID = question.questionId!;
-    }
+    newID = await getNextID();
+    question.questionId = newID;
     print(newID);
     await firestore
         .collection('categories')
@@ -276,7 +275,7 @@ class Category {
           .then((DocumentSnapshot documentSnapshot) {
         if (documentSnapshot.exists) {
           question = Question.fromJson(
-              documentSnapshot.data() as Map<String, dynamic>);
+              documentSnapshot.data() as Map<String, dynamic>, categoryName);
         } else {
           print('Document does not exist on the database');
         }
@@ -289,7 +288,7 @@ class Category {
           .then((DocumentSnapshot documentSnapshot) {
         if (documentSnapshot.exists) {
           question = Question.fromJson(
-              documentSnapshot.data() as Map<String, dynamic>);
+              documentSnapshot.data() as Map<String, dynamic>, categoryName);
         } else {
           print('Document does not exist on the database');
         }
@@ -318,7 +317,7 @@ class Category {
         .then((DocumentSnapshot documentSnapshot) {
       if (documentSnapshot.exists) {
         question = Question.fromJson(
-            documentSnapshot.data() as Map<String, dynamic>);
+            documentSnapshot.data() as Map<String, dynamic>, _name);
       } else {
         print('Document does not exist on the database');
       }
