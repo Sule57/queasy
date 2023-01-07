@@ -54,20 +54,15 @@ class Question {
     }
   }
 
-  /// Initializes the question ID of the question. This is used when the question is created and the ID is not yet known.
-  Future<void> init() async {
-    this.questionId = await getNextID();
-  }
-
   /// Question.fromJson is a constructor used to initialize an object of type [Question] from a json object,
   /// these objects are usually provided by firebase, so to retrieve a question, this would be the most optimal way to do it
   Question.fromJson(Map<String, dynamic> json, String category) {
-    answers.add(Answer.fromJson(json['answer1']));
-    answers.add(Answer.fromJson(json['answer2']));
-    answers.add(Answer.fromJson(json['answer3']));
-    answers.add(Answer.fromJson(json['answer4']));
-    text = json['text'];
-    questionId = json['ID'];
+    this.answers.add(Answer.fromJson(json['answer1']));
+    this.answers.add(Answer.fromJson(json['answer2']));
+    this.answers.add(Answer.fromJson(json['answer3']));
+    this.answers.add(Answer.fromJson(json['answer4']));
+    this.text = json['text'];
+    this.questionId = json['ID'];
     this.category = category;
   }
 
@@ -97,34 +92,6 @@ class Question {
         answers[i].setCorrect(false);
       }
     }
-  }
-
-  /// Calculates the next ID for a question in the category.
-  ///
-  /// This is used to create a unique ID for a question in the category. It finds the highest ID and adds 1 to it.
-  Future<String> getNextID() async {
-
-    if (UID == null) {
-      throw UserNotLoggedInException();
-    }
-
-    int count = -1;
-    await firestore
-        ?.collection('categories')
-        .doc(UID)
-        .collection(category)
-        .get()
-        .then((QuerySnapshot querySnapshot) {
-      querySnapshot.docs.forEach((doc) {
-        // take the biggest ID and add 1 to it
-        if (int.parse(doc['ID'].substring(8)) > count) {
-          count = int.parse(doc['ID'].substring(8));
-          print("count: " + count.toString());
-        }
-      });
-    });
-    count = count + 1;
-    return 'question' + count.toString();
   }
 
   /// updateQuestion function takes all the parameters of the question and updates the question in the firebase as a json
