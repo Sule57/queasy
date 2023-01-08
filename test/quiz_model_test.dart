@@ -113,7 +113,7 @@ void main() async {
   /// Initializes the test constructor for the [Quiz] class with the category
   /// 'geography', the number of questions 5, the isPublic flag set to
   /// true and the name 'testQuiz'.
-  Quiz quiz = Quiz.createRandom(category: category, noOfQuestions: 5, isPublic: true, firestore: instance, name: 'testQuiz');
+  Quiz quiz = await Quiz(firestore: instance).getRandomQuestions(category: category, noOfQuestions: 5, isPublic: true, name: 'testQuiz');
 
   _questions = quiz.questions;
 
@@ -177,7 +177,8 @@ void main() async {
   /// the previously provided questions.
   group('Tests the public quiz (retrieving questions)', () {
     /// Testing if the amount of questions in the list is the same as in the
-    /// constructor.
+    ///       // _quiz = await Quiz.().getRandomQuestions(category: Category(
+      //   name: _quizCategory!), noOfQuestions: _totalQuestions, isPublic: true);constructor.
     test('Quiz should have a question list with 5 questions', () {
       expect(_questions.length, 5);
     });

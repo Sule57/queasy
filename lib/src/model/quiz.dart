@@ -41,48 +41,17 @@ class Quiz {
   /// A getter for the list of questions.
   get questions => _questions;
 
-  /// This is the createRandom constructor of the class, it takes the number of
-  /// questions [noOfQuestions], the [category] of the quiz, the boolean [isPublic]
-  /// and the optional [name] of the quiz as parameters and assigns them to the
-  /// corresponding parameters of the class. The reason why [name] is optional
-  /// is because if the quiz is public, the name is not needed.
-  ///
-  /// It also takes another optional parameter [firestore] which allows the
-  /// programmer to pass the mocked firebase instance when testing.
-  ///
-  /// There is a conditional statement inside this constructor that will check
-  /// if the [firestore] was passed as a parameter, if it was, it assumes that
-  /// the developer is in testing and therefore the [UID] will be set to a
-  /// default value, otherwise it will get the current user's ID and set it to
-  /// the [UID] parameter. Also, if [firestore] was not passed as a parameter,
-  /// it will initialize the [firestore] parameter with the actual firebase
-  /// instance.
-  Quiz.createRandom({
-    required this.category,
-    required this.noOfQuestions,
-    required this.isPublic,
-    this.name,
-    firestore,
-  }) {
-    if (firestore == null) {
-      UID = getCurrentUserID();
-      firestore = FirebaseFirestore.instance;
-    }
-    else {
-      this.firestore = firestore;
-      UID = "test123456789";
-    }
-    getRandomQuestions();
-  }
-
-  /// This is the createFromID constructor of the class, it takes one optional
+  /// This is the createFromID constructor of the class, it will create an empty
+  /// quiz for it to be filled either with [getRandomQuestions] or with
+  /// [retrieveQuizFromId] functions. It takes one optional
   /// parameter [firestore] which allows the programmer to pass the mocked
   /// firebase instance when testing.
   ///
   /// The constructor creates a default [category] to be used by the quiz
-  /// provider until the actual category is retrieved from firebase.
+  /// provider until the actual category is retrieved from firebase or by the
+  /// developer providing it.
   /// This constructor is basically creating an empty quiz that will be filled
-  /// with data from the firebase since constructors cannot be asynchronous.
+  /// with data from the firebase.
   ///
   /// There is a conditional statement inside this constructor that will check
   /// if the [firestore] was passed as a parameter, if it was, it assumes that
@@ -91,6 +60,14 @@ class Quiz {
   /// the [UID] parameter. Also, if [firestore] was not passed as a parameter,
   /// it will initialize the [firestore] parameter with the actual firebase
   /// instance.
+  ///
+  /// The way to use this constructor when creating a quiz is calling it with
+  /// Quiz() and then putting a function inside depending if we are accessing
+  /// an already existing quiz or creating a new one.
+  ///
+  /// In case of an already existing quiz we call Quiz.retrieveQuizFromId(id)
+  /// and in the case of a new quiz we call Quiz.getRandomQuestions(category,
+  /// noOfQuestions, isPublic, name?).
   Quiz({
     //required this.id,
     firestore,
@@ -105,7 +82,6 @@ class Quiz {
       this.firestore = firestore;
       UID = "test123456789";
     }
-    // retrieveQuizFromId();
   }
 
   /// Creates a random ID for the quiz by using the [Random] class and the
@@ -164,7 +140,13 @@ class Quiz {
   ///
   /// If the quiz isn't public a unique ID will be assigned to the quiz by using
   /// the [assignUniqueID] method.
-  Future<Quiz> getRandomQuestions() async {
+  Future<Quiz> getRandomQuestions({required Category category,
+    required int noOfQuestions, required bool isPublic, String? name}) async {
+    this.category = category;
+    this.noOfQuestions = noOfQuestions;
+    this.isPublic = isPublic;
+    this.name = name;
+
     if (isPublic == false) {
       if (UID == null) {
         throw UserNotLoggedInException();

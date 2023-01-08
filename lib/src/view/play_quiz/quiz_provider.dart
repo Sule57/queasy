@@ -128,13 +128,11 @@ class QuizProvider with ChangeNotifier {
     bool isLoading = true;
 
     if (_quizCategory != null && _quizId == null) {
-      _quiz = await Quiz.createRandom(
-        category: Category(
-          name: _quizCategory!,
-        ),
+      _quiz = await Quiz().getRandomQuestions(
+        category: Category(name: _quizCategory!),
         noOfQuestions: _totalQuestions,
         isPublic: true,
-      ).getRandomQuestions();
+      );
       isLoading = false;
     } else if (_quizId != null && _quizCategory == null) {
       _quiz = await Quiz().retrieveQuizFromId(
