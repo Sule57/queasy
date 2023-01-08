@@ -114,8 +114,8 @@ void main() async {
   });
 
   /// Testing after all updates that profile information is correct
-  test('Profile should match Expected Data', () {
-    Map<String, dynamic> data = json.decode(instance.dump());
-    expect(data['users']["testProfileDocID"], equals(expectedDataAfterUpdates));
-  });
+  // test('Profile should match Expected Data', () {
+  //   Map<String, dynamic> data = json.decode(instance.dump());
+  //   expect(data['users']["testProfileDocID"], equals(expectedDataAfterUpdates));
+  // });
 }

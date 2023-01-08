@@ -7,7 +7,6 @@ import '../play_quiz/quiz_provider.dart';
 class StatisticsProvider with ChangeNotifier {
 
   late UserStatistics statistics;
-  late Profile p;
 
   late UserQuizzResult _lastQuiz;
   late String _quizzName;
@@ -26,7 +25,6 @@ class StatisticsProvider with ChangeNotifier {
   }
 
   void initStatisticsProvider() async{
-    var uid = getCurrentUserID();
     _lastQuiz = QuizProvider.quizzResult;
 
 
