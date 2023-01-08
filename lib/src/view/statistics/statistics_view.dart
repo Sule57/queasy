@@ -2,9 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:queasy/src/view/home_view.dart';
-import 'package:queasy/src/view/statistics/statistic_view_controller.dart';
+import 'package:queasy/src/view/statistics/statistics_provider.dart';
 
 import '../../../constants/theme_provider.dart';
+import '../play_quiz/quiz_provider.dart';
 
 class StatisticsView extends StatefulWidget {
   const StatisticsView({Key? key}) : super(key: key);
@@ -90,16 +91,11 @@ class _StatisticsViewContentState extends State<StatisticsViewContent> {
 
 class StatisticsMobileContent extends StatelessWidget {
   StatisticsMobileContent({Key? key}) : super(key: key);
-  final StatisticsViewController controller = StatisticsViewController();
 
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
-    final int correct = controller.getCorrectAnswers();
-    final int points = controller.getPoints();
-    final int secondsSpent = controller.getSecondsSpent();
-    final int correctPercentage = controller.getCorrectPercentage();
 
     return Scaffold(
         // backgroundColor: const Color(0xfff1ffe7),
@@ -175,7 +171,10 @@ class StatisticsMobileContent extends StatelessWidget {
                             children: <Widget>[
                               Expanded(
                                 child: Text(
-                                  correct.toString() + '\n Correct',
+                                  Provider.of<StatisticsProvider>(context)
+                                          .correct
+                                          .toString() +
+                                      '\n Correct',
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     fontSize: 20,
@@ -184,7 +183,10 @@ class StatisticsMobileContent extends StatelessWidget {
                               ),
                               Expanded(
                                 child: Text(
-                                  points.toString() + '\n Points',
+                                  Provider.of<QuizProvider>(context)
+                                          .currentPoints
+                                          .toString() +
+                                      '\n Points',
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     fontSize: 20,
@@ -193,7 +195,10 @@ class StatisticsMobileContent extends StatelessWidget {
                               ),
                               Expanded(
                                 child: Text(
-                                  secondsSpent.toString() + '\n Seconds',
+                                  Provider.of<StatisticsProvider>(context)
+                                          .secondsSpent
+                                          .toString() +
+                                      '\n Seconds',
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     fontSize: 20,
@@ -214,7 +219,11 @@ class StatisticsMobileContent extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     Text(
-                                      correctPercentage.toString() + '%',
+                                      (Provider.of<StatisticsProvider>(context)
+                                                      .correct *
+                                                  20)
+                                              .toString() +
+                                          '%',
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                           fontSize: 20, color: Colors.black),
@@ -267,15 +276,9 @@ class StatisticsMobileContent extends StatelessWidget {
 
 class StatisticsDesktopContent extends StatelessWidget {
   StatisticsDesktopContent({Key? key}) : super(key: key);
-  final StatisticsViewController controller = StatisticsViewController();
 
   @override
   Widget build(BuildContext context) {
-    final int correct = controller.getCorrectAnswers();
-    final int points = controller.getPoints();
-    final int secondsSpent = controller.getSecondsSpent();
-    final int correctPercentage = controller.getCorrectPercentage();
-
     return Scaffold(
         backgroundColor: const Color(0xfff1ffe7),
         appBar: AppBar(
@@ -308,7 +311,10 @@ class StatisticsDesktopContent extends StatelessWidget {
                     children: <Widget>[
                       Expanded(
                         child: Text(
-                          correct.toString() + '\n Correct',
+                          Provider.of<StatisticsProvider>(context)
+                                  .correct
+                                  .toString() +
+                              '\n Correct',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 30,
@@ -317,7 +323,10 @@ class StatisticsDesktopContent extends StatelessWidget {
                       ),
                       Expanded(
                         child: Text(
-                          points.toString() + '\n Points',
+                          Provider.of<QuizProvider>(context)
+                                  .currentPoints
+                                  .toString() +
+                              '\n Points',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 30,
@@ -326,7 +335,10 @@ class StatisticsDesktopContent extends StatelessWidget {
                       ),
                       Expanded(
                         child: Text(
-                          secondsSpent.toString() + '\n Seconds',
+                          Provider.of<StatisticsProvider>(context)
+                                  .secondsSpent
+                                  .toString() +
+                              '\n Seconds',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 30,
@@ -346,7 +358,11 @@ class StatisticsDesktopContent extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Text(
-                              correctPercentage.toString() + '%',
+                              (Provider.of<StatisticsProvider>(context)
+                                              .correct *
+                                          20)
+                                      .toString() +
+                                  '%',
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontSize: 30,
