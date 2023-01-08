@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:queasy/src.dart';
 import '../../../utils/exceptions.dart';
+import '../play_quiz/quiz_provider.dart';
 
 
 class StatisticsProvider with ChangeNotifier {
@@ -26,14 +27,9 @@ class StatisticsProvider with ChangeNotifier {
 
   void initStatisticsProvider() async{
     var uid = getCurrentUserID();
-    if(uid != null) {
-      // get the user profile who played the quizz
-      p = (await Profile.getProfilefromUID(uid))!;
-      statistics = (await p.getUserStatistics())!;
-    }else
-      throw UserNotLoggedInException();
+    _lastQuiz = QuizProvider.quizzResult;
 
-    _lastQuiz = statistics.userQuizzes.last;
+
     _quizzName = _lastQuiz.quizzName;
     _allQestions = _lastQuiz.allQestions;
     _correct = _lastQuiz.correct;
