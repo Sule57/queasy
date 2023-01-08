@@ -1,8 +1,12 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:queasy/src/view/home_view.dart';
 import 'package:queasy/src/view/statistics/statistics_provider.dart';
+
+import 'package:percent_indicator/circular_percent_indicator.dart';
 
 import '../../../constants/theme_provider.dart';
 import '../play_quiz/quiz_provider.dart';
@@ -207,36 +211,49 @@ class StatisticsMobileContent extends StatelessWidget {
                               ),
                             ],
                           ),
-                          Container(
-                              width: 150,
-                              height: 150,
-                              decoration: const BoxDecoration(
-                                  color: Color(0xfff1ffe7),
-                                  shape: BoxShape.circle),
-                              child: Center(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      (Provider.of<StatisticsProvider>(context)
-                                                      .correct *
-                                                  20)
-                                              .toString() +
-                                          '%',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          fontSize: 20, color: Colors.black),
+                          CircularPercentIndicator(
+                              radius: 90,
+                              lineWidth: 20,
+                              percent: (Provider.of<StatisticsProvider>(context)
+                                      .correct /
+                                  10 *
+                                  2),
+                              progressColor: Color(0xff72479d),
+                              center: Container(
+                                  width: 150,
+                                  height: 150,
+                                  decoration: const BoxDecoration(
+                                      color: Color(0xfff1ffe7),
+                                      shape: BoxShape.circle),
+                                  child: Center(
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          (Provider.of<StatisticsProvider>(
+                                                              context)
+                                                          .correct *
+                                                      20)
+                                                  .toString() +
+                                              '%',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                              fontSize: 20,
+                                              color: Colors.black),
+                                        ),
+                                        Text(
+                                          'Correct',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                              fontSize: 10,
+                                              color: Colors.black),
+                                        ),
+                                      ],
                                     ),
-                                    Text(
-                                      'Correct',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          fontSize: 10, color: Colors.black),
-                                    ),
-                                  ],
-                                ),
-                              ))
+                                  )))
                         ],
                       )),
                 ],
@@ -347,37 +364,48 @@ class StatisticsDesktopContent extends StatelessWidget {
                       ),
                     ],
                   ),
-                  Container(
-                      width: 150,
-                      height: 150,
-                      decoration: const BoxDecoration(
-                          color: Color(0xfff1ffe7), shape: BoxShape.circle),
-                      child: Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text(
-                              (Provider.of<StatisticsProvider>(context)
-                                              .correct *
-                                          20)
-                                      .toString() +
-                                  '%',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 30,
-                                color: Colors.black,
+                  Center(
+                    child: CircularPercentIndicator(
+                        radius: 90,
+                        lineWidth: 20,
+                        percent:
+                            (Provider.of<StatisticsProvider>(context).correct /
+                                10 *
+                                2),
+                        progressColor: Color(0xff72479d),
+                        center: Container(
+                            width: 150,
+                            height: 150,
+                            decoration: const BoxDecoration(
+                                color: Color(0xfff1ffe7),
+                                shape: BoxShape.circle),
+                            child: Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    (Provider.of<StatisticsProvider>(context)
+                                                    .correct *
+                                                20)
+                                            .toString() +
+                                        '%',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: 30,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                  Text(
+                                    'Correct',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        fontSize: 20, color: Colors.black),
+                                  ),
+                                ],
                               ),
-                            ),
-                            Text(
-                              'Correct',
-                              textAlign: TextAlign.center,
-                              style:
-                                  TextStyle(fontSize: 20, color: Colors.black),
-                            ),
-                          ],
-                        ),
-                      ))
+                            ))),
+                  )
                 ],
               )),
           Container(
