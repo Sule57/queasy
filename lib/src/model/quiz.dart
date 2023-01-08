@@ -263,4 +263,35 @@ class Quiz {
 
     return this;
   }
+
+  /// Checks if the quiz with the given [id] exists in the firebase. If it does,
+  /// it will return true, otherwise it will return false.
+  /// This method is an asynchronous method that parses through the stored
+  /// quizzes in the firebase and checks if the document exists.
+  /// It also accepts a optional parameter [firestore] which is the firestore
+  /// instance that will be used to retrieve the data from the firebase.
+  /// If the [firestore] parameter is null, the method will use the default
+  /// firestore instance. If it is not null, it will use the given firestore
+  /// instance.
+  static Future<bool> checkIfQuizExists(
+      {required String id, FirebaseFirestore? firestore}) async {
+
+    if (firestore == null) {
+      firestore = FirebaseFirestore.instance;
+    }
+
+    bool exists = false;
+    await firestore
+        .collection('quizzes')
+        .doc(id)
+        .get()
+        .then((DocumentSnapshot documentSnapshot) {
+      if (documentSnapshot.exists) {
+        exists = true;
+      } else {
+        exists = false;
+      }
+    });
+    return exists;
+  }
 }
