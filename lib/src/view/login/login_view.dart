@@ -66,7 +66,7 @@ class LoginViewMobile extends StatelessWidget {
         .textTheme
         .headline1
         ?.copyWith(
-          height: 1,
+          height: 1.0,
         );
 
     return Scaffold(

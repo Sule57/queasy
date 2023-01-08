@@ -69,6 +69,7 @@ class QuizProvider with ChangeNotifier {
   get quizCategory => _quizCategory;
   get quiz => _quiz;
   get timeLeft => _timeLeft.inSeconds.toString();
+  get currentPoints => _currentPoints;
 
 // assign the current user to the app
   QuizProvider() {
