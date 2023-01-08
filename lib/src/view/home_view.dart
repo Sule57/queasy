@@ -128,7 +128,7 @@ class _HomeViewState extends State<HomeView> {
                             padding: const EdgeInsets.all(20),
                             child: RichText(
                               text: TextSpan(
-                                text: 'Text your knowledge',
+                                text: 'Text your knowledge..',
                                 style: const TextStyle(
                                     color: const Color(0xffF1FFE7),
                                     fontWeight: FontWeight.bold,
