@@ -49,6 +49,9 @@ import '../../model/quiz.dart';
 /// decremented every second. It gets reset to 15 seconds for every new
 /// question.
 ///
+/// The parameter [quizzResult] stores the result of the quizz and
+/// later is passed to the StatisticsProvider imp
+///
 /// The parameter [_timeLeft] is the time left for the user to answer the
 /// question. It is initialized to 15 seconds and is decremented every second.
 /// It gets reset to 15 seconds for every new question. It is used to display
@@ -59,6 +62,7 @@ class QuizProvider with ChangeNotifier {
   late String? _quizCategory;
   late String? _quizId;
   late int _totalQuestions = 5;
+  static late UserQuizzResult quizzResult;
   int _currentQuestionIndex = 0;
   int _currentPoints = 0;
   int correctAnswers = 0;
@@ -129,13 +133,11 @@ class QuizProvider with ChangeNotifier {
     bool isLoading = true;
 
     if (_quizCategory != null && _quizId == null) {
-      _quiz = await Quiz.createRandom(
-        category: Category(
-          name: _quizCategory!,
-        ),
+      _quiz = await Quiz().getRandomQuestions(
+        category: Category(name: _quizCategory!),
         noOfQuestions: _totalQuestions,
         isPublic: true,
-      ).getRandomQuestions();
+      );
       isLoading = false;
     } else if (_quizId != null && _quizCategory == null) {
       _quiz = await Quiz().retrieveQuizFromId(
@@ -207,7 +209,9 @@ class QuizProvider with ChangeNotifier {
 
         UserQuizzResult r = UserQuizzResult(
             name, correctAnswers, _totalQuestions, _secondsPassed);
-
+        //IMPORTANT YOU CANNOT PLAY 2 QUIZZES AT THE SAME TIME OTHERWISE THIS WILL BREAK !!!
+        // YOU CANNOT CALL STATISTICS PROVIDER BEFORE QUIZ PROVIDER !!!
+        quizzResult = r;
         stat.addUserQuizzResult(r);
         await stat.saveStatistics();
       }

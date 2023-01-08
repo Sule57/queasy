@@ -29,6 +29,7 @@ class UserStatistics {
     for (UserQuizzResult q in userQuizzes) {
       m.addAll(q.toJson());
     }
+    //userQuizzes.sort((a, b) => a.quizzName.compareTo(b.quizzName));
 
     return m;
   }

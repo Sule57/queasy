@@ -10,22 +10,9 @@ import 'package:firebase_core/firebase_core.dart';
 
 
 void main() async {
-  TestWidgetsFlutterBinding.ensureInitialized();
+
   final instance = FakeFirebaseFirestore();
-  await Firebase.initializeApp(
-    name: 'quizzapp-eb0f2',
-    options: const FirebaseOptions(
-      apiKey: 'AIzaSyCNGjdJ0j86h8b_Bk7d9ts-hY4JZ7aNWcQ',
-      appId: '1:17686953226:web:81a053f17c2b317edd0ef3',
-      messagingSenderId: '17686953226',
-      projectId: 'quizzapp-eb0f2',
-      authDomain: 'quizzapp-eb0f2.firebaseapp.com',
-      databaseURL:
-      'https://quizzapp-eb0f2-default-rtdb.europe-west1.firebasedatabase.app',
-      storageBucket: 'gs://quizzapp-eb0f2.appspot.com',
-      measurementId: 'G-MSF5DXS9QN',
-    ),
-  );
+
   Profile user_test = Profile.test(
       username: 'TEST21',
       email: 'email@test.com',

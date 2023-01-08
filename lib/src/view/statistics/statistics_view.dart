@@ -8,6 +8,8 @@ import 'package:queasy/src/view/statistics/statistics_provider.dart';
 
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
+
+
 import '../../../constants/theme_provider.dart';
 import '../play_quiz/quiz_provider.dart';
 
@@ -211,6 +213,7 @@ class StatisticsMobileContent extends StatelessWidget {
                               ),
                             ],
                           ),
+                          
                           CircularPercentIndicator(
                               radius: 90,
                               lineWidth: 20,
@@ -252,6 +255,8 @@ class StatisticsMobileContent extends StatelessWidget {
                                               color: Colors.black),
                                         ),
                                       ],
+
+
                                     ),
                                   )))
                         ],
@@ -364,6 +369,7 @@ class StatisticsDesktopContent extends StatelessWidget {
                       ),
                     ],
                   ),
+
                   Center(
                     child: CircularPercentIndicator(
                         radius: 90,
@@ -403,6 +409,7 @@ class StatisticsDesktopContent extends StatelessWidget {
                                         fontSize: 20, color: Colors.black),
                                   ),
                                 ],
+
                               ),
                             ))),
                   )
