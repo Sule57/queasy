@@ -162,7 +162,7 @@ class Profile {
 
   /// gets the current profile from user uid
   /// [uid] is the firebase user uid
-  /// returns a Profile instance
+  /// returns a [Profile] instance
   static Future<Profile?> getProfilefromUID(String uid) async {
     Profile? result;
     await FirebaseFirestore.instance
@@ -200,7 +200,6 @@ class Profile {
   /// Increment the score of the user in the firebase by the score achieved in the current quiz.
   Future<void> updateScore(String category, int score) async {
     final firebaseFirestore = FirebaseFirestore.instance;
-    print(uid);
     await firebaseFirestore.collection('users').doc(uid).update({
       'scores.$category': FieldValue.increment(score),
     });
