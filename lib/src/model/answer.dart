@@ -1,13 +1,12 @@
-///The Answer class is used to locally store an answer to a question.
-///The String parameter [_text] is the text of the answer and is initialized
-///in the constructor, it can also be changed using the method [setText].
-///
-///The bool parameter [_isCorrect] is true if the answer is correct and false if
-/// it is not. It is initialized in the constructor and can be changed using
-/// the method [setCorrect].
-
+/// The Answer class is used to locally store an answer to a question and it's
+/// isCorrect value.
 class Answer {
+  ///The String parameter _text is the text of the answer and is initialized
+  ///in the constructor, it can also be changed using the method [setText].
   String _text;
+  ///The bool parameter _isCorrect is true if the answer is correct and false if
+  /// it is not. It is initialized in the constructor and can be changed using
+  /// the method [setCorrect].
   bool _isCorrect;
 
   /// The default Answer constructor represents the default constructor for the

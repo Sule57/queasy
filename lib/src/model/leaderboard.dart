@@ -14,7 +14,7 @@ import 'package:queasy/src/model/profile.dart';
 ///
 /// [_owner] is the username of the owner of the category that the leaderboard is for.
 ///
-/// [_currentPlayer] is the [Player] that is currently logged in and is playing the game.
+/// [_currentPlayer] is the Player that is currently logged in and is playing the game.
 ///
 /// [_firebaseFirestore] is the instance of the [FirebaseFirestore] database.
 ///
@@ -68,12 +68,12 @@ class Leaderboard {
     return leaderboard;
   }
 
-  /// Getter for the [currentUser]'s position in the leaderboard
+  /// Getter for the [_currentPlayer]'s position in the leaderboard
   int getCurrentPlayerPosition() {
     return _currentPlayer.getPosition;
   }
 
-  /// Getter for the [currentUser]'s points
+  /// Getter for the [_currentPlayer]'s points
   int getCurrentPlayerPoints() {
     return _currentPlayer.getScore;
   }
@@ -198,7 +198,7 @@ class Leaderboard {
     await getData();
   }
 
-  /// Get the up-to-date leaderboard data from [Firestore] including data such as the [_currentPlayer] points and position,
+  /// Get the up-to-date leaderboard data from Firestore including data such as the [_currentPlayer] points and position,
   /// and sorted list of entries limited to 10.
   Future<void> getData() async {
     final docSnap;
