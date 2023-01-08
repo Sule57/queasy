@@ -25,6 +25,7 @@ class Category {
   late bool _isPublic;
   late String? UID;
   late FirebaseFirestore? firestore;
+  late Question getQuestionTemp;
 
   get name => _name;
   get color => _color;
@@ -298,7 +299,6 @@ class Category {
     if (UID == null) {
       throw UserNotLoggedInException();
     }
-    late Question question;
 
     if (public == false) {
       await firestore
@@ -309,7 +309,7 @@ class Category {
           .get()
           .then((DocumentSnapshot documentSnapshot) {
         if (documentSnapshot.exists) {
-          question = Question.fromJson(
+          this.getQuestionTemp = Question.fromJson(
               documentSnapshot.data() as Map<String, dynamic>, categoryName);
         } else {
           print('Document does not exist on the database');
@@ -324,7 +324,7 @@ class Category {
           .get()
           .then((DocumentSnapshot documentSnapshot) {
         if (documentSnapshot.exists) {
-          question = Question.fromJson(
+          this.getQuestionTemp = Question.fromJson(
               documentSnapshot.data() as Map<String, dynamic>, categoryName);
         } else {
           print('Document does not exist on the database');
@@ -332,10 +332,10 @@ class Category {
       });
     }
 
-    if (question == null) {
+    if (this.getQuestionTemp == null) {
       throw Exception('Question is null');
     } else {
-      return question;
+      return this.getQuestionTemp;
     }
   }
 
