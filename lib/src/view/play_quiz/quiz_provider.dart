@@ -216,7 +216,7 @@ class QuizProvider with ChangeNotifier {
         await stat.saveStatistics();
       }
     }
-    if (_quizCategory != null) {
+    if (_quiz.isPublic == true) {
       //TODO check this
       player.updateScore(_quizCategory!, _currentPoints);
       print('seconds passed at the end of the quizz: $_secondsPassed');
