@@ -30,6 +30,7 @@ class StatisticsProvider with ChangeNotifier {
     _lastQuiz = QuizProvider.quizzResult;
 
 
+
     _quizzName = _lastQuiz.quizzName;
     _allQestions = _lastQuiz.allQestions;
     _correct = _lastQuiz.correct;
