@@ -138,7 +138,7 @@ class _CategorySelectionViewState extends State<CategorySelectionView> {
                       child: Align(
                         alignment: FractionalOffset.bottomRight,
                         child: Container(
-                          width: width / 2.4,
+                          width: width / 2.5,
                           height: height / 6,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.only(
