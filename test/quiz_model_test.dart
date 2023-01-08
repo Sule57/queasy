@@ -6,8 +6,15 @@ import 'package:queasy/src/model/quiz.dart';
 
 /// Main function for testing the [Quiz] class.
 void main() async {
+  /// The variable instance is used to create a new instance of the mock firebase
+  /// firestore.
   final instance = FakeFirebaseFirestore();
-  late List<Question> _questions, _questions2;
+  /// The variable _questions is used to store the questions that were initialized
+  /// in the quiz1.
+  late List<Question> _questions;
+  /// The variable _questions2 is used to store the questions that were initialized
+  /// in the quiz2.
+  late List<Question> _questions2;
 
   /// Creates question0 for testing: What is the capital of France?
   Map<String, dynamic> question0 = {
@@ -64,7 +71,6 @@ void main() async {
     'answer4': {'text': 'Rome', 'isCorrect': false},
   };
 
-  /// Pushes question0 into the fake firestore database
   await instance
       .collection('categories')
       .doc('public')
@@ -72,7 +78,6 @@ void main() async {
       .doc('question0')
       .set(question0);
 
-  /// Pushes question1 into the fake firestore database
   await instance
       .collection('categories')
       .doc('public')
@@ -80,7 +85,6 @@ void main() async {
       .doc('question1')
       .set(question1);
 
-  /// Pushes question2 into the fake firestore database
   await instance
       .collection('categories')
       .doc('public')
@@ -88,7 +92,6 @@ void main() async {
       .doc('question2')
       .set(question2);
 
-  /// Pushes question3 into the fake firestore database
   await instance
       .collection('categories')
       .doc('public')
@@ -96,7 +99,6 @@ void main() async {
       .doc('question3')
       .set(question3);
 
-  /// Pushes question4 into the fake firestore database
   await instance
       .collection('categories')
       .doc('public')
@@ -104,15 +106,15 @@ void main() async {
       .doc('question4')
       .set(question4);
 
+  /// Creates a new instance of the Category class. The category is initialized
+  /// with the name 'geography'.
   Category category = Category(name:'geography', firestore: instance);
 
-  /// Initializes the test constructor for the [Quiz] class
+  /// Initializes the test constructor for the [Quiz] class with the category
+  /// 'geography', the number of questions 5, the isPublic flag set to
+  /// true and the name 'testQuiz'.
   Quiz quiz = Quiz.createRandom(category: category, noOfQuestions: 5, isPublic: true, firestore: instance, name: 'testQuiz');
 
-  // await quiz.storeQuiz(instance);
-  // print(instance.dump());
-
-  /// Store quiz questions into _questions List for testing
   _questions = quiz.questions;
 
   await instance
@@ -122,7 +124,6 @@ void main() async {
       .doc('question0')
       .set(question0);
 
-  /// Pushes question1 into the fake firestore database
   await instance
       .collection('categories')
       .doc('test123456789')
@@ -130,7 +131,6 @@ void main() async {
       .doc('question1')
       .set(question1);
 
-  /// Pushes question2 into the fake firestore database
   await instance
       .collection('categories')
       .doc('test123456789')
@@ -138,7 +138,6 @@ void main() async {
       .doc('question2')
       .set(question2);
 
-  /// Pushes question3 into the fake firestore database
   await instance
       .collection('categories')
       .doc('test123456789')
@@ -146,7 +145,6 @@ void main() async {
       .doc('question3')
       .set(question3);
 
-  /// Pushes question4 into the fake firestore database
   await instance
       .collection('categories')
       .doc('test123456789')
@@ -154,6 +152,7 @@ void main() async {
       .doc('question4')
       .set(question4);
 
+  /// Creates a quiz0 map that represents a quiz in a Json format.
   Map<String, dynamic> quiz0 = {
     'category': 'geography',
     'id': 'quiz123',
@@ -167,16 +166,18 @@ void main() async {
         .doc('quiz123')
         .set(quiz0);
 
+  /// Creates a new instance of Quiz using the retrieveQuiz method, in theory
+  /// this method should take the ID of the quiz and retrieve it from the
+  /// database. (This will be tested in the next test group).
   Quiz quiz2 = await Quiz(firestore: instance).retrieveQuizFromId(id: 'quiz123');
   _questions2 = quiz2.questions;
-
   quiz.storeQuiz();
 
-  print(instance.dump());
-
-
+  /// Test group that tests if the public quiz was initialized properly from
+  /// the previously provided questions.
   group('Tests the public quiz (retrieving questions)', () {
-    /// Testing if the amount of questions int the list is the same as in the constructor
+    /// Testing if the amount of questions in the list is the same as in the
+    /// constructor.
     test('Quiz should have a question list with 5 questions', () {
       expect(_questions.length, 5);
     });
@@ -237,9 +238,10 @@ void main() async {
     });
   });
 
-  /// Implement the same tests for quiz2
+  /// Tests the quiz.retrieveQuizFromId() method works and retrieves the quiz
+  /// object as it was in the map.
   group('Tests the private quiz (retrieving questions)', () {
-    /// Testing if the amount of questions int the list is the same as in the constructor
+    /// Testing if the amount of questions int the list is the same as in the map.
     test('Quiz should have a question list with 5 questions', () {
       expect(_questions2.length, 5);
     });

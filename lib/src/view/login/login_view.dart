@@ -49,7 +49,7 @@ class _LoginViewState extends State<LoginView> {
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
-    return width > 700 ? LoginViewDesktop() : LoginViewMobile();
+    return width > 700.0 ? LoginViewDesktop() : LoginViewMobile();
   }
 }
 
@@ -61,13 +61,6 @@ class LoginViewMobile extends StatelessWidget {
     double height =
         MediaQuery.of(context).size.height - MediaQuery.of(context).padding.top;
     double verticalPadding = height / 20;
-    TextStyle? titleTextStyle = Provider.of<ThemeProvider>(context)
-        .currentTheme
-        .textTheme
-        .headline1
-        ?.copyWith(
-          height: 1.0,
-        );
 
     return Scaffold(
       body: SafeArea(
@@ -89,13 +82,7 @@ class LoginViewMobile extends StatelessWidget {
                     height: height / 4,
                     fit: BoxFit.fitHeight,
                   ),
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      'Log in',
-                      style: titleTextStyle,
-                    ),
-                  ),
+                  SizedBox(height: 10),
                   Expanded(child: LoginInfo()),
                 ],
               ),
