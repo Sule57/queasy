@@ -132,8 +132,11 @@ class Question {
   /// The function also contains a check, if the [UID] is null, which would
   /// mean that a user is not logged in, and therefore the function would throw
   /// a [UserNotLoggedInException].
-  Future<void> updateQuestion() async {
+  Future<void> updateQuestion({String? uid}) async {
 
+    if (uid != null) {
+      UID = uid;
+    }
     if (UID == null) {
       throw UserNotLoggedInException();
     }

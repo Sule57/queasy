@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:queasy/src.dart';
 import 'package:queasy/src/model/category.dart';
 import 'package:queasy/src/model/category_repo.dart';
 import 'package:queasy/src/model/quiz.dart';
@@ -9,6 +10,14 @@ import 'package:queasy/src/model/quiz.dart';
 /// Main function for testing the [Category] class.
 ///
 /// [instance] is the Fake Firestore instance for mocking of the database
+///
+/// [catName] is the name of the category
+///
+/// [UID] is the UID of the user
+///
+/// [color] is the color of the category
+///
+/// [username] is the username of the user
 void main() async {
   String catName = 'German';
   Color color = Color(12423);
@@ -47,7 +56,28 @@ void main() async {
     expect(cat.getName(), newName);
   });
 
-  // CategoryRepo().getCategory(catName);
+  test('Questions are not added', () async {
+    String newName = 'English';
+    Question q1 = Question(category: newName, text: 'Question1', answers: [Answer('asnwer1', true), Answer('asnwer2', true), Answer('asnwer3', true), Answer('asnwer4', true)], firestore: instance);
+    Question q2 = Question(category: newName, text: 'Question2', answers: [Answer('asnwer1', true), Answer('asnwer2', true), Answer('asnwer3', true), Answer('asnwer4', true)], firestore: instance);
+    Question q3 = Question(category: newName, text: 'Question3', answers: [Answer('asnwer1', true), Answer('asnwer2', true), Answer('asnwer3', true), Answer('asnwer4', true)], firestore: instance);
+    await cat.createQuestion(q1);
+    await cat.createQuestion(q2);
+    await cat.createQuestion(q3);
 
+    List<Question> list = await cat.getAllQuestions();
+    expect(list.length, 3);
+  });
+
+
+  test('Question is not deleted', () async {
+    List<Question> list = await cat.getAllQuestions();
+    Question q = list.firstWhere((element) => element.questionId == 'question0');
+    cat.deleteQuestion(q);
+    list = await cat.getAllQuestions();
+
+
+    expect(list.length, 2);
+  });
 
 }
