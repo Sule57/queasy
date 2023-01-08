@@ -5,17 +5,17 @@ import 'package:queasy/src/view/registration/register_view_controller.dart';
 import 'package:queasy/services/auth.dart';
 import 'package:queasy/src/view/home_view.dart';
 
-class RegisterDesktop extends StatefulWidget {
+class RegisterViewDesktop extends StatefulWidget {
   ///[controller] register-view controller
   final RegisterViewController controller = RegisterViewController();
 
-  RegisterDesktop({Key? key}) : super(key: key);
+  RegisterViewDesktop({Key? key}) : super(key: key);
 
   @override
-  State<RegisterDesktop> createState() => _RegisterDesktopState();
+  State<RegisterViewDesktop> createState() => _RegisterViewDesktopState();
 }
 
-class _RegisterDesktopState extends State<RegisterDesktop> {
+class _RegisterViewDesktopState extends State<RegisterViewDesktop> {
   ///[controller] register-view controller
   get controller => widget.controller;
 
@@ -35,6 +35,7 @@ class _RegisterDesktopState extends State<RegisterDesktop> {
 
   ///[_passwordVisible] are to hide/show the passwords
   bool passwordVisible = false;
+  bool _isGoogleSigningIn = false;
 
   Future<bool> signInWithEmailAndPassword() async {
     try {
@@ -100,21 +101,26 @@ class _RegisterDesktopState extends State<RegisterDesktop> {
                         ),
                       ),
                     ),
-                    TextFormField(
-                      ///if the user hasn't entered anything, validation fails
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter email';
-                        }
-                        return null;
-                      },
-                      controller: controllerEmail,
-                      decoration: const InputDecoration(
-                        labelText: 'Email',
+                    Padding(
+                      padding: EdgeInsets.symmetric(vertical: 5),
+                      child: TextFormField(
+                        ///if the user hasn't entered anything, validation fails
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter email';
+                          }
+                          return null;
+                        },
+                        controller: controllerEmail,
+                        decoration: const InputDecoration(
+                          hintText: 'Email',
+                          filled: true,
+                          fillColor: Colors.white,
+                        ),
                       ),
                     ),
                     Padding(
-                      padding: EdgeInsets.only(),
+                      padding: EdgeInsets.symmetric(vertical: 5),
                       child: TextFormField(
                         ///if the user hasn't entered anything, validation fails
                         validator: (value) {
@@ -125,12 +131,14 @@ class _RegisterDesktopState extends State<RegisterDesktop> {
                         },
                         controller: controllerUsername,
                         decoration: const InputDecoration(
-                          labelText: 'Username',
+                          hintText: 'Username',
+                          filled: true,
+                          fillColor: Colors.white,
                         ),
                       ),
                     ),
                     Padding(
-                      padding: EdgeInsets.only(),
+                      padding: EdgeInsets.symmetric(vertical: 5),
                       child: TextFormField(
                         ///hides/shows password based on user click
                         obscureText: !passwordVisible,
@@ -144,7 +152,9 @@ class _RegisterDesktopState extends State<RegisterDesktop> {
                         },
                         controller: controllerPassword,
                         decoration: InputDecoration(
-                          labelText: 'Password',
+                          hintText: 'Password',
+                          filled: true,
+                          fillColor: Colors.white,
 
                           ///[IconButton] to click when user wants to see/hide password
                           suffixIcon: IconButton(
@@ -164,8 +174,7 @@ class _RegisterDesktopState extends State<RegisterDesktop> {
                       ),
                     ),
                     Padding(
-                      padding: EdgeInsets.only(
-                          bottom: MediaQuery.of(context).size.height * .05),
+                      padding: EdgeInsets.symmetric(vertical: 5),
                       child: TextFormField(
                         ///hides/shows password based on user click
                         obscureText: !passwordVisible,
@@ -185,7 +194,9 @@ class _RegisterDesktopState extends State<RegisterDesktop> {
                         },
                         controller: controllerConfirmPassword,
                         decoration: InputDecoration(
-                          labelText: 'Confirm Password',
+                          hintText: 'Confirm Password',
+                          filled: true,
+                          fillColor: Colors.white,
 
                           ///[IconButton] to click when user wants to see/hide password
                           suffixIcon: IconButton(
@@ -268,18 +279,77 @@ class _RegisterDesktopState extends State<RegisterDesktop> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        IconButton(
-                          icon: Image.asset('lib/assets/images/google.png'),
-                          onPressed: () {},
-                        ),
+                        _isGoogleSigningIn
+                            ? CircularProgressIndicator(
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                    Theme.of(context).colorScheme.primary),
+                              )
+                            : IconButton(
+                                icon:
+                                    Image.asset('lib/assets/images/google.png'),
+                                onPressed: () async {
+                                  setState(() {
+                                    _isGoogleSigningIn = true;
+                                  });
+                                  User? user = await controller
+                                      .signInWithGoogle(context: context);
+                                  setState(() {
+                                    _isGoogleSigningIn = false;
+                                  });
+                                  if (user != null) {
+                                    Navigator.of(context).pushReplacement(
+                                      MaterialPageRoute(
+                                        builder: (context) => HomeView(),
+                                      ),
+                                    );
+                                  }
+                                },
+                              ),
                         IconButton(
                           icon: Image.asset(
                             'lib/assets/images/facebook.png',
                           ),
                           onPressed: () {},
                         ),
+                        // IconButton(
+                        //   icon: Image.asset(
+                        //     'lib/assets/images/twitter.png',
+                        //   ),
+                        //   onPressed: () {},
+                        // ),
                       ],
                     ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "Already a user? ",
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 10, bottom: 10),
+                          child: ElevatedButton(
+                            child: Text(
+                              'Log In',
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.background,
+                              ),
+                            ),
+                            style: ButtonStyle(
+                                shape: MaterialStateProperty.all<
+                                        RoundedRectangleBorder>(
+                                    RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(18.0),
+                            ))),
+                            onPressed: () => {
+                              Navigator.of(context).pop(),
+                            },
+                          ),
+                        ),
+                      ],
+                    )
                   ],
                 )),
           ),

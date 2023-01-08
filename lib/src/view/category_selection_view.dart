@@ -1,9 +1,17 @@
+/// ****************************************************************************
+/// Created by Nikol Kreshpaj
+/// Collaborators: Julia Agüero
+///
+/// This file is part of the project "Qeasy"
+/// Software Project on Technische Hochschule Ulm
+/// ****************************************************************************
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:queasy/src/model/category_repo.dart';
 import 'package:queasy/src/view/play_quiz/quiz_view.dart';
 import 'package:queasy/src/view/widgets/side_navigation.dart';
-import '../theme_provider.dart';
+import '../../constants/theme_provider.dart';
 
 /// View for selecting a category.
 ///
@@ -284,3 +292,4 @@ class _CategorySelectionViewState extends State<CategorySelectionView> {
       );
     }
   }
+}

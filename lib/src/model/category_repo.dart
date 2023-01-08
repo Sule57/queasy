@@ -6,7 +6,6 @@ import '../../utils/exceptions.dart';
 import 'package:queasy/src/model/profile.dart';
 
 /// Gathers all the categories available from the user in the variable
-/// [categoryList]. The documents are retrieved from Firestore and stored in
 /// [_publicDoc] for public categories and [_privateDoc] for categories
 /// created by the user.
 ///
@@ -20,9 +19,9 @@ class CategoryRepo {
 
   /// Creates a new [Category] in the database.
   ///
-  /// [category] is the name of the [Category] and [color] is the color of the [Category].
+  /// [categoryName] is the name of the [Category] and [color] is the color of the [Category].
   /// Checking if category already exists in the database is done before calling this function.
-  Future<void> createCategory(String cat, Color color) async {
+  Future<void> createCategory(String categoryName, Color color) async {
     String? id = await getCurrentUserID();
     String? username = await getCurrentUserUsername();
     print('id: $id, ' + 'username: $username');
@@ -30,16 +29,16 @@ class CategoryRepo {
       throw UserNotLoggedInException();
     }
     await _privateDoc.update({
-      cat: color.value,
+      categoryName: color.value,
     });
 
     await _privateDoc
-        .collection(cat)
+        .collection(categoryName)
         .doc('question-1')
         .set({'ID': 'question-1'});
     await FirebaseFirestore.instance
         .collection('leaderboard')
-        .doc(id + '-' + cat)
+        .doc(id + '-' + categoryName)
         .set({
       username: {'points': 0, 'position': 1}
     });
@@ -100,5 +99,24 @@ class CategoryRepo {
       }
     });
     return list;
+  }
+
+  /// Returns a category from the database with the given name [_category].
+  ///
+  /// If the category is not found, returns null.
+  Future<Category> getCategory(String _category) async {
+    String? username = getCurrentUserID();
+    if (username == null) {
+      throw UserNotLoggedInException();
+    }
+    DocumentSnapshot doc = await _privateDoc.get();
+    if (doc.exists) {
+      Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+      if (data.containsKey(_category)) {
+        return Category(
+            name: _category, color: Color(data[_category] as int));
+      }
+    }
+    return throw CategoryNotFoundException();
   }
 }

@@ -11,3 +11,7 @@ class UserNotLoggedInException implements Exception {
 class UserAlreadyExistsException implements Exception{
   String errMsg() => 'User with this username already exist ';
 }
+
+class CategoryNotFoundException implements Exception{
+  String errMsg() => 'Category not found ';
+}

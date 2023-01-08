@@ -1,9 +1,6 @@
-import 'dart:io';
-import 'dart:typed_data';
-import 'package:path_provider/path_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:queasy/src/model/category_repo.dart';
+import 'package:queasy/src.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:queasy/src/model/statistics.dart';
@@ -36,7 +33,6 @@ Future<String?> getCurrentUserUsername() async {
 ///adapted for the needs of the quizz application
 /// [email] email field
 /// [username] username
-/// [hashPassword] password
 /// [firstName] user first name
 /// [lastName] user last name
 /// [profilePicture] path to the profile picture
@@ -46,7 +42,6 @@ class Profile {
   static int globalCounter = 0;
   String email;
   String username;
-  String hashPassword;
   String? firstName;
   String? lastName;
   String? profilePicture;
@@ -62,7 +57,6 @@ class Profile {
   Profile({
     required this.username,
     required this.email,
-    required this.hashPassword,
     this.firstName = '',
     this.lastName = '',
     this.profilePicture = '',
@@ -75,7 +69,6 @@ class Profile {
   Profile.test({
     required this.username,
     required this.email,
-    required this.hashPassword,
     this.firstName = '',
     this.lastName = '',
     this.profilePicture = '',
@@ -103,7 +96,6 @@ class Profile {
       // bio = json[json.keys.toList()[0]]['bio'],
       // age = json[json.keys.toList()[0]]['age'];
       : username = json['username'],
-        hashPassword = json['hashPassword'],
         email = json['email'],
         firstName = json['firstName'],
         lastName = json['lastName'],
@@ -115,7 +107,7 @@ class Profile {
 
   @override
   String toString() {
-    return 'User{ username: $username, hashPassword: $hashPassword, firstName: $firstName, lastName: $lastName, bio: $bio, age: $age, }';
+    return 'User{ username: $username, firstName: $firstName, lastName: $lastName, bio: $bio, age: $age, }';
   }
 
   /// converts user object to json object
@@ -124,7 +116,6 @@ class Profile {
         'lastName': lastName,
         'firstName': firstName,
         'email': email,
-        'hashPassword': hashPassword,
         'bio': bio,
         'age': age,
         'scores': publicScore,
@@ -148,7 +139,7 @@ class Profile {
 
     if (getCurrentUserID() != null) {
       // create the document for categories created by the user
-      await firestore.collection('category').doc(getCurrentUserID()).set({});
+      await firestore.collection('categories').doc(getCurrentUserID()).set({});
 
       await firestore
           .collection('users')
@@ -201,18 +192,18 @@ class Profile {
     return s;
   }
 
-  /// Increment the score of the user in the firebase by the score achieved in the current quiz
-  /// [username] The username of the user
-  void updateScore(String username, String category, int score) {
+  /// Increment the score of the user in the firebase by the score achieved in the current quiz.
+  void updateScore(String category, int score) {
     final firebaseFirestore = FirebaseFirestore.instance;
     firebaseFirestore.collection('users').doc(getCurrentUserID()).update({
       'scores.$category': FieldValue.increment(score),
     });
+    //TODO
+    // Leaderboard().updateCurrentUserPoints(score);
   }
 
   //START OF METHODS FOR PROFILE VIEW
   /// Updates the user's username in the Firebase Database
-  /// @param [currentUsername] - username of the user whose username to change
   /// @param [newUsername] - username to change the current username to
   /// @return true - username was updated successfully
   /// @return false - username was not updated successfully

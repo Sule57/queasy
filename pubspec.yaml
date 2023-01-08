@@ -51,6 +51,7 @@ dependencies:
   path_provider: ^2.0.11
   firebase_dart: ^1.0.11
   draw_graph: ^1.0.0
+  google_sign_in: ^5.4.2
 
 
 dev_dependencies:

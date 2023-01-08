@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:queasy/src/model/leaderboard_entry.dart';
 
-import '../../../theme_provider.dart';
+import '../../../../constants/theme_provider.dart';
 
 class UserTileDesktop extends StatelessWidget {
   final int index;

@@ -1,10 +1,17 @@
+/// ****************************************************************************
+/// Created by Julia Agüero
+///
+/// This file is part of the project "Qeasy"
+/// Software Project on Technische Hochschule Ulm
+/// ****************************************************************************
+
 import 'package:flutter/material.dart';
 import 'package:queasy/src/view/category_selection_view.dart';
 import 'package:queasy/src/view/home_view.dart';
-import 'package:queasy/src/view/login/login_desktop.dart';
 import 'package:queasy/src/view/see_leaderboard/leaderboard_view.dart';
 import 'package:queasy/src/view/see_profile/profile_view.dart';
 import 'package:queasy/src/view/see_profile/profile_view_controller.dart';
+import '../login/login_view.dart';
 
 /// Defines the navigation bar used in big screens.
 ///
@@ -16,7 +23,7 @@ import 'package:queasy/src/view/see_profile/profile_view_controller.dart';
 //TODO make nav bar show what is the current page being displayed
 class SideNavigation extends StatelessWidget {
   const SideNavigation({Key? key}) : super(key: key);
-  final double width = 300;
+  static final double width = 300;
 
   @override
   Widget build(BuildContext context) {
@@ -41,15 +48,18 @@ class SideNavigation extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Align(
-              alignment: Alignment.center,
-              child: Image.asset(
-                "lib/assets/images/logo_horizontal.png",
-                height: 50,
-              ),
-            ),
             Column(
               children: [
+                Align(
+                  alignment: Alignment.center,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    child: Image.asset(
+                      "lib/assets/images/logo_horizontal.png",
+                      height: 50,
+                    ),
+                  ),
+                ),
                 ListTile(
                   leading: Icon(Icons.home_outlined),
                   title: Text(
@@ -108,12 +118,12 @@ class SideNavigation extends StatelessWidget {
                 ),
               ],
             ),
-            Divider(
-              color: Colors.grey,
-              thickness: 0.5,
-            ),
             Column(
               children: [
+                Divider(
+                  color: Colors.grey,
+                  thickness: 0.5,
+                ),
                 ListTile(
                   leading: Icon(Icons.person),
                   title: Text(
@@ -125,16 +135,6 @@ class SideNavigation extends StatelessWidget {
                       builder: (context) => ProfileView(),
                     ),
                   ),
-                ),
-                ListTile(
-                  leading: Icon(Icons.info_outline),
-                  title: Text(
-                    "Support",
-                    style: textStyle,
-                  ),
-                  onTap: () {
-                    //TODO about
-                  },
                 ),
                 ListTile(
                   leading: Icon(
@@ -150,9 +150,9 @@ class SideNavigation extends StatelessWidget {
                   onTap: () {
                     bool success = ProfileViewController().signOut();
                     if (success) {
-                      Navigator.of(context).push(
+                      Navigator.of(context).pushReplacement(
                         MaterialPageRoute(
-                          builder: (context) => const LogInDesktop(),
+                          builder: (context) => LoginView(),
                         ),
                       );
                     } else {

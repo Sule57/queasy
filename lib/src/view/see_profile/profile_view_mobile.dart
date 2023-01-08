@@ -1,30 +1,37 @@
+/// ****************************************************************************
+/// Created by Gullu Gasimova
+///
+/// This file is part of the project "Qeasy"
+/// Software Project on Technische Hochschule Ulm
+/// ****************************************************************************
+
 import 'package:draw_graph/models/feature.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_profile_picture/flutter_profile_picture.dart';
 import 'package:provider/provider.dart';
 import 'package:queasy/constants/app_themes.dart';
-import 'package:queasy/src/theme_button.dart';
+import 'package:queasy/src/view/see_profile/widgets/theme_button.dart';
 import 'package:queasy/src/view/login/login_view.dart';
 import 'package:queasy/src/view/see_profile/profile_view_controller.dart';
 import 'package:draw_graph/draw_graph.dart';
-import '../../theme_provider.dart';
+import '../../../constants/theme_provider.dart';
 import '../registration/register_view.dart';
 import 'profile_provider.dart';
 
 ///This is UserProfileMobile view
 ///It displays mobile version of the profile page
-class UserProfileMobile extends StatefulWidget {
+class ProfileViewMobile extends StatefulWidget {
   ///[controller] is ProfileViewController
   final ProfileViewController controller = ProfileViewController();
 
-  UserProfileMobile({Key? key}) : super(key: key);
+  ProfileViewMobile({Key? key}) : super(key: key);
 
   ///creates UserProfileMobile class
   @override
-  State<UserProfileMobile> createState() => ProfileMobileState();
+  State<ProfileViewMobile> createState() => ProfileMobileState();
 }
 
-class ProfileMobileState extends State<UserProfileMobile> {
+class ProfileMobileState extends State<ProfileViewMobile> {
   ///[controller] is ProfileViewController
   get controller => widget.controller;
 
@@ -924,8 +931,14 @@ class ProfileMobileState extends State<UserProfileMobile> {
                   onPressed: () {
                     bool success = controller.signOut();
                     if (success) {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => const LogInView()));
+                      if (Navigator.canPop(context)){
+                        Navigator.pop(context);
+                      }
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(
+                          builder: (context) => LoginView(),
+                        ),
+                      );
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(

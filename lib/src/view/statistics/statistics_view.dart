@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:queasy/src/view/home_view.dart';
 import 'package:queasy/src/view/statistics/statistic_view_controller.dart';
 
-import '../../theme_provider.dart';
+import '../../../constants/theme_provider.dart';
 
 class StatisticsView extends StatefulWidget {
   const StatisticsView({Key? key}) : super(key: key);

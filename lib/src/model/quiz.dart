@@ -1,48 +1,115 @@
 import 'dart:math';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:queasy/src/model/category.dart';
 import 'package:queasy/src/model/profile.dart';
 import 'package:queasy/src/model/question.dart';
 import '../../utils/exceptions.dart';
 
+/// The Quiz class is responsible for being an instance of a quiz and also,
+/// for filling the quiz with questionswhether it is a private or a public quiz.
+/// This is done by using either the[getRandomQuestions] or the
+/// [retrieveQuizFromId] methods.
+
 class Quiz {
+  /// The id represents the id of the quiz, this will be set only if the quiz is
+  /// private, since public quizzes aren't stored.
   late String id;
+  /// The category represents the category of the quiz, this is used to retrieve
+  /// the questions from the firebase.
   late Category category;
+  /// noOfQuestions represents the number of questions that the quiz will have.
   late int noOfQuestions;
-  late String? ownerID, categoryName;
+  /// The ownerID represents the ID of the user who created the quiz or the word
+  /// 'public' used to reference public quizzes.
+  late String? ownerID;
+  /// The name variable stores the name of the quiz.
+  late String? name;
+  /// The UID represents the ID of the user who created the quiz.
+  late String? UID;
+  /// The _questions list stores the retrieved questions which will be displayed
+  /// to the user to answer.
   List<Question> _questions = [];
+  /// The _usedQuestions list stores the IDs of the questions already used in the
+  /// quiz.
   List<String> _usedQuestions = [];
+  /// The firestore represents an instance of firebase connection,
+  /// it is used to manipulate the firebase.
   late FirebaseFirestore? firestore;
+  /// isPublic represents whether the quiz is public or private.
   late bool isPublic;
 
+  /// A getter for the list of questions.
   get questions => _questions;
 
+  /// This is the createRandom constructor of the class, it takes the number of
+  /// questions [noOfQuestions], the [category] of the quiz, the boolean [isPublic]
+  /// and the optional [name] of the quiz as parameters and assigns them to the
+  /// corresponding parameters of the class. The reason why [name] is optional
+  /// is because if the quiz is public, the name is not needed.
+  ///
+  /// It also takes another optional parameter [firestore] which allows the
+  /// programmer to pass the mocked firebase instance when testing.
+  ///
+  /// There is a conditional statement inside this constructor that will check
+  /// if the [firestore] was passed as a parameter, if it was, it assumes that
+  /// the developer is in testing and therefore the [UID] will be set to a
+  /// default value, otherwise it will get the current user's ID and set it to
+  /// the [UID] parameter. Also, if [firestore] was not passed as a parameter,
+  /// it will initialize the [firestore] parameter with the actual firebase
+  /// instance.
   Quiz.createRandom({
     required this.category,
     required this.noOfQuestions,
     required this.isPublic,
-    this.firestore,
+    this.name,
+    firestore,
   }) {
-    firestore ?? FirebaseFirestore.instance;
+    if (firestore == null) {
+      UID = getCurrentUserID();
+      firestore = FirebaseFirestore.instance;
+    }
+    else {
+      this.firestore = firestore;
+      UID = "test123456789";
+    }
     getRandomQuestions();
   }
 
-  Quiz.retrieveFromID({
-    required this.id,
-    required this.noOfQuestions,
-    this.firestore,
+  /// This is the createFromID constructor of the class, it takes one optional
+  /// parameter [firestore] which allows the programmer to pass the mocked
+  /// firebase instance when testing.
+  ///
+  /// The constructor creates a default [category] to be used by the quiz
+  /// provider until the actual category is retrieved from firebase.
+  /// This constructor is basically creating an empty quiz that will be filled
+  /// with data from the firebase since constructors cannot be asynchronous.
+  ///
+  /// There is a conditional statement inside this constructor that will check
+  /// if the [firestore] was passed as a parameter, if it was, it assumes that
+  /// the developer is in testing and therefore the [UID] will be set to a
+  /// default value, otherwise it will get the current user's ID and set it to
+  /// the [UID] parameter. Also, if [firestore] was not passed as a parameter,
+  /// it will initialize the [firestore] parameter with the actual firebase
+  /// instance.
+  Quiz({
+    //required this.id,
+    firestore,
   }) {
-    isPublic = false;
+    category = Category(name: 'default', firestore: firestore);
+    // isPublic = false;
     if (firestore == null) {
-      firestore = FirebaseFirestore.instance;
+      UID = getCurrentUserID();
+      this.firestore = FirebaseFirestore.instance;
     }
-    retrieveQuizFromId();
+    else {
+      this.firestore = firestore;
+      UID = "test123456789";
+    }
+    // retrieveQuizFromId();
   }
 
-  /// This method is supposed to create a random 8 character String
-  /// This is used to create the ID of the quiz
-  /// a-z A-Z 0-9
+  /// Creates a random ID for the quiz by using the [Random] class and the
+  /// [String] function that gets a character from an integer value.
   String createID() {
     String id = "";
     for (int i = 0; i < 8; i++) {
@@ -58,6 +125,12 @@ class Quiz {
     return id;
   }
 
+  /// Gives the quiz a random unique ID.
+  /// This method is an asynchronous, recursive method that will store a random
+  /// ID by using the [createID] method into the "tempID" variable and then
+  /// it will check if the ID is already used by another quiz, if it is, it will
+  /// call itself again, otherwise it will set the [id] parameter to the
+  /// "tempID" and return.
   Future<void> assignUniqueID() async {
     String tempID = createID();
 
@@ -76,21 +149,36 @@ class Quiz {
     this.id = tempID;
   }
 
+  /// Fills the quiz with random questions from the specified [category] and
+  /// the [noOfQuestions] parameter.
+  ///
+  /// This method is an asynchronous method that will retrieve an amount of
+  /// questions equal to the [noOfQuestions] parameter from the firebase and
+  /// store them in the [_questions] list. The IDs of each of these questions is
+  /// stored into the [_usedQuestions] list so it can always be checked if the
+  /// question was already added to the quiz, so it doesn't occur that there are
+  /// two same questions in there.
+  ///
+  /// The method also contains if the [UID] is null, and if it is, this means
+  /// a user is not logged in, so it will throw the [UserNotLoggedInException].
+  ///
+  /// If the quiz isn't public a unique ID will be assigned to the quiz by using
+  /// the [assignUniqueID] method.
   Future<Quiz> getRandomQuestions() async {
-
     if (isPublic == false) {
-      if (getCurrentUserID() == null) {
+      if (UID == null) {
         throw UserNotLoggedInException();
       }
-      this.ownerID = getCurrentUserID();
-
+      this.ownerID = UID;
       await assignUniqueID();
+
     } else {
       this.ownerID = 'public';
       this.id = 'whatever';
     }
 
-    /// for the number of questions in the quiz, get a random question from the category
+    /// for the number of questions in the quiz,
+    /// get a random question from the category.
     for (int i = 0; i < noOfQuestions; i++) {
       /// create a random id from category.randomizer
       /// check if the id is already in the list of used questions
@@ -98,35 +186,50 @@ class Quiz {
       /// if it is not, add it to the list of used questions
       /// add the question to the list of questions
       String tempID =
-          await category.randomizer(firestore: firestore, public: isPublic);
+      await category.randomizer(public: isPublic);
       while (_usedQuestions.contains(tempID)) {
         tempID =
-            await category.randomizer(firestore: firestore, public: isPublic);
+        await category.randomizer(public: isPublic);
       }
       _usedQuestions.add(tempID);
       Question tempQuestion =
-          await category.getQuestion(tempID, public: isPublic);
+      await category.getQuestion(tempID, public: isPublic);
       _questions.add(tempQuestion);
     }
 
     return this;
   }
 
-  /// This method is used to store the quiz into the database
+  /// This method is an asynchronous method that will store the quiz into the
+  /// firebase.
   Future<void> storeQuiz() async {
     await firestore?.collection('quizzes').doc(id).set({
       'id': id,
+      'name': name,
       'creatorID': ownerID,
       'category': category.name,
-      'questionIds': _questions,
+      'questionIds': _usedQuestions,
     });
   }
 
-  Future<Quiz> retrieveQuizFromId() async {
+  /// This method is an asynchronous method that will retrieve the quiz from
+  /// the firebase and fill the quiz with the data retrieved. It takes one
+  /// parameter [id] which is the ID of the quiz that will be retrieved.
+  ///
+  /// Inside the method [isPublic] is automatically set to false, because this
+  /// method is only used for retrieving private quizzes.
+  /// When it is called, the method will go to the given ID and fill the quiz
+  /// object with the data retrieved from the firebase. In particular the
+  /// variables [id], [name], [ownerID], [category], [noOfQuestions] and
+  /// [_usedQuestions] will be retrieved from firebase.
+  ///
+  /// After this is retrieved, the method will call a method "getPrivateQuestions"
+  /// from [Category] class which will retrieve the questions from the firebase
+  /// for the amount of times specified by the [noOfQuestions] variable, and the
+  /// question IDs stored in the [_usedQuestions] variable.
+  Future<Quiz> retrieveQuizFromId({required String id}) async {
     print('inside retrieveQuizFromId method. Id: $id');
     this.isPublic = false;
-
-    firestore ?? FirebaseFirestore.instance;
 
     await firestore
         ?.collection('quizzes')
@@ -136,10 +239,13 @@ class Quiz {
       print('it got the collection');
       if (documentSnapshot.exists) {
         print('Document data: ${documentSnapshot.data()}');
+        this.name = documentSnapshot['name'];
         this.id = documentSnapshot['id'];
         this.ownerID = documentSnapshot['creatorID'];
-        this.categoryName = documentSnapshot['category'];
+        this.category = new Category(name: documentSnapshot['category']!, firestore: firestore);
+        // this.categoryName = ;
         this.noOfQuestions = documentSnapshot['questionIds'].length;
+
         /// add all questionIds to the list of used questions
         for (int i = 0; i < noOfQuestions; i++) {
           _usedQuestions.add(documentSnapshot['questionIds'][i]);
@@ -149,15 +255,43 @@ class Quiz {
       }
     });
 
-    this.category = new Category(name: categoryName!);
-
     for (int i = 0; i < noOfQuestions; i++) {
       Question tempQuestion =
-          await category.getPrivateQuestion(_usedQuestions[i], ownerID!);
+      await category.getPrivateQuestion(_usedQuestions[i], ownerID!);
       _questions.add(tempQuestion);
     }
 
     return this;
   }
-}
 
+  /// Checks if the quiz with the given [id] exists in the firebase. If it does,
+  /// it will return true, otherwise it will return false.
+  /// This method is an asynchronous method that parses through the stored
+  /// quizzes in the firebase and checks if the document exists.
+  /// It also accepts a optional parameter [firestore] which is the firestore
+  /// instance that will be used to retrieve the data from the firebase.
+  /// If the [firestore] parameter is null, the method will use the default
+  /// firestore instance. If it is not null, it will use the given firestore
+  /// instance.
+  static Future<bool> checkIfQuizExists(
+      {required String id, FirebaseFirestore? firestore}) async {
+
+    if (firestore == null) {
+      firestore = FirebaseFirestore.instance;
+    }
+
+    bool exists = false;
+    await firestore
+        .collection('quizzes')
+        .doc(id)
+        .get()
+        .then((DocumentSnapshot documentSnapshot) {
+      if (documentSnapshot.exists) {
+        exists = true;
+      } else {
+        exists = false;
+      }
+    });
+    return exists;
+  }
+}

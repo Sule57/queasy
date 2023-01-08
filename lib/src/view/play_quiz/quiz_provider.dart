@@ -1,5 +1,11 @@
+/// ****************************************************************************
+/// Created by Julia Agüero
+///
+/// This file is part of the project "Qeasy"
+/// Software Project on Technische Hochschule Ulm
+/// ****************************************************************************
+
 import 'dart:async';
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:queasy/main.dart';
 import 'package:queasy/src/model/category.dart';
@@ -48,15 +54,11 @@ import '../../model/quiz.dart';
 /// It gets reset to 15 seconds for every new question. It is used to display
 /// the time left in the UI. It is also used to calculate the score.
 class QuizProvider with ChangeNotifier {
-  // QuizProvider._internal();
-
-  // static final QuizProvider _instance = QuizProvider._internal();
-
   late Quiz _quiz;
   late Profile player;
   late String? _quizCategory;
   late String? _quizId;
-  late int _totalQuestions;
+  late int _totalQuestions = 5;
   int _currentQuestionIndex = 0;
   int _currentPoints = 0;
   int correctAnswers = 0;
@@ -64,7 +66,7 @@ class QuizProvider with ChangeNotifier {
   Timer? countdownTimer;
   Duration _timeLeft = const Duration(seconds: 15);
   int _secondsPassed = 0;
-  get category => _quizCategory;
+  get quizCategory => _quizCategory;
   get quiz => _quiz;
   get timeLeft => _timeLeft.inSeconds.toString();
 
@@ -74,7 +76,6 @@ class QuizProvider with ChangeNotifier {
     player = Profile(
       username: 'Savo',
       email: 'savo@email.com',
-      hashPassword: '1234',
     );
     init();
   }
@@ -116,12 +117,11 @@ class QuizProvider with ChangeNotifier {
   Future<bool> startQuiz({
     String? id,
     String? category,
-    required int numberOfQuestions,
+    int? numberOfQuestions,
     String? creatorUsername,
   }) async {
     _quizId = id;
     _quizCategory = category;
-    _totalQuestions = numberOfQuestions;
     _currentQuestionIndex = 0;
     _currentPoints = 0;
     _currentQuestionAnswered = false;
@@ -131,17 +131,17 @@ class QuizProvider with ChangeNotifier {
       _quiz = await Quiz.createRandom(
         category: Category(
           name: _quizCategory!,
-          color: Colors.transparent,
         ),
         noOfQuestions: _totalQuestions,
         isPublic: true,
       ).getRandomQuestions();
       isLoading = false;
     } else if (_quizId != null && _quizCategory == null) {
-      _quiz = await Quiz.retrieveFromID(
+      _quiz = await Quiz().retrieveQuizFromId(
         id: _quizId!,
-        noOfQuestions: _totalQuestions,
       );
+      _quizCategory = _quiz.category.name;
+      _totalQuestions = _quiz.noOfQuestions;
       isLoading = false;
     } else {
       throw Exception('_category == null || _id == null');
@@ -199,17 +199,21 @@ class QuizProvider with ChangeNotifier {
 
     //TODO WHEN QUIZZES NAMES ARE IMPLEMENTED ADD NAME TO THE QUIZZREQULT
     //TODO GET THE REAL TIME SPENT
-    Random rand = Random();
-    UserQuizzResult r = UserQuizzResult("Test" + rand.nextInt(50).toString(),
-        correctAnswers, _totalQuestions, _secondsPassed);
-    UserStatistics? stat = await player.getUserStatistics();
-    if (stat != null) {
-      stat.addUserQuizzResult(r);
-      await stat.saveStatistics();
-    }
-
     if (_quizCategory != null) {
-      player.updateScore("Savo", _quizCategory!, _currentPoints);
+      UserStatistics? stat = await player.getUserStatistics();
+      if (stat != null) {
+        String name = _quizCategory! + (stat.userQuizzes.length + 1).toString();
+
+        UserQuizzResult r = UserQuizzResult(
+            name, correctAnswers, _totalQuestions, _secondsPassed);
+
+        stat.addUserQuizzResult(r);
+        await stat.saveStatistics();
+      }
+    }
+    if (_quizCategory != null) {
+      //TODO check this
+      player.updateScore(_quizCategory!, _currentPoints);
       print('seconds passed at the end of the quizz: $_secondsPassed');
     }
     navigator.currentState?.pop();

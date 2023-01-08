@@ -1,7 +1,13 @@
+/// ****************************************************************************
+/// Created by Julia Agüero
+///
+/// This file is part of the project "Qeasy"
+/// Software Project on Technische Hochschule Ulm
+/// ****************************************************************************
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../theme_provider.dart';
 import '../quiz_provider.dart';
 
 /// Widget to display the score, the current question being answered, and the
