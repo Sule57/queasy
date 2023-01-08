@@ -65,7 +65,7 @@ class Profile {
     this.age = 0,
     this.birthdayMonth = '',
     this.birthdayDay = 0,
-  }){
+  }) {
     uid = getCurrentUserID();
   }
 
@@ -80,7 +80,7 @@ class Profile {
     this.birthdayMonth = '',
     this.birthdayDay = 0,
     required this.firestore,
-  }){
+  }) {
     uid = "mockedyou123456";
   }
 
@@ -120,9 +120,12 @@ class Profile {
         'username': username,
         'lastName': lastName,
         'firstName': firstName,
+        'profilePicture': profilePicture,
         'email': email,
         'bio': bio,
         'age': age,
+        'birthdayMonth': birthdayMonth,
+        'birthdayDay': birthdayDay,
         'scores': publicScore,
         'privateScore': privatecScore,
       };
@@ -137,7 +140,7 @@ class Profile {
         .doc(uid)
         .get()
         .then((DocumentSnapshot documentSnapshot) {
-      if (documentSnapshot.exists && uid!="mockedyou123456") {
+      if (documentSnapshot.exists && uid != "mockedyou123456") {
         throw UserAlreadyExistsException();
       }
     });
@@ -146,10 +149,7 @@ class Profile {
       // create the document for categories created by the user
       await firestore.collection('categories').doc(uid).set({});
 
-      await firestore
-          .collection('users')
-          .doc(uid)
-          .set(this.toJson());
+      await firestore.collection('users').doc(uid).set(this.toJson());
       UserStatistics s = UserStatistics(this.username, []);
       //Adding the user to the statistics
       Map<String, dynamic> data = {};
@@ -214,10 +214,7 @@ class Profile {
   /// @return false - username was not updated successfully
   bool updateUsername(String newUsername) {
     try {
-      firestore
-          .collection('users')
-          .doc(uid)
-          .update({'username': newUsername});
+      firestore.collection('users').doc(uid).update({'username': newUsername});
       return true;
     } catch (e) {
       return false;
@@ -231,10 +228,7 @@ class Profile {
   ///@return false - bio was not updated successfully
   bool updateBio(String newBio) {
     try {
-      firestore
-          .collection('users')
-          .doc(uid)
-          .update({'bio': newBio});
+      firestore.collection('users').doc(uid).update({'bio': newBio});
       return true;
     } catch (e) {
       return false;
@@ -271,23 +265,6 @@ class Profile {
           .collection('users')
           .doc(uid)
           .update({'birthdayMonth': newMonth, 'birthdayDay': newDay});
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
-
-  ///updates the Profile Picture of the user in the Firebase Database
-  ///@param [username] - the current username of the user
-  ///@param [newPic] - the new picture
-  ///@return true - picture was updated successfully
-  ///@return false - picture couldn't be updated
-  bool updatePicture(String newPic) {
-    try {
-      firestore
-          .collection('users')
-          .doc(uid)
-          .update({'profilePicture': newPic});
       return true;
     } catch (e) {
       return false;
@@ -369,6 +346,7 @@ class Profile {
     }
   }
 
+  ///updates the Profile Picture of the user in the Firebase Database and in the Firebase Storage
   Future<void> pickProfileImage() async {
     final image = await ImagePicker().pickImage(
       source: ImageSource.gallery,
@@ -376,31 +354,9 @@ class Profile {
       maxHeight: 512,
       imageQuality: 75,
     );
-    Reference ref = FirebaseStorage.instance
-        .ref()
-        .child("profilePictures/${uid}");
-    // File file = File(image!.path);
-    // print(file.path);
-    // final metadata = SettableMetadata(
-    //     contentType: 'imange/png',
-    //     customMetadata: {'picked-file-path': file.path});
-    // final uploadTask = ref.putData(await file.readAsBytes(), metadata);
-    // ref.getDownloadURL().then((value) {
-    //   print(value);
-    //   firestore
-    //       .collection('users')
-    //       .doc(getCurrentUserID())
-    //       .update({'profilePicture': value});
-    // });
-    // try {
-    //   await ref.putFile(file);
-    // } catch (e) {
-    //   print(e);
-    // }
+    Reference ref =
+        FirebaseStorage.instance.ref().child("profilePictures/${uid}");
     final fileBytes = await image!.readAsBytes();
-// var now = DateTime.now().millisecondsSinceEpoch;
-// StorageReference reference =
-//   FirebaseStorage.instance.ref().child("images/$now");
 
     try {
       await ref.putData(fileBytes);
@@ -414,37 +370,7 @@ class Profile {
     } catch (e) {
       print(e);
     }
-
-    // uploadTask.snapshotEvents.listen((TaskSnapshot taskSnapshot) {
-    //   switch (taskSnapshot.state) {
-    //     case TaskState.running:
-    //       final progress =
-    //           100.0 * (taskSnapshot.bytesTransferred / taskSnapshot.totalBytes);
-    //       print("Upload is $progress% complete.");
-    //       break;
-    //     case TaskState.paused:
-    //       print("Upload is paused.");
-    //       break;
-    //     case TaskState.canceled:
-    //       print("Upload was canceled");
-    //       break;
-    //     case TaskState.error:
-    //       // Handle unsuccessful uploads
-    //       print("Upload FAILED");
-    //       break;
-    //     case TaskState.success:
-    //       // Handle successful uploads on complete
-    //       // ...
-    //       break;
-    //   }
-    // });
   }
-
-  // File getProfilePicture(){
-  //   Reference ref = FirebaseStorage.instance
-  //       .ref()
-  //       .child("profilePictures/${getCurrentUserID()}")
-  // }
   //END OF METHODS FOR PROFILE VIEW
 
 }
