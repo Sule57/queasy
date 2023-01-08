@@ -17,6 +17,7 @@ import 'package:queasy/src/view/see_profile/profile_view.dart';
 import 'package:queasy/src/view/private_category_selection_view.dart';
 import 'package:queasy/src/view/widgets/side_navigation.dart';
 
+import '../../src.dart';
 import 'see_profile/profile_provider.dart';
 
 /// This is the base view for navigation. It contains the bottom navigation bar
@@ -220,36 +221,33 @@ class HomeWidgets extends StatelessWidget {
                             ElevatedButton(
                               child:
                                   Text("Join", style: TextStyle(color: dark)),
-                              onPressed: () {
+                              onPressed: () async {
                                 if (textController.text.isNotEmpty) {
-                                  ///confirmKey method is called from the controller
-                                  ///result is saved in [success] variable
-                                  // bool success =
-                                  //     confirmKey(textController.text);
+                                  // /confirmKey method is called from the controller
+                                  // /result is saved in [success] variable
+                                  bool success =
+                                  await Quiz.checkIfQuizExists(id: textController.text);
 
-                                  Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder: (context) => QuizView(
-                                        id: textController.text,
+                                  if (success) {
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (context) => QuizView(
+                                          id: textController.text,
+                                        ),
                                       ),
-                                    ),
-                                  );
-
-                                  ///if successful the user is taken to the corresponding Quiz
-                                  // if (success) {
-                                  //   //TODO take user to private quiz
-                                  //   MaterialPageRoute(
-                                  //     builder: (context) => QuizView(
-                                  //       id: textController.text,
-                                  //     ),
-                                  //   );
-                                  //   // Navigator.of(context).push(
-                                  //   //     MaterialPageRoute(
-                                  //   //         builder: (context) =>
-                                  //   //             QuizView()))
-                                  // } else {
-                                  //   Navigator.pop(context);
-                                  // }
+                                    );
+                                  } else {
+                                    Navigator.pop(context);
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                      content: Text(
+                                        'Invalid key',
+                                        textAlign: TextAlign.center,
+                                        ),
+                                        duration: Duration(seconds: 1),
+                                      ),
+                                    );
+                                  }
                                 }
                               },
                               style: ButtonStyle(
@@ -290,11 +288,5 @@ class HomeWidgets extends StatelessWidget {
         //   ),
       ),
     );
-  }
-
-  /// Confirms whether the entered key is valid (not yet implemented)
-  bool confirmKey(String text) {
-    /// TODO: implement a communication with Firebase that checks if the key exists
-    return false;
   }
 }
