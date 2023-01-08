@@ -196,7 +196,7 @@ class _CategorySelectionViewState extends State<CategorySelectionView> {
                 ),
                 SideNavigation(),
                 SizedBox(
-                  width: width - SideNavigation().width,
+                  width: width - SideNavigation.width,
                 ),
               ],
             )))
@@ -292,4 +292,3 @@ class _CategorySelectionViewState extends State<CategorySelectionView> {
       );
     }
   }
-}

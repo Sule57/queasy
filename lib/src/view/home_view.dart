@@ -154,7 +154,7 @@ class _HomeViewState extends State<HomeView> {
               ),
               SideNavigation(),
               SizedBox(
-                width: width - SideNavigation().width,
+                width: width - SideNavigation.width,
               ),
             ],
           )))
