@@ -198,9 +198,9 @@ class Profile {
   }
 
   /// Increment the score of the user in the firebase by the score achieved in the current quiz.
-  void updateScore(String category, int score) {
+  Future<void> updateScore(String category, int score) async {
     final firebaseFirestore = FirebaseFirestore.instance;
-    firebaseFirestore.collection('users').doc(getCurrentUserID()).update({
+    await firebaseFirestore.collection('users').doc(uid).update({
       'scores.$category': FieldValue.increment(score),
     });
     //TODO
