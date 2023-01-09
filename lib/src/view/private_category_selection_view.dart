@@ -9,9 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:queasy/src/model/category_repo.dart';
 import 'package:queasy/src/view/play_quiz/quiz_view.dart';
-import 'package:queasy/src/view/quiz_edit_view.dart';
-
 import '../../constants/theme_provider.dart';
+import 'edit_quiz/quiz_edit_view.dart';
 
 // TODO: update comments
 /// View for selecting a private quiz.
@@ -106,9 +105,7 @@ class _PrivateCategorySelectionViewState
                 Icons.arrow_back,
                 color: Theme.of(context).colorScheme.onTertiary,
               ),
-              onPressed: () {
-                Navigator.pop(context);
-              },
+              onPressed: () => Navigator.pop(context),
               iconSize: 30,
             ),
           ),
@@ -271,24 +268,23 @@ class CategoryListEmpty extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        //const SizedBox(height: 40),
-        Container(
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.onTertiary,
-            borderRadius: BorderRadius.all(Radius.circular(20)),
-          ),
-          height: MediaQuery.of(context).size.height / 5,
-          width: MediaQuery.of(context).size.width / 3,
-          alignment: Alignment.center,
-          child: Text(
-              'You don\'t have any categories yet...\nWhy don\'t you create one?',
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.headline5),
+    Size size = MediaQuery.of(context).size;
+
+    return Align(
+      alignment: Alignment.center,
+      child: Container(
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.onTertiary,
+          borderRadius: BorderRadius.all(Radius.circular(20)),
         ),
-      ],
+        height: size.height / 5,
+        width: size.width < 700 ? size.width / 1.4 : size.width / 3,
+        alignment: Alignment.center,
+        child: Text(
+            'You don\'t have any categories yet...\nWhy don\'t you create one?',
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.headline5),
+      ),
     );
   }
 }

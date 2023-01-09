@@ -31,7 +31,6 @@ class _CustomTextFieldState extends State<CustomTextField> {
   get controllerText => widget.controllerText;
   get controller => widget.controller;
 
-
   @override
   Widget build(BuildContext context) {
     return Padding(

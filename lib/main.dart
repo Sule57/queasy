@@ -6,13 +6,13 @@
 /// This file is part of the project "Qeasy"
 /// Software Project on Technische Hochschule Ulm
 /// ****************************************************************************
-
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:queasy/constants/theme_provider.dart';
+import 'package:queasy/src/view/edit_quiz/quiz_edit_provider.dart';
 import 'package:queasy/src/view/login/login_provider.dart';
 import 'package:queasy/src/view/play_quiz/quiz_provider.dart';
 import 'package:queasy/src/view/statistics/statistics_provider.dart';
@@ -47,11 +47,12 @@ Future<void> main() async {
           ChangeNotifierProvider(create: (_) => QuizProvider()),
           ChangeNotifierProvider(create: (_) => LeaderboardProvider()),
           ChangeNotifierProvider(create: (_) => ProfileProvider()),
+          ChangeNotifierProvider(create: (_) => EditQuizProvider()),
           ChangeNotifierProxyProvider<QuizProvider, StatisticsProvider>(
             create: (BuildContext context) => StatisticsProvider(
                 Provider.of<QuizProvider>(context, listen: false)),
             update: (BuildContext context, QuizProvider qp,
-                    StatisticsProvider? sp) =>
+                StatisticsProvider? sp) =>
                 StatisticsProvider(qp),
           ),
           ChangeNotifierProvider(
