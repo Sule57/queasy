@@ -29,7 +29,7 @@ class Category {
   late String _name;
   late Color _color;
   late bool _isPublic;
-  late String? UID = "";
+  late String? UID;
   late FirebaseFirestore? firestore;
   late Question getQuestionTemp;
 
@@ -55,7 +55,7 @@ class Category {
     _name = name;
     _color = color;
     if(firestore == null) {
-      UID = getCurrentUserID();
+      this.UID = getCurrentUserID();
       this.firestore = FirebaseFirestore.instance;
       this._publicDoc = FirebaseFirestore.instance.collection('categories').doc('public');
       this._privateDoc = FirebaseFirestore.instance
@@ -172,7 +172,7 @@ class Category {
       querySnapshot.docs.forEach((doc) {
         // if there are no questions or the only question is 'question-1' which is default question, it returns an empty list
         if(doc.data() != null && (doc.data() as Map<String, dynamic>)["ID"] != "question-1") {
-          questions.add(Question.fromJson(doc.data() as Map<String, dynamic>, _name));
+          questions.add(Question.fromJson(doc.data() as Map<String, dynamic>, _name, username));
         }
       });
     });
@@ -187,6 +187,18 @@ class Category {
     if (UID == null) {
       throw UserNotLoggedInException();
     }
+
+    // check if there is only one question left in the Firestore, if there is, add a question-1 question
+    await _privateDoc
+        .collection(_name)
+        .get()
+        .then((QuerySnapshot querySnapshot) {
+      if (querySnapshot.docs.length == 1) {
+        _privateDoc.collection(_name).doc("question-1").set({
+          "ID": "question-1"
+        });
+      }
+    });
 
     // delete the question from the private category
     await firestore
@@ -300,7 +312,7 @@ class Category {
           .then((DocumentSnapshot documentSnapshot) {
         if (documentSnapshot.exists) {
           this.getQuestionTemp = Question.fromJson(
-              documentSnapshot.data() as Map<String, dynamic>, categoryName);
+              documentSnapshot.data() as Map<String, dynamic>, categoryName, UID!);
         } else {
           print('Document does not exist on the database');
         }
@@ -315,7 +327,7 @@ class Category {
           .then((DocumentSnapshot documentSnapshot) {
         if (documentSnapshot.exists) {
           this.getQuestionTemp = Question.fromJson(
-              documentSnapshot.data() as Map<String, dynamic>, categoryName);
+              documentSnapshot.data() as Map<String, dynamic>, categoryName, UID!);
         } else {
           print('Document does not exist on the database');
         }
@@ -344,7 +356,7 @@ class Category {
         .then((DocumentSnapshot documentSnapshot) {
       if (documentSnapshot.exists) {
         question = Question.fromJson(
-            documentSnapshot.data() as Map<String, dynamic>, _name);
+            documentSnapshot.data() as Map<String, dynamic>, _name, UID!);
       } else {
         print('Document does not exist on the database');
       }

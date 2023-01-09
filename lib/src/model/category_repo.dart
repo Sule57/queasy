@@ -194,7 +194,7 @@ class CategoryRepo {
       Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
       if (data.containsKey(_category)) {
         return Category(
-            name: _category, color: Color(data[_category] as int), UID: uid, firestore: instance);
+            name: _category, color: Color(data[_category] as int), UID: id, firestore: instance);
       }
     }
     return throw CategoryNotFoundException();
