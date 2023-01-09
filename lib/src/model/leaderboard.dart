@@ -45,9 +45,10 @@ class Leaderboard {
   /// [isPublic] is a boolean that is true if the leaderboard is public and false if it is private.
   Leaderboard._create(String category, String username, bool isPublic, {FirebaseFirestore? instance, String? id}) {
     _entries = [];
-    _currentPlayer = LeaderboardEntry(username, -1, -1);
+    _currentPlayer = LeaderboardEntry(username, 0, -1);
     _category = category;
     this._isPublic = isPublic;
+
 
     if(instance == null) {
       _firebaseFirestore = FirebaseFirestore.instance;
@@ -104,6 +105,11 @@ class Leaderboard {
   /// The user's position in the leaderboard will decrease and vice versa. In the end, the All leaderboard is also updated in the same way.
   Future<void> updateCurrentUserPoints(int newPoints) async {
     int oldPoints = _currentPlayer.getScore;
+
+    if(_currentPlayer.getPosition == -1){
+      oldPoints = 0;
+    }
+
     int lowestPoints = 9999999999;
     int lowestPosition = 1;
     DocumentReference doc = _collection.doc(_category);
@@ -218,10 +224,14 @@ class Leaderboard {
   Future<void> getData() async {
     final docSnap;
     if(_isPublic){
+      print('public');
       docSnap = await _doc.get();
     }else{
+      print('private');
       docSnap = await _docPriv.get();
     }
+
+    print('Data: ' + docSnap.data().toString());
     Map<String, dynamic> data = docSnap.data() as Map<String, dynamic>;
     List<LeaderboardEntry> entries = [];
 

@@ -196,4 +196,37 @@ void main() async {
       });
 
 
+  test(
+      'Points are not updated when the user plays the quiz for the first time',
+          () async {
+
+
+            String new_cat = 'Programming 1';
+            String UID5 = 'uid5';
+            String username5 = 'Marko';
+
+            await instance.collection('leaderboard').doc(UID4+ '-' + new_cat).set({username4: {'position': 1, 'points': 100}});
+
+            /// Instance of the [Leaderboard] class.
+            Leaderboard lb4 = await Leaderboard.createPrivate(new_cat, username4, instance: instance, id: UID4);
+
+            await lb4.getData();
+
+
+            Leaderboard lb5 = await Leaderboard.createPrivate(new_cat, username5, instance: instance, id: UID4);
+
+            await lb5.updateCurrentUserPoints(50);
+
+            await lb5.getData();
+
+
+        expect(
+            await lb5.getEntries().any((element) =>
+            element.getName == 'Marko' &&
+                element.getScore == 50 &&
+                element.getPosition == 2),
+            true);
+      });
+
+
 }
