@@ -279,7 +279,7 @@ class Category {
         .doc(newID)
         .set(question.toJson());
 
-    print(count);
+    //print(count);
     if (count == 1) {
       // delete the question from the public category which is called question-1
       await firestore

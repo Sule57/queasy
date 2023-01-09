@@ -32,12 +32,6 @@ import 'edit_quiz_text_fields.dart';
 /// selects a radio button for the correct answer.
 class AddOrEditQuestionPopUp extends StatefulWidget {
   Function() action;
-  // AnswersRadioButton selectedRadioAnswer;
-  // TextEditingController questionController;
-  // TextEditingController answer1Controller;
-  // TextEditingController answer2Controller;
-  // TextEditingController answer3Controller;
-  // TextEditingController answer4Controller;
   Question? question;
   String categoryName;
 
@@ -45,12 +39,6 @@ class AddOrEditQuestionPopUp extends StatefulWidget {
     Key? key,
     this.question,
     required this.action,
-    // required this.selectedRadioAnswer,
-    // required this.questionController,
-    // required this.answer1Controller,
-    // required this.answer2Controller,
-    // required this.answer3Controller,
-    // required this.answer4Controller,
     required this.categoryName,
   }) : super(key: key);
 
@@ -63,36 +51,23 @@ class _AddOrEditQuestionPopUpState extends State<AddOrEditQuestionPopUp> {
   final _formKey = GlobalKey<FormState>();
 
   get question => widget.question;
-  // AnswersRadioButton get selectedRadioAnswer => widget.selectedRadioAnswer;
-  // get questionController => widget.questionController;
-  // get answer1Controller => widget.answer1Controller;
-  // get answer2Controller => widget.answer2Controller;
-  // get answer3Controller => widget.answer3Controller;
-  // get answer4Controller => widget.answer4Controller;
   get categoryName => widget.categoryName;
 
-  // set selectedRadioAnswer(AnswersRadioButton value) =>
-  //     widget.selectedRadioAnswer = value;
-
-  // TODO: predefine radio button value for editing
+  // TODO: when editing a question, the radio buttons should show the correct answer
 
   @override
   Widget build(BuildContext context) {
     EditQuizProvider controller = Provider.of<EditQuizProvider>(context, listen: false);
     return AlertDialog(
-      // This makes the dialog scrollable if the content is too big for the screen,
-      // especially when the user clicks on the text field to type and the keyboard
-      // pops up, taking up a lot of space.
       scrollable: true,
       insetPadding: EdgeInsets.symmetric(horizontal: 20),
       backgroundColor: Theme.of(context).colorScheme.primary,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10.0),
       ),
-      // StatefulBuilder otherwise, the radio button would not change when the user selects a different one.
+      // StatefulBuilder otherwise, the radio button would not change when the user selects a different one
       content: StatefulBuilder(
         builder: (BuildContext context, StateSetter setState) {
-
           return Container(
             child: Form(
               key: _formKey,
@@ -126,6 +101,7 @@ class _AddOrEditQuestionPopUpState extends State<AddOrEditQuestionPopUp> {
                       Radio<AnswersRadioButton>(
                           fillColor: MaterialStateProperty.all(Colors.white),
                           value: AnswersRadioButton.ans1,
+                          //question.answer[0].isCorrect : ? ,
                           groupValue: controller.selectedRadioAnswer,
                           onChanged: (AnswersRadioButton? value) {
                             setState(() {
@@ -247,6 +223,7 @@ class _AddOrEditQuestionPopUpState extends State<AddOrEditQuestionPopUp> {
 
   /// This method clears all text fields and resets the radio button.
   void clearTextFieldsAndButton(controller) {
+    //EditQuizProvider controller = Provider.of<EditQuizProvider>(context, listen: false);
     controller.questionController.clear();
     controller.answer1Controller.clear();
     controller.answer2Controller.clear();
@@ -318,7 +295,6 @@ class DeleteQuestionPopUp extends StatelessWidget {
 /// The variable [category] is the category that is going to be deleted.
 class DeleteCategoryPopUp extends StatelessWidget {
   DeleteCategoryPopUp({Key? key, required this.category}) : super(key: key);
-
   String category;
 
   @override
