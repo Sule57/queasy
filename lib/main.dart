@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:queasy/constants/theme_provider.dart';
+import 'package:queasy/src/view/edit_quiz/quiz_edit_provider.dart';
 import 'package:queasy/src/view/login/login_provider.dart';
 import 'package:queasy/src/view/play_quiz/quiz_provider.dart';
 import 'package:queasy/src/view/statistics/statistics_provider.dart';
@@ -48,6 +49,7 @@ Future<void> main() async {
           ChangeNotifierProvider(create: (_) => LeaderboardProvider()),
           ChangeNotifierProvider(create: (_) => ProfileProvider()),
           ChangeNotifierProvider(create: (_) => StatisticsProvider()),
+          ChangeNotifierProvider(create: (_) => EditQuizProvider()),
           ChangeNotifierProvider(
               create: (_) => ThemeProvider(AppThemes().lightTheme)),
           ChangeNotifierProvider(create: (_) => LoginProvider()),
