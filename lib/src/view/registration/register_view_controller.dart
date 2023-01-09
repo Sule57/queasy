@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -9,7 +8,7 @@ import '../../model/profile.dart';
 
 ///This is controller for RegisterView
 class RegisterViewController {
-  FirebaseFirestore firestore = FirebaseFirestore.instance;
+
 
   ///constructor
   RegisterViewController();
@@ -34,7 +33,7 @@ class RegisterViewController {
       Auth a = Auth();
       a.signInWithEmailAndPassword(
           email: newUser.email, password: password);
-      return newUser.registerUser();
+      return await newUser.registerUser();
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         print('No user found for that email.');
@@ -123,7 +122,7 @@ class RegisterViewController {
         email: email,
       );
       try {
-        newUser.registerUser();
+        await newUser.registerUser();
       }catch(e){
         print(e);
       }

@@ -15,7 +15,13 @@ import '../../src.dart';
 ///
 /// [_publicDoc] is the reference to the public categories in Firestore.
 ///
+/// [_privateDoc] is the reference to the private categories in Firestore for the currently logged in user.
+///
+/// [UID] is the uid of the currently logged in user.
+///
 /// [_isPublic] is a boolean that determines if the category is public or private.
+///
+/// [firestore] is the instance of the [FirebaseFirestore], it is used for mocking of the Firebase for unit testing.
 class Category {
   late DocumentReference _publicDoc;
   late DocumentReference _privateDoc;
@@ -27,7 +33,10 @@ class Category {
   late FirebaseFirestore? firestore;
   late Question getQuestionTemp;
 
+  /// Getter for the [_name]
   get name => _name;
+
+  /// Getter for the [_color]
   get color => _color;
 
   /// Constructor for the [Category] class.
@@ -42,11 +51,11 @@ class Category {
   /// If it is not passed, the constructor will initialize the [UID] with the
   /// current user's [UID] and [_privateDoc] and [_publicDoc] with the references
   /// in the production database.
-  Category({required String name, Color color = Colors.blue, FirebaseFirestore? firestore}) {
+  Category({required String name, Color color = Colors.blue, FirebaseFirestore? firestore, String? UID = "test123456789"}) {
     _name = name;
     _color = color;
     if(firestore == null) {
-      UID = getCurrentUserID();
+      this.UID = getCurrentUserID();
       this.firestore = FirebaseFirestore.instance;
       this._publicDoc = FirebaseFirestore.instance.collection('categories').doc('public');
       this._privateDoc = FirebaseFirestore.instance
@@ -54,8 +63,8 @@ class Category {
           .doc(getCurrentUserID());
     }
     else {
+      this.UID = UID;
       this.firestore = firestore;
-      UID = "test123456789";
       _publicDoc = firestore.collection('categories').doc('public');
       _privateDoc = firestore.collection('categories').doc(UID);
     }
@@ -81,7 +90,7 @@ class Category {
   ///
   /// [newName] is the new name of the [Category].
   Future<void> changeNameOfCategory(String newName) async {
-    String? username = getCurrentUserID();
+    String? username = UID;
     if (username == null) {
       throw UserNotLoggedInException();
     }
@@ -119,7 +128,7 @@ class Category {
   ///
   /// [color] is the color of the [Category].
   Future<void> setColor(Color col) async {
-    String? username = getCurrentUserID();
+    String? username = UID;
     if (username == null) {
       throw UserNotLoggedInException();
     }
@@ -131,7 +140,7 @@ class Category {
 
   /// Get the name of the current [Category].
   String getName() {
-    String? username = getCurrentUserID();
+    String? username = UID;
     if (username == null) {
       throw UserNotLoggedInException();
     }
@@ -140,36 +149,16 @@ class Category {
 
   /// Get the color of the current [Category].
   Color getColor() {
-    String? username = getCurrentUserID();
+    String? username = UID;
     if (username == null) {
       throw UserNotLoggedInException();
     }
     return _color;
   }
 
-  /// Get the list of [Question]s in the current public [Category].
-  // Future<List<Question>> getAllQuestionsFromPublicCategory() async {
-  //   String? username = getCurrentUserID();
-  //   if (username == null) {
-  //     throw UserNotLoggedInException();
-  //   }
-  //
-  //   List<Question> questions = [];
-  //   // get all document id from public categories
-  //   await _publicDoc
-  //       .collection(_name)
-  //       .get()
-  //       .then((QuerySnapshot querySnapshot) {
-  //     querySnapshot.docs.forEach((doc) {
-  //       questions.add(Question.fromJson(doc.data() as Map<String, dynamic>));
-  //     });
-  //   });
-  //   return questions;
-  // }
-
-  /// Get the list of [Question]s in the current private [Category].
+  /// Get the list of [Question]s in the current private [Category]. If user is not logged in, it throws an error.
   Future<List<Question>> getAllQuestions() async {
-    String? username = getCurrentUserID();
+    String? username = UID;
     if (username == null) {
       throw UserNotLoggedInException();
     }
@@ -181,8 +170,9 @@ class Category {
         .get()
         .then((QuerySnapshot querySnapshot) {
       querySnapshot.docs.forEach((doc) {
+        // if there are no questions or the only question is 'question-1' which is default question, it returns an empty list
         if(doc.data() != null && (doc.data() as Map<String, dynamic>)["ID"] != "question-1") {
-          questions.add(Question.fromJson(doc.data() as Map<String, dynamic>, _name));
+          questions.add(Question.fromJson(doc.data() as Map<String, dynamic>, _name, username));
         }
       });
     });
@@ -197,6 +187,18 @@ class Category {
     if (UID == null) {
       throw UserNotLoggedInException();
     }
+
+    // check if there is only one question left in the Firestore, if there is, add a question-1 question
+    await _privateDoc
+        .collection(_name)
+        .get()
+        .then((QuerySnapshot querySnapshot) {
+      if (querySnapshot.docs.length == 1) {
+        _privateDoc.collection(_name).doc("question-1").set({
+          "ID": "question-1"
+        });
+      }
+    });
 
     // delete the question from the private category
     await firestore
@@ -310,7 +312,7 @@ class Category {
           .then((DocumentSnapshot documentSnapshot) {
         if (documentSnapshot.exists) {
           this.getQuestionTemp = Question.fromJson(
-              documentSnapshot.data() as Map<String, dynamic>, categoryName);
+              documentSnapshot.data() as Map<String, dynamic>, categoryName, UID!);
         } else {
           print('Document does not exist on the database');
         }
@@ -325,7 +327,7 @@ class Category {
           .then((DocumentSnapshot documentSnapshot) {
         if (documentSnapshot.exists) {
           this.getQuestionTemp = Question.fromJson(
-              documentSnapshot.data() as Map<String, dynamic>, categoryName);
+              documentSnapshot.data() as Map<String, dynamic>, categoryName, UID!);
         } else {
           print('Document does not exist on the database');
         }
@@ -354,7 +356,7 @@ class Category {
         .then((DocumentSnapshot documentSnapshot) {
       if (documentSnapshot.exists) {
         question = Question.fromJson(
-            documentSnapshot.data() as Map<String, dynamic>, _name);
+            documentSnapshot.data() as Map<String, dynamic>, _name, UID!);
       } else {
         print('Document does not exist on the database');
       }

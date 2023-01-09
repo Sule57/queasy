@@ -37,7 +37,7 @@ class Question {
   String? UID;
   /// The late parameter firestore is used to represent an instance of firebase
   /// connection, it is used to manipulate the firebase.
-  late FirebaseFirestore? firestore;
+  late FirebaseFirestore? firestore = FirebaseFirestore.instance;
 
   /// The getter for the id of the question.
   get id => questionId;
@@ -59,14 +59,15 @@ class Question {
         required this.answers,
         required this.category,
         this.questionId,
-        firestore}) {
+        firestore,
+        String? UID = "test123456789"}) {
     if (firestore == null) {
       firestore = FirebaseFirestore.instance;
       UID = getCurrentUserID();
     }
     else {
       this.firestore = firestore;
-      UID = "test123456789";
+      this.UID = UID;
     }
   }
 
@@ -75,7 +76,7 @@ class Question {
   /// Since, the questions in the firebase do not contain a category, the
   /// constructor will take a parameter [category] which will be used to set
   /// the category of the question.
-  Question.fromJson(Map<String, dynamic> json, String category) {
+  Question.fromJson(Map<String, dynamic> json, String category, String UID) {
     this.answers.add(Answer.fromJson(json['answer1']));
     this.answers.add(Answer.fromJson(json['answer2']));
     this.answers.add(Answer.fromJson(json['answer3']));
@@ -83,6 +84,7 @@ class Question {
     this.text = json['text'];
     this.questionId = json['ID'];
     this.category = category;
+    this.UID = UID;
   }
 
   /// The [getText] method is used to retrieve the text of a Question object.
@@ -132,8 +134,14 @@ class Question {
   /// The function also contains a check, if the [UID] is null, which would
   /// mean that a user is not logged in, and therefore the function would throw
   /// a [UserNotLoggedInException].
-  Future<void> updateQuestion() async {
+  Future<void> updateQuestion({FirebaseFirestore? instance, String? uid}) async {
 
+    if (uid != null) {
+      UID = uid;
+      if(instance != null){
+        firestore = instance;
+      }
+    }
     if (UID == null) {
       throw UserNotLoggedInException();
     }

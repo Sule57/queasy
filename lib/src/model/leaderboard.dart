@@ -31,30 +31,45 @@ class Leaderboard {
   late String _owner;
   late LeaderboardEntry _currentPlayer;
   late final bool _isPublic;
+  late String? UID;
 
-  late final _firebaseFirestore;
-  late final CollectionReference _collection = _firebaseFirestore.collection('leaderboard');
-  late final DocumentReference _doc = _collection.doc(_category);
-  late final DocumentReference _docPriv = _collection.doc(getCurrentUserID()! + '-' + _category);
-  late final DocumentReference _docAll = _collection.doc('All');
+  late var _firebaseFirestore;
+  late CollectionReference _collection = _firebaseFirestore.collection('leaderboard');
+  late DocumentReference _doc = _collection.doc(_category);
+  late DocumentReference _docPriv = _collection.doc(UID! + '-' + _category);
+  late DocumentReference _docAll = _collection.doc('All');
 
   /// Private constructor for [Leaderboard] that deals with initializing the private parameters.
   ///
   /// [category] is the name of the category that the leaderboard is for. [username] is the username of the current user playing.
   /// [isPublic] is a boolean that is true if the leaderboard is public and false if it is private.
-  Leaderboard._create(String category, String username, bool isPublic) {
+  Leaderboard._create(String category, String username, bool isPublic, {FirebaseFirestore? instance, String? id}) {
     _entries = [];
     _currentPlayer = LeaderboardEntry(username, -1, -1);
     _category = category;
-    _firebaseFirestore = FirebaseFirestore.instance;
     this._isPublic = isPublic;
+
+    if(instance == null) {
+      _firebaseFirestore = FirebaseFirestore.instance;
+      UID = getCurrentUserID();
+    }else{
+      if(id == null) {
+        throw Exception('ID cannot be null if instance is not null');
+      }
+      UID = id;
+      this._firebaseFirestore = instance;
+      _collection = _firebaseFirestore.collection('leaderboard');
+      _doc = _collection.doc(_category);
+      _docPriv = _collection.doc(UID! + '-' + _category);
+      _docAll = _collection.doc('All');
+    }
   }
 
   /// Factory constructor for public [Leaderboard] that creates a new [Leaderboard] object.
   ///
   /// It calls the private constructor and then waits for the data from the database to fill the [_entries] list.
-  static Future<Leaderboard> createPublic(String category, String username) async {
-    var leaderboard = Leaderboard._create(category, username, true);
+  static Future<Leaderboard> createPublic(String category, String username, {FirebaseFirestore? instance, String? id}) async {
+    var leaderboard = Leaderboard._create(category, username, true, instance: instance, id: id);
     await leaderboard.getData();
     return leaderboard;
   }
@@ -62,8 +77,8 @@ class Leaderboard {
   /// Factory constructor for private [Leaderboard] that creates a new [Leaderboard] object.
   ///
   /// It calls the private constructor and then waits for the data from the database to fill the [_entries] list.
-  static Future<Leaderboard> createPrivate(String category, String username) async {
-    var leaderboard = Leaderboard._create(category, username, false);
+  static Future<Leaderboard> createPrivate(String category, String username, {FirebaseFirestore? instance, String? id}) async {
+    var leaderboard = Leaderboard._create(category, username, false, instance: instance, id: id);
     await leaderboard.getData();
     return leaderboard;
   }
@@ -207,10 +222,7 @@ class Leaderboard {
     }else{
       docSnap = await _docPriv.get();
     }
-    print(docSnap.toString());
-    print(getCurrentUserID()! + '-' + _category);
     Map<String, dynamic> data = docSnap.data() as Map<String, dynamic>;
-    print(data.toString());
     List<LeaderboardEntry> entries = [];
 
     int calculatedPosition = -1;
@@ -233,34 +245,34 @@ class Leaderboard {
   void sortEntries() {
     _entries.sort((a, b) => b.getScore.compareTo(a.getScore));
   }
-
-  /// Constructor for [Leaderboard] that creates a new [Leaderboard] object with the Mock database for testing purposes.
-  ///
-  /// [_firebaseFirestore] in this case it the mock database while the rest of the parameters are the same as other constructors.
-  /// Used for testing of the public categories.
-  Leaderboard.testPublic(
-      this._category,
-      String username,
-      this._firebaseFirestore,
-      ) {
-    _entries = [];
-    _currentPlayer = LeaderboardEntry(username, -1, -1);
-    _isPublic = true;
-  }
-
-  /// Constructor for [Leaderboard] that creates a new [Leaderboard] object with the Mock database for testing.
-  ///
-  /// [_firebaseFirestore] in this case it the mock database while the rest of the parameters are the same as other constructors.
-  /// Used for testing of the private categories.
-  Leaderboard.testPrivate(
-      this._category,
-      String username,
-      this._firebaseFirestore,
-      ) {
-    _entries = [];
-    _currentPlayer = LeaderboardEntry(username, -1, -1);
-    _isPublic = false;
-  }
+  //
+  // /// Constructor for [Leaderboard] that creates a new [Leaderboard] object with the Mock database for testing purposes.
+  // ///
+  // /// [_firebaseFirestore] in this case it the mock database while the rest of the parameters are the same as other constructors.
+  // /// Used for testing of the public categories.
+  // Leaderboard.testPublic(
+  //     this._category,
+  //     String username,
+  //     this._firebaseFirestore,
+  //     ) {
+  //   _entries = [];
+  //   _currentPlayer = LeaderboardEntry(username, -1, -1);
+  //   _isPublic = true;
+  // }
+  //
+  // /// Constructor for [Leaderboard] that creates a new [Leaderboard] object with the Mock database for testing.
+  // ///
+  // /// [_firebaseFirestore] in this case it the mock database while the rest of the parameters are the same as other constructors.
+  // /// Used for testing of the private categories.
+  // Leaderboard.testPrivate(
+  //     this._category,
+  //     String username,
+  //     this._firebaseFirestore,
+  //     ) {
+  //   _entries = [];
+  //   _currentPlayer = LeaderboardEntry(username, -1, -1);
+  //   _isPublic = false;
+  // }
 
   /// Adds a new [LeaderboardEntry] to the existing list of entries. (testing purposes)
   Future<void> _addEntry(LeaderboardEntry entry) async {

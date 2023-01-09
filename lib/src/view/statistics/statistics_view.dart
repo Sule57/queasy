@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -7,8 +5,6 @@ import 'package:queasy/src/view/home_view.dart';
 import 'package:queasy/src/view/statistics/statistics_provider.dart';
 
 import 'package:percent_indicator/circular_percent_indicator.dart';
-
-
 
 import '../../../constants/theme_provider.dart';
 import '../play_quiz/quiz_provider.dart';
@@ -213,7 +209,6 @@ class StatisticsMobileContent extends StatelessWidget {
                               ),
                             ],
                           ),
-                          
                           CircularPercentIndicator(
                               radius: 90,
                               lineWidth: 20,
@@ -255,8 +250,6 @@ class StatisticsMobileContent extends StatelessWidget {
                                               color: Colors.black),
                                         ),
                                       ],
-
-
                                     ),
                                   )))
                         ],
@@ -369,7 +362,6 @@ class StatisticsDesktopContent extends StatelessWidget {
                       ),
                     ],
                   ),
-
                   Center(
                     child: CircularPercentIndicator(
                         radius: 90,
@@ -409,7 +401,6 @@ class StatisticsDesktopContent extends StatelessWidget {
                                         fontSize: 20, color: Colors.black),
                                   ),
                                 ],
-
                               ),
                             ))),
                   )

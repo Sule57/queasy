@@ -49,7 +49,6 @@ Future<void> main() async {
           ChangeNotifierProvider(create: (_) => LeaderboardProvider()),
           ChangeNotifierProvider(create: (_) => ProfileProvider()),
           ChangeNotifierProvider(create: (_) => StatisticsProvider()),
-          ChangeNotifierProvider(create: (_) => EditQuizProvider()),
           ChangeNotifierProvider(
               create: (_) => ThemeProvider(AppThemes().lightTheme)),
           ChangeNotifierProvider(create: (_) => LoginProvider()),

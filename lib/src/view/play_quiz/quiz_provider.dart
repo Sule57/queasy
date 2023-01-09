@@ -6,6 +6,7 @@
 /// ****************************************************************************
 
 import 'dart:async';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:queasy/main.dart';
 import 'package:queasy/src/model/category.dart';
@@ -49,7 +50,7 @@ import '../../model/quiz.dart';
 /// decremented every second. It gets reset to 15 seconds for every new
 /// question.
 ///
-/// The parameter [quizzResult] stores the result of the quizz and
+/// The parameter [_quizzResult] stores the result of the quizz and
 /// later is passed to the StatisticsProvider imp
 ///
 /// The parameter [_timeLeft] is the time left for the user to answer the
@@ -62,7 +63,7 @@ class QuizProvider with ChangeNotifier {
   late String? _quizCategory;
   late String? _quizId;
   late int _totalQuestions = 5;
-  static late UserQuizzResult quizzResult;
+  static late UserQuizzResult _quizzResult;
   int _currentQuestionIndex = 0;
   int _currentPoints = 0;
   int correctAnswers = 0;
@@ -74,6 +75,7 @@ class QuizProvider with ChangeNotifier {
   get quiz => _quiz;
   get timeLeft => _timeLeft.inSeconds.toString();
   get currentPoints => _currentPoints;
+  get quizzResult => _quizzResult;
 
 // assign the current user to the app
   QuizProvider() {
@@ -211,14 +213,14 @@ class QuizProvider with ChangeNotifier {
             name, correctAnswers, _totalQuestions, _secondsPassed);
         //IMPORTANT YOU CANNOT PLAY 2 QUIZZES AT THE SAME TIME OTHERWISE THIS WILL BREAK !!!
         // YOU CANNOT CALL STATISTICS PROVIDER BEFORE QUIZ PROVIDER !!!
-        quizzResult = r;
+        _quizzResult = r;
         stat.addUserQuizzResult(r);
         await stat.saveStatistics();
       }
     }
     if (_quizCategory != null) {
       //TODO check this
-      player.updateScore(_quizCategory!, _currentPoints);
+      await player.updateScore(_quizCategory!, _currentPoints);
       print('seconds passed at the end of the quizz: $_secondsPassed');
     }
     navigator.currentState?.pop();
