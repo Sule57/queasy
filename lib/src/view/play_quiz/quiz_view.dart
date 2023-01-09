@@ -14,6 +14,7 @@ import 'package:queasy/src/view/play_quiz/widgets/answer_button.dart';
 import 'package:queasy/src/view/play_quiz/widgets/exit_button.dart';
 import 'package:queasy/src/view/play_quiz/widgets/question_container.dart';
 import 'package:queasy/src/view/play_quiz/widgets/score_tracking.dart';
+import 'package:queasy/src/view/statistics/statistics_provider.dart';
 import 'package:queasy/src/view/statistics/statistics_view.dart';
 import 'package:queasy/src/view/widgets/rounded-button.dart';
 

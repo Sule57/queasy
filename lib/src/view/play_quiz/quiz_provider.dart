@@ -227,6 +227,8 @@ class QuizProvider with ChangeNotifier {
     navigator.currentState?.push(
       MaterialPageRoute(builder: (_) => StatisticsView()),
     );
+    _secondsPassed = 0;
+    _currentPoints = 0;
   }
 
   /// Edits the current score of the user. Takes [isCorrect] as parameter to
