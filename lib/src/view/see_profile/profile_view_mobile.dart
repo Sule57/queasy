@@ -1,5 +1,5 @@
 /// ****************************************************************************
-/// Created by Gullu Gasimova
+/// Created by Gullu Gasimova and Endia Clark
 ///
 /// This file is part of the project "Qeasy"
 /// Software Project on Technische Hochschule Ulm
@@ -931,7 +931,7 @@ class ProfileMobileState extends State<ProfileViewMobile> {
                   onPressed: () {
                     bool success = controller.signOut();
                     if (success) {
-                      if (Navigator.canPop(context)){
+                      if (Navigator.canPop(context)) {
                         Navigator.pop(context);
                       }
                       Navigator.of(context).pushReplacement(

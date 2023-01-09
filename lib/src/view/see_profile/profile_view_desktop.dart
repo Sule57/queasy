@@ -1,5 +1,5 @@
 /// ****************************************************************************
-/// Created by Gullu Gasimova
+/// Created by Gullu Gasimova and Endia Clark
 ///
 /// This file is part of the project "Qeasy"
 /// Software Project on Technische Hochschule Ulm
@@ -160,15 +160,6 @@ class _ProfileDesktopViewContentState extends State<ProfileDesktopViewContent> {
   ///[formKeyDelete] used for Form in DeleteAccount button
   final formKeyDelete = GlobalKey<FormState>();
 
-  ///[features] is to store data used for line graph. Scores must be represented as decimals (eg. 3 points = 0.3).
-  final List<Feature> features = [
-    Feature(
-      title: "Public Quizzes",
-      color: purple,
-      data: [0.3, 0.6, 0.8, 0.9, 1, 1.2],
-    ),
-  ];
-
   @override
   void dispose() {
     /// Cleans up the controllers when the widget is disposed.
@@ -193,6 +184,15 @@ class _ProfileDesktopViewContentState extends State<ProfileDesktopViewContent> {
   /// including [DesktopNavigation].
   @override
   Widget build(BuildContext context) {
+    ///[features] is to store data used for line graph. Scores must be represented as decimals (eg. 3 points = 0.3).
+    final List<Feature> features = [
+      Feature(
+        title: "Public Quizzes",
+        color: purple,
+        data: Provider.of<ProfileProvider>(context).getGraphData(),
+      ),
+    ];
+
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Center(
@@ -1287,16 +1287,44 @@ class _ProfileDesktopViewContentState extends State<ProfileDesktopViewContent> {
                                       child: Text("Score Distribution")),
                                   LineGraph(
                                     features: features,
-                                    size: Size(420, 450),
+                                    size: Size(900, 450),
                                     labelX: [
-                                      'Quiz 1',
-                                      'Quiz 2',
-                                      'Quiz 3',
-                                      'Quiz 4',
-                                      'Quiz 5',
-                                      'Quiz 6'
+                                      Provider.of<ProfileProvider>(context)
+                                          .scores
+                                          .keys
+                                          .elementAt(0),
+                                      Provider.of<ProfileProvider>(context)
+                                          .scores
+                                          .keys
+                                          .elementAt(1),
+                                      Provider.of<ProfileProvider>(context)
+                                          .scores
+                                          .keys
+                                          .elementAt(2),
+                                      Provider.of<ProfileProvider>(context)
+                                          .scores
+                                          .keys
+                                          .elementAt(3),
+                                      Provider.of<ProfileProvider>(context)
+                                          .scores
+                                          .keys
+                                          .elementAt(4),
+                                      Provider.of<ProfileProvider>(context)
+                                          .scores
+                                          .keys
+                                          .elementAt(5),
+                                      // Provider.of<ProfileProvider>(context)
+                                      //     .scores
+                                      //     .keys
+                                      //     .elementAt(6)
                                     ],
-                                    labelY: ['2', '4', '6', '8', '10'],
+                                    labelY: [
+                                      '200',
+                                      '400',
+                                      '600',
+                                      '800',
+                                      '1000'
+                                    ],
                                     showDescription: true,
                                     graphColor:
                                         Provider.of<ThemeProvider>(context)
