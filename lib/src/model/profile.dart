@@ -380,9 +380,7 @@ class Profile {
       maxHeight: 512,
       imageQuality: 75,
     );
-    Reference ref = FirebaseStorage.instance
-        .ref()
-        .child("profilePictures/${getCurrentUserID()}");
+
     // File file = File(image!.path);
     // print(file.path);
     // final metadata = SettableMetadata(
