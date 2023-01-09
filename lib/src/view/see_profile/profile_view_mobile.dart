@@ -21,7 +21,6 @@ import '../../../constants/theme_provider.dart';
 import '../registration/register_view.dart';
 import '../see_leaderboard/leaderboard_view.dart';
 import 'profile_provider.dart';
-import 'package:fl_animated_linechart/fl_animated_linechart.dart';
 
 import 'widgets/private_statistics_graph.dart';
 import 'widgets/statistics_graph.dart';
