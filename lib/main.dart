@@ -47,7 +47,13 @@ Future<void> main() async {
           ChangeNotifierProvider(create: (_) => QuizProvider()),
           ChangeNotifierProvider(create: (_) => LeaderboardProvider()),
           ChangeNotifierProvider(create: (_) => ProfileProvider()),
-          ChangeNotifierProvider(create: (_) => StatisticsProvider()),
+          ChangeNotifierProxyProvider<QuizProvider, StatisticsProvider>(
+            create: (BuildContext context) => StatisticsProvider(
+                Provider.of<QuizProvider>(context, listen: false)),
+            update: (BuildContext context, QuizProvider qp,
+                    StatisticsProvider? sp) =>
+                StatisticsProvider(qp),
+          ),
           ChangeNotifierProvider(
               create: (_) => ThemeProvider(AppThemes().lightTheme)),
           ChangeNotifierProvider(create: (_) => LoginProvider()),

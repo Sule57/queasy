@@ -7,12 +7,9 @@ import 'package:queasy/utils/exceptions.dart';
 
 /// Main function for testing the [Profile] class.
 void main() async {
-
   final instance = FakeFirebaseFirestore();
   Profile user_test = Profile.test(
-      username: 'TEST21',
-      email: 'email@test.com',
-      firestore: instance);
+      username: 'TEST21', email: 'email@test.com', firestore: instance);
   Map<String, dynamic> expectedDumpAfterset = {
     'username': 'TEST21',
     'lastName': '',
@@ -22,14 +19,15 @@ void main() async {
     'age': 0,
     'scores': {},
     'privateScore': {},
+    'profilePicture': '',
+    'birthdayMonth': '',
+    'birthdayDay': 0,
   };
 
   ///tests method register() in User model
   test('Test user registration', () async {
     Profile usr = Profile.test(
-        username: 'TEST21',
-        email: 'email@test.com',
-        firestore: instance);
+        username: 'TEST21', email: 'email@test.com', firestore: instance);
     await usr.registerUser();
     //Map<String, dynamic> data = await instance.collection('users').get() as Map<String, dynamic>;
     Map<String, dynamic> data = jsonDecode(instance.dump())['users'][usr.uid];
@@ -40,9 +38,7 @@ void main() async {
   //TODO UPDATE TESTS WITH THE VALIDATION AND EXCEPTIONS
   test('Test fromJsonConstructor', () async {
     final usr = new Profile.test(
-        username: 'TEST21',
-        email: 'email@test.com',
-        firestore: instance);
+        username: 'TEST21', email: 'email@test.com', firestore: instance);
     await usr.registerUser();
     //Map<String, dynamic> data = await instance.collection('users').get() as Map<String, dynamic>;
     Map<String, dynamic> data = jsonDecode(instance.dump())['users'][usr.uid];
@@ -76,6 +72,10 @@ void main() async {
     'bio': 'This is the test for the profile class.',
     'birthdayMonth': 'Jancember',
     'birthdayDay': 124,
+    'scores': {},
+    'privateScore': {},
+    'email': 'email@test.com',
+    'age': 0,
   };
 
   /// Creates testProfile information for testing
@@ -89,17 +89,13 @@ void main() async {
 
   /// Testing update username in profile class
   test('Profile should have changed username', () {
-    expect(profile_test.updateUsername('testProfile'), true);
+    bool res = profile_test.updateUsername('testProfile');
+    expect(res, true);
   });
 
   /// Testing update name in profile class
   test('Profile should have changed first and last name', () {
     expect(profile_test.updateName('profile', 'test'), true);
-  });
-
-  /// Testing update picture in profile class
-  test('Profile should have changed picture', () {
-    expect(profile_test.updatePicture('profile.png'), true);
   });
 
   /// Testing update bio in profile class
@@ -114,8 +110,14 @@ void main() async {
   });
 
   /// Testing after all updates that profile information is correct
-  // test('Profile should match Expected Data', () {
-  //   Map<String, dynamic> data = json.decode(instance.dump());
-  //   expect(data['users']["testProfileDocID"], equals(expectedDataAfterUpdates));
-  // });
+  test('Profile should match Expected Data', () {
+    Map<String, dynamic> data =
+        jsonDecode(instance.dump())['users'][profile_test.uid];
+    expect(data, equals(expectedDataAfterUpdates));
+  });
+
+  //TODO test for getprofilefromuid
+  //TODO test for getuserstatistics
+  //TODO test for updateScore
+  //TODO test for pickProfileImage
 }
