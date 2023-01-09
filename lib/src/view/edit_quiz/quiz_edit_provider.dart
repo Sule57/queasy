@@ -105,6 +105,7 @@ class EditQuizProvider with ChangeNotifier {
     question.setCorrectAnswer(_selectedRadioAnswer.index);
     await question.updateQuestion();
     print("Question edited");
+    notifyListeners();
   }
 
   /// This method is used to add a question to the database.
@@ -139,6 +140,7 @@ class EditQuizProvider with ChangeNotifier {
     );
     await _category.createQuestion(question);
     print("Question added");
+    notifyListeners();
   }
 
   /// This method is used to, indirectly, delete a question.
@@ -153,6 +155,7 @@ class EditQuizProvider with ChangeNotifier {
         return DeleteQuestionPopUp(question: question);
       },
     );
+    notifyListeners();
   }
 
   /// This method is used to, indirectly, edit a question.
@@ -187,6 +190,7 @@ class EditQuizProvider with ChangeNotifier {
         );
       },
     );
+    notifyListeners();
   }
 
 }

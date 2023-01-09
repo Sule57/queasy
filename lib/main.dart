@@ -6,7 +6,6 @@
 /// This file is part of the project "Qeasy"
 /// Software Project on Technische Hochschule Ulm
 /// ****************************************************************************
-
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -48,7 +47,14 @@ Future<void> main() async {
           ChangeNotifierProvider(create: (_) => QuizProvider()),
           ChangeNotifierProvider(create: (_) => LeaderboardProvider()),
           ChangeNotifierProvider(create: (_) => ProfileProvider()),
-          ChangeNotifierProvider(create: (_) => StatisticsProvider()),
+          ChangeNotifierProvider(create: (_) => EditQuizProvider()),
+          ChangeNotifierProxyProvider<QuizProvider, StatisticsProvider>(
+            create: (BuildContext context) => StatisticsProvider(
+                Provider.of<QuizProvider>(context, listen: false)),
+            update: (BuildContext context, QuizProvider qp,
+                StatisticsProvider? sp) =>
+                StatisticsProvider(qp),
+          ),
           ChangeNotifierProvider(
               create: (_) => ThemeProvider(AppThemes().lightTheme)),
           ChangeNotifierProvider(create: (_) => LoginProvider()),
