@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:queasy/src/view/edit_quiz/quiz_edit_view.dart';
 import 'package:queasy/src/view/edit_quiz/widgets/edit_quiz_popups.dart';
-import 'package:queasy/src/view/edit_quiz/widgets/question_list_tile.dart';
-
 import '../../../src.dart';
 
 class EditQuizProvider with ChangeNotifier {
@@ -38,38 +36,14 @@ class EditQuizProvider with ChangeNotifier {
       context: context,
       builder: (BuildContext context) {
         return AddOrEditQuestionPopUp(
-            // questionController: questionController,
-            // answer1Controller: answer1Controller,
-            // answer2Controller: answer2Controller,
-            // answer3Controller: answer3Controller,
-            // answer4Controller: answer4Controller,
             categoryName: _category.getName(),
             action: () {
-              addQuestionToDatabase(
-                  _category,
-                  //questionController,
-                  //answer1Controller,
-                  // answer2Controller,
-                  // answer3Controller,
-                  // answer4Controller,
-                  // _selectedRadioAnswer
-              );
-              print('refrescarei');
-              // Refresh the view to show the new question
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) =>
-                      QuizEditView(categoryName: _category.getName()),
-                ),
-              );
-              print('refresquei');
+              addQuestionToDatabase(_category);
             },
-            //selectedRadioAnswer: _selectedRadioAnswer
         );
       },
     );
-    notifyListeners(); // TODO: in or out of the dialog?
+    notifyListeners();
   }
 
   /// This method is used to delete a category from the database.
@@ -83,19 +57,11 @@ class EditQuizProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  // TODO fix editQuestionText method
   /// This method is used to edit a question in the database.
   ///
   /// The variable [question] is the question that is going to be edited.
   editQuestionOnDatabase(
-      Question question,
-      // TextEditingController questionController,
-      // TextEditingController answer1Controller,
-      // TextEditingController answer2Controller,
-      // TextEditingController answer3Controller,
-      // TextEditingController answer4Controller,
-      //AnswersRadioButton _selectedRadioAnswer
-      ) async {
+      Question question) async {
     print(questionController.text);
     question.setText(questionController.text.toString());
     question.answers[0].setText(answer1Controller.text);
@@ -112,21 +78,10 @@ class EditQuizProvider with ChangeNotifier {
   ///
   /// The variable [question] is the question that is going to be added.
   addQuestionToDatabase(
-      // TODO: fix this
-      // the texts are being null, probably because the text controllers are
-      // empty because its not passing
-      Category _category,
-      // TextEditingController questionController,
-      // TextEditingController answer1Controller,
-      // TextEditingController answer2Controller,
-      // TextEditingController answer3Controller,
-      // TextEditingController answer4Controller,
-      // AnswersRadioButton _selectedRadioAnswer
-      ) async {
+      Category _category) async {
     Question question = Question(
       text: questionController.text,
       answers: [
-        // TODO: fix the correct answer that is being sent wrong
         Answer(answer1Controller.text,
             _selectedRadioAnswer.index == 0 ? true : false),
         Answer(answer2Controller.text,
@@ -140,6 +95,7 @@ class EditQuizProvider with ChangeNotifier {
     );
     await _category.createQuestion(question);
     print("Question added");
+    print("Question: $questionController.text]");
     notifyListeners();
   }
 
@@ -168,25 +124,9 @@ class EditQuizProvider with ChangeNotifier {
       context: context,
       builder: (BuildContext context) {
         return AddOrEditQuestionPopUp(
-          // questionController: questionController,
-          // answer1Controller: answer1Controller,
-          // answer2Controller: answer2Controller,
-          // answer3Controller: answer3Controller,
-          // answer4Controller: answer4Controller,
           categoryName: question.category,
-          action: () {
-            editQuestionOnDatabase(
-                question,
-                // questionController,
-                // answer1Controller,
-                // answer2Controller,
-                // answer3Controller,
-                // answer4Controller,
-                // selectedRadioAnswer
-            );
-          },
+          action: () { editQuestionOnDatabase(question); },
           question: question,
-          //selectedRadioAnswer: selectedRadioAnswer
         );
       },
     );

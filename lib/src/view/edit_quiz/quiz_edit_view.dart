@@ -86,6 +86,7 @@ class _QuizEditViewState extends State<QuizEditView> {
 
   @override
   Widget build(BuildContext context) {
+    EditQuizProvider controller = Provider.of<EditQuizProvider>(context, listen: false);
     Size size = MediaQuery.of(context).size;
     late Widget ListWidget;
 
@@ -97,11 +98,7 @@ class _QuizEditViewState extends State<QuizEditView> {
       if (_questions.isEmpty) {
         ListWidget = QuestionListEmpty();
       } else {
-        ListWidget = QuestionList(
-            questions: _questions,
-            //controller: controller,
-            //selectedRadioAnswer: selectedRadioAnswer
-            );
+        ListWidget = QuestionList(questions: _questions);
       }
       return Scaffold(
         appBar: AppBar(
@@ -148,8 +145,6 @@ class _QuizEditViewState extends State<QuizEditView> {
       );
     }
   }
-
-
 }
 
 /// The widget [QuestionList] is used when there are questions in the category. It shows
@@ -159,24 +154,10 @@ class _QuizEditViewState extends State<QuizEditView> {
 /// The variable [questions] is a list that stores the questions of the category.
 class QuestionList extends StatefulWidget {
   List<Question> questions;
-  //EditQuizProvider controller;
-  //AnswersRadioButton selectedRadioAnswer;
-  // TextEditingController questionController;
-  // TextEditingController answer1Controller;
-  // TextEditingController answer2Controller;
-  // TextEditingController answer3Controller;
-  // TextEditingController answer4Controller;
 
   QuestionList({
     Key? key,
     required this.questions,
-    //required this.controller,
-    //required this.selectedRadioAnswer,
-    // required this.questionController,
-    // required this.answer1Controller,
-    // required this.answer2Controller,
-    // required this.answer3Controller,
-    // required this.answer4Controller,
   }) : super(key: key);
 
   @override
@@ -185,13 +166,6 @@ class QuestionList extends StatefulWidget {
 
 class _QuestionListState extends State<QuestionList> {
   get questions => widget.questions;
-  //get controller => widget.controller;
-  //get selectedRadioAnswer => widget.selectedRadioAnswer;
-  // get questionController => widget.questionController;
-  // get answer1Controller => widget.answer1Controller;
-  // get answer2Controller => widget.answer2Controller;
-  // get answer3Controller => widget.answer3Controller;
-  // get answer4Controller => widget.answer4Controller;
 
   @override
   Widget build(BuildContext context) {
@@ -221,13 +195,7 @@ class _QuestionListState extends State<QuestionList> {
                   children: <Widget>[
                     QuestionListTile(
                       isContainerVisible: true,
-                      question: questions[index],
-                      // selectedRadioAnswer: controller.selectedRadioAnswer,
-                      // questionController: controller.questionController,
-                      // answer1Controller: controller.answer1Controller,
-                      // answer2Controller: controller.answer2Controller,
-                      // answer3Controller: controller.answer3Controller,
-                      // answer4Controller: controller.answer4Controller,
+                      question: questions[index]
                     ),
                   ],
                 ),
