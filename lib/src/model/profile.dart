@@ -120,9 +120,12 @@ class Profile {
         'username': username,
         'lastName': lastName,
         'firstName': firstName,
+        'profilePicture': profilePicture,
         'email': email,
         'bio': bio,
         'age': age,
+        'birthdayMonth': birthdayMonth,
+        'birthdayDay': birthdayDay,
         'scores': publicScore,
         'privateScore': privatecScore,
       };
@@ -134,21 +137,23 @@ class Profile {
     await this
         .firestore
         .collection('users')
-        .doc(uid)
+        .doc(getCurrentUserID())
         .get()
         .then((DocumentSnapshot documentSnapshot) {
-      if (documentSnapshot.exists && uid!="mockedyou123456") {
+      if (documentSnapshot.exists) {
         throw UserAlreadyExistsException();
       }
     });
 
-    if (uid != null) {
+    if (getCurrentUserID() != null) {
       // create the document for categories created by the user
-      await firestore.collection('categories').doc(uid).set({});
+      print(uid);
+      print(getCurrentUserID());
+      await this.firestore.collection('categories').doc(getCurrentUserID()).set({});
 
       await firestore
           .collection('users')
-          .doc(uid)
+          .doc(getCurrentUserID())
           .set(this.toJson());
       UserStatistics s = UserStatistics(this.username, []);
       //Adding the user to the statistics
@@ -198,9 +203,9 @@ class Profile {
   }
 
   /// Increment the score of the user in the firebase by the score achieved in the current quiz.
-  void updateScore(String category, int score) {
+  Future<void> updateScore(String category, int score) async {
     final firebaseFirestore = FirebaseFirestore.instance;
-    firebaseFirestore.collection('users').doc(getCurrentUserID()).update({
+    await firebaseFirestore.collection('users').doc(getCurrentUserID()).update({
       'scores.$category': FieldValue.increment(score),
     });
     //TODO
@@ -216,7 +221,7 @@ class Profile {
     try {
       firestore
           .collection('users')
-          .doc(uid)
+          .doc(getCurrentUserID())
           .update({'username': newUsername});
       return true;
     } catch (e) {
@@ -233,7 +238,7 @@ class Profile {
     try {
       firestore
           .collection('users')
-          .doc(uid)
+          .doc(getCurrentUserID())
           .update({'bio': newBio});
       return true;
     } catch (e) {
@@ -251,7 +256,7 @@ class Profile {
     try {
       firestore
           .collection('users')
-          .doc(uid)
+          .doc(getCurrentUserID())
           .update({'firstName': newFirstName, 'lastName': newLastName});
       return true;
     } catch (e) {
@@ -269,7 +274,7 @@ class Profile {
     try {
       firestore
           .collection('users')
-          .doc(uid)
+          .doc(getCurrentUserID())
           .update({'birthdayMonth': newMonth, 'birthdayDay': newDay});
       return true;
     } catch (e) {
@@ -286,7 +291,7 @@ class Profile {
     try {
       firestore
           .collection('users')
-          .doc(uid)
+          .doc(getCurrentUserID())
           .update({'profilePicture': newPic});
       return true;
     } catch (e) {
@@ -369,6 +374,7 @@ class Profile {
     }
   }
 
+  ///updates the Profile Picture of the user in the Firebase Database and in the Firebase Storage
   Future<void> pickProfileImage() async {
     final image = await ImagePicker().pickImage(
       source: ImageSource.gallery,
@@ -376,9 +382,7 @@ class Profile {
       maxHeight: 512,
       imageQuality: 75,
     );
-    Reference ref = FirebaseStorage.instance
-        .ref()
-        .child("profilePictures/${uid}");
+
     // File file = File(image!.path);
     // print(file.path);
     // final metadata = SettableMetadata(
@@ -397,6 +401,8 @@ class Profile {
     // } catch (e) {
     //   print(e);
     // }
+    Reference ref =
+        FirebaseStorage.instance.ref().child("profilePictures/${uid}");
     final fileBytes = await image!.readAsBytes();
 // var now = DateTime.now().millisecondsSinceEpoch;
 // StorageReference reference =

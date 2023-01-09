@@ -54,12 +54,6 @@ class ProfileViewController {
     success = [...success, player.updateBio(newBio)];
   }
 
-  ///changes the current profile picture with the given [newPic]
-  ///and the value is added to the [success] list
-  void editProfilePic(String newPic) {
-    success = [...success, player.updatePicture(newPic)];
-  }
-
   ///changes the current password [currentPassword] with the given [newPassword] and confirms it through [email]
   ///and the value is added to the [success] list
   void editPassword(String currentPassword, String newPassword, String email) {

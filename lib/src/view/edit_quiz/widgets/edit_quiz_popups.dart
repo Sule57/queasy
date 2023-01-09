@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-
-import '../../../src.dart';
-import '../private_category_selection_view.dart';
+import 'package:provider/provider.dart';
+import '../../../../src.dart';
+import '../../private_category_selection_view.dart';
+import '../quiz_edit_provider.dart';
 import '../quiz_edit_view.dart';
 import 'edit_quiz_text_fields.dart';
 
@@ -32,12 +32,12 @@ import 'edit_quiz_text_fields.dart';
 /// selects a radio button for the correct answer.
 class AddOrEditQuestionPopUp extends StatefulWidget {
   Function() action;
-  AnswersRadioButton selectedRadioAnswer;
-  TextEditingController questionController;
-  TextEditingController answer1Controller;
-  TextEditingController answer2Controller;
-  TextEditingController answer3Controller;
-  TextEditingController answer4Controller;
+  // AnswersRadioButton selectedRadioAnswer;
+  // TextEditingController questionController;
+  // TextEditingController answer1Controller;
+  // TextEditingController answer2Controller;
+  // TextEditingController answer3Controller;
+  // TextEditingController answer4Controller;
   Question? question;
   String categoryName;
 
@@ -45,12 +45,12 @@ class AddOrEditQuestionPopUp extends StatefulWidget {
     Key? key,
     this.question,
     required this.action,
-    required this.selectedRadioAnswer,
-    required this.questionController,
-    required this.answer1Controller,
-    required this.answer2Controller,
-    required this.answer3Controller,
-    required this.answer4Controller,
+    // required this.selectedRadioAnswer,
+    // required this.questionController,
+    // required this.answer1Controller,
+    // required this.answer2Controller,
+    // required this.answer3Controller,
+    // required this.answer4Controller,
     required this.categoryName,
   }) : super(key: key);
 
@@ -63,21 +63,22 @@ class _AddOrEditQuestionPopUpState extends State<AddOrEditQuestionPopUp> {
   final _formKey = GlobalKey<FormState>();
 
   get question => widget.question;
-  AnswersRadioButton get selectedRadioAnswer => widget.selectedRadioAnswer;
-  get questionController => widget.questionController;
-  get answer1Controller => widget.answer1Controller;
-  get answer2Controller => widget.answer2Controller;
-  get answer3Controller => widget.answer3Controller;
-  get answer4Controller => widget.answer4Controller;
+  // AnswersRadioButton get selectedRadioAnswer => widget.selectedRadioAnswer;
+  // get questionController => widget.questionController;
+  // get answer1Controller => widget.answer1Controller;
+  // get answer2Controller => widget.answer2Controller;
+  // get answer3Controller => widget.answer3Controller;
+  // get answer4Controller => widget.answer4Controller;
   get categoryName => widget.categoryName;
 
-  set selectedRadioAnswer(AnswersRadioButton value) =>
-      widget.selectedRadioAnswer = value;
+  // set selectedRadioAnswer(AnswersRadioButton value) =>
+  //     widget.selectedRadioAnswer = value;
 
   // TODO: predefine radio button value for editing
 
   @override
   Widget build(BuildContext context) {
+    EditQuizProvider controller = Provider.of<EditQuizProvider>(context, listen: false);
     return AlertDialog(
       // This makes the dialog scrollable if the content is too big for the screen,
       // especially when the user clicks on the text field to type and the keyboard
@@ -95,7 +96,7 @@ class _AddOrEditQuestionPopUpState extends State<AddOrEditQuestionPopUp> {
           return Container(
             child: Form(
               key: _formKey,
-              //key: _formKeyAddQuestion, _formKeyEditQuestion // do i need both?
+              //key: _formKeyAddQuestion, _formKeyEditQuestion
               child: Column(
                 // This makes the dialog have the smallest needed height.
                 mainAxisSize: MainAxisSize.min,
@@ -103,7 +104,7 @@ class _AddOrEditQuestionPopUpState extends State<AddOrEditQuestionPopUp> {
                   Row(
                     children: [
                       CustomTextField(
-                        controller: questionController,
+                        controller: controller.questionController,
                         hintText: 'Question',
                         validatorText: 'Please enter a question',
                         controllerText: question == null ? '' : question.getText(),
@@ -116,7 +117,7 @@ class _AddOrEditQuestionPopUpState extends State<AddOrEditQuestionPopUp> {
                     //mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       CustomTextField(
-                        controller: answer1Controller,
+                        controller: controller.answer1Controller,
                         hintText: 'Answer 1',
                         validatorText: 'Please enter an answer',
                         controllerText: question == null ? '' : question.answers[0].text,
@@ -125,10 +126,10 @@ class _AddOrEditQuestionPopUpState extends State<AddOrEditQuestionPopUp> {
                       Radio<AnswersRadioButton>(
                           fillColor: MaterialStateProperty.all(Colors.white),
                           value: AnswersRadioButton.ans1,
-                          groupValue: selectedRadioAnswer,
+                          groupValue: controller.selectedRadioAnswer,
                           onChanged: (AnswersRadioButton? value) {
                             setState(() {
-                              selectedRadioAnswer = value!;
+                              controller.selectedRadioAnswer = value!;
                             });
                           }),
                     ],
@@ -136,7 +137,7 @@ class _AddOrEditQuestionPopUpState extends State<AddOrEditQuestionPopUp> {
                   Row(
                     children: [
                       CustomTextField(
-                        controller: answer2Controller,
+                        controller: controller.answer2Controller,
                         hintText: 'Answer 2',
                         validatorText: 'Please enter an answer',
                         controllerText: question == null ? '' : question.answers[1].text,
@@ -145,10 +146,10 @@ class _AddOrEditQuestionPopUpState extends State<AddOrEditQuestionPopUp> {
                       Radio<AnswersRadioButton>(
                           fillColor: MaterialStateProperty.all(Colors.white),
                           value: AnswersRadioButton.ans2,
-                          groupValue: selectedRadioAnswer,
+                          groupValue: controller.selectedRadioAnswer,
                           onChanged: (AnswersRadioButton? value) {
                             setState(() {
-                              selectedRadioAnswer = value!;
+                              controller.selectedRadioAnswer = value!;
                             });
                           }),
                     ],
@@ -156,7 +157,7 @@ class _AddOrEditQuestionPopUpState extends State<AddOrEditQuestionPopUp> {
                   Row(
                     children: [
                       CustomTextField(
-                        controller: answer3Controller,
+                        controller: controller.answer3Controller,
                         hintText: 'Answer 3',
                         validatorText: 'Please enter an answer',
                         controllerText: question == null ? '' : question.answers[2].text,
@@ -165,10 +166,10 @@ class _AddOrEditQuestionPopUpState extends State<AddOrEditQuestionPopUp> {
                       Radio<AnswersRadioButton>(
                           fillColor: MaterialStateProperty.all(Colors.white),
                           value: AnswersRadioButton.ans3,
-                          groupValue: selectedRadioAnswer,
+                          groupValue: controller.selectedRadioAnswer,
                           onChanged: (AnswersRadioButton? value) {
                             setState(() {
-                              selectedRadioAnswer = value!;
+                              controller.selectedRadioAnswer = value!;
                             });
                           }),
                     ],
@@ -176,7 +177,7 @@ class _AddOrEditQuestionPopUpState extends State<AddOrEditQuestionPopUp> {
                   Row(
                     children: [
                       CustomTextField(
-                        controller: answer4Controller,
+                        controller: controller.answer4Controller,
                         hintText: 'Answer 4',
                         validatorText: 'Please enter an answer',
                         controllerText: question == null ? '' : question.answers[3].text,
@@ -185,10 +186,10 @@ class _AddOrEditQuestionPopUpState extends State<AddOrEditQuestionPopUp> {
                       Radio<AnswersRadioButton>(
                         fillColor: MaterialStateProperty.all(Colors.white),
                         value: AnswersRadioButton.ans4,
-                        groupValue: selectedRadioAnswer,
+                        groupValue: controller.selectedRadioAnswer,
                         onChanged: (AnswersRadioButton? value) {
                           setState(() {
-                            selectedRadioAnswer = value!;
+                            controller.selectedRadioAnswer = value!;
                           });
                         },
                       ),
@@ -209,7 +210,7 @@ class _AddOrEditQuestionPopUpState extends State<AddOrEditQuestionPopUp> {
             TextButton(
               onPressed: () {
                 // Clear all text fields
-                clearTextFieldsAndButton();
+                clearTextFieldsAndButton(controller);
                 Navigator.pop(context);
               },
               child: Text('Cancel'),
@@ -233,8 +234,8 @@ class _AddOrEditQuestionPopUpState extends State<AddOrEditQuestionPopUp> {
                 if (_formKey.currentState!.validate()) {
                   // Call the function to add/edit the question to the/in database.
                   widget.action();
-                  clearTextFieldsAndButton();
-                  Navigator.pop(context); // TODO: not being popped
+                  clearTextFieldsAndButton(controller);
+                  Navigator.pop(context);
                 }
               },
             ),
@@ -245,13 +246,13 @@ class _AddOrEditQuestionPopUpState extends State<AddOrEditQuestionPopUp> {
   }
 
   /// This method clears all text fields and resets the radio button.
-  void clearTextFieldsAndButton() {
-    questionController.clear();
-    answer1Controller.clear();
-    answer2Controller.clear();
-    answer3Controller.clear();
-    answer4Controller.clear();
-    selectedRadioAnswer = AnswersRadioButton.ans1;
+  void clearTextFieldsAndButton(controller) {
+    controller.questionController.clear();
+    controller.answer1Controller.clear();
+    controller.answer2Controller.clear();
+    controller.answer3Controller.clear();
+    controller.answer4Controller.clear();
+    controller.selectedRadioAnswer = AnswersRadioButton.ans1;
   }
 }
 
@@ -290,7 +291,8 @@ class DeleteQuestionPopUp extends StatelessWidget {
             ),
             TextButton(
               onPressed: () async {
-                await Category(name: question.category).deleteQuestion(question);
+                Category cat = await CategoryRepo().getCategory(question.category);
+                await cat.deleteQuestion(question);
                 print('Question deleted');
                 Navigator.pop(context);
               },
