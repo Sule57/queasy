@@ -8,7 +8,7 @@ import 'answer.dart';
 class Question {
   /// The parameter text represents the actual question, so for instance a
   /// question could look like
-  /// What is the capial of France?:
+  /// What is the capital of France?:
   /// Paris,
   /// London,
   /// Berlin,
