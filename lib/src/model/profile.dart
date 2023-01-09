@@ -1,6 +1,10 @@
+
+import 'dart:io';
+import 'dart:typed_data';
+import 'package:path_provider/path_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:queasy/src.dart';
+import 'package:queasy/src/model/category_repo.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:queasy/src/model/statistics.dart';
@@ -33,6 +37,7 @@ Future<String?> getCurrentUserUsername() async {
 ///adapted for the needs of the quizz application
 /// [email] email field
 /// [username] username
+/// [hashPassword] password
 /// [firstName] user first name
 /// [lastName] user last name
 /// [profilePicture] path to the profile picture
@@ -49,7 +54,6 @@ class Profile {
   int? age;
   String? birthdayMonth;
   int? birthdayDay;
-  String? uid;
   // it must be late so
   late var firestore = FirebaseFirestore.instance;
   //In the database publicScore and private score are stored as collections
@@ -65,9 +69,7 @@ class Profile {
     this.age = 0,
     this.birthdayMonth = '',
     this.birthdayDay = 0,
-  }){
-    uid = getCurrentUserID();
-  }
+  });
 
   Profile.test({
     required this.username,
@@ -80,12 +82,9 @@ class Profile {
     this.birthdayMonth = '',
     this.birthdayDay = 0,
     required this.firestore,
-  }){
-    uid = "mockedyou123456";
-  }
+  });
 
   ///This constructor is used only for unit tests
-
   /// Creates a user instance from json
   /// Note: the json format must be the following:
   /// USERNAME: {
@@ -93,13 +92,13 @@ class Profile {
   ///   }
   /// [json] should be json data
   Profile.fromJson(Map<String, dynamic> json)
-      // : username = json.keys.toList()[0], // this is how to get the username
-      // hashPassword = json[json.keys.toList()[0]]['hashPassword'],
-      // firstName = json[json.keys.toList()[0]]['firstName'],
-      // lastName = json[json.keys.toList()[0]]['lastName'],
-      // profilePicture = json[json.keys.toList()[0]]['profilePicture'],
-      // bio = json[json.keys.toList()[0]]['bio'],
-      // age = json[json.keys.toList()[0]]['age'];
+  // : username = json.keys.toList()[0], // this is how to get the username
+  // hashPassword = json[json.keys.toList()[0]]['hashPassword'],
+  // firstName = json[json.keys.toList()[0]]['firstName'],
+  // lastName = json[json.keys.toList()[0]]['lastName'],
+  // profilePicture = json[json.keys.toList()[0]]['profilePicture'],
+  // bio = json[json.keys.toList()[0]]['bio'],
+  // age = json[json.keys.toList()[0]]['age'];
       : username = json['username'],
         email = json['email'],
         firstName = json['firstName'],
@@ -117,15 +116,15 @@ class Profile {
 
   /// converts user object to json object
   Map<String, dynamic> toJson() => {
-        'username': username,
-        'lastName': lastName,
-        'firstName': firstName,
-        'email': email,
-        'bio': bio,
-        'age': age,
-        'scores': publicScore,
-        'privateScore': privatecScore,
-      };
+    'username': username,
+    'lastName': lastName,
+    'firstName': firstName,
+    'email': email,
+    'bio': bio,
+    'age': age,
+    'scores': publicScore,
+    'privateScore': privatecScore,
+  };
 
   /// registers user the following way: creates document with the usaername and collection with its attributes
   /// returns true if successful
@@ -134,21 +133,21 @@ class Profile {
     await this
         .firestore
         .collection('users')
-        .doc(uid)
+        .doc(getCurrentUserID())
         .get()
         .then((DocumentSnapshot documentSnapshot) {
-      if (documentSnapshot.exists && uid!="mockedyou123456") {
+      if (documentSnapshot.exists) {
         throw UserAlreadyExistsException();
       }
     });
 
-    if (uid != null) {
+    if (getCurrentUserID() != null) {
       // create the document for categories created by the user
-      await firestore.collection('categories').doc(uid).set({});
+      await firestore.collection('categories').doc(getCurrentUserID()).set({});
 
       await firestore
           .collection('users')
-          .doc(uid)
+          .doc(getCurrentUserID())
           .set(this.toJson());
       UserStatistics s = UserStatistics(this.username, []);
       //Adding the user to the statistics
@@ -162,7 +161,7 @@ class Profile {
 
   /// gets the current profile from user uid
   /// [uid] is the firebase user uid
-  /// returns a [Profile] instance
+  /// returns a Profile instance
   static Future<Profile?> getProfilefromUID(String uid) async {
     Profile? result;
     await FirebaseFirestore.instance
@@ -197,18 +196,18 @@ class Profile {
     return s;
   }
 
-  /// Increment the score of the user in the firebase by the score achieved in the current quiz.
-  void updateScore(String category, int score) {
+  /// Increment the score of the user in the firebase by the score achieved in the current quiz
+  /// [username] The username of the user
+  void updateScore( String category, int score) {
     final firebaseFirestore = FirebaseFirestore.instance;
     firebaseFirestore.collection('users').doc(getCurrentUserID()).update({
       'scores.$category': FieldValue.increment(score),
     });
-    //TODO
-    // Leaderboard().updateCurrentUserPoints(score);
   }
 
   //START OF METHODS FOR PROFILE VIEW
   /// Updates the user's username in the Firebase Database
+  /// @param [currentUsername] - username of the user whose username to change
   /// @param [newUsername] - username to change the current username to
   /// @return true - username was updated successfully
   /// @return false - username was not updated successfully
@@ -216,7 +215,7 @@ class Profile {
     try {
       firestore
           .collection('users')
-          .doc(uid)
+          .doc(getCurrentUserID())
           .update({'username': newUsername});
       return true;
     } catch (e) {
@@ -233,7 +232,7 @@ class Profile {
     try {
       firestore
           .collection('users')
-          .doc(uid)
+          .doc(getCurrentUserID())
           .update({'bio': newBio});
       return true;
     } catch (e) {
@@ -251,7 +250,7 @@ class Profile {
     try {
       firestore
           .collection('users')
-          .doc(uid)
+          .doc(getCurrentUserID())
           .update({'firstName': newFirstName, 'lastName': newLastName});
       return true;
     } catch (e) {
@@ -269,7 +268,7 @@ class Profile {
     try {
       firestore
           .collection('users')
-          .doc(uid)
+          .doc(getCurrentUserID())
           .update({'birthdayMonth': newMonth, 'birthdayDay': newDay});
       return true;
     } catch (e) {
@@ -286,7 +285,7 @@ class Profile {
     try {
       firestore
           .collection('users')
-          .doc(uid)
+          .doc(getCurrentUserID())
           .update({'profilePicture': newPic});
       return true;
     } catch (e) {
@@ -378,7 +377,7 @@ class Profile {
     );
     Reference ref = FirebaseStorage.instance
         .ref()
-        .child("profilePictures/${uid}");
+        .child("profilePictures/${getCurrentUserID()}");
     // File file = File(image!.path);
     // print(file.path);
     // final metadata = SettableMetadata(
@@ -408,7 +407,7 @@ class Profile {
         print(value);
         firestore
             .collection('users')
-            .doc(uid)
+            .doc(getCurrentUserID())
             .update({'profilePicture': value});
       });
     } catch (e) {
@@ -440,11 +439,11 @@ class Profile {
     // });
   }
 
-  // File getProfilePicture(){
-  //   Reference ref = FirebaseStorage.instance
-  //       .ref()
-  //       .child("profilePictures/${getCurrentUserID()}")
-  // }
-  //END OF METHODS FOR PROFILE VIEW
+// File getProfilePicture(){
+//   Reference ref = FirebaseStorage.instance
+//       .ref()
+//       .child("profilePictures/${getCurrentUserID()}")
+// }
+//END OF METHODS FOR PROFILE VIEW
 
 }

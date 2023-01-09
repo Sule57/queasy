@@ -32,7 +32,7 @@ void main() async {
         firestore: instance);
     await usr.registerUser();
     //Map<String, dynamic> data = await instance.collection('users').get() as Map<String, dynamic>;
-    Map<String, dynamic> data = jsonDecode(instance.dump())['users'][usr.uid];
+    Map<String, dynamic> data = jsonDecode(instance.dump())['users'][getCurrentUserID()];
     expect(data, equals(expectedDumpAfterset));
   });
 
@@ -45,7 +45,7 @@ void main() async {
         firestore: instance);
     await usr.registerUser();
     //Map<String, dynamic> data = await instance.collection('users').get() as Map<String, dynamic>;
-    Map<String, dynamic> data = jsonDecode(instance.dump())['users'][usr.uid];
+    Map<String, dynamic> data = jsonDecode(instance.dump())['users'][getCurrentUserID()];
     final r_user = Profile.fromJson(data);
     print(r_user.toString());
     expect(r_user.toString(), equals(user_test.toString()));
