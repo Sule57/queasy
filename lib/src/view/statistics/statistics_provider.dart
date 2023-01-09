@@ -24,7 +24,6 @@ class StatisticsProvider with ChangeNotifier {
   bool setStatisticsProvider() {
     try {
       _lastQuiz = qp.quizzResult;
-      print(_lastQuiz);
 
       _quizzName = _lastQuiz.quizzName;
       _allQestions = _lastQuiz.allQestions;

@@ -60,11 +60,15 @@ void main() async {
     'username': 'TEST21',
     'lastName': '',
     'firstName': '',
+    'profilePicture': '',
     'email': 'email@test.com',
     'bio': '',
     'age': 0,
+    'birthdayMonth': '',
+    'birthdayDay': 0,
     'scores': {},
     'privateScore': {},
+
   };
 
   ///tests method register() in User model
