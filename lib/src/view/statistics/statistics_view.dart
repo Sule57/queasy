@@ -24,6 +24,8 @@ class _StatisticsViewState extends State<StatisticsView> {
   /// [StatisticsDesktopViewBackground] and the [StatisticsViewContent] on top.
   @override
   Widget build(BuildContext context) {
+    Provider.of<StatisticsProvider>(context, listen: false)
+        .setStatisticsProvider();
     return Scaffold(
       body: Stack(
         children: const [

@@ -4,7 +4,7 @@ import '../play_quiz/quiz_provider.dart';
 
 class StatisticsProvider with ChangeNotifier {
   late UserStatistics statistics;
-  final QuizProvider qp;
+  QuizProvider qp;
 
   late UserQuizzResult _lastQuiz;
   String _quizzName = "";
@@ -24,12 +24,12 @@ class StatisticsProvider with ChangeNotifier {
   bool setStatisticsProvider() {
     try {
       _lastQuiz = qp.quizzResult;
+      print(_lastQuiz);
 
       _quizzName = _lastQuiz.quizzName;
       _allQestions = _lastQuiz.allQestions;
       _correct = _lastQuiz.correct;
       _secondsSpent = _lastQuiz.secondsSpent;
-      notifyListeners();
       return true;
     } catch (e) {
       print(e);
