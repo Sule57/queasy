@@ -50,4 +50,31 @@ class ProfileProvider with ChangeNotifier {
     print(data);
     return data;
   }
+
+  List<String> getGraphKeys() {
+    List<String> data = [];
+    for (var value in player.publicScore.keys) {
+      data.add(value);
+    }
+    print(data);
+    return data;
+  }
+
+  List<double> getPrivateGraphData() {
+    List<double> data = [];
+    for (var value in player.privatecScore.values) {
+      data.add(value / 1000);
+    }
+    print(data);
+    return data;
+  }
+
+  List<String> getPrivateGraphKeys() {
+    List<String> data = [];
+    for (var value in player.privatecScore.keys) {
+      data.add(value);
+    }
+    print(data);
+    return data;
+  }
 }
