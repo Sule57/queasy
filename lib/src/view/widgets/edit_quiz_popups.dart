@@ -290,7 +290,8 @@ class DeleteQuestionPopUp extends StatelessWidget {
             ),
             TextButton(
               onPressed: () async {
-                await Category(name: question.category).deleteQuestion(question);
+                Category cat = await CategoryRepo().getCategory(question.category);
+                await cat.deleteQuestion(question);
                 print('Question deleted');
                 Navigator.pop(context);
               },
