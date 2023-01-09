@@ -1,14 +1,57 @@
 import 'dart:convert';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:queasy/src.dart';
 import 'package:queasy/src/model/profile.dart';
 import 'package:queasy/utils/exceptions.dart';
 // import 'package:test/test.dart';
+
+String uid = "mockedyouu";
+
+/// mock register so you avoid using firebase auth in tests
+Future<bool> mockRegister(Profile p) async {
+
+  await p
+      .firestore
+      .collection('users')
+      .doc(uid)
+      .get();
+    //   .then((DocumentSnapshot documentSnapshot) {
+    // if (documentSnapshot.exists) {
+    // print(p.firestore
+    //     .collection('users')
+    //     .doc(uid)
+    //     .get().toString());
+    //  // print(documentSnapshot);
+    //   throw UserAlreadyExistsException();
+    // }
+  //});
+
+  if (uid != null) {
+    // create the document for categories created by the user
+    await p.firestore.collection('categories').doc(uid).set({});
+
+    await p.firestore
+        .collection('users')
+        .doc(uid)
+        .set(p.toJson());
+    UserStatistics s = UserStatistics(p.username, []);
+    //Adding the user to the statistics
+    Map<String, dynamic> data = {};
+    await p.firestore.collection('UserStatistics').doc(p.username).set(data);
+    return true;
+  }
+
+  return false;
+}
+
 
 /// Main function for testing the [Profile] class.
 void main() async {
 
   final instance = FakeFirebaseFirestore();
+
   Profile user_test = Profile.test(
       username: 'TEST21',
       email: 'email@test.com',
@@ -30,9 +73,9 @@ void main() async {
         username: 'TEST21',
         email: 'email@test.com',
         firestore: instance);
-    await usr.registerUser();
+    await mockRegister(usr);
     //Map<String, dynamic> data = await instance.collection('users').get() as Map<String, dynamic>;
-    Map<String, dynamic> data = jsonDecode(instance.dump())['users'][getCurrentUserID()];
+    Map<String, dynamic> data = jsonDecode(instance.dump())['users'][uid];
     expect(data, equals(expectedDumpAfterset));
   });
 
@@ -43,9 +86,9 @@ void main() async {
         username: 'TEST21',
         email: 'email@test.com',
         firestore: instance);
-    await usr.registerUser();
+    await mockRegister(usr);
     //Map<String, dynamic> data = await instance.collection('users').get() as Map<String, dynamic>;
-    Map<String, dynamic> data = jsonDecode(instance.dump())['users'][getCurrentUserID()];
+    Map<String, dynamic> data = jsonDecode(instance.dump())['users'][uid];
     final r_user = Profile.fromJson(data);
     print(r_user.toString());
     expect(r_user.toString(), equals(user_test.toString()));
@@ -84,7 +127,7 @@ void main() async {
   };
 
   /// Pushes testProfile into the fake firestore database
-  await profile_test.registerUser();
+  await mockRegister(profile_test);
   // await instance.collection('users').doc("testProfileDocID").set(testProfile);
 
   /// Testing update username in profile class

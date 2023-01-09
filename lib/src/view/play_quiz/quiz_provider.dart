@@ -211,6 +211,7 @@ class QuizProvider with ChangeNotifier {
             name, correctAnswers, _totalQuestions, _secondsPassed);
         //IMPORTANT YOU CANNOT PLAY 2 QUIZZES AT THE SAME TIME OTHERWISE THIS WILL BREAK !!!
         // YOU CANNOT CALL STATISTICS PROVIDER BEFORE QUIZ PROVIDER !!!
+        //print(r.quizzName.toString());
         quizzResult = r;
         stat.addUserQuizzResult(r);
         await stat.saveStatistics();
