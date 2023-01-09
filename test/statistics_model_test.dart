@@ -1,11 +1,45 @@
 import 'dart:convert';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:queasy/src/model/profile.dart';
 import 'package:queasy/src/model/statistics.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:queasy/utils/exceptions.dart';
 
 
+
+/// mock register so you avoid using firebase auth in tests
+Future<bool> mockRegister(Profile p) async {
+  String uid = "mockedyou";
+  await p
+      .firestore
+      .collection('users')
+      .doc(uid)
+      .get()
+      .then((DocumentSnapshot documentSnapshot) {
+    if (documentSnapshot.exists) {
+      throw UserAlreadyExistsException();
+    }
+  });
+
+  if (uid != null) {
+    // create the document for categories created by the user
+    await p.firestore.collection('categories').doc(uid).set({});
+
+    await p.firestore
+        .collection('users')
+        .doc(uid)
+        .set(p.toJson());
+    UserStatistics s = UserStatistics(p.username, []);
+    //Adding the user to the statistics
+    Map<String, dynamic> data = {};
+    await p.firestore.collection('UserStatistics').doc(p.username).set(data);
+    return true;
+  }
+
+  return false;
+}
 
 
 
@@ -18,7 +52,7 @@ void main() async {
       email: 'email@test.com',
       firestore: instance);
   // it is assumed that registerUser is working properly
-  await user_test.registerUser();
+  await mockRegister(user_test);
 
   Map<String, dynamic> expectedDumpAfterset = {
     "quizz1": {
