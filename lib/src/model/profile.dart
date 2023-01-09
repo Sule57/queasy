@@ -107,6 +107,8 @@ class Profile {
         profilePicture = json['profilePicture'],
         bio = json['bio'],
         age = json['age'],
+        birthdayMonth = json['birthdayMonth'],
+        birthdayDay = json['birthdayDay'],
         privatecScore = json['privateScore'],
         publicScore = json['scores'];
 
