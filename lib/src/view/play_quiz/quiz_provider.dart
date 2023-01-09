@@ -220,9 +220,12 @@ class QuizProvider with ChangeNotifier {
     }
     if (_quiz.isPublic == true) {
       //TODO check this
-      await player.updateScore(_quizCategory!, _currentPoints);
+      await player.updateScore(_quizCategory!, _currentPoints, true);
       print('seconds passed at the end of the quizz: $_secondsPassed');
+    }else{
+      await player.updateScore(_quizCategory!, _currentPoints, false);
     }
+
     navigator.currentState?.pop();
     navigator.currentState?.push(
       MaterialPageRoute(builder: (_) => StatisticsView()),

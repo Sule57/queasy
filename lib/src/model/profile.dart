@@ -203,13 +203,24 @@ class Profile {
   }
 
   /// Increment the score of the user in the firebase by the score achieved in the current quiz.
-  Future<void> updateScore(String category, int score) async {
+  Future<void> updateScore(String category, int score, bool is_public) async {
+    if(await getCurrentUserID() == null || await getCurrentUserUsername() == null){
+      throw UserNotLoggedInException();
+    }
+
     final firebaseFirestore = FirebaseFirestore.instance;
     await firebaseFirestore.collection('users').doc(getCurrentUserID()).update({
       'scores.$category': FieldValue.increment(score),
     });
     //TODO
-    // Leaderboard().updateCurrentUserPoints(score);
+
+    Leaderboard leaderboard;
+    if(is_public){
+      leaderboard = await Leaderboard.createPublic(category, (await getCurrentUserUsername())!);
+    }else{
+      leaderboard = await Leaderboard.createPrivate(category, (await getCurrentUserUsername())!);
+    }
+    leaderboard.updateCurrentUserPoints(score);
   }
 
   //START OF METHODS FOR PROFILE VIEW
