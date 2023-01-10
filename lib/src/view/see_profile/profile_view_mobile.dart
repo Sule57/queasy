@@ -20,6 +20,7 @@ import 'package:draw_graph/draw_graph.dart';
 import '../../../constants/theme_provider.dart';
 import '../registration/register_view.dart';
 import '../see_leaderboard/leaderboard_view.dart';
+import '../statistics/statistics_provider.dart';
 import 'profile_provider.dart';
 
 import 'widgets/private_statistics_graph.dart';
@@ -304,16 +305,21 @@ class ProfileMobileState extends State<ProfileViewMobile> {
                               children: [
                                 Column(
                                   children: [
-                                    Text("5", style: TextStyle(fontSize: 15)),
-                                    Text("completed",
+                                    Text(Provider.of<
+                                StatisticsProvider>(
+                                context)
+                                .numberQuiz
+                                .toString(), style: TextStyle(fontSize: 15)),
+                                    Text("Completed",
                                         style: TextStyle(fontSize: 15))
                                   ],
                                 ),
                                 SizedBox(width: 50),
                                 Column(
                                   children: [
-                                    Text("5", style: TextStyle(fontSize: 15)),
-                                    Text("10/10 %",
+                                    Text(Provider.of<StatisticsProvider>(context).overallPercentage.toString(),
+                                        style: TextStyle(fontSize: 15)),
+                                    Text("Percent",
                                         style: TextStyle(fontSize: 15))
                                   ],
                                 ),

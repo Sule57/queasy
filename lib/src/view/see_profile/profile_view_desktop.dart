@@ -19,6 +19,7 @@ import 'package:queasy/src/view/widgets/side_navigation.dart';
 
 import '../../../constants/theme_provider.dart';
 import '../registration/register_view.dart';
+import '../statistics/statistics_provider.dart';
 import 'profile_provider.dart';
 import 'widgets/statistics_graph.dart';
 
@@ -1271,10 +1272,14 @@ class _ProfileDesktopViewContentState extends State<ProfileDesktopViewContent> {
                                         children: [
                                           Column(
                                             children: [
-                                              Text("5",
+                                              Text(
+                                                  Provider.of<StatisticsProvider>(
+                                                          context)
+                                                      .numberQuiz
+                                                      .toString(),
                                                   style:
                                                       TextStyle(fontSize: 15)),
-                                              Text("completed",
+                                              Text("Completed",
                                                   style:
                                                       TextStyle(fontSize: 15))
                                             ],
@@ -1282,10 +1287,14 @@ class _ProfileDesktopViewContentState extends State<ProfileDesktopViewContent> {
                                           SizedBox(width: 50),
                                           Column(
                                             children: [
-                                              Text("5",
+                                              Text(Provider.of<
+                                                          StatisticsProvider>(
+                                                      context)
+                                                  .overallPercentage
+                                                  .toString(),
                                                   style:
-                                                      TextStyle(fontSize: 15)),
-                                              Text("10/10 %",
+                                                  TextStyle(fontSize: 15)),
+                                              Text("Percent",
                                                   style:
                                                       TextStyle(fontSize: 15))
                                             ],
