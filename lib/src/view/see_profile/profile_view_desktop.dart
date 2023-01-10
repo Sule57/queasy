@@ -1,5 +1,5 @@
 /// ****************************************************************************
-/// Created by Gullu Gasimova
+/// Created by Gullu Gasimova and Endia Clark
 ///
 /// This file is part of the project "Qeasy"
 /// Software Project on Technische Hochschule Ulm
@@ -10,6 +10,8 @@ import 'package:draw_graph/models/feature.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:queasy/constants/app_themes.dart';
+import 'package:queasy/src/view/see_profile/widgets/private_statistics_graph.dart';
+import 'package:queasy/src/view/see_profile/widgets/statistics_graph.dart';
 import 'package:queasy/src/view/see_profile/widgets/theme_button.dart';
 import 'package:queasy/src/view/see_profile/profile_view_controller.dart';
 import 'package:flutter_profile_picture/flutter_profile_picture.dart';
@@ -18,6 +20,7 @@ import 'package:queasy/src/view/widgets/side_navigation.dart';
 import '../../../constants/theme_provider.dart';
 import '../registration/register_view.dart';
 import 'profile_provider.dart';
+import 'widgets/statistics_graph.dart';
 
 ///This is UserProfileDesktop view
 ///It displays web version of the profile page
@@ -160,14 +163,8 @@ class _ProfileDesktopViewContentState extends State<ProfileDesktopViewContent> {
   ///[formKeyDelete] used for Form in DeleteAccount button
   final formKeyDelete = GlobalKey<FormState>();
 
-  ///[features] is to store data used for line graph. Scores must be represented as decimals (eg. 3 points = 0.3).
-  final List<Feature> features = [
-    Feature(
-      title: "Public Quizzes",
-      color: purple,
-      data: [0.3, 0.6, 0.8, 0.9, 1, 1.2],
-    ),
-  ];
+  ///[publicStats] is boolean used to toggle between public and private statistics graphs
+  bool publicStats = true;
 
   @override
   void dispose() {
@@ -304,7 +301,8 @@ class _ProfileDesktopViewContentState extends State<ProfileDesktopViewContent> {
                                         bottom: 7,
                                       ),
                                       child: Text(
-                                          "${Provider.of<ProfileProvider>(context).firstName} ${Provider.of<ProfileProvider>(context).lastName}"),
+                                          "${Provider.of<ProfileProvider>(context).firstName} ${Provider.of<ProfileProvider>(context).lastName}",
+                                          style: TextStyle(fontSize: 15)),
                                     ),
 
                                     ///[Container] to show email of the user
@@ -314,7 +312,8 @@ class _ProfileDesktopViewContentState extends State<ProfileDesktopViewContent> {
                                       ),
                                       child: Text(
                                           Provider.of<ProfileProvider>(context)
-                                              .email),
+                                              .email,
+                                          style: TextStyle(fontSize: 15)),
                                     ),
 
                                     ///[ElevatedButton] to enable the user to edit their profile info
@@ -1208,13 +1207,15 @@ class _ProfileDesktopViewContentState extends State<ProfileDesktopViewContent> {
                                 children: [
                                   Padding(
                                     padding: EdgeInsets.all(7),
-                                    child: Text("Bio"),
+                                    child: Text("Bio",
+                                        style: TextStyle(fontSize: 20)),
                                   ),
                                   Padding(
                                       padding: EdgeInsets.all(7),
                                       child: Text(
                                           Provider.of<ProfileProvider>(context)
-                                              .bio))
+                                              .bio,
+                                          style: TextStyle(fontSize: 15)))
                                 ],
                               ),
                             ),
@@ -1260,7 +1261,8 @@ class _ProfileDesktopViewContentState extends State<ProfileDesktopViewContent> {
                                 children: [
                                   Padding(
                                       padding: EdgeInsets.all(7),
-                                      child: Text("Personal Statistics")),
+                                      child: Text("Personal Statistics",
+                                          style: TextStyle(fontSize: 20))),
                                   Padding(
                                       padding: EdgeInsets.all(7),
                                       child: Row(
@@ -1269,41 +1271,48 @@ class _ProfileDesktopViewContentState extends State<ProfileDesktopViewContent> {
                                         children: [
                                           Column(
                                             children: [
-                                              Text("5"),
-                                              Text("completed")
+                                              Text("5",
+                                                  style:
+                                                      TextStyle(fontSize: 15)),
+                                              Text("completed",
+                                                  style:
+                                                      TextStyle(fontSize: 15))
                                             ],
                                           ),
                                           SizedBox(width: 50),
                                           Column(
                                             children: [
-                                              Text("5"),
-                                              Text("10/10 %")
+                                              Text("5",
+                                                  style:
+                                                      TextStyle(fontSize: 15)),
+                                              Text("10/10 %",
+                                                  style:
+                                                      TextStyle(fontSize: 15))
                                             ],
                                           ),
                                         ],
                                       )),
                                   Padding(
                                       padding: EdgeInsets.all(7),
-                                      child: Text("Score Distribution")),
-                                  LineGraph(
-                                    features: features,
-                                    size: Size(420, 450),
-                                    labelX: [
-                                      'Quiz 1',
-                                      'Quiz 2',
-                                      'Quiz 3',
-                                      'Quiz 4',
-                                      'Quiz 5',
-                                      'Quiz 6'
-                                    ],
-                                    labelY: ['2', '4', '6', '8', '10'],
-                                    showDescription: true,
-                                    graphColor:
-                                        Provider.of<ThemeProvider>(context)
-                                            .currentTheme
-                                            .colorScheme
-                                            .onBackground,
+                                      child: Text(
+                                        "Quiz Points",
+                                        style: TextStyle(fontSize: 20),
+                                      )),
+                                  Switch(
+                                    // This bool value toggles the switch.
+                                    value: publicStats,
+                                    activeColor: purple,
+                                    inactiveTrackColor: green,
+                                    onChanged: (bool value) {
+                                      // This is called when the user toggles the switch.
+                                      setState(() {
+                                        publicStats = value;
+                                      });
+                                    },
                                   ),
+                                  publicStats
+                                      ? StatisticsGraph()
+                                      : PrivateStatisticsGraph(),
                                 ],
                               ),
                             ),

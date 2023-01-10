@@ -120,7 +120,6 @@ class HomeWidgets extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Provider.of<ProfileProvider>(context).setProfile();
     return SafeArea(
       child: Center(
         child: Column(
@@ -225,8 +224,8 @@ class HomeWidgets extends StatelessWidget {
                                 if (textController.text.isNotEmpty) {
                                   // /confirmKey method is called from the controller
                                   // /result is saved in [success] variable
-                                  bool success =
-                                  await Quiz.checkIfQuizExists(id: textController.text);
+                                  bool success = await Quiz.checkIfQuizExists(
+                                      id: textController.text);
 
                                   if (success) {
                                     Navigator.of(context).push(
@@ -240,9 +239,9 @@ class HomeWidgets extends StatelessWidget {
                                     Navigator.pop(context);
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(
-                                      content: Text(
-                                        'Invalid key',
-                                        textAlign: TextAlign.center,
+                                        content: Text(
+                                          'Invalid key',
+                                          textAlign: TextAlign.center,
                                         ),
                                         duration: Duration(seconds: 1),
                                       ),
