@@ -411,8 +411,25 @@ class Profile {
   ///[password] is the current password of the user. It is used to reauthenticate the user.
   ///It returns true if the account is deleted successfully
   ///and false if the account couldn't be deleted.
-  bool deleteAccount(String email, String password) {
+  Future<bool> deleteAccount(String email, String password) async {
     try {
+      // delete all categories that this user created. In the collection 'categories',
+      // get the document with the id=id of the user, find all categories and delete them
+      List<String> categories = await CategoryRepo().getPrivateCategories();
+      for (String category in categories) {
+        await CategoryRepo().deleteCategory(category);
+      }
+      await CategoryRepo().deleteUserCollection();
+
+      // delete all record in all public leaderboards where the user appears
+      categories = await CategoryRepo().getPublicCategories();
+      for (String category in categories) {
+        Leaderboard leaderboard = await Leaderboard.createPublic(
+            category, (await getCurrentUserUsername())!);
+        await leaderboard.removeUserFromPublicLeaderboards();
+        await leaderboard.removeUserFromAllLeaderboard();
+      }
+
       firestore
           .collection('users')
           .doc(test ? uid : getCurrentUserID())
@@ -424,6 +441,7 @@ class Profile {
           user.delete();
         }
       });
+
       return true;
     } catch (e) {
       return false;
