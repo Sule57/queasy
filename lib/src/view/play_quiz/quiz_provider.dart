@@ -63,7 +63,7 @@ class QuizProvider with ChangeNotifier {
   late String? _quizCategory;
   late String? _quizId;
   late int _totalQuestions = 5;
-  static late UserQuizzResult _quizzResult;
+  late UserQuizzResult _quizzResult;
   int _currentQuestionIndex = 0;
   int _currentPoints = 0;
   int correctAnswers = 0;
@@ -209,20 +209,22 @@ class QuizProvider with ChangeNotifier {
       if (stat != null) {
         String name = _quizCategory! + (stat.userQuizzes.length + 1).toString();
 
-        UserQuizzResult r = UserQuizzResult(
-            name, correctAnswers, _totalQuestions, _secondsPassed);
         //IMPORTANT YOU CANNOT PLAY 2 QUIZZES AT THE SAME TIME OTHERWISE THIS WILL BREAK !!!
         // YOU CANNOT CALL STATISTICS PROVIDER BEFORE QUIZ PROVIDER !!!
-        _quizzResult = r;
-        stat.addUserQuizzResult(r);
+        _quizzResult =  UserQuizzResult(
+            name, correctAnswers, _totalQuestions, _secondsPassed);;
+        stat.addUserQuizzResult(_quizzResult);
         await stat.saveStatistics();
       }
     }
-    if (_quizCategory != null) {
+    if (_quiz.isPublic == true) {
       //TODO check this
-      await player.updateScore(_quizCategory!, _currentPoints);
+      await player.updateScore(_quizCategory!, _currentPoints, true);
       print('seconds passed at the end of the quizz: $_secondsPassed');
+    }else{
+      await player.updateScore(_quizCategory!, _currentPoints, false);
     }
+
     navigator.currentState?.pop();
     navigator.currentState?.push(
       MaterialPageRoute(builder: (_) => StatisticsView()),

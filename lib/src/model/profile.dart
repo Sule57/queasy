@@ -50,6 +50,7 @@ class Profile {
   String? birthdayMonth;
   int? birthdayDay;
   String? uid;
+  late bool private = false;
   // it must be late so
   late var firestore = FirebaseFirestore.instance;
   //In the database publicScore and private score are stored as collections
@@ -65,7 +66,7 @@ class Profile {
     this.age = 0,
     this.birthdayMonth = '',
     this.birthdayDay = 0,
-  }){
+  }) {
     uid = getCurrentUserID();
   }
 
@@ -80,8 +81,9 @@ class Profile {
     this.birthdayMonth = '',
     this.birthdayDay = 0,
     required this.firestore,
-  }){
-    uid = "mockedyou123456";
+    this.private = true,
+  }) {
+    uid = "mockedyouu";
   }
 
   ///This constructor is used only for unit tests
@@ -107,6 +109,8 @@ class Profile {
         profilePicture = json['profilePicture'],
         bio = json['bio'],
         age = json['age'],
+        birthdayMonth = json['birthdayMonth'],
+        birthdayDay = json['birthdayDay'],
         privatecScore = json['privateScore'],
         publicScore = json['scores'];
 
@@ -149,7 +153,11 @@ class Profile {
       // create the document for categories created by the user
       print(uid);
       print(getCurrentUserID());
-      await this.firestore.collection('categories').doc(getCurrentUserID()).set({});
+      await this
+          .firestore
+          .collection('categories')
+          .doc(getCurrentUserID())
+          .set({});
 
       await firestore
           .collection('users')
@@ -203,13 +211,27 @@ class Profile {
   }
 
   /// Increment the score of the user in the firebase by the score achieved in the current quiz.
-  Future<void> updateScore(String category, int score) async {
+  Future<void> updateScore(String category, int score, bool is_public) async {
+    if (await getCurrentUserID() == null ||
+        await getCurrentUserUsername() == null) {
+      throw UserNotLoggedInException();
+    }
+
     final firebaseFirestore = FirebaseFirestore.instance;
     await firebaseFirestore.collection('users').doc(getCurrentUserID()).update({
       'scores.$category': FieldValue.increment(score),
     });
     //TODO
-    // Leaderboard().updateCurrentUserPoints(score);
+
+    Leaderboard leaderboard;
+    if (is_public) {
+      leaderboard = await Leaderboard.createPublic(
+          category, (await getCurrentUserUsername())!);
+    } else {
+      leaderboard = await Leaderboard.createPrivate(
+          category, (await getCurrentUserUsername())!);
+    }
+    leaderboard.updateCurrentUserPoints(score);
   }
 
   //START OF METHODS FOR PROFILE VIEW
@@ -221,8 +243,9 @@ class Profile {
     try {
       firestore
           .collection('users')
-          .doc(getCurrentUserID())
+          .doc(private ? uid : getCurrentUserID())
           .update({'username': newUsername});
+
       return true;
     } catch (e) {
       return false;
@@ -238,8 +261,9 @@ class Profile {
     try {
       firestore
           .collection('users')
-          .doc(getCurrentUserID())
+          .doc(private ? uid : getCurrentUserID())
           .update({'bio': newBio});
+
       return true;
     } catch (e) {
       return false;
@@ -256,8 +280,9 @@ class Profile {
     try {
       firestore
           .collection('users')
-          .doc(getCurrentUserID())
+          .doc(private ? uid : getCurrentUserID())
           .update({'firstName': newFirstName, 'lastName': newLastName});
+
       return true;
     } catch (e) {
       return false;
@@ -274,25 +299,9 @@ class Profile {
     try {
       firestore
           .collection('users')
-          .doc(getCurrentUserID())
+          .doc(private ? uid : getCurrentUserID())
           .update({'birthdayMonth': newMonth, 'birthdayDay': newDay});
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
 
-  ///updates the Profile Picture of the user in the Firebase Database
-  ///@param [username] - the current username of the user
-  ///@param [newPic] - the new picture
-  ///@return true - picture was updated successfully
-  ///@return false - picture couldn't be updated
-  bool updatePicture(String newPic) {
-    try {
-      firestore
-          .collection('users')
-          .doc(getCurrentUserID())
-          .update({'profilePicture': newPic});
       return true;
     } catch (e) {
       return false;

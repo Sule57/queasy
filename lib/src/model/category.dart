@@ -114,6 +114,35 @@ class Category {
       });
     });
 
+    if (this.firestore == null){
+      this.firestore = FirebaseFirestore.instance;
+    }
+
+    var newDocumentRef = this.firestore!.collection('leaderboard').doc(username + '-' + newName);
+    // iterate over the leaderboard in the Firestore, and copy all the record to the new leaderboard with the new name
+    await this.firestore!.collection('leaderboard').doc(username + '-' + this._name).get().then((DocumentSnapshot documentSnapshot) {
+      if (documentSnapshot.exists) {
+        Map<String, dynamic> data = documentSnapshot.data() as Map<String, dynamic>;
+
+        for (String key in data.keys) {
+          newDocumentRef.update(data[key]);
+        }
+      }
+    });
+    await this.firestore!.collection('leaderboard').doc(username + '-' + this._name).delete();
+
+    // iterate over quizzes collection, find all documents which have the attribute 'category' which equals to _name and change it to newName
+    await this.firestore!.collection('quizzes').get().then((QuerySnapshot querySnapshot) {
+      querySnapshot.docs.forEach((doc) {
+        if(doc.exists){
+          if ((doc.data()! as Map<String, dynamic>)['category'] == this._name) {
+            doc.reference.update({'category': newName});
+          }
+        }
+
+      });
+    });
+
     // iterate through all questions in the category and delete them
     await _privateDoc.collection(_name).get().then((snapshot) {
       for (DocumentSnapshot ds in snapshot.docs) {
@@ -268,10 +297,10 @@ class Category {
 
     // create a variable newID from 'question' + count
     String newID;
-    print(question.questionId);
+    //print(question.questionId);
     newID = await getNextID();
     question.questionId = newID;
-    print(newID);
+    //print(newID);
     await firestore
         ?.collection('categories')
         .doc(UID)

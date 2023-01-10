@@ -8,17 +8,15 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:queasy/src/model/category_repo.dart';
-import 'package:queasy/src/view/play_quiz/quiz_view.dart';
 import '../../constants/theme_provider.dart';
-import 'edit_quiz/quiz_edit_view.dart';
+import 'edit_quiz/edit_quiz_view.dart';
 
-// TODO: update comments
-/// View for selecting a private quiz.
+/// View for selecting a private category.
 ///
-/// This view is used to select a private quiz. It displays a progress
-/// indicator while the quizzes are being loaded from the database. When the
-/// quizzes are loaded, it displays a list of private quizzes and when a quiz
-/// is selected, it navigates to [QuizView] with the selected category as a
+/// This view is used to select a private category. It displays a progress
+/// indicator while the categories are being loaded from the database. When the
+/// categories are loaded, it displays a list of private categories and when a category
+/// is selected, it navigates to [EditQuizView] with the selected category as a
 /// parameter.
 class PrivateCategorySelectionView extends StatefulWidget {
   PrivateCategorySelectionView({Key? key}) : super(key: key);
@@ -40,17 +38,6 @@ class _PrivateCategorySelectionViewState
     extends State<PrivateCategorySelectionView> {
   late List<String> list;
   bool _isLoading = true;
-
-  // List<String> list = [
-  //   'Category 1',
-  //   'Category 2',
-  //   'Category 3',
-  //   'Category 4',
-  //   'Category 5',
-  //   'Category 6',
-  //   'Category 7',
-  //   'Category 8',
-  // ];
 
   /// Called when the view is build for the first time, it initializes the
   /// [list] calling the database and sets [_isLoading] to false once the
@@ -78,12 +65,11 @@ class _PrivateCategorySelectionViewState
   /// the database.
   /// Once the categories are loaded, it displays a [ListView] with buttons for
   /// the list of categories returned from the database. When a category is
-  /// selected, it navigates to [QuizView] with the selected category as a
+  /// selected, it navigates to [EditQuizView] with the selected category as a
   /// parameter.
   @override
   Widget build(BuildContext context) {
     late Widget ListWidget;
-
     if (_isLoading) {
       return const Center(child: CircularProgressIndicator());
     } else {
@@ -160,6 +146,7 @@ class _PrivateCategorySelectionViewState
   }
 }
 
+/// This widget is used to display an [AlertDialog] to add a new category.
 class NewCategoryPopUp extends StatefulWidget {
   const NewCategoryPopUp({
     Key? key,
@@ -224,14 +211,16 @@ class _NewCategoryPopUpState extends State<NewCategoryPopUp> {
                 if (newCategoryController.text.trim().isEmpty) {
                   // Show an alert dialog to inform the user that the category
                   // name cannot be empty
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return const AlertDialog(
-                        title: Text('Category name cannot be empty'),
-                      );
-                    },
-                  );
+                  Future.delayed(Duration.zero, () {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return const AlertDialog(
+                          title: Text('Category name cannot be empty'),
+                        );
+                      },
+                    );
+                  });
                 } else {
                   // Add the new category to the database
                   await CategoryRepo()
@@ -263,6 +252,10 @@ class _NewCategoryPopUpState extends State<NewCategoryPopUp> {
   }
 }
 
+/// This widget shows a [Container] with a [Text] widget that says that the user
+/// has no private categories yet.
+///
+/// It is called when no private categories are found in the database.
 class CategoryListEmpty extends StatelessWidget {
   const CategoryListEmpty({Key? key}) : super(key: key);
 
@@ -289,6 +282,12 @@ class CategoryListEmpty extends StatelessWidget {
   }
 }
 
+/// This widget is used to display a [ListView] with all the private categories
+/// of the user.
+///
+/// It is called when private categories are found in the database.
+///
+/// The variable [list] is the list of private categories.
 class CategoryList extends StatefulWidget {
   List<String> list;
 
@@ -326,7 +325,7 @@ class _CategoryListState extends State<CategoryList> {
                   context,
                   MaterialPageRoute(
                       builder: (context) =>
-                          QuizEditView(categoryName: categoryName)));
+                          EditQuizView(categoryName: categoryName)));
             },
             child: Text(
               categoryName,
