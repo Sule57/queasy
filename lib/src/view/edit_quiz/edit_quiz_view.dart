@@ -1,48 +1,58 @@
+/// ****************************************************************************
+/// Created by Sophia Soares
+///
+/// This file is part of the project "Qeasy"
+/// Software Project on Technische Hochschule Ulm
+/// ****************************************************************************
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:queasy/src/view/edit_quiz/quiz_edit_provider.dart';
 import 'package:queasy/src/view/edit_quiz/widgets/question_list_tile.dart';
 import 'package:queasy/src/view/widgets/rounded-button.dart';
 import 'package:queasy/src/model/category.dart';
 import 'package:queasy/src/model/category_repo.dart';
 import '../../model/question.dart';
-
-/// This is the quiz edit view.
-///
-/// It is the view that the user uses to see their questions from a specific
-/// category and edit them. It shows a [ListView] with questions and a button
-/// to add a new question.
+import 'edit_quiz_provider.dart';
 
 /// The enum [AnswersRadioButton] is used to determine which radio button is selected when the user
 /// wants to add a question. It refers to the correct answer out of the options.
 enum AnswersRadioButton { ans1, ans2, ans3, ans4 }
 
-/// The widget [QuizEditView] is the main widget of the quiz edit view.
+/// This is the edit quiz view.
+///
+/// It is the view that the user uses to see their questions from a specific
+/// category and edit them. It shows a [ListView] with questions, a button
+/// to add a new question, a button to delete the category and a button to
+/// create a quiz with random questions.
+///
+/// The variable [categoryName] is the name of the category that the user is currently in.
+///
+/// The variable [_category] is the category that the user is currently in.
 ///
 /// The variable [_questions] is a list that stores the questions of the category.
+///
+/// The variable [controller] is the provider of the class.
+///
 /// The variable [_isLoading] is a boolean that is used to determine if the view is loading or not.
-class QuizEditView extends StatefulWidget {
-  String categoryName;
+class EditQuizView extends StatefulWidget {
+  final String categoryName;
 
-  QuizEditView({Key? key, required this.categoryName}) : super(key: key);
+  EditQuizView({Key? key, required this.categoryName}) : super(key: key);
 
   @override
-  State<QuizEditView> createState() => _QuizEditViewState();
+  State<EditQuizView> createState() => _EditQuizViewState();
 }
 
-class _QuizEditViewState extends State<QuizEditView> {
+class _EditQuizViewState extends State<EditQuizView> {
   get categoryName => widget.categoryName;
   late Category _category;
   late List<Question> _questions;
   late EditQuizProvider controller;
   bool _isLoading = true;
 
-  //late AnswersRadioButton selectedRadioAnswer;
-  //AnswersRadioButton selectedRadioAnswer = AnswersRadioButton.ans1;
-
   @override
   void didChangeDependencies() {
-    controller = Provider.of<EditQuizProvider>(context, listen: false);
+    controller = Provider.of<EditQuizProvider>(context, listen: true);
     controller.questionController = TextEditingController();
     controller.answer1Controller = TextEditingController();
     controller.answer2Controller = TextEditingController();
@@ -63,16 +73,11 @@ class _QuizEditViewState extends State<QuizEditView> {
     super.dispose();
   }
 
-  /// The variable [_isLoading] is used to determine if the view is loading or not. When the async methods
-  /// are done loading, the view is not loading anymore.
-  ///
-  /// The variable [_questions] is a list that stores the questions of the category.
-  ///
-  /// The variable [_category] is a category object that stores the category of the questions.
   init() async {
     _isLoading = true;
     _category = await CategoryRepo().getCategory(categoryName);
     _questions = await _category.getAllQuestions();
+    controller.category = _category;
     setState(() {
       _isLoading = false;
     });
@@ -86,8 +91,8 @@ class _QuizEditViewState extends State<QuizEditView> {
 
   @override
   Widget build(BuildContext context) {
-    EditQuizProvider controller = Provider.of<EditQuizProvider>(context, listen: false);
-    Size size = MediaQuery.of(context).size;
+    EditQuizProvider controller =
+        Provider.of<EditQuizProvider>(context, listen: true);
     late Widget ListWidget;
 
     if (_isLoading) {
@@ -104,7 +109,8 @@ class _QuizEditViewState extends State<QuizEditView> {
         appBar: AppBar(
           title: Text(
             _category.getName(), // Show the category name
-            style: Theme.of(context).textTheme.headline4,
+            style:
+                Theme.of(context).textTheme.headline3?.copyWith(fontSize: 22),
           ),
           elevation: 0.0,
           backgroundColor: Colors.transparent,
@@ -119,7 +125,7 @@ class _QuizEditViewState extends State<QuizEditView> {
             IconButton(
               icon: Icon(Icons.add_circle,
                   color: Theme.of(context).colorScheme.primary),
-              onPressed: () => controller.addQuestion(context, controller.selectedRadioAnswer),
+              onPressed: () => controller.addQuestion(context),
             ),
           ],
         ),
@@ -130,14 +136,7 @@ class _QuizEditViewState extends State<QuizEditView> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 ListWidget,
-                RoundedButton(
-                  buttonName: 'Delete Category',
-                  backgroundColor: Theme.of(context).colorScheme.secondary,
-                  width: size.width * 0.7,
-                  height: size.height * 0.06,
-                  fontSize: 17,
-                  onPressed: () => controller.deleteCategory(context),
-                ),
+                CreateAndDeleteButtons(controller: controller),
               ],
             ),
           ),
@@ -169,7 +168,7 @@ class _QuestionListState extends State<QuestionList> {
 
   @override
   Widget build(BuildContext context) {
-    //EditQuizProvider controller = Provider.of<EditQuizProvider>(context, listen: false);
+    //EditQuizProvider controller = Provider.of<EditQuizProvider>(context, listen: true);
     return Expanded(
       child: Padding(
         padding: const EdgeInsets.only(top: 6.0, bottom: 8.0),
@@ -188,15 +187,15 @@ class _QuestionListState extends State<QuestionList> {
                 ),
                 child: ExpansionTile(
                   title: Text(
-                    //questions[index],
-                    questions[index].text,
-                    style: Theme.of(context).textTheme.bodyText1?.copyWith(fontSize: 15)
-                  ),
+                      //questions[index],
+                      questions[index].text,
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyText1
+                          ?.copyWith(fontSize: 15)),
                   children: <Widget>[
                     QuestionListTile(
-                      isContainerVisible: true,
-                      question: questions[index]
-                    ),
+                        isContainerVisible: true, question: questions[index]),
                   ],
                 ),
               ),
@@ -226,6 +225,48 @@ class QuestionListEmpty extends StatelessWidget {
               fontSize: 18,
             ),
           ),
+        ),
+      ],
+    );
+  }
+}
+
+class CreateAndDeleteButtons extends StatelessWidget {
+  final EditQuizProvider controller;
+
+  CreateAndDeleteButtons({Key? key, required this.controller})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+    return Column(
+      children: [
+        RoundedButton(
+            buttonName: 'Create a random quiz',
+            backgroundColor: Theme.of(context).colorScheme.tertiary,
+            width: size.width * 0.7,
+            height: size.height * 0.06,
+            fontSize: 17,
+            onPressed: () {
+              bool success = controller.createRandomQuiz();
+              if (success) {
+                final snackBar = SnackBar(
+                    content: const Text(
+                        'Not implemented yet, be patient')); // TODO: change text
+                Future.delayed(Duration.zero, () {
+                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                });
+              }
+            }),
+        SizedBox(height: 4),
+        RoundedButton(
+          buttonName: 'Delete category',
+          backgroundColor: Theme.of(context).colorScheme.secondary,
+          width: size.width * 0.7,
+          height: size.height * 0.06,
+          fontSize: 17,
+          onPressed: () => controller.deleteCategory(context),
         ),
       ],
     );

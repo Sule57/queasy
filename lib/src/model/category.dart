@@ -297,10 +297,10 @@ class Category {
 
     // create a variable newID from 'question' + count
     String newID;
-    print(question.questionId);
+    //print(question.questionId);
     newID = await getNextID();
     question.questionId = newID;
-    print(newID);
+    //print(newID);
     await firestore
         ?.collection('categories')
         .doc(UID)
