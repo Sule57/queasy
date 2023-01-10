@@ -38,6 +38,10 @@ class Quiz {
   /// isPublic represents whether the quiz is public or private.
   late bool isPublic;
 
+  void setUsedQuestions(List<String> usedQuestions) {
+    this._usedQuestions = usedQuestions;
+  }
+
   /// A getter for the list of questions.
   get questions => _questions;
 
@@ -336,5 +340,23 @@ class Quiz {
       _questions.add(tempQuestion);
     }
     return this;
+  }
+
+  Future<void> updateQuiz() async{
+    /// Check if the document with this.id exists in the firebase
+    await firestore?.collection('quizzes').doc(id).get().then((DocumentSnapshot documentSnapshot) {
+      if (!documentSnapshot.exists) {
+        print("Document does not exist in the database");
+        return;
+      }
+    });
+
+    await this.firestore?.collection('quizzes').doc(this.id).update({
+      'id': id,
+      'name': name,
+      'creatorID': UID,
+      'category': category.name,
+      'questionIds': _usedQuestions,
+    });
   }
 }
