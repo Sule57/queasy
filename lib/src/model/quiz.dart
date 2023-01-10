@@ -6,7 +6,7 @@ import 'package:queasy/src/model/question.dart';
 import '../../utils/exceptions.dart';
 
 /// The Quiz class is responsible for being an instance of a quiz and also,
-/// for filling the quiz with questionswhether it is a private or a public quiz.
+/// for filling the quiz with questions whether it is a private or a public quiz.
 /// This is done by using either the[getRandomQuestions] or the
 /// [retrieveQuizFromId] methods.
 
@@ -68,20 +68,11 @@ class Quiz {
   /// In case of an already existing quiz we call Quiz.retrieveQuizFromId(id)
   /// and in the case of a new quiz we call Quiz.getRandomQuestions(category,
   /// noOfQuestions, isPublic, name?).
-  Quiz({
-    //required this.id,
-    firestore,
-  }) {
+  Quiz({firestore}) {
+    if (firestore == null){
+      firestore = FirebaseFirestore.instance;
+    }
     category = Category(name: 'default', firestore: firestore);
-    // isPublic = false;
-    if (firestore == null) {
-      UID = getCurrentUserID();
-      this.firestore = FirebaseFirestore.instance;
-    }
-    else {
-      this.firestore = firestore;
-      UID = "test123456789";
-    }
   }
 
   /// Creates a random ID for the quiz by using the [Random] class and the
@@ -141,11 +132,21 @@ class Quiz {
   /// If the quiz isn't public a unique ID will be assigned to the quiz by using
   /// the [assignUniqueID] method.
   Future<Quiz> getRandomQuestions({required Category category,
-    required int noOfQuestions, required bool isPublic, String? name}) async {
+    required int noOfQuestions, required bool isPublic, String? name,
+    FirebaseFirestore? firestore}) async {
     this.category = category;
     this.noOfQuestions = noOfQuestions;
     this.isPublic = isPublic;
     this.name = name;
+
+    if (firestore == null) {
+      UID = getCurrentUserID();
+      this.firestore = FirebaseFirestore.instance;
+    }
+    else {
+      this.firestore = firestore;
+      UID = "test123456789";
+    }
 
     if (isPublic == false) {
       if (UID == null) {
@@ -209,9 +210,18 @@ class Quiz {
   /// from [Category] class which will retrieve the questions from the firebase
   /// for the amount of times specified by the [noOfQuestions] variable, and the
   /// question IDs stored in the [_usedQuestions] variable.
-  Future<Quiz> retrieveQuizFromId({required String id}) async {
+  Future<Quiz> retrieveQuizFromId({required String id, FirebaseFirestore? firestore}) async {
     print('inside retrieveQuizFromId method. Id: $id');
     this.isPublic = false;
+
+    if (firestore == null) {
+      UID = getCurrentUserID();
+      this.firestore = FirebaseFirestore.instance;
+    }
+    else {
+      this.firestore = firestore;
+      UID = "test123456789";
+    }
 
     await firestore
         ?.collection('quizzes')
@@ -275,5 +285,40 @@ class Quiz {
       }
     });
     return exists;
+  }
+
+  /// Allows the user to create their own custom quiz. It takes 3 mandatory
+  /// parameters: a list of questionIDs [questions], a category [category],
+  /// and a name for the quiz [name].
+  Future<Quiz> createCustomQuiz({required List<String> questions,
+  required Category category, required String name,
+    FirebaseFirestore? firestore}) async {
+    this.isPublic = false;
+    this._usedQuestions = questions;
+    this.category = category;
+    this.name = name;
+    this.noOfQuestions = questions.length;
+
+    if (firestore == null) {
+      UID = getCurrentUserID();
+      this.firestore = FirebaseFirestore.instance;
+    }
+    else {
+      this.firestore = firestore;
+      UID = "test123456789";
+    }
+
+    if (UID == null) {
+      throw UserNotLoggedInException();
+    }
+    this.ownerID = UID;
+    await assignUniqueID();
+
+    for (int i = 0; i < noOfQuestions; i++) {
+      Question tempQuestion =
+      await category.getPrivateQuestion(_usedQuestions[i], ownerID!);
+      _questions.add(tempQuestion);
+    }
+    return this;
   }
 }
