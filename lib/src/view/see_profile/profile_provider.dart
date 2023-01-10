@@ -42,6 +42,19 @@ class ProfileProvider with ChangeNotifier {
     return false;
   }
 
+  Future<bool> updateProfile() async {
+    if (getCurrentUserID() != null) {
+      currentUID = getCurrentUserID()!;
+      Profile? p = await Profile.getProfilefromUID(currentUID);
+      if (p != null) {
+        player = p;
+        notifyListeners();
+        return true;
+      }
+    }
+    return false;
+  }
+
   List<double> getGraphData() {
     List<double> data = [];
     for (var value in player.publicScore.values) {

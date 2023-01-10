@@ -45,7 +45,7 @@ class ProfileMobileState extends State<ProfileViewMobile> {
   ///Text editing controllers to save user input
   TextEditingController firstname = new TextEditingController();
   TextEditingController lastname = new TextEditingController();
-  TextEditingController username = new TextEditingController();
+  // TextEditingController username = new TextEditingController();
   TextEditingController bio = new TextEditingController();
   TextEditingController currentPassword = new TextEditingController();
   TextEditingController newPassword = new TextEditingController();
@@ -85,7 +85,7 @@ class ProfileMobileState extends State<ProfileViewMobile> {
     /// Cleans up the controllers when the widget is disposed.
     firstname.dispose();
     lastname.dispose();
-    username.dispose();
+    // username.dispose();
     bio.dispose();
     currentPassword.dispose();
     newPassword.dispose();
@@ -402,7 +402,7 @@ class ProfileMobileState extends State<ProfileViewMobile> {
                                           ///if clicked clears all the text editing controllers
                                           onPressed: () => {
                                             Navigator.of(context).pop(),
-                                            username.clear(),
+                                            // username.clear(),
                                             firstname.clear(),
                                             lastname.clear(),
                                             bio.clear(),
@@ -431,10 +431,10 @@ class ProfileMobileState extends State<ProfileViewMobile> {
                                             ///it calls different edit methods depending on which text field is not empty
                                             if (formKey.currentState!
                                                 .validate()) {
-                                              if (username.text.isNotEmpty) {
-                                                controller.editUsername(
-                                                    username.text);
-                                              }
+                                              // if (username.text.isNotEmpty) {
+                                              //   controller.editUsername(
+                                              //       username.text);
+                                              // }
                                               if (bio.text.isNotEmpty) {
                                                 controller.editBio(bio.text);
                                               }
@@ -449,14 +449,16 @@ class ProfileMobileState extends State<ProfileViewMobile> {
                                                 controller.editName(
                                                     firstname.text,
                                                     Provider.of<ProfileProvider>(
-                                                            context)
+                                                            context,
+                                                            listen: false)
                                                         .lastName);
                                               }
                                               if (firstname.text.isEmpty &&
                                                   lastname.text.isNotEmpty) {
                                                 controller.editName(
                                                   Provider.of<ProfileProvider>(
-                                                          context)
+                                                          context,
+                                                          listen: false)
                                                       .firstName,
                                                   lastname.text,
                                                 );
@@ -466,14 +468,16 @@ class ProfileMobileState extends State<ProfileViewMobile> {
                                                     currentPassword.text,
                                                     newPassword.text,
                                                     Provider.of<ProfileProvider>(
-                                                            context)
+                                                            context,
+                                                            listen: false)
                                                         .email);
                                               }
                                               ;
                                               if (email.text.isNotEmpty) {
                                                 controller.editEmail(
                                                     Provider.of<ProfileProvider>(
-                                                            context)
+                                                            context,
+                                                            listen: false)
                                                         .email,
                                                     email.text,
                                                     currentPassword.text);
@@ -507,8 +511,12 @@ class ProfileMobileState extends State<ProfileViewMobile> {
                                                 lastname.clear();
                                                 firstname.clear();
                                                 bio.clear();
-                                                username.clear();
+                                                // username.clear();
                                                 email.clear();
+                                                Provider.of<ProfileProvider>(
+                                                        context,
+                                                        listen: false)
+                                                    .updateProfile();
                                               }
                                             }
                                           },
@@ -560,10 +568,10 @@ class ProfileMobileState extends State<ProfileViewMobile> {
                                                         style: TextStyle(
                                                             color:
                                                                 Colors.white)),
-                                                    Text("Username",
-                                                        style: TextStyle(
-                                                            color:
-                                                                Colors.white)),
+                                                    // Text("Username",
+                                                    //     style: TextStyle(
+                                                    //         color:
+                                                    //             Colors.white)),
                                                     Text("Bio",
                                                         style: TextStyle(
                                                             color:
@@ -663,38 +671,38 @@ class ProfileMobileState extends State<ProfileViewMobile> {
                                                     ),
 
                                                     ///[Container] which includes [TextFormField] for username
-                                                    Container(
-                                                      height: 30,
-                                                      width:
-                                                          MediaQuery.of(context)
-                                                                  .size
-                                                                  .width /
-                                                              3,
-                                                      child: TextFormField(
-                                                        controller: username,
-                                                        decoration:
-                                                            InputDecoration(
-                                                          contentPadding:
-                                                              EdgeInsets.only(
-                                                                  bottom: 15,
-                                                                  left: 20),
-                                                          filled: true,
-                                                          fillColor:
-                                                              Colors.white,
-                                                          border:
-                                                              UnderlineInputBorder(
-                                                            borderSide:
-                                                                BorderSide(
-                                                                    color: Colors
-                                                                        .white),
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        25.7),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
+                                                    // Container(
+                                                    //   height: 30,
+                                                    //   width:
+                                                    //       MediaQuery.of(context)
+                                                    //               .size
+                                                    //               .width /
+                                                    //           3,
+                                                    //   child: TextFormField(
+                                                    //     controller: username,
+                                                    //     decoration:
+                                                    //         InputDecoration(
+                                                    //       contentPadding:
+                                                    //           EdgeInsets.only(
+                                                    //               bottom: 15,
+                                                    //               left: 20),
+                                                    //       filled: true,
+                                                    //       fillColor:
+                                                    //           Colors.white,
+                                                    //       border:
+                                                    //           UnderlineInputBorder(
+                                                    //         borderSide:
+                                                    //             BorderSide(
+                                                    //                 color: Colors
+                                                    //                     .white),
+                                                    //         borderRadius:
+                                                    //             BorderRadius
+                                                    //                 .circular(
+                                                    //                     25.7),
+                                                    //       ),
+                                                    //     ),
+                                                    //   ),
+                                                    // ),
 
                                                     ///[Container] which includes [TextFormField] for bio
                                                     Container(
