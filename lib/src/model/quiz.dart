@@ -42,8 +42,8 @@ class Quiz {
   get questions => _questions;
 
   /// This is the createFromID constructor of the class, it will create an empty
-  /// quiz for it to be filled either with [getRandomQuestions] or with
-  /// [retrieveQuizFromId] functions. It takes one optional
+  /// quiz for it to be filled either with [getRandomQuestions],
+  /// [retrieveQuizFromId], or [createCustomQuiz] functions. It takes one optional
   /// parameter [firestore] which allows the programmer to pass the mocked
   /// firebase instance when testing.
   ///
@@ -64,10 +64,6 @@ class Quiz {
   /// The way to use this constructor when creating a quiz is calling it with
   /// Quiz() and then putting a function inside depending if we are accessing
   /// an already existing quiz or creating a new one.
-  ///
-  /// In case of an already existing quiz we call Quiz.retrieveQuizFromId(id)
-  /// and in the case of a new quiz we call Quiz.getRandomQuestions(category,
-  /// noOfQuestions, isPublic, name?).
   Quiz({firestore}) {
     if (firestore == null){
       firestore = FirebaseFirestore.instance;
@@ -117,7 +113,15 @@ class Quiz {
   }
 
   /// Fills the quiz with random questions from the specified [category] and
-  /// the [noOfQuestions] parameter.
+  /// the [noOfQuestions] parameter. It also requires passing the [isPublic]
+  /// parameter so it's clear if the quiz is supposed to be public or private.
+  ///
+  /// Besides these the function also takes the optional [name] parameter that
+  /// will add a name to the quiz, though this should be passed only if the quiz
+  /// is private, and another optional [firestore] parameter that will if passed
+  /// make the code assume the developer is in testing and connect to the given
+  /// instance, if it's not passed a default instance of Firebase Firestore will
+  /// be used.
   ///
   /// This method is an asynchronous method that will retrieve an amount of
   /// questions equal to the [noOfQuestions] parameter from the firebase and
@@ -210,6 +214,11 @@ class Quiz {
   /// from [Category] class which will retrieve the questions from the firebase
   /// for the amount of times specified by the [noOfQuestions] variable, and the
   /// question IDs stored in the [_usedQuestions] variable.
+  ///
+  /// The function also takes an optional [firestore] parameter that will if passed
+  /// make the code assume the developer is in testing and connect to the given
+  /// instance, if it's not passed a default instance of Firebase Firestore will
+  /// be used.
   Future<Quiz> retrieveQuizFromId({required String id, FirebaseFirestore? firestore}) async {
     print('inside retrieveQuizFromId method. Id: $id');
     this.isPublic = false;
@@ -290,6 +299,13 @@ class Quiz {
   /// Allows the user to create their own custom quiz. It takes 3 mandatory
   /// parameters: a list of questionIDs [questions], a category [category],
   /// and a name for the quiz [name].
+  ///
+  /// It also takes an optional parameter [firestore] which is the firestore
+  /// instance that will be used to retrieve the data from the firebase.
+  /// If the [firestore] parameter is null, the method will use the default
+  /// firestore instance. If it is not null, it will assume the user is in testing
+  /// and fill some of the variables with test data and use the given firestore
+  /// instance.
   Future<Quiz> createCustomQuiz({required List<String> questions,
   required Category category, required String name,
     FirebaseFirestore? firestore}) async {
