@@ -113,7 +113,7 @@ void main() async {
   /// Initializes the test constructor for the [Quiz] class with the category
   /// 'geography', the number of questions 5, the isPublic flag set to
   /// true and the name 'testQuiz'.
-  Quiz quiz = await Quiz(firestore: instance).getRandomQuestions(category: category, noOfQuestions: 5, isPublic: true, name: 'testQuiz');
+  Quiz quiz = await Quiz(firestore: instance).getRandomQuestions(category: category, noOfQuestions: 5, isPublic: true, name: 'testQuiz', firestore: instance);
 
   _questions = quiz.questions;
 
@@ -169,7 +169,7 @@ void main() async {
   /// Creates a new instance of Quiz using the retrieveQuiz method, in theory
   /// this method should take the ID of the quiz and retrieve it from the
   /// database. (This will be tested in the next test group).
-  Quiz quiz2 = await Quiz(firestore: instance).retrieveQuizFromId(id: 'quiz123');
+  Quiz quiz2 = await Quiz(firestore: instance).retrieveQuizFromId(id: 'quiz123', firestore: instance) ;
   _questions2 = quiz2.questions;
   quiz.storeQuiz();
 
