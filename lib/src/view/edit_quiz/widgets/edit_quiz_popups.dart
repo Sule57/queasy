@@ -1,10 +1,17 @@
+/// ****************************************************************************
+/// Created by Sophia Soares
+///
+/// This file is part of the project "Qeasy"
+/// Software Project on Technische Hochschule Ulm
+/// ****************************************************************************
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../src.dart';
 import '../../private_category_selection_view.dart';
-import '../quiz_edit_provider.dart';
-import '../quiz_edit_view.dart';
-import 'edit_quiz_text_fields.dart';
+import '../edit_quiz_provider.dart';
+import '../edit_quiz_view.dart';
+import 'edit_quiz_text_field.dart';
 
 /// The widget [AddOrEditQuestionPopUp] shows an [AlertDialog] with a form to add or edit a new question.
 ///
@@ -19,6 +26,8 @@ import 'edit_quiz_text_fields.dart';
 /// The [action] variable is the function that is going to be called when the user
 /// confirms the addition or edition of the question.
 ///
+/// The variable [categoryName] is the name of the category that the user is currently in.
+///
 /// The [_formKey] is used to validate the form.
 ///
 /// The [_selectedRadioAnswer] is the index of the correct answer.
@@ -27,9 +36,6 @@ import 'edit_quiz_text_fields.dart';
 ///
 /// The [MAX_LENGTH] is the maximum number of characters that can be entered in the
 /// [TextFormField]s.
-///
-/// [StatefulBuilder] is used to rebuild the widget when the user
-/// selects a radio button for the correct answer.
 class AddOrEditQuestionPopUp extends StatefulWidget {
   Function() action;
   Question? question;
@@ -53,11 +59,15 @@ class _AddOrEditQuestionPopUpState extends State<AddOrEditQuestionPopUp> {
   get question => widget.question;
   get categoryName => widget.categoryName;
 
-  // TODO: when editing a question, the radio buttons should show the correct answer
-
   @override
   Widget build(BuildContext context) {
-    EditQuizProvider controller = Provider.of<EditQuizProvider>(context, listen: false);
+    EditQuizProvider controller = Provider.of<EditQuizProvider>(context, listen: true);
+    // If the question is not null, the user wants to edit a question, and the popup should
+    // show the "old" correct answer as selected when the popup opens
+    if (question != null) {
+      controller.selectedRadioAnswer = controller.getCorrectRadioAnswer(question);
+    }
+
     return AlertDialog(
       scrollable: true,
       insetPadding: EdgeInsets.symmetric(horizontal: 20),
@@ -78,7 +88,7 @@ class _AddOrEditQuestionPopUpState extends State<AddOrEditQuestionPopUp> {
                 children: [
                   Row(
                     children: [
-                      CustomTextField(
+                      EditQuizTextField(
                         controller: controller.questionController,
                         hintText: 'Question',
                         validatorText: 'Please enter a question',
@@ -91,7 +101,7 @@ class _AddOrEditQuestionPopUpState extends State<AddOrEditQuestionPopUp> {
                   Row(
                     //mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      CustomTextField(
+                      EditQuizTextField(
                         controller: controller.answer1Controller,
                         hintText: 'Answer 1',
                         validatorText: 'Please enter an answer',
@@ -101,7 +111,6 @@ class _AddOrEditQuestionPopUpState extends State<AddOrEditQuestionPopUp> {
                       Radio<AnswersRadioButton>(
                           fillColor: MaterialStateProperty.all(Colors.white),
                           value: AnswersRadioButton.ans1,
-                          //question.answer[0].isCorrect : ? ,
                           groupValue: controller.selectedRadioAnswer,
                           onChanged: (AnswersRadioButton? value) {
                             setState(() {
@@ -112,7 +121,7 @@ class _AddOrEditQuestionPopUpState extends State<AddOrEditQuestionPopUp> {
                   ),
                   Row(
                     children: [
-                      CustomTextField(
+                      EditQuizTextField(
                         controller: controller.answer2Controller,
                         hintText: 'Answer 2',
                         validatorText: 'Please enter an answer',
@@ -132,7 +141,7 @@ class _AddOrEditQuestionPopUpState extends State<AddOrEditQuestionPopUp> {
                   ),
                   Row(
                     children: [
-                      CustomTextField(
+                      EditQuizTextField(
                         controller: controller.answer3Controller,
                         hintText: 'Answer 3',
                         validatorText: 'Please enter an answer',
@@ -152,7 +161,7 @@ class _AddOrEditQuestionPopUpState extends State<AddOrEditQuestionPopUp> {
                   ),
                   Row(
                     children: [
-                      CustomTextField(
+                      EditQuizTextField(
                         controller: controller.answer4Controller,
                         hintText: 'Answer 4',
                         validatorText: 'Please enter an answer',
@@ -186,7 +195,7 @@ class _AddOrEditQuestionPopUpState extends State<AddOrEditQuestionPopUp> {
             TextButton(
               onPressed: () {
                 // Clear all text fields
-                clearTextFieldsAndButton(controller);
+                controller.clearTextFieldsAndButton();
                 Navigator.pop(context);
               },
               child: Text('Cancel'),
@@ -210,7 +219,7 @@ class _AddOrEditQuestionPopUpState extends State<AddOrEditQuestionPopUp> {
                 if (_formKey.currentState!.validate()) {
                   // Call the function to add/edit the question to the/in database.
                   widget.action();
-                  clearTextFieldsAndButton(controller);
+                  controller.clearTextFieldsAndButton();
                   Navigator.pop(context);
                 }
               },
@@ -221,16 +230,6 @@ class _AddOrEditQuestionPopUpState extends State<AddOrEditQuestionPopUp> {
     );
   }
 
-  /// This method clears all text fields and resets the radio button.
-  void clearTextFieldsAndButton(controller) {
-    //EditQuizProvider controller = Provider.of<EditQuizProvider>(context, listen: false);
-    controller.questionController.clear();
-    controller.answer1Controller.clear();
-    controller.answer2Controller.clear();
-    controller.answer3Controller.clear();
-    controller.answer4Controller.clear();
-    controller.selectedRadioAnswer = AnswersRadioButton.ans1;
-  }
 }
 
 /// The widget [DeleteQuestionPopUp] shows an [AlertDialog] to confirm the deletion of a question.
@@ -244,7 +243,7 @@ class DeleteQuestionPopUp extends StatelessWidget {
   Widget build(BuildContext context) {
     return AlertDialog(
       title:
-          const Text('Delete Question', style: TextStyle(color: Colors.white)),
+          const Text('Delete question', style: TextStyle(color: Colors.white)),
       content: const Text('Are you sure you want to delete this question?',
           style: TextStyle(color: Colors.white)),
       backgroundColor: Theme.of(context).colorScheme.primary,
@@ -301,7 +300,7 @@ class DeleteCategoryPopUp extends StatelessWidget {
   Widget build(BuildContext context) {
     return AlertDialog(
       title:
-      const Text('Delete Category', style: TextStyle(color: Colors.white)),
+      const Text('Delete category', style: TextStyle(color: Colors.white)),
       content: const Text('Are you sure you want to delete this category?',
           style: TextStyle(color: Colors.white)),
       backgroundColor: Theme.of(context).colorScheme.primary,

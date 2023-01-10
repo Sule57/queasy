@@ -1,10 +1,15 @@
+/// ****************************************************************************
+/// Created by Sophia Soares
+///
+/// This file is part of the project "Qeasy"
+/// Software Project on Technische Hochschule Ulm
+/// ****************************************************************************
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../src.dart';
 import '../../widgets/rounded-button.dart';
-import '../quiz_edit_provider.dart';
-import '../quiz_edit_view.dart';
-import 'edit_quiz_popups.dart';
+import '../edit_quiz_provider.dart';
 
 /// The widget [QuestionListTile] is used to show a question and its answers.
 ///
@@ -18,23 +23,11 @@ class QuestionListTile extends StatefulWidget {
   /// [isContainerVisible] determines the size of the container
   final bool isContainerVisible;
   Question question;
-  // AnswersRadioButton selectedRadioAnswer;
-  // TextEditingController questionController;
-  // TextEditingController answer1Controller;
-  // TextEditingController answer2Controller;
-  // TextEditingController answer3Controller;
-  // TextEditingController answer4Controller;
 
   QuestionListTile({
     Key? key,
     required this.isContainerVisible,
     required this.question,
-    // required this.selectedRadioAnswer,
-    // required this.questionController,
-    // required this.answer1Controller,
-    // required this.answer2Controller,
-    // required this.answer3Controller,
-    // required this.answer4Controller,
   }) : super(key: key);
 
   @override
@@ -43,17 +36,11 @@ class QuestionListTile extends StatefulWidget {
 
 class _QuestionListTileState extends State<QuestionListTile> {
   get isContainerVisible => widget.isContainerVisible;
+
   get question => widget.question;
-  // get selectedRadioAnswer => widget.selectedRadioAnswer;
-  // get questionController => widget.questionController;
-  // get answer1Controller => widget.answer1Controller;
-  // get answer2Controller => widget.answer2Controller;
-  // get answer3Controller => widget.answer3Controller;
-  // get answer4Controller => widget.answer4Controller;
 
   @override
   Widget build(BuildContext context) {
-    EditQuizProvider controller = Provider.of<EditQuizProvider>(context, listen: false);
     bool isMobile = MediaQuery.of(context).size.width < 700;
     return ListTile(
       title: Container(
@@ -88,6 +75,9 @@ class _QuestionListTileState extends State<QuestionListTile> {
   }
 }
 
+/// This widget is used to show the correct answer of a question in green.
+///
+/// The variable [text] is the text of the correct answer.
 class CorrectAnswerContainer extends StatelessWidget {
   String text;
 
@@ -106,25 +96,25 @@ class CorrectAnswerContainer extends StatelessWidget {
       ),
       child: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Text(
-          text,
-          style: TextStyle(fontSize: 15),
-        ),
+        child: Text(text, style: TextStyle(fontSize: 15)),
       ),
     );
   }
 }
 
+/// This widget is used to show the buttons to edit or delete a question on a
+/// mobile device. The buttons are displayed on top of each other.
+///
+/// The variable [question] is the question that is going to be passed to the
+/// methods of the buttons.
 class MobileButtons extends StatelessWidget {
   Question question;
-
   MobileButtons({Key? key, required this.question}) : super(key: key);
-
-  //Question get question => question;
 
   @override
   Widget build(BuildContext context) {
-    EditQuizProvider controller = Provider.of<EditQuizProvider>(context, listen: false);
+    EditQuizProvider controller =
+        Provider.of<EditQuizProvider>(context, listen: true);
     return Column(
       children: [
         RoundedButton(
@@ -154,14 +144,19 @@ class MobileButtons extends StatelessWidget {
   }
 }
 
+/// This widget is used to show the buttons to edit or delete a question on a
+/// desktop device. The buttons are displayed next to each each other.
+///
+/// The variable [question] is the question that is going to be passed to the
+/// methods of the buttons.
 class DesktopButtons extends StatelessWidget {
   Question question;
-
   DesktopButtons({Key? key, required this.question}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    EditQuizProvider controller = Provider.of<EditQuizProvider>(context, listen: false);
+    EditQuizProvider controller =
+        Provider.of<EditQuizProvider>(context, listen: true);
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
@@ -191,4 +186,3 @@ class DesktopButtons extends StatelessWidget {
     );
   }
 }
-
