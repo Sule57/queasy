@@ -144,7 +144,7 @@ class Quiz {
     this.name = name;
 
     if (firestore == null) {
-      UID = getCurrentUserID();
+      UID = await getCurrentUserID();
       this.firestore = FirebaseFirestore.instance;
     }
     else {
@@ -190,7 +190,7 @@ class Quiz {
   /// This method is an asynchronous method that will store the quiz into the
   /// firebase.
   Future<void> storeQuiz() async {
-    await firestore?.collection('quizzes').doc(id).set({
+    await this.firestore?.collection('quizzes').doc(id).set({
       'id': id,
       'name': name,
       'creatorID': ownerID,
@@ -224,15 +224,15 @@ class Quiz {
     this.isPublic = false;
 
     if (firestore == null) {
-      UID = getCurrentUserID();
+      UID = await getCurrentUserID();
       this.firestore = FirebaseFirestore.instance;
     }
     else {
       this.firestore = firestore;
       UID = "test123456789";
     }
-
-    await firestore
+    print('id: ' + id + '');
+    await this.firestore
         ?.collection('quizzes')
         .doc(id)
         .get()
@@ -243,7 +243,7 @@ class Quiz {
         this.name = documentSnapshot['name'];
         this.id = documentSnapshot['id'];
         this.ownerID = documentSnapshot['creatorID'];
-        this.category = new Category(name: documentSnapshot['category']!, firestore: firestore);
+        this.category = new Category(name: documentSnapshot['category']!, firestore: this.firestore);
         // this.categoryName = ;
         this.noOfQuestions = documentSnapshot['questionIds'].length;
 
@@ -316,7 +316,7 @@ class Quiz {
     this.noOfQuestions = questions.length;
 
     if (firestore == null) {
-      UID = getCurrentUserID();
+      UID = await getCurrentUserID();
       this.firestore = FirebaseFirestore.instance;
     }
     else {

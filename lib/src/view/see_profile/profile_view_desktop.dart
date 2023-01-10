@@ -961,8 +961,8 @@ class _ProfileDesktopViewContentState extends State<ProfileDesktopViewContent> {
                                                                         .colorScheme
                                                                         .onSecondary,
                                                                   )),
-                                                              onPressed: () {
-                                                                bool success = controller.deleteAccount(
+                                                              onPressed: () async {
+                                                                bool success = await controller.deleteAccount(
                                                                     emailForDelete
                                                                         .text,
                                                                     passwordForDelete

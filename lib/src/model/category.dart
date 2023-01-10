@@ -327,9 +327,10 @@ class Category {
       categoryName = _name;
     }
 
-    if (UID == null) {
+    if (UID == null || UID == '') {
       throw UserNotLoggedInException();
     }
+    print('getQuestion: id: ' + id + ' UID: ' + UID! + ' categoryName: ' + categoryName);
 
     if (public == false) {
       await firestore
