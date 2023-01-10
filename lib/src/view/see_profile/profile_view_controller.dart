@@ -65,9 +65,9 @@ class ProfileViewController {
 
   ///deletes the account by confirming it via [email] and [password]
   ///and the value is added to the [success] list
-  bool deleteAccount(String email, String password) {
+  Future<bool> deleteAccount(String email, String password) async {
     if (email.isNotEmpty && password.isNotEmpty) {
-      return player.deleteAccount(email, password);
+      return await player.deleteAccount(email, password);
     }
     return false;
   }
