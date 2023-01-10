@@ -7,10 +7,10 @@ class StatisticsProvider with ChangeNotifier {
   late UserStatistics statistics;
   QuizProvider qp;
   late Profile p;
-  late int _numberQuiz;
+  int _numberQuiz = 0;
   late List<int> _resultsCorrect;
   late List<ChartData> _chartData;
-  late int _overallPercentage;
+  int _overallPercentage = 0;
 
   late UserQuizzResult _lastQuiz;
   String _quizzName = "";
