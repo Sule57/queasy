@@ -78,6 +78,7 @@ class _EditQuizViewState extends State<EditQuizView> {
     _category = await CategoryRepo().getCategory(categoryName);
     _questions = await _category.getAllQuestions();
     controller.category = _category;
+    //controller.formKeyAddEditQuestion = GlobalKey<FormState>();
     setState(() {
       _isLoading = false;
     });
@@ -91,8 +92,7 @@ class _EditQuizViewState extends State<EditQuizView> {
 
   @override
   Widget build(BuildContext context) {
-    EditQuizProvider controller =
-        Provider.of<EditQuizProvider>(context, listen: true);
+    EditQuizProvider controller = Provider.of<EditQuizProvider>(context, listen: true);
     late Widget ListWidget;
 
     if (_isLoading) {
@@ -168,7 +168,6 @@ class _QuestionListState extends State<QuestionList> {
 
   @override
   Widget build(BuildContext context) {
-    //EditQuizProvider controller = Provider.of<EditQuizProvider>(context, listen: true);
     return Expanded(
       child: Padding(
         padding: const EdgeInsets.only(top: 6.0, bottom: 8.0),

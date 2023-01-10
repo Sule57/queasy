@@ -37,9 +37,9 @@ import 'edit_quiz_text_field.dart';
 /// The [MAX_LENGTH] is the maximum number of characters that can be entered in the
 /// [TextFormField]s.
 class AddOrEditQuestionPopUp extends StatefulWidget {
-  Function() action;
-  Question? question;
-  String categoryName;
+  final Function() action;
+  final Question? question;
+  final String categoryName;
 
   AddOrEditQuestionPopUp({
     Key? key,
@@ -94,8 +94,10 @@ class _AddOrEditQuestionPopUpState extends State<AddOrEditQuestionPopUp> {
                         validatorText: 'Please enter a question',
                         controllerText: question == null ? '' : question.getText(),
                         question: question,
+                        isQuestion: true,
+                        isLastField: false,
+                        action: widget.action,
                       ),
-                      Text('Correct', style: TextStyle(color: Colors.white)),
                     ],
                   ),
                   Row(
@@ -107,6 +109,9 @@ class _AddOrEditQuestionPopUpState extends State<AddOrEditQuestionPopUp> {
                         validatorText: 'Please enter an answer',
                         controllerText: question == null ? '' : question.answers[0].text,
                         question: question,
+                        isQuestion: false,
+                        isLastField: false,
+                        action: widget.action,
                       ),
                       Radio<AnswersRadioButton>(
                           fillColor: MaterialStateProperty.all(Colors.white),
@@ -127,6 +132,9 @@ class _AddOrEditQuestionPopUpState extends State<AddOrEditQuestionPopUp> {
                         validatorText: 'Please enter an answer',
                         controllerText: question == null ? '' : question.answers[1].text,
                         question: question,
+                        isQuestion: false,
+                        isLastField: false,
+                        action: widget.action,
                       ),
                       Radio<AnswersRadioButton>(
                           fillColor: MaterialStateProperty.all(Colors.white),
@@ -147,6 +155,9 @@ class _AddOrEditQuestionPopUpState extends State<AddOrEditQuestionPopUp> {
                         validatorText: 'Please enter an answer',
                         controllerText: question == null ? '' : question.answers[2].text,
                         question: question,
+                        isQuestion: false,
+                        isLastField: false,
+                        action: widget.action,
                       ),
                       Radio<AnswersRadioButton>(
                           fillColor: MaterialStateProperty.all(Colors.white),
@@ -167,6 +178,9 @@ class _AddOrEditQuestionPopUpState extends State<AddOrEditQuestionPopUp> {
                         validatorText: 'Please enter an answer',
                         controllerText: question == null ? '' : question.answers[3].text,
                         question: question,
+                        isQuestion: false,
+                        isLastField: true,
+                        action: widget.action,
                       ),
                       Radio<AnswersRadioButton>(
                         fillColor: MaterialStateProperty.all(Colors.white),
@@ -235,12 +249,18 @@ class _AddOrEditQuestionPopUpState extends State<AddOrEditQuestionPopUp> {
 /// The widget [DeleteQuestionPopUp] shows an [AlertDialog] to confirm the deletion of a question.
 ///
 /// The variable [question] is the question that is going to be deleted.
-class DeleteQuestionPopUp extends StatelessWidget {
+class DeleteQuestionPopUp extends StatefulWidget {
   DeleteQuestionPopUp({Key? key, required this.question}) : super(key: key);
-  Question question;
+  final Question question;
 
   @override
+  State<DeleteQuestionPopUp> createState() => _DeleteQuestionPopUpState();
+}
+
+class _DeleteQuestionPopUpState extends State<DeleteQuestionPopUp> {
+  @override
   Widget build(BuildContext context) {
+    final EditQuizProvider controller = Provider.of<EditQuizProvider>(context, listen: true);
     return AlertDialog(
       title:
           const Text('Delete question', style: TextStyle(color: Colors.white)),
@@ -266,11 +286,128 @@ class DeleteQuestionPopUp extends StatelessWidget {
               ),
             ),
             TextButton(
-              onPressed: () async {
-                Category cat = await CategoryRepo().getCategory(question.category);
-                await cat.deleteQuestion(question);
-                print('Question deleted');
+              onPressed: () {
+                controller.deleteQuestionFromDatabase(widget.question);
                 Navigator.pop(context);
+              },
+              child: Text('Confirm'),
+              style: TextButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15.0),
+                ),
+                foregroundColor: Theme.of(context).colorScheme.onSecondary,
+                backgroundColor: Theme.of(context).colorScheme.tertiary,
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+/// This widget is used to display an [AlertDialog] to add a new category.
+class NewCategoryPopUp extends StatefulWidget {
+  const NewCategoryPopUp({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  State<NewCategoryPopUp> createState() => _NewCategoryPopUpState();
+}
+
+class _NewCategoryPopUpState extends State<NewCategoryPopUp> {
+  final TextEditingController newCategoryController = TextEditingController();
+
+  @override
+  void dispose() {
+    newCategoryController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final EditQuizProvider controller = Provider.of<EditQuizProvider>(context, listen: true);
+    return AlertDialog(
+      title: const Text(
+        'Add a new category',
+        style: TextStyle(color: Colors.white, fontSize: 16),
+      ),
+      content: TextField(
+        controller: newCategoryController,
+        style: const TextStyle(color: Colors.white),
+        decoration: const InputDecoration(
+          hintText: 'Category name',
+          hintStyle: TextStyle(color: Colors.white),
+          enabledBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: Colors.white),
+          ),
+          focusedBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: Colors.white),
+          ),
+        ),
+        onSubmitted: (value) async {
+            // Check if the entered text is empty of filled with spaces
+            if (newCategoryController.text.trim().isEmpty) {
+              // Show an alert dialog to inform the user that the category
+              // name cannot be empty
+              Future.delayed(Duration.zero, () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return const AlertDialog(
+                      title: Text('Category name cannot be empty'),
+                    );
+                  },
+                );
+              });
+            } else {
+              // Add the new category to the database
+              controller.addCategoryToDatabase(newCategoryController.text);
+              Navigator.pop(context); // Close the alert dialog
+            }
+        },
+      ),
+      backgroundColor: Theme.of(context).colorScheme.primary,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10.0),
+      ),
+      actions: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text('Cancel'),
+              style: TextButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15.0),
+                ),
+                foregroundColor: Theme.of(context).colorScheme.onSecondary,
+                backgroundColor: Theme.of(context).colorScheme.secondary,
+              ),
+            ),
+            TextButton(
+              onPressed: () async {
+                // Check if the entered text is empty of filled with spaces
+                if (newCategoryController.text.trim().isEmpty) {
+                  // Show an alert dialog to inform the user that the category
+                  // name cannot be empty
+                  Future.delayed(Duration.zero, () {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return const AlertDialog(
+                          title: Text('Category name cannot be empty'),
+                        );
+                      },
+                    );
+                  });
+                } else {
+                  // Add the new category to the database
+                  controller.addCategoryToDatabase(newCategoryController.text);
+                  Navigator.pop(context); // Close the alert dialog
+                }
               },
               child: Text('Confirm'),
               style: TextButton.styleFrom(
@@ -292,12 +429,18 @@ class DeleteQuestionPopUp extends StatelessWidget {
 /// The widget [DeleteCategoryPopUp] shows an [AlertDialog] to confirm the deletion of a category.
 ///
 /// The variable [category] is the category that is going to be deleted.
-class DeleteCategoryPopUp extends StatelessWidget {
+class DeleteCategoryPopUp extends StatefulWidget {
   DeleteCategoryPopUp({Key? key, required this.category}) : super(key: key);
-  String category;
+  final String category;
 
   @override
+  State<DeleteCategoryPopUp> createState() => _DeleteCategoryPopUpState();
+}
+
+class _DeleteCategoryPopUpState extends State<DeleteCategoryPopUp> {
+  @override
   Widget build(BuildContext context) {
+    final EditQuizProvider controller = Provider.of<EditQuizProvider>(context, listen: true);
     return AlertDialog(
       title:
       const Text('Delete category', style: TextStyle(color: Colors.white)),
@@ -323,18 +466,12 @@ class DeleteCategoryPopUp extends StatelessWidget {
               ),
             ),
             TextButton(
-              onPressed: () async {
-                await CategoryRepo().deleteCategory(category);
-                print('Category deleted');
+              onPressed: () {
+                controller.deleteCategoryFromDatabase();
                 // Clear the popup
                 Navigator.pop(context);
                 // Go back to the previous page to show the updated list of categories
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => PrivateCategorySelectionView(),
-                  ),
-                );
+                Navigator.pop(context);
               },
               child: Text('Confirm'),
               style: TextButton.styleFrom(

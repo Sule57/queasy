@@ -51,6 +51,9 @@ class EditQuizProvider with ChangeNotifier {
     _selectedRadioAnswer = value;
   }
 
+  GlobalKey<FormState> formKeyAddEditQuestion = GlobalKey<FormState>();
+
+
   /// The method [addQuestion] is used to show a dialog to add a question to the category.
   ///
   /// The variable [context] is used to show the dialog.
@@ -60,51 +63,20 @@ class EditQuizProvider with ChangeNotifier {
           context: context,
           builder: (BuildContext context) {
             return AddOrEditQuestionPopUp(
-              categoryName: _category.getName(),
+              categoryName: category.getName(),
               action: () {
-                addQuestionToDatabase(_category);
+                addQuestionToDatabase();
               },
             );
           });
     });
-    notifyListeners();
-  }
-
-  /// The method [deleteCategory] is used to show a dialog to delete a category from the database.
-  ///
-  /// The variable [context] is used to show the dialog.
-  deleteCategory(BuildContext context) {
-    Future.delayed(Duration.zero, () {
-      showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return DeleteCategoryPopUp(category: _category.getName());
-          });
-    });
-    notifyListeners();
-  }
-
-  /// This method [editQuestionOnDatabase] used to edit a question on the database.
-  ///
-  /// The variable [question] is the question that is going to be edited.
-  editQuestionOnDatabase(Question question) async {
-    print(questionController.text);
-    question.setText(questionController.text.toString());
-    question.answers[0].setText(answer1Controller.text);
-    question.answers[1].setText(answer2Controller.text);
-    question.answers[2].setText(answer3Controller.text);
-    question.answers[3].setText(answer4Controller.text);
-    question.setCorrectAnswer(_selectedRadioAnswer.index);
-    await question.updateQuestion();
-    print("Question edited");
-    //notifyListeners();
   }
 
   /// The method [addQuestionToDatabase] is used to add a question to the database.
   ///
   /// The variable [question] is the question that is going to be added.
   /// The variable [category] is the category that the question is going to be added to.
-  addQuestionToDatabase(Category _category) async {
+  addQuestionToDatabase() async {
     Question question = Question(
       text: questionController.text,
       answers: [
@@ -117,26 +89,11 @@ class EditQuizProvider with ChangeNotifier {
         Answer(answer4Controller.text,
             _selectedRadioAnswer.index == 3 ? true : false),
       ],
-      category: _category.getName(),
+      category: category.getName(),
     );
-    await _category.createQuestion(question);
+    await category.createQuestion(question);
     print("Question added");
     //print("Question: $questionController.text]");
-    //notifyListeners();
-  }
-
-  /// The method [deleteQuestion] is used to show a dialog to delete a question from the database.
-  ///
-  /// The variable [context] is used to show the dialog.
-  /// The variable [question] is the question that is going to be deleted.
-  deleteQuestion(BuildContext context, Question question) {
-    Future.delayed(Duration.zero, () {
-      showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return DeleteQuestionPopUp(question: question);
-          });
-    });
     notifyListeners();
   }
 
@@ -151,13 +108,82 @@ class EditQuizProvider with ChangeNotifier {
           builder: (BuildContext context) {
             return AddOrEditQuestionPopUp(
               categoryName: question.category,
+              question: question,
               action: () {
                 editQuestionOnDatabase(question);
               },
-              question: question,
             );
           });
     });
+  }
+
+  /// This method [editQuestionOnDatabase] used to edit a question on the database.
+  ///
+  /// The variable [question] is the question that is going to be edited.
+  editQuestionOnDatabase(Question question) async {
+    question.setText(questionController.text.toString());
+    question.answers[0].setText(answer1Controller.text);
+    question.answers[1].setText(answer2Controller.text);
+    question.answers[2].setText(answer3Controller.text);
+    question.answers[3].setText(answer4Controller.text);
+    question.setCorrectAnswer(_selectedRadioAnswer.index);
+    await question.updateQuestion();
+    print("Question edited");
+    //print("Question: $questionController.text]");
+    notifyListeners();
+  }
+
+  /// The method [deleteQuestion] is used to show a dialog to delete a question from the database.
+  ///
+  /// The variable [context] is used to show the dialog.
+  /// The variable [question] is the question that is going to be deleted.
+  deleteQuestion(BuildContext context, Question question) {
+    Future.delayed(Duration.zero, () {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return DeleteQuestionPopUp(question: question);
+          });
+    });
+    //notifyListeners();
+  }
+
+  /// This method [deleteQuestionFromDatabase] used to delete a question from the database.
+  ///
+  /// The variable [question] is the question that is going to be deleted.
+  deleteQuestionFromDatabase(Question question) async {
+    await category.deleteQuestion(question);
+    print("Question deleted");
+    //print("Question: $questionController.text]");
+    notifyListeners();
+  }
+
+  /// The method [addCategoryToDatabase] creates a new category and adds it to the database.
+  ///
+  /// The variable [name] is the name of the category that is going to be created.
+  addCategoryToDatabase(String name) async {
+    await CategoryRepo().createCategory(name, Colors.blue);
+    print("Category added");
+    notifyListeners();
+  }
+
+  /// The method [deleteCategory] is used to show a dialog to delete a category from the database.
+  ///
+  /// The variable [context] is used to show the dialog.
+  deleteCategory(BuildContext context) {
+    Future.delayed(Duration.zero, () {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return DeleteCategoryPopUp(category: _category.getName());
+          });
+    });
+  }
+
+  /// This method [deleteCategoryFromDatabase] used to delete a category from the database.
+  deleteCategoryFromDatabase() async {
+    await CategoryRepo().deleteCategory(category.getName());
+    print("Category deleted");
     notifyListeners();
   }
 
