@@ -6,7 +6,6 @@
 /// ****************************************************************************
 
 import 'dart:async';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:queasy/main.dart';
 import 'package:queasy/src/model/category.dart';
@@ -232,7 +231,7 @@ class QuizProvider with ChangeNotifier {
     );
     _secondsPassed = 0;
     correctAnswers = 0;
-    _totalQuestions = 0;
+    // _totalQuestions = 0;
   }
 
   /// Edits the current score of the user. Takes [isCorrect] as parameter to
