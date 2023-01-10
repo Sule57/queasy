@@ -429,7 +429,10 @@ class Profile {
         await leaderboard.removeUserFromPublicLeaderboards();
         await leaderboard.removeUserFromAllLeaderboard();
       }
-
+      firestore
+          .collection('UserStatistics')
+          .doc(await getCurrentUserUsername())
+          .delete();
       firestore
           .collection('users')
           .doc(test ? uid : getCurrentUserID())

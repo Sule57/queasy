@@ -232,7 +232,6 @@ class QuizProvider with ChangeNotifier {
     );
     _secondsPassed = 0;
     correctAnswers = 0;
-    _totalQuestions = 0;
   }
 
   /// Edits the current score of the user. Takes [isCorrect] as parameter to
