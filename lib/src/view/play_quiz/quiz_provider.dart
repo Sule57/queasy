@@ -211,8 +211,9 @@ class QuizProvider with ChangeNotifier {
 
         //IMPORTANT YOU CANNOT PLAY 2 QUIZZES AT THE SAME TIME OTHERWISE THIS WILL BREAK !!!
         // YOU CANNOT CALL STATISTICS PROVIDER BEFORE QUIZ PROVIDER !!!
-        _quizzResult =  UserQuizzResult(
-            name, correctAnswers, _totalQuestions, _secondsPassed);;
+        _quizzResult = UserQuizzResult(
+            name, correctAnswers, _totalQuestions, _secondsPassed);
+        ;
         stat.addUserQuizzResult(_quizzResult);
         await stat.saveStatistics();
       }
@@ -221,7 +222,7 @@ class QuizProvider with ChangeNotifier {
       //TODO check this
       await player.updateScore(_quizCategory!, _currentPoints, true);
       print('seconds passed at the end of the quizz: $_secondsPassed');
-    }else{
+    } else {
       await player.updateScore(_quizCategory!, _currentPoints, false);
     }
 
@@ -230,7 +231,8 @@ class QuizProvider with ChangeNotifier {
       MaterialPageRoute(builder: (_) => StatisticsView()),
     );
     _secondsPassed = 0;
-    _currentPoints = 0;
+    correctAnswers = 0;
+    _totalQuestions = 0;
   }
 
   /// Edits the current score of the user. Takes [isCorrect] as parameter to

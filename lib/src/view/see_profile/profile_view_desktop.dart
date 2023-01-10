@@ -1,5 +1,5 @@
 /// ****************************************************************************
-/// Created by Gullu Gasimova
+/// Created by Gullu Gasimova and Endia Clark
 ///
 /// This file is part of the project "Qeasy"
 /// Software Project on Technische Hochschule Ulm
@@ -10,6 +10,8 @@ import 'package:draw_graph/models/feature.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:queasy/constants/app_themes.dart';
+import 'package:queasy/src/view/see_profile/widgets/private_statistics_graph.dart';
+import 'package:queasy/src/view/see_profile/widgets/statistics_graph.dart';
 import 'package:queasy/src/view/see_profile/widgets/theme_button.dart';
 import 'package:queasy/src/view/see_profile/profile_view_controller.dart';
 import 'package:flutter_profile_picture/flutter_profile_picture.dart';
@@ -17,7 +19,9 @@ import 'package:queasy/src/view/widgets/side_navigation.dart';
 
 import '../../../constants/theme_provider.dart';
 import '../registration/register_view.dart';
+import '../statistics/statistics_provider.dart';
 import 'profile_provider.dart';
+import 'widgets/statistics_graph.dart';
 
 ///This is UserProfileDesktop view
 ///It displays web version of the profile page
@@ -134,7 +138,7 @@ class _ProfileDesktopViewContentState extends State<ProfileDesktopViewContent> {
   ///Text editing controllers to save user input
   TextEditingController firstname = new TextEditingController();
   TextEditingController lastname = new TextEditingController();
-  TextEditingController username = new TextEditingController();
+  // TextEditingController username = new TextEditingController();
   TextEditingController bio = new TextEditingController();
   TextEditingController currentPassword = new TextEditingController();
   TextEditingController newPassword = new TextEditingController();
@@ -160,21 +164,15 @@ class _ProfileDesktopViewContentState extends State<ProfileDesktopViewContent> {
   ///[formKeyDelete] used for Form in DeleteAccount button
   final formKeyDelete = GlobalKey<FormState>();
 
-  ///[features] is to store data used for line graph. Scores must be represented as decimals (eg. 3 points = 0.3).
-  final List<Feature> features = [
-    Feature(
-      title: "Public Quizzes",
-      color: purple,
-      data: [0.3, 0.6, 0.8, 0.9, 1, 1.2],
-    ),
-  ];
+  ///[publicStats] is boolean used to toggle between public and private statistics graphs
+  bool publicStats = true;
 
   @override
   void dispose() {
     /// Cleans up the controllers when the widget is disposed.
     firstname.dispose();
     lastname.dispose();
-    username.dispose();
+    // username.dispose();
     bio.dispose();
     currentPassword.dispose();
     newPassword.dispose();
@@ -304,7 +302,8 @@ class _ProfileDesktopViewContentState extends State<ProfileDesktopViewContent> {
                                         bottom: 7,
                                       ),
                                       child: Text(
-                                          "${Provider.of<ProfileProvider>(context).firstName} ${Provider.of<ProfileProvider>(context).lastName}"),
+                                          "${Provider.of<ProfileProvider>(context).firstName} ${Provider.of<ProfileProvider>(context).lastName}",
+                                          style: TextStyle(fontSize: 15)),
                                     ),
 
                                     ///[Container] to show email of the user
@@ -314,7 +313,8 @@ class _ProfileDesktopViewContentState extends State<ProfileDesktopViewContent> {
                                       ),
                                       child: Text(
                                           Provider.of<ProfileProvider>(context)
-                                              .email),
+                                              .email,
+                                          style: TextStyle(fontSize: 15)),
                                     ),
 
                                     ///[ElevatedButton] to enable the user to edit their profile info
@@ -378,8 +378,8 @@ class _ProfileDesktopViewContentState extends State<ProfileDesktopViewContent> {
                                                                   Navigator.of(
                                                                           context)
                                                                       .pop(),
-                                                                  username
-                                                                      .clear(),
+                                                                  // username
+                                                                  //     .clear(),
                                                                   firstname
                                                                       .clear(),
                                                                   lastname
@@ -421,13 +421,13 @@ class _ProfileDesktopViewContentState extends State<ProfileDesktopViewContent> {
                                                                   if (formKey
                                                                       .currentState!
                                                                       .validate()) {
-                                                                    if (username
-                                                                        .text
-                                                                        .isNotEmpty) {
-                                                                      controller
-                                                                          .editUsername(
-                                                                              username.text);
-                                                                    }
+                                                                    // if (username
+                                                                    //     .text
+                                                                    //     .isNotEmpty) {
+                                                                    //   controller
+                                                                    //       .editUsername(
+                                                                    //           username.text);
+                                                                    // }
                                                                     if (bio.text
                                                                         .isNotEmpty) {
                                                                       controller
@@ -455,7 +455,7 @@ class _ProfileDesktopViewContentState extends State<ProfileDesktopViewContent> {
                                                                       controller.editName(
                                                                           firstname
                                                                               .text,
-                                                                          Provider.of<ProfileProvider>(context)
+                                                                          Provider.of<ProfileProvider>(context, listen: false)
                                                                               .lastName);
                                                                     }
                                                                     if (firstname
@@ -466,7 +466,8 @@ class _ProfileDesktopViewContentState extends State<ProfileDesktopViewContent> {
                                                                             .isNotEmpty) {
                                                                       controller
                                                                           .editName(
-                                                                        Provider.of<ProfileProvider>(context)
+                                                                        Provider.of<ProfileProvider>(context,
+                                                                                listen: false)
                                                                             .firstName,
                                                                         lastname
                                                                             .text,
@@ -480,7 +481,7 @@ class _ProfileDesktopViewContentState extends State<ProfileDesktopViewContent> {
                                                                               .text,
                                                                           newPassword
                                                                               .text,
-                                                                          Provider.of<ProfileProvider>(context)
+                                                                          Provider.of<ProfileProvider>(context, listen: false)
                                                                               .email);
                                                                     }
                                                                     ;
@@ -488,7 +489,7 @@ class _ProfileDesktopViewContentState extends State<ProfileDesktopViewContent> {
                                                                         .text
                                                                         .isNotEmpty) {
                                                                       controller.editEmail(
-                                                                          Provider.of<ProfileProvider>(context)
+                                                                          Provider.of<ProfileProvider>(context, listen: false)
                                                                               .email,
                                                                           email
                                                                               .text,
@@ -534,8 +535,8 @@ class _ProfileDesktopViewContentState extends State<ProfileDesktopViewContent> {
                                                                       firstname
                                                                           .clear();
                                                                       bio.clear();
-                                                                      username
-                                                                          .clear();
+                                                                      // username
+                                                                      //     .clear();
                                                                       email
                                                                           .clear();
                                                                     }
@@ -586,10 +587,10 @@ class _ProfileDesktopViewContentState extends State<ProfileDesktopViewContent> {
                                                                           "Last name",
                                                                           style:
                                                                               TextStyle(color: Colors.white)),
-                                                                      Text(
-                                                                          "Username",
-                                                                          style:
-                                                                              TextStyle(color: Colors.white)),
+                                                                      // Text(
+                                                                      //     "Username",
+                                                                      //     style:
+                                                                      //         TextStyle(color: Colors.white)),
                                                                       Text(
                                                                           "Bio",
                                                                           style:
@@ -680,32 +681,32 @@ class _ProfileDesktopViewContentState extends State<ProfileDesktopViewContent> {
                                                                       ),
 
                                                                       ///[Container] which includes [TextFormField] for username
-                                                                      Container(
-                                                                        height:
-                                                                            30,
-                                                                        width:
-                                                                            MediaQuery.of(context).size.width /
-                                                                                3,
-                                                                        child:
-                                                                            TextFormField(
-                                                                          controller:
-                                                                              username,
-                                                                          decoration:
-                                                                              InputDecoration(
-                                                                            contentPadding:
-                                                                                EdgeInsets.only(bottom: 15, left: 20),
-                                                                            filled:
-                                                                                true,
-                                                                            fillColor:
-                                                                                Colors.white,
-                                                                            border:
-                                                                                UnderlineInputBorder(
-                                                                              borderSide: BorderSide(color: Colors.white),
-                                                                              borderRadius: BorderRadius.circular(25.7),
-                                                                            ),
-                                                                          ),
-                                                                        ),
-                                                                      ),
+                                                                      // Container(
+                                                                      //   height:
+                                                                      //       30,
+                                                                      //   width:
+                                                                      //       MediaQuery.of(context).size.width /
+                                                                      //           3,
+                                                                      //   child:
+                                                                      //       TextFormField(
+                                                                      //     controller:
+                                                                      //         username,
+                                                                      //     decoration:
+                                                                      //         InputDecoration(
+                                                                      //       contentPadding:
+                                                                      //           EdgeInsets.only(bottom: 15, left: 20),
+                                                                      //       filled:
+                                                                      //           true,
+                                                                      //       fillColor:
+                                                                      //           Colors.white,
+                                                                      //       border:
+                                                                      //           UnderlineInputBorder(
+                                                                      //         borderSide: BorderSide(color: Colors.white),
+                                                                      //         borderRadius: BorderRadius.circular(25.7),
+                                                                      //       ),
+                                                                      //     ),
+                                                                      //   ),
+                                                                      // ),
 
                                                                       ///[Container] which includes [TextFormField] for bio
                                                                       Container(
@@ -961,8 +962,8 @@ class _ProfileDesktopViewContentState extends State<ProfileDesktopViewContent> {
                                                                         .colorScheme
                                                                         .onSecondary,
                                                                   )),
-                                                              onPressed: () {
-                                                                bool success = controller.deleteAccount(
+                                                              onPressed: () async {
+                                                                bool success = await controller.deleteAccount(
                                                                     emailForDelete
                                                                         .text,
                                                                     passwordForDelete
@@ -1208,13 +1209,15 @@ class _ProfileDesktopViewContentState extends State<ProfileDesktopViewContent> {
                                 children: [
                                   Padding(
                                     padding: EdgeInsets.all(7),
-                                    child: Text("Bio"),
+                                    child: Text("Bio",
+                                        style: TextStyle(fontSize: 20)),
                                   ),
                                   Padding(
                                       padding: EdgeInsets.all(7),
                                       child: Text(
                                           Provider.of<ProfileProvider>(context)
-                                              .bio))
+                                              .bio,
+                                          style: TextStyle(fontSize: 15)))
                                 ],
                               ),
                             ),
@@ -1260,7 +1263,8 @@ class _ProfileDesktopViewContentState extends State<ProfileDesktopViewContent> {
                                 children: [
                                   Padding(
                                       padding: EdgeInsets.all(7),
-                                      child: Text("Personal Statistics")),
+                                      child: Text("Personal Statistics",
+                                          style: TextStyle(fontSize: 20))),
                                   Padding(
                                       padding: EdgeInsets.all(7),
                                       child: Row(
@@ -1269,41 +1273,56 @@ class _ProfileDesktopViewContentState extends State<ProfileDesktopViewContent> {
                                         children: [
                                           Column(
                                             children: [
-                                              Text("5"),
-                                              Text("completed")
+                                              Text(
+                                                  Provider.of<StatisticsProvider>(
+                                                          context)
+                                                      .numberQuiz
+                                                      .toString(),
+                                                  style:
+                                                      TextStyle(fontSize: 15)),
+                                              Text("Completed",
+                                                  style:
+                                                      TextStyle(fontSize: 15))
                                             ],
                                           ),
                                           SizedBox(width: 50),
                                           Column(
                                             children: [
-                                              Text("5"),
-                                              Text("10/10 %")
+                                              Text(Provider.of<
+                                                          StatisticsProvider>(
+                                                      context)
+                                                  .overallPercentage
+                                                  .toString(),
+                                                  style:
+                                                  TextStyle(fontSize: 15)),
+                                              Text("Percent",
+                                                  style:
+                                                      TextStyle(fontSize: 15))
                                             ],
                                           ),
                                         ],
                                       )),
                                   Padding(
                                       padding: EdgeInsets.all(7),
-                                      child: Text("Score Distribution")),
-                                  LineGraph(
-                                    features: features,
-                                    size: Size(420, 450),
-                                    labelX: [
-                                      'Quiz 1',
-                                      'Quiz 2',
-                                      'Quiz 3',
-                                      'Quiz 4',
-                                      'Quiz 5',
-                                      'Quiz 6'
-                                    ],
-                                    labelY: ['2', '4', '6', '8', '10'],
-                                    showDescription: true,
-                                    graphColor:
-                                        Provider.of<ThemeProvider>(context)
-                                            .currentTheme
-                                            .colorScheme
-                                            .onBackground,
+                                      child: Text(
+                                        "Quiz Points",
+                                        style: TextStyle(fontSize: 20),
+                                      )),
+                                  Switch(
+                                    // This bool value toggles the switch.
+                                    value: publicStats,
+                                    activeColor: purple,
+                                    inactiveTrackColor: green,
+                                    onChanged: (bool value) {
+                                      // This is called when the user toggles the switch.
+                                      setState(() {
+                                        publicStats = value;
+                                      });
+                                    },
                                   ),
+                                  publicStats
+                                      ? StatisticsGraph()
+                                      : PrivateStatisticsGraph(),
                                 ],
                               ),
                             ),

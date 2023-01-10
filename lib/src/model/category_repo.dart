@@ -57,21 +57,15 @@ class CategoryRepo {
         .doc('question-1')
         .set({'ID': 'question-1'});
 
-    if(instance == null) {
-      await FirebaseFirestore.instance
-          .collection('leaderboard')
-          .doc(id + '-' + categoryName)
-          .set({
-        username: {'points': 0, 'position': 1}
-      });
-    }else{
-      await instance
-          .collection('leaderboard')
-          .doc(id + '-' + categoryName)
-          .set({
-        username: {'points': 0, 'position': 1}
-      });
+
+  }
+
+  Future<void> deleteUserCollection() async {
+    String? id = await getCurrentUserID();
+    if (id == null) {
+      throw UserNotLoggedInException();
     }
+    await _privateDoc.delete();
   }
 
   /// Deletes the current [Category] from the database.
@@ -88,9 +82,6 @@ class CategoryRepo {
       id = await getCurrentUserID();
       username = await getCurrentUserUsername();
     }
-
-    print('id: $id, ' + 'username: $username');
-
     if (username == null) {
       throw UserNotLoggedInException();
     }
@@ -101,6 +92,15 @@ class CategoryRepo {
     await _privateDoc.collection(_category).get().then((snapshot) {
       for (DocumentSnapshot ds in snapshot.docs) {
         ds.reference.delete();
+      }
+    });
+
+    // iterate through the quizzes in Firestore and delete where the attribute category is equals to the _category
+    await FirebaseFirestore.instance.collection('quizzes').get().then((snapshot) {
+      for (DocumentSnapshot ds in snapshot.docs) {
+        if(ds['category'] == _category){
+          ds.reference.delete();
+        }
       }
     });
   }
