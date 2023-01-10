@@ -359,4 +359,26 @@ class Quiz {
       'questionIds': _usedQuestions,
     });
   }
+
+  Future<Quiz> fromJSON(Map<String, dynamic> json) async {
+    this.id = json['id'];
+    this.name = json['name'];
+    this.ownerID = json['creatorID'];
+    this.category = new Category(name: json['category']!);
+    this.noOfQuestions = json['questionIds'].length;
+
+    /// add all questionIds to the list of used questions
+    for (int i = 0; i < noOfQuestions; i++) {
+      _usedQuestions.add(json['questionIds'][i]);
+    }
+
+    for (int i = 0; i < noOfQuestions; i++) {
+      Question tempQuestion =
+      await category.getPrivateQuestion(_usedQuestions[i], ownerID!);
+      _questions.add(tempQuestion);
+    }
+
+    return this;
+  }
+
 }
