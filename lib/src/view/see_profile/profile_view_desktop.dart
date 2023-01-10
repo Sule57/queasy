@@ -137,7 +137,7 @@ class _ProfileDesktopViewContentState extends State<ProfileDesktopViewContent> {
   ///Text editing controllers to save user input
   TextEditingController firstname = new TextEditingController();
   TextEditingController lastname = new TextEditingController();
-  TextEditingController username = new TextEditingController();
+  // TextEditingController username = new TextEditingController();
   TextEditingController bio = new TextEditingController();
   TextEditingController currentPassword = new TextEditingController();
   TextEditingController newPassword = new TextEditingController();
@@ -171,7 +171,7 @@ class _ProfileDesktopViewContentState extends State<ProfileDesktopViewContent> {
     /// Cleans up the controllers when the widget is disposed.
     firstname.dispose();
     lastname.dispose();
-    username.dispose();
+    // username.dispose();
     bio.dispose();
     currentPassword.dispose();
     newPassword.dispose();
@@ -377,8 +377,8 @@ class _ProfileDesktopViewContentState extends State<ProfileDesktopViewContent> {
                                                                   Navigator.of(
                                                                           context)
                                                                       .pop(),
-                                                                  username
-                                                                      .clear(),
+                                                                  // username
+                                                                  //     .clear(),
                                                                   firstname
                                                                       .clear(),
                                                                   lastname
@@ -420,13 +420,13 @@ class _ProfileDesktopViewContentState extends State<ProfileDesktopViewContent> {
                                                                   if (formKey
                                                                       .currentState!
                                                                       .validate()) {
-                                                                    if (username
-                                                                        .text
-                                                                        .isNotEmpty) {
-                                                                      controller
-                                                                          .editUsername(
-                                                                              username.text);
-                                                                    }
+                                                                    // if (username
+                                                                    //     .text
+                                                                    //     .isNotEmpty) {
+                                                                    //   controller
+                                                                    //       .editUsername(
+                                                                    //           username.text);
+                                                                    // }
                                                                     if (bio.text
                                                                         .isNotEmpty) {
                                                                       controller
@@ -454,7 +454,7 @@ class _ProfileDesktopViewContentState extends State<ProfileDesktopViewContent> {
                                                                       controller.editName(
                                                                           firstname
                                                                               .text,
-                                                                          Provider.of<ProfileProvider>(context)
+                                                                          Provider.of<ProfileProvider>(context, listen: false)
                                                                               .lastName);
                                                                     }
                                                                     if (firstname
@@ -465,7 +465,8 @@ class _ProfileDesktopViewContentState extends State<ProfileDesktopViewContent> {
                                                                             .isNotEmpty) {
                                                                       controller
                                                                           .editName(
-                                                                        Provider.of<ProfileProvider>(context)
+                                                                        Provider.of<ProfileProvider>(context,
+                                                                                listen: false)
                                                                             .firstName,
                                                                         lastname
                                                                             .text,
@@ -479,7 +480,7 @@ class _ProfileDesktopViewContentState extends State<ProfileDesktopViewContent> {
                                                                               .text,
                                                                           newPassword
                                                                               .text,
-                                                                          Provider.of<ProfileProvider>(context)
+                                                                          Provider.of<ProfileProvider>(context, listen: false)
                                                                               .email);
                                                                     }
                                                                     ;
@@ -487,7 +488,7 @@ class _ProfileDesktopViewContentState extends State<ProfileDesktopViewContent> {
                                                                         .text
                                                                         .isNotEmpty) {
                                                                       controller.editEmail(
-                                                                          Provider.of<ProfileProvider>(context)
+                                                                          Provider.of<ProfileProvider>(context, listen: false)
                                                                               .email,
                                                                           email
                                                                               .text,
@@ -533,8 +534,8 @@ class _ProfileDesktopViewContentState extends State<ProfileDesktopViewContent> {
                                                                       firstname
                                                                           .clear();
                                                                       bio.clear();
-                                                                      username
-                                                                          .clear();
+                                                                      // username
+                                                                      //     .clear();
                                                                       email
                                                                           .clear();
                                                                     }
@@ -585,10 +586,10 @@ class _ProfileDesktopViewContentState extends State<ProfileDesktopViewContent> {
                                                                           "Last name",
                                                                           style:
                                                                               TextStyle(color: Colors.white)),
-                                                                      Text(
-                                                                          "Username",
-                                                                          style:
-                                                                              TextStyle(color: Colors.white)),
+                                                                      // Text(
+                                                                      //     "Username",
+                                                                      //     style:
+                                                                      //         TextStyle(color: Colors.white)),
                                                                       Text(
                                                                           "Bio",
                                                                           style:
@@ -679,32 +680,32 @@ class _ProfileDesktopViewContentState extends State<ProfileDesktopViewContent> {
                                                                       ),
 
                                                                       ///[Container] which includes [TextFormField] for username
-                                                                      Container(
-                                                                        height:
-                                                                            30,
-                                                                        width:
-                                                                            MediaQuery.of(context).size.width /
-                                                                                3,
-                                                                        child:
-                                                                            TextFormField(
-                                                                          controller:
-                                                                              username,
-                                                                          decoration:
-                                                                              InputDecoration(
-                                                                            contentPadding:
-                                                                                EdgeInsets.only(bottom: 15, left: 20),
-                                                                            filled:
-                                                                                true,
-                                                                            fillColor:
-                                                                                Colors.white,
-                                                                            border:
-                                                                                UnderlineInputBorder(
-                                                                              borderSide: BorderSide(color: Colors.white),
-                                                                              borderRadius: BorderRadius.circular(25.7),
-                                                                            ),
-                                                                          ),
-                                                                        ),
-                                                                      ),
+                                                                      // Container(
+                                                                      //   height:
+                                                                      //       30,
+                                                                      //   width:
+                                                                      //       MediaQuery.of(context).size.width /
+                                                                      //           3,
+                                                                      //   child:
+                                                                      //       TextFormField(
+                                                                      //     controller:
+                                                                      //         username,
+                                                                      //     decoration:
+                                                                      //         InputDecoration(
+                                                                      //       contentPadding:
+                                                                      //           EdgeInsets.only(bottom: 15, left: 20),
+                                                                      //       filled:
+                                                                      //           true,
+                                                                      //       fillColor:
+                                                                      //           Colors.white,
+                                                                      //       border:
+                                                                      //           UnderlineInputBorder(
+                                                                      //         borderSide: BorderSide(color: Colors.white),
+                                                                      //         borderRadius: BorderRadius.circular(25.7),
+                                                                      //       ),
+                                                                      //     ),
+                                                                      //   ),
+                                                                      // ),
 
                                                                       ///[Container] which includes [TextFormField] for bio
                                                                       Container(

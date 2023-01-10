@@ -18,7 +18,7 @@ class StatisticsProvider with ChangeNotifier {
   get secondsSpent => _secondsSpent;
 
   StatisticsProvider(this.qp) {
-    setStatisticsProvider();
+    // setStatisticsProvider();
   }
 
   bool setStatisticsProvider() {

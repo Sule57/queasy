@@ -3,9 +3,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:queasy/src.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:queasy/src/model/statistics.dart';
 import '../../utils/exceptions.dart';
 
+///Returns the current user's uid that is stored in Firebase Authentication.
+///It returns null if the uid cannot be found. This can happen when the user is not signed in.
 String? getCurrentUserID() {
   if (FirebaseAuth.instance.currentUser != null) {
     return FirebaseAuth.instance.currentUser?.uid;
@@ -13,6 +14,8 @@ String? getCurrentUserID() {
   return null;
 }
 
+///Reutrns the current user's username that is stored in their document in the Firebase Database.
+///Returns 'something' if the username cannot be found.
 Future<String?> getCurrentUserUsername() async {
   String? id;
   if (await FirebaseAuth.instance.currentUser != null) {
@@ -31,6 +34,8 @@ Future<String?> getCurrentUserUsername() async {
 
 ///Profile class is an extention of the firebase user
 ///adapted for the needs of the quizz application
+///It has direct access to the
+///firebase and is used to store a user or update it in the database.
 /// [email] email field
 /// [username] username
 /// [firstName] user first name
@@ -39,23 +44,60 @@ Future<String?> getCurrentUserUsername() async {
 /// [bio] user description
 /// [age] user age
 class Profile {
+  //TODO: Comment for global counter
   static int globalCounter = 0;
+
+  ///The parameter [email] represents the email of this profile.
   String email;
+
+  ///The parameter username represents the username of this profile.
   String username;
+
+  ///The parameter firstName represents the firstName of this profile.
   String? firstName;
+
+  ///The parameter lastName represents the lastName of this profile.
   String? lastName;
+
+  ///The parameter profilePicture represents the profilePicture of this profile.
   String? profilePicture;
+
+  ///The parameter bio represents the bio of this profile.
   String? bio;
+
+  ///The parameter age represents the age of this profile.
   int? age;
+
+  ///The parameter birthdayMonth represents the birthdayMonth of this profile.
   String? birthdayMonth;
+
+  ///The parameter birthdayDay represents the birthdayDay of this profile.
   int? birthdayDay;
+
+  ///The parameter uid represents the uid of this profile.
   String? uid;
-  late bool private = false;
+
+  ///The parameter test represents whether this profile is constructed for tests or for app use.
+  late bool test = false;
+
   // it must be late so
+  ///The parameter firestore represents the firestore of this profile.
+  ///It shouldn't change for default profiles, but it must be changed for testing purposes.
   late var firestore = FirebaseFirestore.instance;
+
   //In the database publicScore and private score are stored as collections
+  ///The parameter publicScore represents a Map of the stored public scores.
+  ///These scores are only collected from quizzes in public categories.
+  ///For example, if the profile scored 13 points in the Science category,
+  ///privateScore would contain 'Science':13.
   Map<String, dynamic> publicScore = {};
+
+  ///The parameter privatecScore represents a Map of the stored private scores.
+  //////These scores are only collected from quizzes in private categories.
+  ///For example, if the profile scored 13 points in the Science category,
+  ///privateScore would contain 'Science':13.
   Map<String, dynamic> privatecScore = {};
+
   Profile({
     required this.username,
     required this.email,
@@ -70,6 +112,7 @@ class Profile {
     uid = getCurrentUserID();
   }
 
+  ///This constructor is used only for unit tests
   Profile.test({
     required this.username,
     required this.email,
@@ -81,12 +124,10 @@ class Profile {
     this.birthdayMonth = '',
     this.birthdayDay = 0,
     required this.firestore,
-    this.private = true,
+    this.test = true,
   }) {
     uid = "mockedyouu";
   }
-
-  ///This constructor is used only for unit tests
 
   /// Creates a user instance from json
   /// Note: the json format must be the following:
@@ -235,15 +276,15 @@ class Profile {
   }
 
   //START OF METHODS FOR PROFILE VIEW
-  /// Updates the user's username in the Firebase Database
-  /// @param [newUsername] - username to change the current username to
-  /// @return true - username was updated successfully
-  /// @return false - username was not updated successfully
+  ///Updates the user's username in the Firebase Database.
+  ///It takes [newUsername] as a parameter which is the value the current username will change to.
+  ///It returns true if the username was updated successfully
+  ///and false if the username was not updated successfully.
   bool updateUsername(String newUsername) {
     try {
       firestore
           .collection('users')
-          .doc(private ? uid : getCurrentUserID())
+          .doc(test ? uid : getCurrentUserID())
           .update({'username': newUsername});
 
       return true;
@@ -252,16 +293,15 @@ class Profile {
     }
   }
 
-  ///updates the bio information of the user in the Firebase Database
-  ///@param [username] - the current username of the user
-  ///@param [newBio] - the new bio information
-  ///@return true - bio was updated successfully
-  ///@return false - bio was not updated successfully
+  ///updates the bio information of the user in the Firebase Database.
+  ///It takes [newBio] as a new parameter which is the value the current bio will change to.
+  ///It returns true if the bio was updated successfully
+  ///and false if the bio was not updated successfully.
   bool updateBio(String newBio) {
     try {
       firestore
           .collection('users')
-          .doc(private ? uid : getCurrentUserID())
+          .doc(test ? uid : getCurrentUserID())
           .update({'bio': newBio});
 
       return true;
@@ -270,17 +310,17 @@ class Profile {
     }
   }
 
-  ///updates the first and lastname of the user in the Firebase Database
-  ///@param [username] - the current username of the user
-  ///@param [newFirstName] - the new firstname
-  ///@param [newLastName] - the new lastname
-  ///@return true - name was updated successfully
-  ///@return false - name was not updated successfully
+  ///Updates the first and lastname of the user in the Firebase Database
+  ///It takes [newFirstName] and [newLastName] as parameters.
+  ///[newFirstName] is the value the current first name will change to.
+  ///[newLastName] is the value the current last name will change to.
+  ///It returns true if the first and last name was updated successfully
+  ///and false if the first and last name was not updated successfully.
   bool updateName(String newFirstName, String newLastName) {
     try {
       firestore
           .collection('users')
-          .doc(private ? uid : getCurrentUserID())
+          .doc(test ? uid : getCurrentUserID())
           .update({'firstName': newFirstName, 'lastName': newLastName});
 
       return true;
@@ -290,16 +330,16 @@ class Profile {
   }
 
   ///updates the birthday of the user in the Firebase Database
-  ///@param [username] - the current username of the user
-  ///@param [newMonth] - the new month of birth
-  ///@param [newDay] - the new day of birth
-  ///@return true - birthday was updated successfully
-  ///@return false - birthday couldn't be updated
+  ///It takes [newMonth] and [newDay] as parameters.
+  ///[newMonth] is the value the current birthdayMonth will change to.
+  ///[newDay] is the value the current birthdayDay will change to.
+  ///It returns true if the birthday was updated successfully
+  ///and false if the birthday was not updated successfully.
   bool updateBirthday(String newMonth, int newDay) {
     try {
       firestore
           .collection('users')
-          .doc(private ? uid : getCurrentUserID())
+          .doc(test ? uid : getCurrentUserID())
           .update({'birthdayMonth': newMonth, 'birthdayDay': newDay});
 
       return true;
@@ -308,12 +348,14 @@ class Profile {
     }
   }
 
-  ///updates the email of the user in the Firebase Database
-  ///@param [currentEmail] - the current email of the user
-  ///@param [newEmail] - the new email
-  ///@param [password] - the password of the user for authentication
-  ///@return true - email was updated successfully
-  ///@return false - email couldn't be updated
+  ///updates the email of the user in the Firebase Database.
+  ///It reauthenticates the user before updating the email to avoid errors with Firebase Authentication.
+  ///It takes [currentEmail], [newEmail] and [password] as parameters.
+  ///[currentEmail] is the current email of the user. It is used to reauthenticate the user.
+  ///[newEmail] is the value the current email will change to.
+  ///[password] is the current password of the user. It is used to reauthenticate the user.
+  ///It returns true if the email was updated successfully
+  ///and false if the email was not updated successfully.
   bool updateEmail(String currentEmail, String newEmail, String password) {
     try {
       FirebaseAuth.instance.authStateChanges().listen((User? user) {
@@ -329,12 +371,13 @@ class Profile {
     }
   }
 
-  ///updates the password of the user in the Firebase Database
-  ///@param [email] - the current username of the user for authentication
-  ///@param [currentPassword] - the current password of the user
-  ///@param [newPassword] - the new password
-  ///@return true - password was updated successfully
-  ///@return false - password couldn't be updated
+  ///Updates the password of the user in the Firebase Database.
+  ///It reauthenticates the user before updating the email to avoid errors with Firebase Authentication.
+  ///[email] is the current email of the user. It is used to reauthenticate the user.
+  ///[currentPassword] is the current password of the user. It is used to reauthenticate the user.
+  ///[newPassword] is the value the current password will change to.
+  ///It returns true if the password was updated successfully
+  ///and false if the password was not updated successfully.
   bool updatePassword(
       String email, String currentPassword, String newPassword) {
     try {
@@ -351,9 +394,9 @@ class Profile {
     }
   }
 
-  ///signs out the user from the system
-  ///@return true - the user is signed out successfully
-  ///@return false - the user couldn't be signed out
+  ///Signs out the user from the system.
+  ///It returns true if the user is signed out successfully
+  ///and false if the user couldn't be signed out.
   bool signOut() {
     try {
       FirebaseAuth.instance.signOut();
@@ -363,13 +406,17 @@ class Profile {
     }
   }
 
-  ///deletes the account of the user from the Firebase Database
-  ///@param [email] - the current username of the user needed for confirmation
-  ///@param [password] - the current password of the user needed for confirmation
-  ///@return true - account is deleted successfully
-  ///@return false - account couldn't be deleted
+  ///Deletes the account of the user from the Firebase Database.
+  ///[email] is the current email of the user. It is used to reauthenticate the user.
+  ///[password] is the current password of the user. It is used to reauthenticate the user.
+  ///It returns true if the account is deleted successfully
+  ///and false if the account couldn't be deleted.
   bool deleteAccount(String email, String password) {
     try {
+      firestore
+          .collection('users')
+          .doc(test ? uid : getCurrentUserID())
+          .delete();
       FirebaseAuth.instance.authStateChanges().listen((User? user) {
         if (user != null) {
           user.reauthenticateWithCredential(
@@ -383,7 +430,11 @@ class Profile {
     }
   }
 
-  ///updates the Profile Picture of the user in the Firebase Database and in the Firebase Storage
+  ///Updates the Profile Picture of the user in the Firebase Database and in the Firebase Storage.
+  ///The new image's reference is stored in Firebase Storage with the current user's uid
+  ///and the link to the pictue is stored in the current user's Firebase Database document.
+  ///It returns true if the picture was updated successfully
+  ///and false if the picture was not updated successfully.
   Future<void> pickProfileImage() async {
     final image = await ImagePicker().pickImage(
       source: ImageSource.gallery,
@@ -391,32 +442,9 @@ class Profile {
       maxHeight: 512,
       imageQuality: 75,
     );
-
-    // File file = File(image!.path);
-    // print(file.path);
-    // final metadata = SettableMetadata(
-    //     contentType: 'imange/png',
-    //     customMetadata: {'picked-file-path': file.path});
-    // final uploadTask = ref.putData(await file.readAsBytes(), metadata);
-    // ref.getDownloadURL().then((value) {
-    //   print(value);
-    //   firestore
-    //       .collection('users')
-    //       .doc(getCurrentUserID())
-    //       .update({'profilePicture': value});
-    // });
-    // try {
-    //   await ref.putFile(file);
-    // } catch (e) {
-    //   print(e);
-    // }
     Reference ref =
         FirebaseStorage.instance.ref().child("profilePictures/${uid}");
     final fileBytes = await image!.readAsBytes();
-// var now = DateTime.now().millisecondsSinceEpoch;
-// StorageReference reference =
-//   FirebaseStorage.instance.ref().child("images/$now");
-
     try {
       await ref.putData(fileBytes);
       ref.getDownloadURL().then((value) {
@@ -429,37 +457,7 @@ class Profile {
     } catch (e) {
       print(e);
     }
-
-    // uploadTask.snapshotEvents.listen((TaskSnapshot taskSnapshot) {
-    //   switch (taskSnapshot.state) {
-    //     case TaskState.running:
-    //       final progress =
-    //           100.0 * (taskSnapshot.bytesTransferred / taskSnapshot.totalBytes);
-    //       print("Upload is $progress% complete.");
-    //       break;
-    //     case TaskState.paused:
-    //       print("Upload is paused.");
-    //       break;
-    //     case TaskState.canceled:
-    //       print("Upload was canceled");
-    //       break;
-    //     case TaskState.error:
-    //       // Handle unsuccessful uploads
-    //       print("Upload FAILED");
-    //       break;
-    //     case TaskState.success:
-    //       // Handle successful uploads on complete
-    //       // ...
-    //       break;
-    //   }
-    // });
   }
-
-  // File getProfilePicture(){
-  //   Reference ref = FirebaseStorage.instance
-  //       .ref()
-  //       .child("profilePictures/${getCurrentUserID()}")
-  // }
   //END OF METHODS FOR PROFILE VIEW
 
 }

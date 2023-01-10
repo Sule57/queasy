@@ -52,7 +52,7 @@ Future<void> main() async {
             create: (BuildContext context) => StatisticsProvider(
                 Provider.of<QuizProvider>(context, listen: false)),
             update: (BuildContext context, QuizProvider qp,
-                StatisticsProvider? sp) =>
+                    StatisticsProvider? sp) =>
                 StatisticsProvider(qp),
           ),
           ChangeNotifierProvider(
