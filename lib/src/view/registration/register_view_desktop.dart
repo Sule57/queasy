@@ -109,6 +109,11 @@ class _RegisterViewDesktopState extends State<RegisterViewDesktop> {
                           if (value == null || value.isEmpty) {
                             return 'Please enter email';
                           }
+                          if (!RegExp(
+                                  r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                              .hasMatch(value)) {
+                            return "Invalid email address";
+                          }
                           return null;
                         },
                         controller: controllerEmail,
@@ -147,6 +152,10 @@ class _RegisterViewDesktopState extends State<RegisterViewDesktop> {
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Please enter password';
+                          }
+
+                          if (value.length < 6) {
+                            return 'Password needs to be at least 6 characters';
                           }
                           return null;
                         },
