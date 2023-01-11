@@ -182,7 +182,7 @@ class Profile {
     await this
         .firestore
         .collection('users')
-        .doc(getCurrentUserID())
+        .doc(await getCurrentUserID())
         .get()
         .then((DocumentSnapshot documentSnapshot) {
       if (documentSnapshot.exists) {
@@ -190,19 +190,19 @@ class Profile {
       }
     });
 
-    if (getCurrentUserID() != null) {
+    if (await getCurrentUserID() != null) {
       // create the document for categories created by the user
       print(uid);
-      print(getCurrentUserID());
+      print(await getCurrentUserID());
       await this
           .firestore
           .collection('categories')
-          .doc(getCurrentUserID())
+          .doc(await getCurrentUserID())
           .set({});
 
       await firestore
           .collection('users')
-          .doc(getCurrentUserID())
+          .doc(await getCurrentUserID())
           .set(this.toJson());
       UserStatistics s = UserStatistics(this.username, []);
       //Adding the user to the statistics
@@ -259,20 +259,15 @@ class Profile {
     }
 
     final firebaseFirestore = FirebaseFirestore.instance;
-    await firebaseFirestore.collection('users').doc(getCurrentUserID()).update({
+    await firebaseFirestore.collection('users').doc(await getCurrentUserID()).update({
       'scores.$category': FieldValue.increment(score),
     });
     //TODO
 
-    Leaderboard leaderboard;
     if (is_public) {
-      leaderboard = await Leaderboard.createPublic(
-          category, (await getCurrentUserUsername())!);
-    } else {
-      leaderboard = await Leaderboard.createPrivate(
-          category, (await getCurrentUserUsername())!);
+      Leaderboard leaderboard = await Leaderboard.createPublic(category, (await getCurrentUserUsername())!);
+      await leaderboard.updateCurrentUserPoints(score);
     }
-    leaderboard.updateCurrentUserPoints(score);
   }
 
   //START OF METHODS FOR PROFILE VIEW
@@ -280,11 +275,11 @@ class Profile {
   ///It takes [newUsername] as a parameter which is the value the current username will change to.
   ///It returns true if the username was updated successfully
   ///and false if the username was not updated successfully.
-  bool updateUsername(String newUsername) {
+  Future<bool> updateUsername(String newUsername) async {
     try {
-      firestore
+      await firestore
           .collection('users')
-          .doc(test ? uid : getCurrentUserID())
+          .doc(test ? uid : await getCurrentUserID())
           .update({'username': newUsername});
 
       return true;
@@ -297,11 +292,11 @@ class Profile {
   ///It takes [newBio] as a new parameter which is the value the current bio will change to.
   ///It returns true if the bio was updated successfully
   ///and false if the bio was not updated successfully.
-  bool updateBio(String newBio) {
+  Future<bool> updateBio(String newBio) async {
     try {
       firestore
           .collection('users')
-          .doc(test ? uid : getCurrentUserID())
+          .doc(test ? uid : await getCurrentUserID())
           .update({'bio': newBio});
 
       return true;
@@ -316,11 +311,11 @@ class Profile {
   ///[newLastName] is the value the current last name will change to.
   ///It returns true if the first and last name was updated successfully
   ///and false if the first and last name was not updated successfully.
-  bool updateName(String newFirstName, String newLastName) {
+  Future<bool> updateName(String newFirstName, String newLastName) async {
     try {
-      firestore
+      await firestore
           .collection('users')
-          .doc(test ? uid : getCurrentUserID())
+          .doc(test ? uid : await getCurrentUserID())
           .update({'firstName': newFirstName, 'lastName': newLastName});
 
       return true;
@@ -335,11 +330,11 @@ class Profile {
   ///[newDay] is the value the current birthdayDay will change to.
   ///It returns true if the birthday was updated successfully
   ///and false if the birthday was not updated successfully.
-  bool updateBirthday(String newMonth, int newDay) {
+  Future<bool> updateBirthday(String newMonth, int newDay) async {
     try {
-      firestore
+      await firestore
           .collection('users')
-          .doc(test ? uid : getCurrentUserID())
+          .doc(test ? uid : await getCurrentUserID())
           .update({'birthdayMonth': newMonth, 'birthdayDay': newDay});
 
       return true;
@@ -356,13 +351,13 @@ class Profile {
   ///[password] is the current password of the user. It is used to reauthenticate the user.
   ///It returns true if the email was updated successfully
   ///and false if the email was not updated successfully.
-  bool updateEmail(String currentEmail, String newEmail, String password) {
+  Future<bool> updateEmail(String currentEmail, String newEmail, String password) async {
     try {
-      FirebaseAuth.instance.authStateChanges().listen((User? user) {
+      await FirebaseAuth.instance.authStateChanges().listen((User? user) async {
         if (user != null) {
-          user.reauthenticateWithCredential(EmailAuthProvider.credential(
+          await user.reauthenticateWithCredential(EmailAuthProvider.credential(
               email: currentEmail, password: password));
-          user.updateEmail(newEmail);
+          await user.updateEmail(newEmail);
         }
       });
       return true;
@@ -378,14 +373,13 @@ class Profile {
   ///[newPassword] is the value the current password will change to.
   ///It returns true if the password was updated successfully
   ///and false if the password was not updated successfully.
-  bool updatePassword(
-      String email, String currentPassword, String newPassword) {
+  Future<bool> updatePassword(String email, String currentPassword, String newPassword) async {
     try {
-      FirebaseAuth.instance.authStateChanges().listen((User? user) {
+      await FirebaseAuth.instance.authStateChanges().listen((User? user) async {
         if (user != null) {
-          user.reauthenticateWithCredential(EmailAuthProvider.credential(
+          await user.reauthenticateWithCredential(EmailAuthProvider.credential(
               email: email, password: currentPassword));
-          user.updatePassword(newPassword);
+          await user.updatePassword(newPassword);
         }
       });
       return true;
@@ -397,9 +391,9 @@ class Profile {
   ///Signs out the user from the system.
   ///It returns true if the user is signed out successfully
   ///and false if the user couldn't be signed out.
-  bool signOut() {
+  Future<bool> signOut() async {
     try {
-      FirebaseAuth.instance.signOut();
+      await FirebaseAuth.instance.signOut();
       return true;
     } catch (e) {
       return false;
@@ -430,15 +424,15 @@ class Profile {
         await leaderboard.removeUserFromAllLeaderboard();
       }
 
-      firestore
+      await firestore
           .collection('users')
-          .doc(test ? uid : getCurrentUserID())
+          .doc(test ? uid : await getCurrentUserID())
           .delete();
-      FirebaseAuth.instance.authStateChanges().listen((User? user) {
+      await FirebaseAuth.instance.authStateChanges().listen((User? user) async {
         if (user != null) {
-          user.reauthenticateWithCredential(
+          await user.reauthenticateWithCredential(
               EmailAuthProvider.credential(email: email, password: password));
-          user.delete();
+          await user.delete();
         }
       });
 
@@ -460,14 +454,13 @@ class Profile {
       maxHeight: 512,
       imageQuality: 75,
     );
-    Reference ref =
-        FirebaseStorage.instance.ref().child("profilePictures/${uid}");
+    Reference ref = await FirebaseStorage.instance.ref().child("profilePictures/${uid}");
     final fileBytes = await image!.readAsBytes();
     try {
       await ref.putData(fileBytes);
-      ref.getDownloadURL().then((value) {
+      ref.getDownloadURL().then((value) async {
         print(value);
-        firestore
+        await firestore
             .collection('users')
             .doc(uid)
             .update({'profilePicture': value});
