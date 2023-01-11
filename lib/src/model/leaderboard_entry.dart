@@ -1,10 +1,13 @@
-/// Class of a leaderboard entry. This class is used to store the data of a leaderboard entry.
+/// Class of a leaderboard entry. This class is used to store the data of a leaderboard entry
+/// and its setters and getters.
 class LeaderboardEntry {
-  /// The username of the user
+  /// Represents the username of the user
   late final String _name;
-  /// The score of the user
+
+  /// Represents the score of the user
   late final int _score;
-  /// The position of the user
+
+  /// Represents the position of the user
   late final int _position;
 
   /// Constructor for the LeaderboardEntry class
