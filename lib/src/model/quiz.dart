@@ -149,10 +149,10 @@ class Quiz {
   /// the [assignUniqueID] method.
   Future<Quiz> getRandomQuestions(
       {required Category category,
-      required int noOfQuestions,
-      required bool isPublic,
-      String? name,
-      FirebaseFirestore? firestore}) async {
+        required int noOfQuestions,
+        required bool isPublic,
+        String? name,
+        FirebaseFirestore? firestore}) async {
     this.category = category;
     this.noOfQuestions = noOfQuestions;
     this.isPublic = isPublic;
@@ -191,7 +191,7 @@ class Quiz {
       }
       _usedQuestions.add(tempID);
       Question tempQuestion =
-          await category.getQuestion(tempID, public: isPublic);
+      await category.getQuestion(tempID, public: isPublic);
       _questions.add(tempQuestion);
     }
 
@@ -271,7 +271,7 @@ class Quiz {
 
     for (int i = 0; i < noOfQuestions; i++) {
       Question tempQuestion =
-          await category.getPrivateQuestion(_usedQuestions[i], ownerID!);
+      await category.getPrivateQuestion(_usedQuestions[i], ownerID!);
       _questions.add(tempQuestion);
     }
 
@@ -320,9 +320,9 @@ class Quiz {
   /// instance.
   Future<Quiz> createCustomQuiz(
       {required List<String> questions,
-      required Category category,
-      required String name,
-      FirebaseFirestore? firestore}) async {
+        required Category category,
+        required String name,
+        FirebaseFirestore? firestore}) async {
     this.isPublic = false;
     this._usedQuestions = questions;
     this.category = category;
@@ -345,9 +345,17 @@ class Quiz {
 
     for (int i = 0; i < noOfQuestions; i++) {
       Question tempQuestion =
-          await category.getPrivateQuestion(_usedQuestions[i], ownerID!);
+      await category.getPrivateQuestion(_usedQuestions[i], ownerID!);
       _questions.add(tempQuestion);
     }
     return this;
   }
+
+  Future<void> updateQuiz() async{
+    await firestore?.collection('quizzes').doc(id).update({
+      'name': this.name,
+      'questionIds': this._usedQuestions,
+    });
+  }
+
 }
