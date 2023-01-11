@@ -22,7 +22,7 @@ import '../edit_quiz_provider.dart';
 class QuestionListTile extends StatefulWidget {
   /// [isContainerVisible] determines the size of the container
   final bool isContainerVisible;
-  Question question;
+  final Question question;
 
   QuestionListTile({
     Key? key,
@@ -79,7 +79,7 @@ class _QuestionListTileState extends State<QuestionListTile> {
 ///
 /// The variable [text] is the text of the correct answer.
 class CorrectAnswerContainer extends StatelessWidget {
-  String text;
+  final String text;
 
   CorrectAnswerContainer({Key? key, required this.text}) : super(key: key);
 
@@ -108,13 +108,12 @@ class CorrectAnswerContainer extends StatelessWidget {
 /// The variable [question] is the question that is going to be passed to the
 /// methods of the buttons.
 class MobileButtons extends StatelessWidget {
-  Question question;
+  final Question question;
   MobileButtons({Key? key, required this.question}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    EditQuizProvider controller =
-        Provider.of<EditQuizProvider>(context, listen: true);
+    EditQuizProvider controller = Provider.of<EditQuizProvider>(context, listen: true);
     return Column(
       children: [
         RoundedButton(
@@ -150,13 +149,12 @@ class MobileButtons extends StatelessWidget {
 /// The variable [question] is the question that is going to be passed to the
 /// methods of the buttons.
 class DesktopButtons extends StatelessWidget {
-  Question question;
+  final Question question;
   DesktopButtons({Key? key, required this.question}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    EditQuizProvider controller =
-        Provider.of<EditQuizProvider>(context, listen: true);
+    EditQuizProvider controller = Provider.of<EditQuizProvider>(context, listen: true);
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [

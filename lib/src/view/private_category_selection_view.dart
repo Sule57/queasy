@@ -8,8 +8,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:queasy/src/model/category_repo.dart';
+import 'package:queasy/src/view/edit_quiz/edit_quiz_provider.dart';
 import '../../constants/theme_provider.dart';
 import 'edit_quiz/edit_quiz_view.dart';
+import 'edit_quiz/widgets/edit_quiz_popups.dart';
 
 /// View for selecting a private category.
 ///
@@ -69,6 +71,7 @@ class _PrivateCategorySelectionViewState
   /// parameter.
   @override
   Widget build(BuildContext context) {
+
     late Widget ListWidget;
     if (_isLoading) {
       return const Center(child: CircularProgressIndicator());
@@ -143,112 +146,6 @@ class _PrivateCategorySelectionViewState
         ),
       );
     }
-  }
-}
-
-/// This widget is used to display an [AlertDialog] to add a new category.
-class NewCategoryPopUp extends StatefulWidget {
-  const NewCategoryPopUp({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  State<NewCategoryPopUp> createState() => _NewCategoryPopUpState();
-}
-
-class _NewCategoryPopUpState extends State<NewCategoryPopUp> {
-  final TextEditingController newCategoryController = TextEditingController();
-
-  @override
-  void dispose() {
-    newCategoryController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      title: const Text(
-        'Add a new category',
-        style: TextStyle(color: Colors.white, fontSize: 16),
-      ),
-      content: TextField(
-        controller: newCategoryController,
-        style: const TextStyle(color: Colors.white),
-        decoration: const InputDecoration(
-          hintText: 'Category name',
-          hintStyle: TextStyle(color: Colors.white),
-          enabledBorder: UnderlineInputBorder(
-            borderSide: BorderSide(color: Colors.white),
-          ),
-          focusedBorder: UnderlineInputBorder(
-            borderSide: BorderSide(color: Colors.white),
-          ),
-        ),
-      ),
-      backgroundColor: Theme.of(context).colorScheme.primary,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10.0),
-      ),
-      actions: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text('Cancel'),
-              style: TextButton.styleFrom(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15.0),
-                ),
-                foregroundColor: Theme.of(context).colorScheme.onSecondary,
-                backgroundColor: Theme.of(context).colorScheme.secondary,
-              ),
-            ),
-            TextButton(
-              onPressed: () async {
-                // Check if the entered text is empty of filled with spaces
-                if (newCategoryController.text.trim().isEmpty) {
-                  // Show an alert dialog to inform the user that the category
-                  // name cannot be empty
-                  Future.delayed(Duration.zero, () {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return const AlertDialog(
-                          title: Text('Category name cannot be empty'),
-                        );
-                      },
-                    );
-                  });
-                } else {
-                  // Add the new category to the database
-                  await CategoryRepo()
-                      .createCategory(newCategoryController.text, Colors.blue);
-                  Navigator.pop(context); // Close the alert dialog
-                  // Refresh the view
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => PrivateCategorySelectionView(),
-                    ),
-                  );
-                  print('Category added');
-                }
-              },
-              child: Text('Confirm'),
-              style: TextButton.styleFrom(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15.0),
-                ),
-                foregroundColor: Theme.of(context).colorScheme.onSecondary,
-                backgroundColor: Theme.of(context).colorScheme.tertiary,
-              ),
-            ),
-          ],
-        ),
-      ],
-    );
   }
 }
 

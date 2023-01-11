@@ -76,8 +76,13 @@ class _EditQuizViewState extends State<EditQuizView> {
   init() async {
     _isLoading = true;
     _category = await CategoryRepo().getCategory(categoryName);
-    _questions = await _category.getAllQuestions();
     controller.category = _category;
+    controller.getListOfQuestions();
+    _questions = await _category.getAllQuestions();
+    //print("ok");
+    _questions = context.read<EditQuizProvider>().questionList;
+    //_questions = controller.questionList;
+    //controller.formKeyAddEditQuestion = GlobalKey<FormState>();
     setState(() {
       _isLoading = false;
     });
@@ -91,8 +96,7 @@ class _EditQuizViewState extends State<EditQuizView> {
 
   @override
   Widget build(BuildContext context) {
-    EditQuizProvider controller =
-        Provider.of<EditQuizProvider>(context, listen: true);
+    EditQuizProvider controller = Provider.of<EditQuizProvider>(context, listen: true);
     late Widget ListWidget;
 
     if (_isLoading) {
@@ -172,33 +176,42 @@ class _QuestionListState extends State<QuestionList> {
     return Expanded(
       child: Padding(
         padding: const EdgeInsets.only(top: 6.0, bottom: 8.0),
-        child: ListView.builder(
-          itemCount: questions.length,
-          itemBuilder: (context, index) {
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 8.0),
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(
-                    color: Theme.of(context).colorScheme.primary,
-                    width: 2.0,
+        child: Consumer<EditQuizProvider>(
+          builder: (context, controller, child) {
+            return ListView.builder(
+              itemCount: controller.questionList.length,
+              itemBuilder: (context, index) {
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 8.0),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                        color: Theme
+                            .of(context)
+                            .colorScheme
+                            .primary,
+                        width: 2.0,
+                      ),
+                    ),
+                    child: ExpansionTile(
+                      title: Text(
+                        //questions[index],
+                          controller.questionList[index].text,
+                          style: Theme
+                              .of(context)
+                              .textTheme
+                              .bodyText1
+                              ?.copyWith(fontSize: 15)),
+                      children: <Widget>[
+                        QuestionListTile(
+                            isContainerVisible: true,
+                            question: controller.questionList[index]),
+                      ],
+                    ),
                   ),
-                ),
-                child: ExpansionTile(
-                  title: Text(
-                      //questions[index],
-                      questions[index].text,
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyText1
-                          ?.copyWith(fontSize: 15)),
-                  children: <Widget>[
-                    QuestionListTile(
-                        isContainerVisible: true, question: questions[index]),
-                  ],
-                ),
-              ),
+                );
+              },
             );
           },
         ),
