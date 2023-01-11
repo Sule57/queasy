@@ -248,32 +248,15 @@ class Quiz {
         ?.collection('quizzes')
         .doc(id)
         .get()
-        .then((DocumentSnapshot documentSnapshot) {
+        .then((DocumentSnapshot documentSnapshot) async {
       print('it got the collection');
       if (documentSnapshot.exists) {
         print('Document data: ${documentSnapshot.data()}');
-        this.name = documentSnapshot['name'];
-        this.id = documentSnapshot['id'];
-        this.ownerID = documentSnapshot['creatorID'];
-        this.category = new Category(
-            name: documentSnapshot['category']!, firestore: this.firestore);
-        // this.categoryName = ;
-        this.noOfQuestions = documentSnapshot['questionIds'].length;
-
-        /// add all questionIds to the list of used questions
-        for (int i = 0; i < noOfQuestions; i++) {
-          _usedQuestions.add(documentSnapshot['questionIds'][i]);
-        }
+        await fromJSON(documentSnapshot.data() as Map<String, dynamic>);
       } else {
         print('Document does not exist on the database');
       }
     });
-
-    for (int i = 0; i < noOfQuestions; i++) {
-      Question tempQuestion =
-      await category.getPrivateQuestion(_usedQuestions[i], ownerID!);
-      _questions.add(tempQuestion);
-    }
 
     return this;
   }
@@ -356,6 +339,20 @@ class Quiz {
       'name': this.name,
       'questionIds': this._usedQuestions,
     });
+  }
+
+  Future<void> fromJSON (Map<String, dynamic> json) async {
+    this.id = json['id'];
+    this.name = json['name'];
+    this.ownerID = json['creatorID'];
+    this.category = new Category(name: json['category'], firestore: this.firestore);
+    this.noOfQuestions = json['questionIds'].length;
+    this._usedQuestions = json['questionIds'].cast<String>();
+    for (int i = 0; i < noOfQuestions; i++) {
+      Question tempQuestion =
+      await category.getPrivateQuestion(_usedQuestions[i], ownerID!);
+      _questions.add(tempQuestion);
+    }
   }
 
 }
