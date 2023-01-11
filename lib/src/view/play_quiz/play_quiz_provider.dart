@@ -6,7 +6,6 @@
 /// ****************************************************************************
 
 import 'dart:async';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:queasy/main.dart';
 import 'package:queasy/src/model/category.dart';
@@ -57,7 +56,7 @@ import '../../model/quiz.dart';
 /// question. It is initialized to 15 seconds and is decremented every second.
 /// It gets reset to 15 seconds for every new question. It is used to display
 /// the time left in the UI. It is also used to calculate the score.
-class QuizProvider with ChangeNotifier {
+class PlayQuizProvider with ChangeNotifier {
   late Quiz _quiz;
   late Profile player;
   late String? _quizCategory;
@@ -76,9 +75,10 @@ class QuizProvider with ChangeNotifier {
   get timeLeft => _timeLeft.inSeconds.toString();
   get currentPoints => _currentPoints;
   get quizzResult => _quizzResult;
+  get currentQuestionAnswered => _currentQuestionAnswered;
 
 // assign the current user to the app
-  QuizProvider() {
+  PlayQuizProvider() {
     // default profile
     player = Profile(
       username: 'Savo',
@@ -182,6 +182,13 @@ class QuizProvider with ChangeNotifier {
     return '${_currentQuestionIndex + 1} / $_totalQuestions';
   }
 
+  /// Indicates that the user has answered the current question.
+  /// It sets the [_currentQuestionAnswered] to true.
+  void toggleQuestionAnswered() {
+    _currentQuestionAnswered = true;
+    notifyListeners();
+  }
+
   /// Updates [_currentQuestionIndex] and [_currentQuestionAnswered] to
   /// display the next question in the UI. It also resets the timer.
   /// If there are no more question, it calls the method [endQuiz].
@@ -211,8 +218,9 @@ class QuizProvider with ChangeNotifier {
 
         //IMPORTANT YOU CANNOT PLAY 2 QUIZZES AT THE SAME TIME OTHERWISE THIS WILL BREAK !!!
         // YOU CANNOT CALL STATISTICS PROVIDER BEFORE QUIZ PROVIDER !!!
-        _quizzResult =  UserQuizzResult(
-            name, correctAnswers, _totalQuestions, _secondsPassed);;
+        _quizzResult = UserQuizzResult(
+            name, correctAnswers, _totalQuestions, _secondsPassed);
+        ;
         stat.addUserQuizzResult(_quizzResult);
         await stat.saveStatistics();
       }
@@ -220,8 +228,7 @@ class QuizProvider with ChangeNotifier {
     if (_quiz.isPublic == true) {
       //TODO check this
       await player.updateScore(_quizCategory!, _currentPoints, true);
-      print('seconds passed at the end of the quizz: $_secondsPassed');
-    }else{
+    } else {
       await player.updateScore(_quizCategory!, _currentPoints, false);
     }
 
@@ -230,7 +237,8 @@ class QuizProvider with ChangeNotifier {
       MaterialPageRoute(builder: (_) => StatisticsView()),
     );
     _secondsPassed = 0;
-    _currentPoints = 0;
+    correctAnswers = 0;
+    // _totalQuestions = 0;
   }
 
   /// Edits the current score of the user. Takes [isCorrect] as parameter to
@@ -291,7 +299,6 @@ class QuizProvider with ChangeNotifier {
     } else {
       _timeLeft = Duration(seconds: seconds);
       _secondsPassed++;
-      print('$_secondsPassed seconds passed');
       notifyListeners();
     }
   }

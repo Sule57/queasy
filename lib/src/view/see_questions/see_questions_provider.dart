@@ -6,13 +6,13 @@
 /// ****************************************************************************
 
 import 'package:flutter/material.dart';
-import 'package:queasy/src/view/edit_quiz/edit_quiz_view.dart';
-import 'package:queasy/src/view/edit_quiz/widgets/edit_quiz_popups.dart';
+import 'package:queasy/src/view/see_questions/see_questions_view.dart';
+import 'package:queasy/src/view/see_questions/widgets/see_questions_popups.dart';
 import '../../../src.dart';
 
 /// This is the edit quiz provider.
 ///
-/// It is the provider that the [EditQuizView] uses to get the questions of a
+/// It is the provider that the [SeeQuestionsView] uses to get the questions of a
 /// specific category and to edit them, add more or delete them.
 ///
 /// The variable [_questions] is a list that stores the questions of the category.
@@ -28,7 +28,7 @@ import '../../../src.dart';
 /// The variable [answer4Controller] is the controller for the fourth answer text field.
 ///
 /// The variable [_selectedRadioAnswer] is the variable that stores the selected radio button.
-class EditQuizProvider with ChangeNotifier {
+class SeeQuestionsProvider with ChangeNotifier {
   late Category _category;
 
   Category get category => _category;
@@ -37,18 +37,42 @@ class EditQuizProvider with ChangeNotifier {
     _category = category;
   }
 
+  //List<Question> _questionList = [];
+  late List<Question> _questionList;
+
+  List<Question> get questionList => _questionList;
+
+  set questionList(List<Question> questionList) {
+    _questionList = questionList;
+  }
+
   TextEditingController questionController = TextEditingController();
   TextEditingController answer1Controller = TextEditingController();
   TextEditingController answer2Controller = TextEditingController();
   TextEditingController answer3Controller = TextEditingController();
   TextEditingController answer4Controller = TextEditingController();
 
-  AnswersRadioButton _selectedRadioAnswer = AnswersRadioButton.ans1;
+  TextEditingController numberOfQuestionsController = TextEditingController();
+  TextEditingController newQuizNameController = TextEditingController();
 
+  AnswersRadioButton _selectedRadioAnswer = AnswersRadioButton.ans1;
   AnswersRadioButton get selectedRadioAnswer => _selectedRadioAnswer;
 
   set selectedRadioAnswer(AnswersRadioButton value) {
     _selectedRadioAnswer = value;
+  }
+
+  GlobalKey<FormState> formKeyAddEditQuestion = GlobalKey<FormState>();
+  GlobalKey<FormState> formKeyCreateRandomQuiz = GlobalKey<FormState>();
+  GlobalKey<FormState> formKeyCreateCustomQuiz = GlobalKey<FormState>();
+
+  void updateListOfQuestions() async {
+    //print("Começa aqui");
+    //print("Category name: ${category.name}");
+    questionList = await category.getAllQuestions();
+    //print(questionList.toString());
+    //print("Termina aqui");
+    notifyListeners();
   }
 
   /// The method [addQuestion] is used to show a dialog to add a question to the category.
@@ -60,51 +84,20 @@ class EditQuizProvider with ChangeNotifier {
           context: context,
           builder: (BuildContext context) {
             return AddOrEditQuestionPopUp(
-              categoryName: _category.getName(),
+              categoryName: category.getName(),
               action: () {
-                addQuestionToDatabase(_category);
+                addQuestionToDatabase();
               },
             );
           });
     });
-    notifyListeners();
-  }
-
-  /// The method [deleteCategory] is used to show a dialog to delete a category from the database.
-  ///
-  /// The variable [context] is used to show the dialog.
-  deleteCategory(BuildContext context) {
-    Future.delayed(Duration.zero, () {
-      showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return DeleteCategoryPopUp(category: _category.getName());
-          });
-    });
-    notifyListeners();
-  }
-
-  /// This method [editQuestionOnDatabase] used to edit a question on the database.
-  ///
-  /// The variable [question] is the question that is going to be edited.
-  editQuestionOnDatabase(Question question) async {
-    print(questionController.text);
-    question.setText(questionController.text.toString());
-    question.answers[0].setText(answer1Controller.text);
-    question.answers[1].setText(answer2Controller.text);
-    question.answers[2].setText(answer3Controller.text);
-    question.answers[3].setText(answer4Controller.text);
-    question.setCorrectAnswer(_selectedRadioAnswer.index);
-    await question.updateQuestion();
-    print("Question edited");
-    //notifyListeners();
   }
 
   /// The method [addQuestionToDatabase] is used to add a question to the database.
   ///
   /// The variable [question] is the question that is going to be added.
   /// The variable [category] is the category that the question is going to be added to.
-  addQuestionToDatabase(Category _category) async {
+  addQuestionToDatabase() async {
     Question question = Question(
       text: questionController.text,
       answers: [
@@ -117,12 +110,49 @@ class EditQuizProvider with ChangeNotifier {
         Answer(answer4Controller.text,
             _selectedRadioAnswer.index == 3 ? true : false),
       ],
-      category: _category.getName(),
+      category: category.getName(),
     );
-    await _category.createQuestion(question);
+    await category.createQuestion(question);
+    updateListOfQuestions();
     print("Question added");
     //print("Question: $questionController.text]");
-    //notifyListeners();
+    // notifyListeners();
+  }
+
+  /// The method [editQuestion] is used to show a dialog to edit a question.
+  ///
+  /// The variable [context] is used to show the dialog.
+  /// The variable [question] is the question that is going to be edited.
+  editQuestion(BuildContext context, Question question) {
+    Future.delayed(Duration.zero, () {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AddOrEditQuestionPopUp(
+              categoryName: question.category,
+              question: question,
+              action: () {
+                editQuestionOnDatabase(question);
+              },
+            );
+          });
+    });
+  }
+
+  /// This method [editQuestionOnDatabase] used to edit a question on the database.
+  ///
+  /// The variable [question] is the question that is going to be edited.
+  editQuestionOnDatabase(Question question) async {
+    question.setText(questionController.text.toString());
+    question.answers[0].setText(answer1Controller.text);
+    question.answers[1].setText(answer2Controller.text);
+    question.answers[2].setText(answer3Controller.text);
+    question.answers[3].setText(answer4Controller.text);
+    question.setCorrectAnswer(_selectedRadioAnswer.index);
+    await question.updateQuestion();
+    print("Question edited");
+    //print("Question: $questionController.text]");
+    notifyListeners();
   }
 
   /// The method [deleteQuestion] is used to show a dialog to delete a question from the database.
@@ -137,47 +167,65 @@ class EditQuizProvider with ChangeNotifier {
             return DeleteQuestionPopUp(question: question);
           });
     });
+    //notifyListeners();
+  }
+
+  /// This method [deleteQuestionFromDatabase] used to delete a question from the database.
+  ///
+  /// The variable [question] is the question that is going to be deleted.
+  deleteQuestionFromDatabase(Question question) async {
+    await category.deleteQuestion(question);
+    print("Question deleted");
+    //print("Question: $questionController.text]");
     notifyListeners();
   }
 
-  /// The method [editQuestion] is used to show a dialog to edit a question.
+  /// The method [addCategoryToDatabase] creates a new category and adds it to the database.
+  ///
+  /// The variable [name] is the name of the category that is going to be created.
+  addCategoryToDatabase(String name) async {
+    await CategoryRepo().createCategory(name, Colors.blue);
+    print("Category added");
+    notifyListeners();
+  }
+
+  /// The method [deleteCategory] is used to show a dialog to delete a category from the database.
   ///
   /// The variable [context] is used to show the dialog.
-  /// The variable [question] is the question that is going to be edited.
-  editQuestion(BuildContext context, Question question) {
+  deleteCategory(BuildContext context) {
     Future.delayed(Duration.zero, () {
       showDialog(
           context: context,
           builder: (BuildContext context) {
-            return AddOrEditQuestionPopUp(
-              categoryName: question.category,
-              action: () {
-                editQuestionOnDatabase(question);
-              },
-              question: question,
-            );
+            return DeleteCategoryPopUp(category: _category.getName());
           });
     });
+  }
+
+  /// This method [deleteCategoryFromDatabase] used to delete a category from the database.
+  deleteCategoryFromDatabase() async {
+    await CategoryRepo().deleteCategory(category.getName());
+    print("Category deleted");
     notifyListeners();
   }
 
-  /// The method [createRandomQuiz] is used to create a quiz with random questions and
+  /// The method [createAndStoreRandomQuiz] is used to create a quiz with random questions and
   /// store it in the database.
-  bool createRandomQuiz() {
-    // Check if there are question in the category. If not, no quiz can be created
-    if (category.getAllQuestions() == []) { // TODO: fix condition
-      print("No questions in category");
-      // Show an alert that says the quiz cannot be created because there are no
-      // questions in the category
-      return false;
-    } else {
-      //print("Creating random quiz");
-      // get random questions from the database
-      // TODO
-      // store the quiz in the database
-      // TODO
-      return true;
+  void createAndStoreRandomQuiz() {
+    int numberOfQuestions = int.parse(numberOfQuestionsController.text);
+    String quizName = newQuizNameController.text;
+
+    if (numberOfQuestions > questionList.length) {
+      numberOfQuestions = questionList.length;
     }
+
+    Quiz()
+        .getRandomQuestions(
+            name: quizName,
+            category: Category(name: category.getName()),
+            noOfQuestions: numberOfQuestions,
+            isPublic: false)
+        .then((quiz) => quiz.storeQuiz());
   }
 
   /// The method [getCorrectRadioAnswer] gets the correct answer of a [question] and returns the

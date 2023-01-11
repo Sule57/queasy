@@ -113,6 +113,11 @@ class RegisterViewMobileState extends State<RegisterViewMobile> {
                               if (value == null || value.isEmpty) {
                                 return 'Please enter email';
                               }
+                              if (!RegExp(
+                                      r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                                  .hasMatch(value)) {
+                                return "Invalid email address";
+                              }
                               return null;
                             },
                             controller: textController[0],
@@ -142,6 +147,9 @@ class RegisterViewMobileState extends State<RegisterViewMobile> {
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Please enter password';
+                              }
+                              if (value.length < 6) {
+                                return 'Password needs to be at least 6 characters';
                               }
                               return null;
                             },
@@ -177,7 +185,7 @@ class RegisterViewMobileState extends State<RegisterViewMobile> {
                                 return 'Please confirm password';
                               }
                               if (value != textController[2].text) {
-                                return 'Not a match';
+                                return 'Passwords do not match';
                               }
                               return null;
                             },
@@ -229,8 +237,9 @@ class RegisterViewMobileState extends State<RegisterViewMobile> {
                                     } else {
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(
-                                        const SnackBar(
-                                          content: Text('Login incorrect'),
+                                        SnackBar(
+                                          content:
+                                              Text(controller.errorMessage),
                                         ),
                                       );
                                     }

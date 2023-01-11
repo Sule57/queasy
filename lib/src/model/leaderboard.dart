@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:queasy/src.dart';
 import 'package:queasy/src/model/leaderboard_entry.dart';
 import 'package:queasy/src/model/profile.dart';
 
@@ -36,7 +37,6 @@ class Leaderboard {
   late var _firebaseFirestore;
   late CollectionReference _collection = _firebaseFirestore.collection('leaderboard');
   late DocumentReference _doc = _collection.doc(_category);
-  late DocumentReference _docPriv = _collection.doc(UID! + '-' + _category);
   late DocumentReference _docAll = _collection.doc('All');
 
   /// Private constructor for [Leaderboard] that deals with initializing the private parameters.
@@ -61,7 +61,6 @@ class Leaderboard {
       this._firebaseFirestore = instance;
       _collection = _firebaseFirestore.collection('leaderboard');
       _doc = _collection.doc(_category);
-      _docPriv = _collection.doc(UID! + '-' + _category);
       _docAll = _collection.doc('All');
     }
   }
@@ -99,6 +98,19 @@ class Leaderboard {
     return _entries;
   }
 
+  Future<void> removeUserFromAllLeaderboard() async {
+    await _docAll.update({
+      _currentPlayer.getName: FieldValue.delete()
+    });
+  }
+
+  Future<void> removeUserFromPublicLeaderboards() async {
+    await updateCurrentUserPoints(_currentPlayer.getScore * -1);
+    await _collection.doc(_category).update({
+      _currentPlayer.getName: FieldValue.delete()
+    });
+  }
+
   /// Updates the leaderboard in the database with the new points of the current user.
   ///
   /// It takes the [newPoints] as a parameter which should be added to the current points of the user and updates the database.
@@ -116,7 +128,7 @@ class Leaderboard {
     if(_isPublic){
       doc = _doc;
     }else{
-      doc = _docPriv;
+      return;
     }
 
     // parse through the document and update the positions
@@ -167,7 +179,11 @@ class Leaderboard {
   /// It takes the [newPoints] as a parameter which should be added to the current points of the user and updates the database.
   /// Then it finds the old points of the user in the All leaderboard for later calculations.
   Future<void> updateAllLeaderboard(int newPoints) async {
-    int oldPoints = -9999999999;
+    int oldPoints = _currentPlayer.getScore;
+
+    if(_currentPlayer.getPosition == -1){
+      oldPoints = 0;
+    }
 
     await _docAll.get().then((DocumentSnapshot documentSnapshot) {
       if (documentSnapshot.exists) {
@@ -228,10 +244,16 @@ class Leaderboard {
       docSnap = await _doc.get();
     }else{
       print('private');
-      docSnap = await _docPriv.get();
+      return;
     }
 
     print('Data: ' + docSnap.data().toString());
+    if(docSnap.data() == null){
+      print('Data is null');
+      _entries = [];
+      _currentPlayer = LeaderboardEntry(_currentPlayer.getName, 0, 0);
+      return;
+    }
     Map<String, dynamic> data = docSnap.data() as Map<String, dynamic>;
     List<LeaderboardEntry> entries = [];
 
@@ -322,7 +344,7 @@ class Leaderboard {
     if(_isPublic){
       doc = _doc;
     }else{
-      doc = _docPriv;
+      return;
     }
 
     sortEntries();

@@ -18,7 +18,7 @@ Color dark = const Color(0xff0d0106);
 /// The [darkTheme] is the theme that is selected when the user presses the
 /// dark mode button.
 class AppThemes {
-  // Theme taken by the app if user has selects the light theme.
+  /// Theme taken by the app if user has selects the light theme.
   ThemeData lightTheme = ThemeData(
     colorScheme: ColorScheme.light(
       primary: purple,
@@ -63,11 +63,11 @@ class AppThemes {
         color: dark,
       ),
       subtitle1: TextStyle(
-        fontSize: 16,
+        fontSize: 24,
         color: dark,
       ),
       subtitle2: TextStyle(
-        fontSize: 14,
+        fontSize: 16,
         color: dark,
       ),
       bodyText1: TextStyle(
@@ -78,7 +78,6 @@ class AppThemes {
         fontSize: 10,
         color: dark,
       ),
-
       button: TextStyle(
         fontSize: 14,
         fontWeight: FontWeight.bold,
@@ -95,7 +94,7 @@ class AppThemes {
     ),
   );
 
-  // Theme taken by the app if user has selects the dark theme.
+  /// Theme taken by the app if user has selects the dark theme.
   ThemeData darkTheme = ThemeData(
     colorScheme: ColorScheme.dark(
       primary: purple,
@@ -104,7 +103,7 @@ class AppThemes {
       onSecondary: dark,
       tertiary: green,
       onTertiary: light,
-      background: dark,
+      background: Colors.black87,
       onBackground: Colors.white,
     ),
     fontFamily: GoogleFonts.nunito().fontFamily,
@@ -140,11 +139,11 @@ class AppThemes {
         color: Colors.white,
       ),
       subtitle1: TextStyle(
-        fontSize: 16,
+        fontSize: 24,
         color: Colors.white,
       ),
       subtitle2: TextStyle(
-        fontSize: 14,
+        fontSize: 16,
         color: Colors.white,
       ),
       bodyText1: TextStyle(

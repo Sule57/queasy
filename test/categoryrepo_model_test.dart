@@ -28,32 +28,47 @@ void main() async {
   String username = 'Savo';
 
   var instance = FakeFirebaseFirestore();
-
-  await instance.collection('categories').doc('public').set({});
   await instance.collection('categories').doc(UID).set({});
-
+  await instance.collection('categories').doc('public').set({});
 
   Category cat1 = await Category(name: catName1, color:color, firestore:instance, UID: UID);
   Category cat2 = await Category(name: catName2, color:color, firestore:instance, UID: UID);
   Category cat3 = await Category(name: catName3, color:color, firestore:instance, UID: UID);
 
-  await CategoryRepo(instance_: instance, id: UID).createCategory(catName1, color, instance: instance, uid: UID, username_: username);
-  await CategoryRepo(instance_: instance, id: UID).createCategory(catName2, color, instance: instance, uid: UID, username_: username);
-  await CategoryRepo(instance_: instance, id: UID).createCategory(catName3, color, instance: instance, uid: UID, username_: username);
+  test('Public categories are not retrieved successfully', () async {
+    await instance.collection('categories').doc('public').collection('Arts').doc('question-1').set({'ID': 'question-1'});
+    await instance.collection('categories').doc('public').update({'Arts': color.value});
+
+    await instance.collection('categories').doc('public').collection('Sports').doc('question-1').set({'ID': 'question-1'});
+    await instance.collection('categories').doc('public').update({'Sports': color.value + 1});
+    List<String> list = await CategoryRepo(instance_: instance, id: UID).getPublicCategories(instance: instance, uid: UID, username_: username);
+    expect(list.length, 2);
+  });
 
 
+  test('Private categories are not created successfully', () async {
+    await CategoryRepo(instance_: instance, id: UID).createCategory(catName1, color, instance: instance, uid: UID);
+    await CategoryRepo(instance_: instance, id: UID).createCategory(catName2, color, instance: instance, uid: UID);
+    await CategoryRepo(instance_: instance, id: UID).createCategory(catName3, color, instance: instance, uid: UID);
 
-  test('Categories are not retrieved successfully', () async {
+    List<String> list = await CategoryRepo(instance_: instance, id: UID).getPrivateCategories(instance: instance, uid: UID, username_: username);
+    expect(list.length, 3);
+  });
+
+  test('Private categories are not retrieved successfully', () async {
     List<String> list = await CategoryRepo(instance_: instance, id: UID).getPrivateCategories(instance: instance, uid: UID, username_: username);
     expect(list.length, 3);
   });
 
   test('Category is not deleted successfully', () async {
-    await CategoryRepo(instance_: instance, id: UID).deleteCategory(catName1, instance: instance, uid: UID, username_: username);
+    await CategoryRepo(instance_: instance, id: UID).deleteCategory(catName1, instance: instance, uid: UID);
+
     List<String> list = await CategoryRepo(instance_: instance, id: UID).getPrivateCategories(instance: instance, uid: UID, username_: username);
 
     expect(list.length, 2);
   });
+
+
 
 
 

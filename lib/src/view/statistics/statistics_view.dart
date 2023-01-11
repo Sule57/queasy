@@ -7,7 +7,7 @@ import 'package:queasy/src/view/statistics/statistics_provider.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
 import '../../../constants/theme_provider.dart';
-import '../play_quiz/quiz_provider.dart';
+import '../play_quiz/play_quiz_provider.dart';
 
 class StatisticsView extends StatefulWidget {
   const StatisticsView({Key? key}) : super(key: key);
@@ -187,7 +187,7 @@ class StatisticsMobileContent extends StatelessWidget {
                               ),
                               Expanded(
                                 child: Text(
-                                  Provider.of<QuizProvider>(context)
+                                  Provider.of<PlayQuizProvider>(context)
                                           .currentPoints
                                           .toString() +
                                       '\n Points',
@@ -340,7 +340,7 @@ class StatisticsDesktopContent extends StatelessWidget {
                       ),
                       Expanded(
                         child: Text(
-                          Provider.of<QuizProvider>(context)
+                          Provider.of<PlayQuizProvider>(context)
                                   .currentPoints
                                   .toString() +
                               '\n Points',
