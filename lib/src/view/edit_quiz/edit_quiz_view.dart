@@ -77,9 +77,8 @@ class _EditQuizViewState extends State<EditQuizView> {
     _isLoading = true;
     _category = await CategoryRepo().getCategory(categoryName);
     controller.category = _category;
-    controller.getListOfQuestions();
+    controller.updateListOfQuestions();
     _questions = await _category.getAllQuestions();
-    //print("ok");
     _questions = context.read<EditQuizProvider>().questionList;
     //_questions = controller.questionList;
     //controller.formKeyAddEditQuestion = GlobalKey<FormState>();

@@ -8,6 +8,7 @@
 import 'package:flutter/material.dart';
 import 'package:queasy/src/view/edit_quiz/edit_quiz_view.dart';
 import 'package:queasy/src/view/edit_quiz/widgets/edit_quiz_popups.dart';
+import 'package:queasy/src/view/private_category_selection_view.dart';
 import '../../../src.dart';
 
 /// This is the edit quiz provider.
@@ -37,13 +38,20 @@ class EditQuizProvider with ChangeNotifier {
     _category = category;
   }
 
-  //List<Question> _questionList = [];
   late List<Question> _questionList;
 
   List<Question> get questionList => _questionList;
 
   set questionList(List<Question> questionList) {
     _questionList = questionList;
+  }
+
+  late List<String> _categoryList;
+
+  List<String> get categoryList => _categoryList;
+
+  set categoryList(List<String> categoryList) {
+    _categoryList = categoryList;
   }
 
   TextEditingController questionController = TextEditingController();
@@ -62,12 +70,19 @@ class EditQuizProvider with ChangeNotifier {
 
   GlobalKey<FormState> formKeyAddEditQuestion = GlobalKey<FormState>();
 
-  getListOfQuestions() async {
-    //print("Começa aqui");
-    //print("Category name: ${category.name}");
+  /// The method [updateListOfQuestions] updates the list of questions to be shown in the [EditQuizView].
+  ///
+  /// It gets the questions from the database and stores them in the variable [_questions].
+  updateListOfQuestions() async {
     questionList = await category.getAllQuestions();
-    //print(questionList.toString());
-    //print("Termina aqui");
+    notifyListeners();
+  }
+
+  /// The method [updateListOfCategories] updates the list of categories to be shown in the [PrivateCategorySelectionView].
+  ///
+  /// It gets the categories from the database and stores them in the variable [_categoryList].
+  updateListOfCategories() async {
+    categoryList = await CategoryRepo().getPrivateCategories();
     notifyListeners();
   }
 
@@ -109,9 +124,10 @@ class EditQuizProvider with ChangeNotifier {
       category: category.getName(),
     );
     await category.createQuestion(question);
+    updateListOfQuestions();
     print("Question added");
     //print("Question: $questionController.text]");
-    notifyListeners();
+    //notifyListeners();
   }
 
   /// The method [editQuestion] is used to show a dialog to edit a question.
@@ -170,9 +186,10 @@ class EditQuizProvider with ChangeNotifier {
   /// The variable [question] is the question that is going to be deleted.
   deleteQuestionFromDatabase(Question question) async {
     await category.deleteQuestion(question);
+    updateListOfQuestions();
     print("Question deleted");
     //print("Question: $questionController.text]");
-    notifyListeners();
+    //notifyListeners();
   }
 
   /// The method [addCategoryToDatabase] creates a new category and adds it to the database.
@@ -180,8 +197,9 @@ class EditQuizProvider with ChangeNotifier {
   /// The variable [name] is the name of the category that is going to be created.
   addCategoryToDatabase(String name) async {
     await CategoryRepo().createCategory(name, Colors.blue);
+    updateListOfCategories();
     print("Category added");
-    notifyListeners();
+    //notifyListeners();
   }
 
   /// The method [deleteCategory] is used to show a dialog to delete a category from the database.
@@ -200,8 +218,9 @@ class EditQuizProvider with ChangeNotifier {
   /// This method [deleteCategoryFromDatabase] used to delete a category from the database.
   deleteCategoryFromDatabase() async {
     await CategoryRepo().deleteCategory(category.getName());
+    updateListOfCategories();
     print("Category deleted");
-    notifyListeners();
+    //notifyListeners();
   }
 
   /// The method [createRandomQuiz] is used to create a quiz with random questions and

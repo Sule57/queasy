@@ -87,7 +87,6 @@ class _EditQuizTextFieldState extends State<EditQuizTextField> {
     if((controller.text) != ''){
       setControllerText(controller.text);
     }
-
     return Expanded(
       child: Padding(
         padding: MediaQuery.of(context).size.width < 700
@@ -106,7 +105,6 @@ class _EditQuizTextFieldState extends State<EditQuizTextField> {
                 Navigator.pop(context);
               }
             },
-
             maxLines: isQuestion ? 2 : 1,
             controller: controller..text = controllerText,
             inputFormatters: [
@@ -130,17 +128,6 @@ class _EditQuizTextFieldState extends State<EditQuizTextField> {
                 borderRadius: BorderRadius.circular(25.7),
               ),
             ),
-            // onFieldSubmitted: (value) {
-            //   if (question != null) (value) => controller.text = value;
-            // },
-            // onSaved: (value) {
-            //   if (question != null) (value) => controller.text = value;
-            // },
-            // onChanged: (value) {
-            //   if (question != null) {
-            //     question.text = value;
-            //   }
-            // },
           ),
         ),
       ),
