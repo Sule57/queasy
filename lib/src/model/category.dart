@@ -7,6 +7,7 @@ import 'package:queasy/src/model/question.dart';
 import 'package:queasy/utils/exceptions.dart';
 
 import '../../src.dart';
+
 /// This is the model of the Category.
 ///
 /// [name] is the name of the category.
@@ -51,18 +52,22 @@ class Category {
   /// If it is not passed, the constructor will initialize the [UID] with the
   /// current user's [UID] and [_privateDoc] and [_publicDoc] with the references
   /// in the production database.
-  Category({required String name, Color color = Colors.blue, FirebaseFirestore? firestore, String? UID = "test123456789"}) {
+  Category(
+      {required String name,
+      Color color = Colors.blue,
+      FirebaseFirestore? firestore,
+      String? UID = "test123456789"}) {
     _name = name;
     _color = color;
-    if(firestore == null) {
+    if (firestore == null) {
       this.UID = getCurrentUserID();
       this.firestore = FirebaseFirestore.instance;
-      this._publicDoc = FirebaseFirestore.instance.collection('categories').doc('public');
+      this._publicDoc =
+          FirebaseFirestore.instance.collection('categories').doc('public');
       this._privateDoc = FirebaseFirestore.instance
           .collection('categories')
           .doc(getCurrentUserID());
-    }
-    else {
+    } else {
       this.UID = UID;
       this.firestore = firestore;
       _publicDoc = firestore.collection('categories').doc('public');
@@ -114,32 +119,46 @@ class Category {
       });
     });
 
-    if (this.firestore == null){
+    if (this.firestore == null) {
       this.firestore = FirebaseFirestore.instance;
     }
 
-    var newDocumentRef = this.firestore!.collection('leaderboard').doc(username + '-' + newName);
+    var newDocumentRef =
+        this.firestore!.collection('leaderboard').doc(username + '-' + newName);
     // iterate over the leaderboard in the Firestore, and copy all the record to the new leaderboard with the new name
-    await this.firestore!.collection('leaderboard').doc(username + '-' + this._name).get().then((DocumentSnapshot documentSnapshot) {
+    await this
+        .firestore!
+        .collection('leaderboard')
+        .doc(username + '-' + this._name)
+        .get()
+        .then((DocumentSnapshot documentSnapshot) {
       if (documentSnapshot.exists) {
-        Map<String, dynamic> data = documentSnapshot.data() as Map<String, dynamic>;
+        Map<String, dynamic> data =
+            documentSnapshot.data() as Map<String, dynamic>;
 
         for (String key in data.keys) {
           newDocumentRef.update(data[key]);
         }
       }
     });
-    await this.firestore!.collection('leaderboard').doc(username + '-' + this._name).delete();
+    await this
+        .firestore!
+        .collection('leaderboard')
+        .doc(username + '-' + this._name)
+        .delete();
 
     // iterate over quizzes collection, find all documents which have the attribute 'category' which equals to _name and change it to newName
-    await this.firestore!.collection('quizzes').get().then((QuerySnapshot querySnapshot) {
+    await this
+        .firestore!
+        .collection('quizzes')
+        .get()
+        .then((QuerySnapshot querySnapshot) {
       querySnapshot.docs.forEach((doc) {
-        if(doc.exists){
+        if (doc.exists) {
           if ((doc.data()! as Map<String, dynamic>)['category'] == this._name) {
             doc.reference.update({'category': newName});
           }
         }
-
       });
     });
 
@@ -200,8 +219,10 @@ class Category {
         .then((QuerySnapshot querySnapshot) {
       querySnapshot.docs.forEach((doc) {
         // if there are no questions or the only question is 'question-1' which is default question, it returns an empty list
-        if(doc.data() != null && (doc.data() as Map<String, dynamic>)["ID"] != "question-1") {
-          questions.add(Question.fromJson(doc.data() as Map<String, dynamic>, _name, username));
+        if (doc.data() != null &&
+            (doc.data() as Map<String, dynamic>)["ID"] != "question-1") {
+          questions.add(Question.fromJson(
+              doc.data() as Map<String, dynamic>, _name, username));
         }
       });
     });
@@ -212,7 +233,6 @@ class Category {
   ///
   /// [question] is the [Question] that should be deleted. [firestore] is not required instance of the database and is only used for testing.
   Future<void> deleteQuestion(Question question) async {
-
     if (UID == null) {
       throw UserNotLoggedInException();
     }
@@ -223,9 +243,10 @@ class Category {
         .get()
         .then((QuerySnapshot querySnapshot) {
       if (querySnapshot.docs.length == 1) {
-        _privateDoc.collection(_name).doc("question-1").set({
-          "ID": "question-1"
-        });
+        _privateDoc
+            .collection(_name)
+            .doc("question-1")
+            .set({"ID": "question-1"});
       }
     });
 
@@ -256,28 +277,20 @@ class Category {
           }
         }
         if (questionIDs.isEmpty) {
-          firestore
-              ?.collection('quizzes')
-              .doc(currentQuizId)
-              .delete();
+          firestore?.collection('quizzes').doc(currentQuizId).delete();
         } else {
-          firestore
-              ?.collection('quizzes')
-              .doc(currentQuizId)
-              .update({
+          firestore?.collection('quizzes').doc(currentQuizId).update({
             "questionIds": questionIDs,
           });
         }
       });
     });
-
   }
 
   /// Used to add a given [Question] to the category in the database.
   ///
   /// [question] is the [Question] that should be added. [firestore] is not required instance of the database and is only used for testing.
   Future<void> createQuestion(Question question) async {
-
     if (UID == null) {
       throw UserNotLoggedInException();
     }
@@ -321,8 +334,8 @@ class Category {
   }
 
   /// Retrieves a [Question] from the private category with a given [id].
-  Future<Question> getQuestion(String id, {bool public = false, String categoryName = ""}) async {
-
+  Future<Question> getQuestion(String id,
+      {bool public = false, String categoryName = ""}) async {
     if (categoryName == "") {
       categoryName = _name;
     }
@@ -330,7 +343,12 @@ class Category {
     if (UID == null || UID == '') {
       throw UserNotLoggedInException();
     }
-    print('getQuestion: id: ' + id + ' UID: ' + UID! + ' categoryName: ' + categoryName);
+    print('getQuestion: id: ' +
+        id +
+        ' UID: ' +
+        UID! +
+        ' categoryName: ' +
+        categoryName);
 
     if (public == false) {
       await firestore
@@ -342,7 +360,9 @@ class Category {
           .then((DocumentSnapshot documentSnapshot) {
         if (documentSnapshot.exists) {
           this.getQuestionTemp = Question.fromJson(
-              documentSnapshot.data() as Map<String, dynamic>, categoryName, UID!);
+              documentSnapshot.data() as Map<String, dynamic>,
+              categoryName,
+              UID!);
         } else {
           print('Document does not exist on the database');
         }
@@ -357,7 +377,9 @@ class Category {
           .then((DocumentSnapshot documentSnapshot) {
         if (documentSnapshot.exists) {
           this.getQuestionTemp = Question.fromJson(
-              documentSnapshot.data() as Map<String, dynamic>, categoryName, UID!);
+              documentSnapshot.data() as Map<String, dynamic>,
+              categoryName,
+              UID!);
         } else {
           print('Document does not exist on the database');
         }
@@ -372,7 +394,6 @@ class Category {
   }
 
   Future<Question> getPrivateQuestion(String id, String ownerID) async {
-
     if (UID == null) {
       throw UserNotLoggedInException();
     }
@@ -403,7 +424,6 @@ class Category {
   ///
   /// This is used to create a unique ID for a question in the category. It finds the highest ID and adds 1 to it.
   Future<String> getNextID() async {
-
     if (UID == null) {
       throw UserNotLoggedInException();
     }
@@ -427,7 +447,6 @@ class Category {
   }
 
   Future<String> randomizer({bool public = false}) async {
-
     if (UID == null) {
       throw UserNotLoggedInException();
     }
@@ -467,9 +486,20 @@ class Category {
     return id;
   }
 
-  Future<void> deleteQuiz(String id) async {
+  /// Deletes from Firestore a quiz that the user created.
+  ///
+  /// Takes a String with the [id] of the quiz as parameter to perform the
+  /// database search. It also takes an optional parameter [firestore] to
+  /// allow for testing. this parameter should only be passed to the function
+  /// on tests to mock the database.
+  static Future<void> deleteQuiz({
+    required String id,
+    FirebaseFirestore? firestore,
+  }) async {
+    if (firestore == null) {
+      firestore = FirebaseFirestore.instance;
+    }
 
-    await firestore
-        ?.collection('quizzes').doc(id).delete();
+    await firestore.collection('quizzes').doc(id).delete();
   }
 }
