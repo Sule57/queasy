@@ -264,15 +264,10 @@ class Profile {
     });
     //TODO
 
-    Leaderboard leaderboard;
     if (is_public) {
-      leaderboard = await Leaderboard.createPublic(
-          category, (await getCurrentUserUsername())!);
-    } else {
-      leaderboard = await Leaderboard.createPrivate(
+      Leaderboard leaderboard = await Leaderboard.createPublic(
           category, (await getCurrentUserUsername())!);
     }
-    leaderboard.updateCurrentUserPoints(score);
   }
 
   //START OF METHODS FOR PROFILE VIEW
