@@ -10,7 +10,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:queasy/src.dart';
 
-import '../see_questions_provider.dart';
+import '../see_category_questions_provider.dart';
 
 /// This is the edit quiz text field.
 ///
@@ -73,7 +73,8 @@ class _SeeQuestionsTextFieldState extends State<SeeQuestionsTextField> {
 
   @override
   Widget build(BuildContext context) {
-    SeeQuestionsProvider provider = Provider.of<SeeQuestionsProvider>(context);
+    SeeCategoryQuestionsProvider provider =
+        Provider.of<SeeCategoryQuestionsProvider>(context);
     final theme = Provider.of<ThemeProvider>(context).currentTheme;
     final _formKey = provider.formKeyAddEditQuestion;
 

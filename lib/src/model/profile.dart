@@ -482,31 +482,34 @@ class Profile {
       {FirebaseFirestore? firestore}) async {
     List<Quiz> quizzes = [];
     String? uid;
-    firestore = FirebaseFirestore.instance;
 
-    // if (firestore == null) {
-    //   firestore = FirebaseFirestore.instance;
-    //   uid = await getCurrentUserID();
-    // } else {
-    //   uid = "test123456789";
-    // }
+    if (firestore == null) {
+      firestore = FirebaseFirestore.instance;
+      uid = await getCurrentUserID();
+    } else {
+      uid = "test123456789";
+    }
 
     await firestore
         .collection('quizzes')
         .where('creatorID', isEqualTo: uid)
         .get()
         .then((QuerySnapshot querySnapshot) async {
+      print('dentro del then');
       querySnapshot.docs.forEach((doc) async {
+        print('dentro del for each');
         Quiz temp = Quiz();
         await temp
             .fromJSON(doc.data() as Map<String, dynamic>)
             .then((quiz) async {
           temp = await quiz;
         });
+        print('TEMP QUIZ: ${temp}');
         quizzes.add(temp);
       });
     });
 
+    print(quizzes);
     return quizzes;
   }
 }
