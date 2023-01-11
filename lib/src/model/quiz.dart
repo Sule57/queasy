@@ -256,7 +256,7 @@ class Quiz {
         this.id = documentSnapshot['id'];
         this.ownerID = documentSnapshot['creatorID'];
         this.category = new Category(
-            name: documentSnapshot['category']!, firestore: this.firestore);
+            name: documentSnapshot['category']!, firestore: this.firestore, UID: UID);
         // this.categoryName = ;
         this.noOfQuestions = documentSnapshot['questionIds'].length;
 

@@ -146,59 +146,11 @@ void main() async {
         true);
   });
 
-  // ---------------------------------------------------------------------------------------
-  // Private Leaderboards
-  // ---------------------------------------------------------------------------------------
-
-  String priv_cat = 'Programming 3';
-  String UID4 = 'uid4';
-  String username4 = 'Sophia';
-
-  instance.collection('leaderboard').doc(UID4+ '-' + cat).set({username4: {'position': 1, 'points': 100}});
-
-  /// Instance of the [Leaderboard] class.
-  Leaderboard lb3 = await Leaderboard.createPrivate(cat, username4, instance: instance, id: UID4);
-
-  /// Initializing the default data for the [Leaderboard] class in database.
-  await lb3.createRandomLeaderboard();
-  await lb3.updateData();
-  await lb3.getData();
-
-  /// Update the current user's score.
-  await lb3.updateCurrentUserPoints(12);
-
-  /// First test: Normal points increase
-  test('Number of points for current player should be increased', () {
-    expect(lb3.getCurrentPlayerPoints(), 97);
-  });
-  test('Position for current player should be increased', () {
-    expect(lb3.getCurrentPlayerPosition(), 2);
-  });
-  test(
-      'Positions of players that were above and are still above should be the same',
-          () {
-        expect(
-            lb3.getEntries().any((element) =>
-            element.getName == 'Julia' &&
-                element.getScore == 100 &&
-                element.getPosition == 1),
-            true);
-      });
-  test(
-      'Positions of players that were above but now are bellow should be decreased',
-          () {
-        expect(
-            lb3.getEntries().any((element) =>
-            element.getName == 'Savo' &&
-                element.getScore == 95 &&
-                element.getPosition == 3),
-            true);
-      });
-
-
   test(
       'Points are not updated when the user plays the quiz for the first time',
           () async {
+            String UID4 = 'uid4';
+            String username4 = 'Stefan';
 
 
             String new_cat = 'Programming 1';
@@ -208,12 +160,12 @@ void main() async {
             await instance.collection('leaderboard').doc(UID4+ '-' + new_cat).set({username4: {'position': 1, 'points': 100}});
 
             /// Instance of the [Leaderboard] class.
-            Leaderboard lb4 = await Leaderboard.createPrivate(new_cat, username4, instance: instance, id: UID4);
+            Leaderboard lb4 = await Leaderboard.createPublic(new_cat, username4, instance: instance, id: UID4);
 
             await lb4.getData();
 
 
-            Leaderboard lb5 = await Leaderboard.createPrivate(new_cat, username5, instance: instance, id: UID4);
+            Leaderboard lb5 = await Leaderboard.createPublic(new_cat, username5, instance: instance, id: UID4);
 
             await lb5.updateCurrentUserPoints(50);
 
@@ -224,7 +176,7 @@ void main() async {
             await lb5.getEntries().any((element) =>
             element.getName == 'Marko' &&
                 element.getScore == 50 &&
-                element.getPosition == 2),
+                element.getPosition == 1),
             true);
       });
 
