@@ -480,36 +480,26 @@ class Profile {
 
   static Future<List<Quiz>> getUserQuizzes(
       {FirebaseFirestore? firestore}) async {
-    List<Quiz> quizzes = [];
-    String? uid;
 
     if (firestore == null) {
       firestore = FirebaseFirestore.instance;
-      uid = await getCurrentUserID();
-    } else {
-      uid = "test123456789";
     }
 
+    List<Quiz> quizzes = [];
+    Quiz tempQuiz = Quiz();
+
+    /// Get the the id's of all quizzes whose creatorID is the current user's id
     await firestore
         .collection('quizzes')
-        .where('creatorID', isEqualTo: uid)
+        .where('creatorID', isEqualTo: getCurrentUserID())
         .get()
-        .then((QuerySnapshot querySnapshot) async {
-      print('dentro del then');
+        .then((QuerySnapshot querySnapshot) {
       querySnapshot.docs.forEach((doc) async {
-        print('dentro del for each');
-        Quiz temp = Quiz();
-        await temp
-            .fromJSON(doc.data() as Map<String, dynamic>)
-            .then((quiz) async {
-          temp = await quiz;
-        });
-        print('TEMP QUIZ: ${temp}');
-        quizzes.add(temp);
+        await tempQuiz.retrieveQuizFromId(id: doc.id);
+        quizzes.add(tempQuiz);
       });
     });
-
-    print(quizzes);
     return quizzes;
+
   }
 }

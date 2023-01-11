@@ -12,7 +12,7 @@ import '../../utils/exceptions.dart';
 class Quiz {
   /// Represents the id of the quiz, this will be set only if the quiz is
   /// private, since public quizzes aren't stored.
-  late String id;
+  String id = '';
 
   /// Represents the category of the quiz, this is used to retrieve
   /// the questions from the firebase.
@@ -252,7 +252,7 @@ class Quiz {
       print('it got the collection');
       if (documentSnapshot.exists) {
         print('Document data: ${documentSnapshot.data()}');
-        await fromJSON(documentSnapshot.data() as Map<String, dynamic>);
+        await fromJSON(json: documentSnapshot.data() as Map<String, dynamic>);
       } else {
         print('Document does not exist on the database');
       }
@@ -341,11 +341,13 @@ class Quiz {
     });
   }
 
-  Future<Quiz> fromJSON(Map<String, dynamic> json) async {
+  Future<void> fromJSON({required Map<String, dynamic> json, FirebaseFirestore? firestore}) async {
     //if you remove the if, try lo load, and then add it again and reload, it
     //works.
     if (firestore == null) {
-      firestore = FirebaseFirestore.instance;
+      this.firestore = FirebaseFirestore.instance;
+    } else {
+      this.firestore = firestore;
     }
 
     this.id = json['id'];
@@ -359,7 +361,5 @@ class Quiz {
           await category.getPrivateQuestion(_usedQuestions[i], ownerID!);
       _questions.add(tempQuestion);
     }
-
-    return this;
   }
 }
