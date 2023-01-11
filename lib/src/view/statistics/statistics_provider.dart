@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:queasy/src.dart';
 import '../../../utils/exceptions.dart';
-import '../play_quiz/quiz_provider.dart';
+import '../play_quiz/play_quiz_provider.dart';
 
 class StatisticsProvider with ChangeNotifier {
   late UserStatistics statistics;
-  QuizProvider qp;
+  PlayQuizProvider qp;
   late Profile p;
   int _numberQuiz = 0;
   late List<int> _resultsCorrect;

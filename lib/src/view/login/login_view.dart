@@ -30,12 +30,12 @@ class _LoginViewState extends State<LoginView> {
   late LoginProvider controller;
 
   @override
-  void didChangeDependencies() {
+  void initState() {
     controller = Provider.of<LoginProvider>(context, listen: false);
     controller.forgotPasswordController = TextEditingController();
     controller.passwordController = TextEditingController();
     controller.emailController = TextEditingController();
-    super.didChangeDependencies();
+    super.initState();
   }
 
   @override

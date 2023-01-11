@@ -8,7 +8,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../quiz_provider.dart';
+import '../play_quiz_provider.dart';
 
 /// Widget to display questions of the quiz.
 class QuestionContainer extends StatelessWidget {
@@ -23,7 +23,8 @@ class QuestionContainer extends StatelessWidget {
   /// is updated every time the user answers a question.
   @override
   Widget build(BuildContext context) {
-    String text = Provider.of<QuizProvider>(context).getCurrentQuestionText();
+    String text =
+        Provider.of<PlayQuizProvider>(context).getCurrentQuestionText();
     double height = MediaQuery.of(context).size.height;
 
     return Container(
