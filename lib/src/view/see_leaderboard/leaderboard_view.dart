@@ -16,20 +16,38 @@ class LeaderboardView extends StatefulWidget {
 
 /// State for [LeaderboardView].
 class _LeaderboardViewState extends State<LeaderboardView> {
+  bool _isLoading = true;
+
+  init() async {
+    _isLoading = true;
+    await Provider.of<LeaderboardProvider>(context, listen: false);
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
+  @override
+  void initState() {
+    init();
+    super.initState();
+  }
+
   /// Builds the view.
   ///
   /// Uses a [Stack] to display the
   /// [LeaderboardDesktopViewBackground] and the [LeaderboardViewContent] on top.
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: const [
-          LeaderboardDesktopViewBackground(),
-          LeaderboardViewContent(),
-        ],
-      ),
-    );
+    return _isLoading
+        ? Center(child: CircularProgressIndicator())
+        : Scaffold(
+            body: Stack(
+              children: const [
+                LeaderboardDesktopViewBackground(),
+                LeaderboardViewContent(),
+              ],
+            ),
+          );
   }
 }
 
@@ -151,14 +169,19 @@ class _LeaderboardViewContentState extends State<LeaderboardViewContent> {
 class LeaderboardMobileContent extends StatelessWidget {
   const LeaderboardMobileContent({Key? key}) : super(key: key);
   //TODO: manually add all public category names to this list
-  static const List<String> list = <String>['All', 'Science','History', 'Geography', 'Entertainment',
-    'Art & Literature'];
+  static const List<String> list = <String>[
+    'All',
+    'Science',
+    'History',
+    'Geography',
+    'Entertainment',
+    'Art & Literature',
+    'Sports'
+  ];
 
   @override
   Widget build(BuildContext context) {
-    final double statusBarHeight = MediaQuery
-      .of(context)
-      .padding.top;
+    final double statusBarHeight = MediaQuery.of(context).padding.top;
     return Scaffold(
       body: Center(
         child: Stack(
@@ -216,13 +239,14 @@ class LeaderboardMobileContent extends StatelessWidget {
               child: CustomScrollView(
                 slivers: <Widget>[
                   SliverAppBar(
-                    title: Center(child:Text(
-                        Provider.of<LeaderboardProvider>(context).category,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 50.0,
-                        ) //TextStyle
-                    )),
+                    title: Center(
+                        child: Text(
+                            Provider.of<LeaderboardProvider>(context).category,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 50.0,
+                            ) //TextStyle
+                            )),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.only(
                             bottomLeft: Radius.circular(30),
@@ -233,37 +257,39 @@ class LeaderboardMobileContent extends StatelessWidget {
                     flexibleSpace: FlexibleSpaceBar(
                       background: Center(
                           child: Column(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: <Widget>[
-                              Container(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    DropdownButton<String>(
-                                      hint: Text("Category",
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 20.0,
-                                          )),
-                                      icon: const Icon(Icons.arrow_downward),
-                                      iconEnabledColor: Colors.white,
-                                      iconDisabledColor: Colors.white,
-                                      items: list.map<DropdownMenuItem<String>>(
-                                              (final String value) {
-                                            return DropdownMenuItem<String>(
-                                              value: value,
-                                              child: Text(value),
-                                            );
-                                          }).toList(),
-                                      onChanged: (value) {
-                                        Provider.of<LeaderboardProvider>(context,
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: <Widget>[
+                          Container(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                DropdownButton<String>(
+                                  hint: Text("Category",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 20.0,
+                                      )),
+                                  icon: const Icon(Icons.arrow_downward),
+                                  iconEnabledColor: Colors.white,
+                                  iconDisabledColor: Colors.white,
+                                  items: list.map<DropdownMenuItem<String>>(
+                                      (final String value) {
+                                    return DropdownMenuItem<String>(
+                                      value: value,
+                                      child: Text(value),
+                                    );
+                                  }).toList(),
+                                  onChanged: (value) {
+                                    Provider.of<LeaderboardProvider>(context,
                                             listen: false)
-                                            .setLeaderboard(value!);
-                                      },
-                                    )
-                                  ],),),
-                            ],)
-                      ),
+                                        .setLeaderboard(value!);
+                                  },
+                                )
+                              ],
+                            ),
+                          ),
+                        ],
+                      )),
                     ),
                   ),
                   SliverList(
@@ -392,7 +418,6 @@ class LeaderboardMobileContent extends StatelessWidget {
     );
   }
 }
-
 
 class LeaderboardDesktopContent extends StatelessWidget {
   LeaderboardDesktopContent({Key? key}) : super(key: key);
