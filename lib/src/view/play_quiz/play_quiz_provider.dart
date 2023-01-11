@@ -56,7 +56,7 @@ import '../../model/quiz.dart';
 /// question. It is initialized to 15 seconds and is decremented every second.
 /// It gets reset to 15 seconds for every new question. It is used to display
 /// the time left in the UI. It is also used to calculate the score.
-class QuizProvider with ChangeNotifier {
+class PlayQuizProvider with ChangeNotifier {
   late Quiz _quiz;
   late Profile player;
   late String? _quizCategory;
@@ -75,9 +75,10 @@ class QuizProvider with ChangeNotifier {
   get timeLeft => _timeLeft.inSeconds.toString();
   get currentPoints => _currentPoints;
   get quizzResult => _quizzResult;
+  get currentQuestionAnswered => _currentQuestionAnswered;
 
 // assign the current user to the app
-  QuizProvider() {
+  PlayQuizProvider() {
     // default profile
     player = Profile(
       username: 'Savo',
@@ -181,6 +182,13 @@ class QuizProvider with ChangeNotifier {
     return '${_currentQuestionIndex + 1} / $_totalQuestions';
   }
 
+  /// Indicates that the user has answered the current question.
+  /// It sets the [_currentQuestionAnswered] to true.
+  void toggleQuestionAnswered() {
+    _currentQuestionAnswered = true;
+    notifyListeners();
+  }
+
   /// Updates [_currentQuestionIndex] and [_currentQuestionAnswered] to
   /// display the next question in the UI. It also resets the timer.
   /// If there are no more question, it calls the method [endQuiz].
@@ -220,7 +228,6 @@ class QuizProvider with ChangeNotifier {
     if (_quiz.isPublic == true) {
       //TODO check this
       await player.updateScore(_quizCategory!, _currentPoints, true);
-      print('seconds passed at the end of the quizz: $_secondsPassed');
     } else {
       await player.updateScore(_quizCategory!, _currentPoints, false);
     }
@@ -292,7 +299,6 @@ class QuizProvider with ChangeNotifier {
     } else {
       _timeLeft = Duration(seconds: seconds);
       _secondsPassed++;
-      print('$_secondsPassed seconds passed');
       notifyListeners();
     }
   }

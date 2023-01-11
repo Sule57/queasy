@@ -14,7 +14,8 @@ import 'package:provider/provider.dart';
 import 'package:queasy/constants/theme_provider.dart';
 import 'package:queasy/src/view/edit_quiz/edit_quiz_provider.dart';
 import 'package:queasy/src/view/login/login_provider.dart';
-import 'package:queasy/src/view/play_quiz/quiz_provider.dart';
+import 'package:queasy/src/view/play_quiz/play_quiz_provider.dart';
+import 'package:queasy/src/view/see_quiz/see_quiz_provider.dart';
 import 'package:queasy/src/view/statistics/statistics_provider.dart';
 import 'package:queasy/src/view/widgets/widget_tree.dart';
 
@@ -44,20 +45,21 @@ Future<void> main() async {
     runApp(
       MultiProvider(
         providers: [
-          ChangeNotifierProvider(create: (_) => QuizProvider()),
+          ChangeNotifierProvider(create: (_) => PlayQuizProvider()),
           ChangeNotifierProvider(create: (_) => LeaderboardProvider()),
           ChangeNotifierProvider(create: (_) => ProfileProvider()),
           ChangeNotifierProvider(create: (_) => EditQuizProvider()),
-          ChangeNotifierProxyProvider<QuizProvider, StatisticsProvider>(
+          ChangeNotifierProxyProvider<PlayQuizProvider, StatisticsProvider>(
             create: (BuildContext context) => StatisticsProvider(
-                Provider.of<QuizProvider>(context, listen: false)),
-            update: (BuildContext context, QuizProvider qp,
+                Provider.of<PlayQuizProvider>(context, listen: false)),
+            update: (BuildContext context, PlayQuizProvider qp,
                     StatisticsProvider? sp) =>
                 StatisticsProvider(qp),
           ),
           ChangeNotifierProvider(
               create: (_) => ThemeProvider(AppThemes().lightTheme)),
           ChangeNotifierProvider(create: (_) => LoginProvider()),
+          ChangeNotifierProvider(create: (_) => SeeQuizProvider()),
         ],
         child: const Qeasy(),
       ),

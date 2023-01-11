@@ -8,7 +8,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../quiz_provider.dart';
+import '../play_quiz_provider.dart';
 
 /// Widget to display the score, the current question being answered, and the
 /// time left.
@@ -25,10 +25,10 @@ class ScoreTracking extends StatelessWidget {
   /// updated every time the user answers a question.
   @override
   Widget build(BuildContext context) {
-    String pointTracker = Provider.of<QuizProvider>(context).pointTracker();
+    String pointTracker = Provider.of<PlayQuizProvider>(context).pointTracker();
     String questionTracker =
-        Provider.of<QuizProvider>(context).questionTracker();
-    String timeLeft = Provider.of<QuizProvider>(context).timeLeft;
+        Provider.of<PlayQuizProvider>(context).questionTracker();
+    String timeLeft = Provider.of<PlayQuizProvider>(context).timeLeft;
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10),

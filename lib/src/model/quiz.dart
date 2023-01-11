@@ -10,40 +10,40 @@ import '../../utils/exceptions.dart';
 /// This is done by using either the[getRandomQuestions] or the
 /// [retrieveQuizFromId] methods.
 class Quiz {
-  /// The id represents the id of the quiz, this will be set only if the quiz is
+  /// Represents the id of the quiz, this will be set only if the quiz is
   /// private, since public quizzes aren't stored.
   late String id;
 
-  /// The category represents the category of the quiz, this is used to retrieve
+  /// Represents the category of the quiz, this is used to retrieve
   /// the questions from the firebase.
   late Category category;
 
-  /// noOfQuestions represents the number of questions that the quiz will have.
+  /// Represents the number of questions that the quiz will have.
   late int noOfQuestions;
 
-  /// The ownerID represents the ID of the user who created the quiz or the word
+  /// Represents the ID of the user who created the quiz or the word
   /// 'public' used to reference public quizzes.
   late String? ownerID;
 
-  /// The name variable stores the name of the quiz.
+  /// Stores the name of the quiz.
   late String? name;
 
-  /// The UID represents the ID of the user who created the quiz.
+  /// Represents the ID of the user who created the quiz.
   late String? UID;
 
-  /// The _questions list stores the retrieved questions which will be displayed
+  /// Stores the retrieved questions which will be displayed
   /// to the user to answer.
   List<Question> _questions = [];
 
-  /// The _usedQuestions list stores the IDs of the questions already used in the
+  /// Stores the IDs of the questions already used in the
   /// quiz.
   List<String> _usedQuestions = [];
 
-  /// The firestore represents an instance of firebase connection,
+  /// Represents an instance of firebase connection,
   /// it is used to manipulate the firebase.
   late FirebaseFirestore? firestore;
 
-  /// isPublic represents whether the quiz is public or private.
+  /// Represents whether the quiz is public or private.
   late bool isPublic;
 
   /// A getter for the list of questions.
@@ -78,6 +78,10 @@ class Quiz {
     }
     category = Category(name: 'default', firestore: firestore);
   }
+
+  ///Dummy constructor for quiz that accept these parameters: string id,
+  ///string name, list of questions, string category
+  Quiz.dummy({required this.id, required this.name, required this.category});
 
   /// Creates a random ID for the quiz by using the [Random] class and the
   /// [String] function that gets a character from an integer value.
