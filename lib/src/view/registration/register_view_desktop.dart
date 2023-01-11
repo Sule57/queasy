@@ -114,10 +114,6 @@ class _RegisterViewDesktopState extends State<RegisterViewDesktop> {
                               .hasMatch(value)) {
                             return "Invalid email address";
                           }
-                          if (controller.errorMessage ==
-                              "email-already-in-use") {
-                            return "User already exists";
-                          }
                           return null;
                         },
                         controller: controllerEmail,
@@ -250,7 +246,11 @@ class _RegisterViewDesktopState extends State<RegisterViewDesktop> {
                               Navigator.of(context).push(MaterialPageRoute(
                                   builder: (context) => const HomeView()));
                             } else {
-                              print(errorMessage);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(controller.errorMessage),
+                                ),
+                              );
                             }
                           }
                         }),

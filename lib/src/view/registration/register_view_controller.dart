@@ -35,7 +35,7 @@ class RegisterViewController {
       return await newUser.registerUser();
     } on FirebaseAuthException catch (e) {
       if (e.code == 'email-already-in-use') {
-        errorMessage = e.code;
+        errorMessage = "User already exists";
         print('User already exists');
         return false;
       } else if (e.code == 'wrong-password') {
