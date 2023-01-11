@@ -37,6 +37,15 @@ class EditQuizProvider with ChangeNotifier {
     _category = category;
   }
 
+  //List<Question> _questionList = [];
+  late List<Question> _questionList;
+
+  List<Question> get questionList => _questionList;
+
+  set questionList(List<Question> questionList) {
+    _questionList = questionList;
+  }
+
   TextEditingController questionController = TextEditingController();
   TextEditingController answer1Controller = TextEditingController();
   TextEditingController answer2Controller = TextEditingController();
@@ -53,6 +62,14 @@ class EditQuizProvider with ChangeNotifier {
 
   GlobalKey<FormState> formKeyAddEditQuestion = GlobalKey<FormState>();
 
+  getListOfQuestions() async {
+    //print("Começa aqui");
+    //print("Category name: ${category.name}");
+    questionList = await category.getAllQuestions();
+    //print(questionList.toString());
+    //print("Termina aqui");
+    notifyListeners();
+  }
 
   /// The method [addQuestion] is used to show a dialog to add a question to the category.
   ///
