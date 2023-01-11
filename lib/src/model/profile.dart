@@ -217,7 +217,7 @@ class Profile {
   /// gets the current profile from user uid
   /// [uid] is the firebase user uid
   /// returns a [Profile] instance
-  static Future<Profile?> getProfilefromUID(String uid) async {
+  static Future<Profile?> getProfileFromUID(String uid) async {
     Profile? result;
     await FirebaseFirestore.instance
         .collection('users')
