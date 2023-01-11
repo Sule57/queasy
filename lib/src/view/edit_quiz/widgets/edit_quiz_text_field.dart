@@ -73,11 +73,21 @@ class _EditQuizTextFieldState extends State<EditQuizTextField> {
 
   get action => widget.action;
 
+  // setter for controllerText
+  void setControllerText(String value) {
+    widget.controllerText = value;
+  }
+
   @override
   Widget build(BuildContext context) {
     EditQuizProvider provider =
         Provider.of<EditQuizProvider>(context, listen: true);
     final _formKey = provider.formKeyAddEditQuestion;
+    // set controllerText to 'a'
+    if((controller.text) != ''){
+      setControllerText(controller.text);
+    }
+
     return Expanded(
       child: Padding(
         padding: MediaQuery.of(context).size.width < 700

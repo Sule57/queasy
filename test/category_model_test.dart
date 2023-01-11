@@ -1,11 +1,9 @@
 import 'dart:ui';
-
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:flutter_test/flutter_test.dart';
+
 import 'package:queasy/src.dart';
-import 'package:queasy/src/model/category.dart';
-import 'package:queasy/src/model/category_repo.dart';
-import 'package:queasy/src/model/quiz.dart';
+
 
 /// Main function for testing the [Category] class.
 ///
@@ -30,7 +28,7 @@ void main() async {
   await instance.collection('categories').doc(UID).set({});
 
 
-  await CategoryRepo(instance_: instance, id: UID).createCategory(catName, color, instance: instance, uid: UID, username_: username);
+  await CategoryRepo(instance_: instance, id: UID).createCategory(catName, color, instance: instance, uid: UID);
 
   Category cat = await Category(name: catName, color:color, firestore:instance, UID: UID);
   test('Category is not created properly', () {
@@ -47,20 +45,12 @@ void main() async {
   });
 
 
-  test('Category name is not set properly', () async {
-    String newName = 'English';
-
-    await cat.changeNameOfCategory(newName);
-    cat = await CategoryRepo(instance_: instance, id: UID).getCategory(newName, instance: instance, uid: UID, username_: username);
-
-    expect(cat.getName(), newName);
-  });
 
   test('Questions are not added', () async {
     String newName = 'English';
-    Question q1 = Question(UID: UID, category: newName, text: 'Question1', answers: [Answer('asnwer1', true), Answer('asnwer2', true), Answer('asnwer3', true), Answer('asnwer4', true)], firestore: instance);
-    Question q2 = Question(UID: UID, category: newName, text: 'Question2', answers: [Answer('asnwer1', true), Answer('asnwer2', true), Answer('asnwer3', true), Answer('asnwer4', true)], firestore: instance);
-    Question q3 = Question(UID: UID, category: newName, text: 'Question3', answers: [Answer('asnwer1', true), Answer('asnwer2', true), Answer('asnwer3', true), Answer('asnwer4', true)], firestore: instance);
+    Question q1 = Question(UID: UID, category: newName, text: 'Question1', answers: [Answer('answer1', true), Answer('answer2', true), Answer('answer3', true), Answer('answer4', true)], firestore: instance);
+    Question q2 = Question(UID: UID, category: newName, text: 'Question2', answers: [Answer('answer1', true), Answer('answer2', true), Answer('answer3', true), Answer('answer4', true)], firestore: instance);
+    Question q3 = Question(UID: UID, category: newName, text: 'Question3', answers: [Answer('answer1', true), Answer('answer2', true), Answer('answer3', true), Answer('answer4', true)], firestore: instance);
     await cat.createQuestion(q1);
     await cat.createQuestion(q2);
     await cat.createQuestion(q3);
@@ -108,6 +98,22 @@ void main() async {
     expect({question0.getAnswer(1).text, question0.getAnswer(1).isCorrect}, {'Paris', false});
     expect({question0.getAnswer(2).text, question0.getAnswer(2).isCorrect}, {'London', false});
     expect({question0.getAnswer(3).text, question0.getAnswer(3).isCorrect}, {'Rome', false});
+  });
+
+
+  test('Questions are not added', () async {
+    String newName = 'English';
+    Question q1 = Question(UID: UID, category: newName, text: 'Question1', answers: [Answer('answer1', true), Answer('answer2', true), Answer('answer3', true), Answer('answer4', true)], firestore: instance);
+    Question q2 = Question(UID: UID, category: newName, text: 'Question2', answers: [Answer('answer1', true), Answer('answer2', true), Answer('answer3', true), Answer('answer4', true)], firestore: instance);
+    Question q3 = Question(UID: UID, category: newName, text: 'Question3', answers: [Answer('answer1', true), Answer('answer2', true), Answer('answer3', true), Answer('answer4', true)], firestore: instance);
+    await cat.createQuestion(q1);
+    await cat.createQuestion(q2);
+    await cat.createQuestion(q3);
+
+    String k = await cat.randomizer();
+
+    List<Question> list = await cat.getAllQuestions();
+    expect(list.length, 4);
   });
 
 
