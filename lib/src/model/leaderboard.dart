@@ -249,8 +249,9 @@ class Leaderboard {
 
     print('Data: ' + docSnap.data().toString());
     if(docSnap.data() == null){
+      print('Data is null');
       _entries = [];
-      _currentPlayer = LeaderboardEntry('', 0, -1);
+      _currentPlayer = LeaderboardEntry(_currentPlayer.getName, 0, 0);
       return;
     }
     Map<String, dynamic> data = docSnap.data() as Map<String, dynamic>;

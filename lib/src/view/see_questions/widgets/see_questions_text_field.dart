@@ -66,11 +66,21 @@ class _SeeQuestionsTextFieldState extends State<SeeQuestionsTextField> {
   get isLastField => widget.isLastField;
   get action => widget.action;
 
+  // setter for controllerText
+  void setControllerText(String value) {
+    widget.controllerText = value;
+  }
+
   @override
   Widget build(BuildContext context) {
     SeeQuestionsProvider provider = Provider.of<SeeQuestionsProvider>(context);
     final theme = Provider.of<ThemeProvider>(context).currentTheme;
     final _formKey = provider.formKeyAddEditQuestion;
+
+    // set controllerText to 'a'
+    if((controller.text) != ''){
+      setControllerText(controller.text);
+    }
 
     return Expanded(
       child: Padding(
