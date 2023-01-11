@@ -77,7 +77,7 @@ class _EditQuizViewState extends State<EditQuizView> {
     _isLoading = true;
     _category = await CategoryRepo().getCategory(categoryName);
     controller.category = _category;
-    controller.getListOfQuestions();
+    controller.updateListOfQuestions();
     _questions = await _category.getAllQuestions();
     //print("ok");
     _questions = context.read<EditQuizProvider>().questionList;
@@ -96,7 +96,8 @@ class _EditQuizViewState extends State<EditQuizView> {
 
   @override
   Widget build(BuildContext context) {
-    EditQuizProvider controller = Provider.of<EditQuizProvider>(context, listen: true);
+    EditQuizProvider controller =
+        Provider.of<EditQuizProvider>(context, listen: true);
     late Widget ListWidget;
 
     if (_isLoading) {
@@ -187,19 +188,15 @@ class _QuestionListState extends State<QuestionList> {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
                       border: Border.all(
-                        color: Theme
-                            .of(context)
-                            .colorScheme
-                            .primary,
+                        color: Theme.of(context).colorScheme.primary,
                         width: 2.0,
                       ),
                     ),
                     child: ExpansionTile(
                       title: Text(
-                        //questions[index],
+                          //questions[index],
                           controller.questionList[index].text,
-                          style: Theme
-                              .of(context)
+                          style: Theme.of(context)
                               .textTheme
                               .bodyText1
                               ?.copyWith(fontSize: 15)),

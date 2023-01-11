@@ -62,7 +62,7 @@ class EditQuizProvider with ChangeNotifier {
 
   GlobalKey<FormState> formKeyAddEditQuestion = GlobalKey<FormState>();
 
-  getListOfQuestions() async {
+  void updateListOfQuestions() async {
     //print("Começa aqui");
     //print("Category name: ${category.name}");
     questionList = await category.getAllQuestions();
@@ -109,9 +109,10 @@ class EditQuizProvider with ChangeNotifier {
       category: category.getName(),
     );
     await category.createQuestion(question);
+    updateListOfQuestions();
     print("Question added");
     //print("Question: $questionController.text]");
-    notifyListeners();
+    // notifyListeners();
   }
 
   /// The method [editQuestion] is used to show a dialog to edit a question.
@@ -208,7 +209,8 @@ class EditQuizProvider with ChangeNotifier {
   /// store it in the database.
   bool createRandomQuiz() {
     // Check if there are question in the category. If not, no quiz can be created
-    if (category.getAllQuestions() == []) { // TODO: fix condition
+    if (category.getAllQuestions() == []) {
+      // TODO: fix condition
       print("No questions in category");
       // Show an alert that says the quiz cannot be created because there are no
       // questions in the category
