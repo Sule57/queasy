@@ -52,8 +52,10 @@ class EditQuizProvider with ChangeNotifier {
   TextEditingController answer3Controller = TextEditingController();
   TextEditingController answer4Controller = TextEditingController();
 
-  AnswersRadioButton _selectedRadioAnswer = AnswersRadioButton.ans1;
+  TextEditingController numberOfQuestionsController = TextEditingController();
+  TextEditingController newQuizNameController = TextEditingController();
 
+  AnswersRadioButton _selectedRadioAnswer = AnswersRadioButton.ans1;
   AnswersRadioButton get selectedRadioAnswer => _selectedRadioAnswer;
 
   set selectedRadioAnswer(AnswersRadioButton value) {
@@ -205,24 +207,23 @@ class EditQuizProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  /// The method [createRandomQuiz] is used to create a quiz with random questions and
+  /// The method [createAndStoreRandomQuiz] is used to create a quiz with random questions and
   /// store it in the database.
-  bool createRandomQuiz() {
-    // Check if there are question in the category. If not, no quiz can be created
-    if (category.getAllQuestions() == []) {
-      // TODO: fix condition
-      print("No questions in category");
-      // Show an alert that says the quiz cannot be created because there are no
-      // questions in the category
-      return false;
-    } else {
-      //print("Creating random quiz");
-      // get random questions from the database
-      // TODO
-      // store the quiz in the database
-      // TODO
-      return true;
+  void createAndStoreRandomQuiz() {
+    int numberOfQuestions = int.parse(numberOfQuestionsController.text);
+    String quizName = newQuizNameController.text;
+
+    if (numberOfQuestions > questionList.length) {
+      numberOfQuestions = questionList.length;
     }
+
+    Quiz()
+        .getRandomQuestions(
+            name: quizName,
+            category: Category(name: category.getName()),
+            noOfQuestions: numberOfQuestions,
+            isPublic: false)
+        .then((quiz) => quiz.storeQuiz());
   }
 
   /// The method [getCorrectRadioAnswer] gets the correct answer of a [question] and returns the

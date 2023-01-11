@@ -8,24 +8,22 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:queasy/src.dart';
-import 'package:queasy/src/view/see_quiz/see_quiz_provider.dart';
-import 'package:queasy/src/view/see_quiz/widgets/share_popup.dart';
+import 'package:queasy/src/view/see_quizzes/see_quizzes_provider.dart';
+import 'package:queasy/src/view/see_quizzes/widgets/share_popup.dart';
 
-import '../edit_quiz/edit_quiz_view.dart';
-
-class SeeQuizView extends StatefulWidget {
-  const SeeQuizView({Key? key}) : super(key: key);
+class SeeQuizzesView extends StatefulWidget {
+  const SeeQuizzesView({Key? key}) : super(key: key);
 
   @override
-  State<SeeQuizView> createState() => _SeeQuizViewState();
+  State<SeeQuizzesView> createState() => _SeeQuizzesViewState();
 }
 
-class _SeeQuizViewState extends State<SeeQuizView> {
+class _SeeQuizzesViewState extends State<SeeQuizzesView> {
   bool _isLoading = true;
 
   init() async {
-    _isLoading = true;
-    await Provider.of<SeeQuizProvider>(context, listen: false).init();
+    // _isLoading = true;
+    await Provider.of<SeeQuizzesProvider>(context, listen: false).init();
     setState(() {
       _isLoading = false;
     });
@@ -40,7 +38,7 @@ class _SeeQuizViewState extends State<SeeQuizView> {
   @override
   Widget build(BuildContext context) {
     final theme = Provider.of<ThemeProvider>(context).currentTheme;
-    final provider = Provider.of<SeeQuizProvider>(context);
+    final provider = Provider.of<SeeQuizzesProvider>(context);
     final quizList = provider.quizList;
 
     double width = MediaQuery.of(context).size.width;
@@ -128,8 +126,8 @@ class _SeeQuizViewState extends State<SeeQuizView> {
       {required BuildContext context,
       required TapDownDetails details,
       required String quizId}) {
-    SeeQuizProvider provider =
-        Provider.of<SeeQuizProvider>(context, listen: false);
+    SeeQuizzesProvider provider =
+        Provider.of<SeeQuizzesProvider>(context, listen: false);
     TextStyle? bodyTextStyle =
         Provider.of<ThemeProvider>(context, listen: false)
             .currentTheme

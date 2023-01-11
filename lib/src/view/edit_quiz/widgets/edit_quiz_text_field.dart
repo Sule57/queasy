@@ -29,14 +29,14 @@ import '../edit_quiz_provider.dart';
 ///
 /// The variable [MAX_INPUT_LENGTH] is the maximum length of the text field.
 class EditQuizTextField extends StatefulWidget {
-  TextEditingController controller;
-  String hintText;
-  String validatorText;
-  String controllerText;
-  Question? question;
-  bool isQuestion;
-  bool isLastField;
-  Function action;
+  final TextEditingController controller;
+  final String hintText;
+  final String validatorText;
+  final String controllerText;
+  final Question? question;
+  final bool isQuestion;
+  final bool isLastField;
+  final Function action;
 
   EditQuizTextField({
     Key? key,
@@ -55,29 +55,23 @@ class EditQuizTextField extends StatefulWidget {
 }
 
 class _EditQuizTextFieldState extends State<EditQuizTextField> {
-  int MAX_INPUT_LENGTH = 50;
+  final int MAX_INPUT_LENGTH = 50;
 
   get question => widget.question;
-
   get validatorText => widget.validatorText;
-
   get hintText => widget.hintText;
-
   get controllerText => widget.controllerText;
-
   get controller => widget.controller;
-
   get isQuestion => widget.isQuestion;
-
   get isLastField => widget.isLastField;
-
   get action => widget.action;
 
   @override
   Widget build(BuildContext context) {
-    EditQuizProvider provider =
-        Provider.of<EditQuizProvider>(context, listen: true);
+    EditQuizProvider provider = Provider.of<EditQuizProvider>(context);
+    final theme = Provider.of<ThemeProvider>(context).currentTheme;
     final _formKey = provider.formKeyAddEditQuestion;
+
     return Expanded(
       child: Padding(
         padding: MediaQuery.of(context).size.width < 700
@@ -89,14 +83,15 @@ class _EditQuizTextFieldState extends State<EditQuizTextField> {
               ? MediaQuery.of(context).size.width / 2
               : MediaQuery.of(context).size.width / 3,
           child: TextFormField(
-            onFieldSubmitted: (value) { // if i use _formKey.currentState!.validate() it throws an exception
-              if (_formKey.currentState?.validate() ?? true) { // TODO: not validating correctly
+            onFieldSubmitted: (value) {
+              // if i use _formKey.currentState!.validate() it throws an exception
+              if (_formKey.currentState?.validate() ?? true) {
+                // TODO: not validating correctly
                 action();
                 provider.clearTextFieldsAndButton();
                 Navigator.pop(context);
               }
             },
-
             maxLines: isQuestion ? 2 : 1,
             controller: controller..text = controllerText,
             inputFormatters: [
@@ -109,7 +104,7 @@ class _EditQuizTextFieldState extends State<EditQuizTextField> {
               }
               return null;
             },
-            style: TextStyle(color: Theme.of(context).colorScheme.primary),
+            style: theme.textTheme.subtitle2,
             decoration: InputDecoration(
               contentPadding: EdgeInsets.only(bottom: 10, left: 20),
               filled: true,

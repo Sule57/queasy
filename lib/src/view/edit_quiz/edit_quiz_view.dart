@@ -7,10 +7,11 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:queasy/src/view/edit_quiz/widgets/edit_quiz_popups.dart';
 import 'package:queasy/src/view/edit_quiz/widgets/question_list_tile.dart';
-import 'package:queasy/src/view/widgets/rounded-button.dart';
 import 'package:queasy/src/model/category.dart';
 import 'package:queasy/src/model/category_repo.dart';
+import '../../../constants/theme_provider.dart';
 import '../../model/question.dart';
 import 'edit_quiz_provider.dart';
 
@@ -134,15 +135,17 @@ class _EditQuizViewState extends State<EditQuizView> {
             ),
           ],
         ),
-        body: Padding(
-          padding: const EdgeInsets.only(bottom: 12.0, left: 16.0, right: 16.0),
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                ListWidget,
-                CreateAndDeleteButtons(controller: controller),
-              ],
+        body: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 10, left: 16.0, right: 16.0),
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  ListWidget,
+                  CreateAndDeleteButtons(controller: controller),
+                ],
+              ),
             ),
           ),
         ),
@@ -157,7 +160,7 @@ class _EditQuizViewState extends State<EditQuizView> {
 ///
 /// The variable [questions] is a list that stores the questions of the category.
 class QuestionList extends StatefulWidget {
-  List<Question> questions;
+  final List<Question> questions;
 
   QuestionList({
     Key? key,
@@ -250,33 +253,74 @@ class CreateAndDeleteButtons extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+    final theme = Provider.of<ThemeProvider>(context).currentTheme;
+
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        RoundedButton(
-            buttonName: 'Create a random quiz',
-            backgroundColor: Theme.of(context).colorScheme.tertiary,
-            width: size.width * 0.7,
-            height: size.height * 0.06,
-            fontSize: 17,
-            onPressed: () {
-              bool success = controller.createRandomQuiz();
-              if (success) {
-                final snackBar = SnackBar(
-                    content: const Text(
-                        'Not implemented yet, be patient')); // TODO: change text
-                Future.delayed(Duration.zero, () {
-                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                });
-              }
-            }),
-        SizedBox(height: 4),
-        RoundedButton(
-          buttonName: 'Delete category',
-          backgroundColor: Theme.of(context).colorScheme.secondary,
-          width: size.width * 0.7,
-          height: size.height * 0.06,
-          fontSize: 17,
-          onPressed: () => controller.deleteCategory(context),
+        Row(
+          children: [
+            Expanded(
+              child: SizedBox(
+                height: size.height * 0.05,
+                child: ElevatedButton(
+                  child: Text('Custom quiz'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: theme.colorScheme.tertiary,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
+                  onPressed: () {
+                    //TODO create custom quiz
+                  },
+                ),
+              ),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: SizedBox(
+                height: size.height * 0.05,
+                child: ElevatedButton(
+                  child: Text('Random quiz'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: theme.colorScheme.tertiary,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
+                  onPressed: () {
+                    if (controller.questionList.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('There are no questions yet'),
+                          duration: const Duration(seconds: 2),
+                        ),
+                      );
+                    } else {
+                      showDialog(
+                          context: context,
+                          builder: (context) => CreateRandomQuizPopup());
+                    }
+                  },
+                ),
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: 10),
+        SizedBox(
+          height: size.height * 0.05,
+          child: ElevatedButton(
+            onPressed: () => controller.deleteCategory(context),
+            child: Text('Delete category'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: theme.colorScheme.secondary,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+            ),
+          ),
         ),
       ],
     );

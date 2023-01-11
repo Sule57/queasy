@@ -8,13 +8,12 @@
 import 'package:flutter/material.dart';
 import 'package:queasy/src.dart';
 
-class SeeQuizProvider with ChangeNotifier {
-  late List<Quiz> quizList;
+class SeeQuizzesProvider with ChangeNotifier {
+  List<Quiz> quizList = [];
 
   ///Obtains from Firestore all the quizzes that the current logged in user
-  ///has stored. It is run when [SeeQuizView] is initialized.
+  ///has stored. It is run when [SeeQuizzesView] is initialized.
   Future<void> init() async {
-    //TODO: get quiz list from model
     quizList = await Profile.getUserQuizzes();
     notifyListeners();
   }

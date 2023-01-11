@@ -6,9 +6,9 @@
 /// ****************************************************************************
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../../../../src.dart';
-import '../../private_category_selection_view.dart';
 import '../edit_quiz_provider.dart';
 import '../edit_quiz_view.dart';
 import 'edit_quiz_text_field.dart';
@@ -61,11 +61,13 @@ class _AddOrEditQuestionPopUpState extends State<AddOrEditQuestionPopUp> {
 
   @override
   Widget build(BuildContext context) {
-    EditQuizProvider controller = Provider.of<EditQuizProvider>(context, listen: true);
+    EditQuizProvider controller =
+        Provider.of<EditQuizProvider>(context, listen: true);
     // If the question is not null, the user wants to edit a question, and the popup should
     // show the "old" correct answer as selected when the popup opens
     if (question != null) {
-      controller.selectedRadioAnswer = controller.getCorrectRadioAnswer(question);
+      controller.selectedRadioAnswer =
+          controller.getCorrectRadioAnswer(question);
     }
 
     return AlertDialog(
@@ -92,7 +94,8 @@ class _AddOrEditQuestionPopUpState extends State<AddOrEditQuestionPopUp> {
                         controller: controller.questionController,
                         hintText: 'Question',
                         validatorText: 'Please enter a question',
-                        controllerText: question == null ? '' : question.getText(),
+                        controllerText:
+                            question == null ? '' : question.getText(),
                         question: question,
                         isQuestion: true,
                         isLastField: false,
@@ -107,7 +110,8 @@ class _AddOrEditQuestionPopUpState extends State<AddOrEditQuestionPopUp> {
                         controller: controller.answer1Controller,
                         hintText: 'Answer 1',
                         validatorText: 'Please enter an answer',
-                        controllerText: question == null ? '' : question.answers[0].text,
+                        controllerText:
+                            question == null ? '' : question.answers[0].text,
                         question: question,
                         isQuestion: false,
                         isLastField: false,
@@ -130,7 +134,8 @@ class _AddOrEditQuestionPopUpState extends State<AddOrEditQuestionPopUp> {
                         controller: controller.answer2Controller,
                         hintText: 'Answer 2',
                         validatorText: 'Please enter an answer',
-                        controllerText: question == null ? '' : question.answers[1].text,
+                        controllerText:
+                            question == null ? '' : question.answers[1].text,
                         question: question,
                         isQuestion: false,
                         isLastField: false,
@@ -153,7 +158,8 @@ class _AddOrEditQuestionPopUpState extends State<AddOrEditQuestionPopUp> {
                         controller: controller.answer3Controller,
                         hintText: 'Answer 3',
                         validatorText: 'Please enter an answer',
-                        controllerText: question == null ? '' : question.answers[2].text,
+                        controllerText:
+                            question == null ? '' : question.answers[2].text,
                         question: question,
                         isQuestion: false,
                         isLastField: false,
@@ -176,7 +182,8 @@ class _AddOrEditQuestionPopUpState extends State<AddOrEditQuestionPopUp> {
                         controller: controller.answer4Controller,
                         hintText: 'Answer 4',
                         validatorText: 'Please enter an answer',
-                        controllerText: question == null ? '' : question.answers[3].text,
+                        controllerText:
+                            question == null ? '' : question.answers[3].text,
                         question: question,
                         isQuestion: false,
                         isLastField: true,
@@ -243,7 +250,6 @@ class _AddOrEditQuestionPopUpState extends State<AddOrEditQuestionPopUp> {
       ],
     );
   }
-
 }
 
 /// The widget [DeleteQuestionPopUp] shows an [AlertDialog] to confirm the deletion of a question.
@@ -260,7 +266,8 @@ class DeleteQuestionPopUp extends StatefulWidget {
 class _DeleteQuestionPopUpState extends State<DeleteQuestionPopUp> {
   @override
   Widget build(BuildContext context) {
-    final EditQuizProvider controller = Provider.of<EditQuizProvider>(context, listen: true);
+    final EditQuizProvider controller =
+        Provider.of<EditQuizProvider>(context, listen: true);
     return AlertDialog(
       title:
           const Text('Delete question', style: TextStyle(color: Colors.white)),
@@ -327,7 +334,8 @@ class _NewCategoryPopUpState extends State<NewCategoryPopUp> {
 
   @override
   Widget build(BuildContext context) {
-    final EditQuizProvider controller = Provider.of<EditQuizProvider>(context, listen: true);
+    final EditQuizProvider controller =
+        Provider.of<EditQuizProvider>(context, listen: true);
     return AlertDialog(
       title: const Text(
         'Add a new category',
@@ -347,25 +355,25 @@ class _NewCategoryPopUpState extends State<NewCategoryPopUp> {
           ),
         ),
         onSubmitted: (value) async {
-            // Check if the entered text is empty of filled with spaces
-            if (newCategoryController.text.trim().isEmpty) {
-              // Show an alert dialog to inform the user that the category
-              // name cannot be empty
-              Future.delayed(Duration.zero, () {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return const AlertDialog(
-                      title: Text('Category name cannot be empty'),
-                    );
-                  },
-                );
-              });
-            } else {
-              // Add the new category to the database
-              controller.addCategoryToDatabase(newCategoryController.text);
-              Navigator.pop(context); // Close the alert dialog
-            }
+          // Check if the entered text is empty of filled with spaces
+          if (newCategoryController.text.trim().isEmpty) {
+            // Show an alert dialog to inform the user that the category
+            // name cannot be empty
+            Future.delayed(Duration.zero, () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return const AlertDialog(
+                    title: Text('Category name cannot be empty'),
+                  );
+                },
+              );
+            });
+          } else {
+            // Add the new category to the database
+            controller.addCategoryToDatabase(newCategoryController.text);
+            Navigator.pop(context); // Close the alert dialog
+          }
         },
       ),
       backgroundColor: Theme.of(context).colorScheme.primary,
@@ -425,7 +433,6 @@ class _NewCategoryPopUpState extends State<NewCategoryPopUp> {
   }
 }
 
-
 /// The widget [DeleteCategoryPopUp] shows an [AlertDialog] to confirm the deletion of a category.
 ///
 /// The variable [category] is the category that is going to be deleted.
@@ -440,10 +447,11 @@ class DeleteCategoryPopUp extends StatefulWidget {
 class _DeleteCategoryPopUpState extends State<DeleteCategoryPopUp> {
   @override
   Widget build(BuildContext context) {
-    final EditQuizProvider controller = Provider.of<EditQuizProvider>(context, listen: true);
+    final EditQuizProvider controller =
+        Provider.of<EditQuizProvider>(context, listen: true);
     return AlertDialog(
       title:
-      const Text('Delete category', style: TextStyle(color: Colors.white)),
+          const Text('Delete category', style: TextStyle(color: Colors.white)),
       content: const Text('Are you sure you want to delete this category?',
           style: TextStyle(color: Colors.white)),
       backgroundColor: Theme.of(context).colorScheme.primary,
@@ -485,6 +493,117 @@ class _DeleteCategoryPopUpState extends State<DeleteCategoryPopUp> {
           ],
         ),
       ],
+    );
+  }
+}
+
+class CreateRandomQuizPopup extends StatelessWidget {
+  const CreateRandomQuizPopup({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Provider.of<ThemeProvider>(context).currentTheme;
+    final EditQuizProvider controller = Provider.of<EditQuizProvider>(context);
+    TextStyle? titleStyle = theme.textTheme.headline6!.copyWith(
+      color: theme.colorScheme.onPrimary,
+    );
+    TextStyle? textStyle = theme.textTheme.subtitle2?.copyWith(
+      color: theme.colorScheme.onPrimary,
+    );
+    TextStyle inputTextStyle = theme.textTheme.subtitle2?.copyWith(
+      color: theme.colorScheme.onBackground,
+    );
+
+    //returns an alert dialog that asks the user how many questions he wants to include in the quiz
+    // and takes only an int in the textfield
+    return AlertDialog(
+      backgroundColor: theme.colorScheme.primary,
+      title: Text(
+        'Creating a quiz',
+        style: titleStyle,
+      ),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            children: [
+              Text(
+                'Name: ',
+                style: textStyle,
+              ),
+              Expanded(
+                child: SizedBox(
+                  height: 30,
+                  child: TextField(
+                    style: inputTextStyle,
+                    controller: controller.newQuizNameController,
+                    decoration: InputDecoration(
+                      contentPadding: EdgeInsets.only(bottom: 10, left: 20),
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white),
+                        borderRadius: BorderRadius.circular(25.7),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 15),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Number of questions: ',
+                style: textStyle,
+              ),
+              Expanded(
+                child: SizedBox(
+                  height: 30,
+                  child: TextField(
+                    style: inputTextStyle,
+                    controller: controller.numberOfQuestionsController,
+                    keyboardType: TextInputType.number,
+                    inputFormatters: <TextInputFormatter>[
+                      FilteringTextInputFormatter.digitsOnly
+                    ],
+                    decoration: InputDecoration(
+                      contentPadding: EdgeInsets.only(bottom: 10, left: 20),
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white),
+                        borderRadius: BorderRadius.circular(25.7),
+                      ),
+                    ),
+                    onSubmitted: (value) {
+                      controller.createAndStoreRandomQuiz();
+                      Navigator.pop(context);
+                    },
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 15),
+          ElevatedButton(
+            child: Text('Create quiz'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: theme.colorScheme.tertiary,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.0),
+              ),
+            ),
+            onPressed: () {
+              controller.createAndStoreRandomQuiz();
+              Navigator.pop(context);
+            },
+          ),
+        ],
+      ),
     );
   }
 }

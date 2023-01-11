@@ -15,7 +15,7 @@ import 'package:queasy/constants/theme_provider.dart';
 import 'package:queasy/src/view/edit_quiz/edit_quiz_provider.dart';
 import 'package:queasy/src/view/login/login_provider.dart';
 import 'package:queasy/src/view/play_quiz/play_quiz_provider.dart';
-import 'package:queasy/src/view/see_quiz/see_quiz_provider.dart';
+import 'package:queasy/src/view/see_quizzes/see_quizzes_provider.dart';
 import 'package:queasy/src/view/statistics/statistics_provider.dart';
 import 'package:queasy/src/view/widgets/widget_tree.dart';
 
@@ -59,7 +59,7 @@ Future<void> main() async {
           ChangeNotifierProvider(
               create: (_) => ThemeProvider(AppThemes().lightTheme)),
           ChangeNotifierProvider(create: (_) => LoginProvider()),
-          ChangeNotifierProvider(create: (_) => SeeQuizProvider()),
+          ChangeNotifierProvider(create: (_) => SeeQuizzesProvider()),
         ],
         child: const Qeasy(),
       ),

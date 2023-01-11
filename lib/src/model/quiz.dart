@@ -149,10 +149,10 @@ class Quiz {
   /// the [assignUniqueID] method.
   Future<Quiz> getRandomQuestions(
       {required Category category,
-        required int noOfQuestions,
-        required bool isPublic,
-        String? name,
-        FirebaseFirestore? firestore}) async {
+      required int noOfQuestions,
+      required bool isPublic,
+      String? name,
+      FirebaseFirestore? firestore}) async {
     this.category = category;
     this.noOfQuestions = noOfQuestions;
     this.isPublic = isPublic;
@@ -191,7 +191,7 @@ class Quiz {
       }
       _usedQuestions.add(tempID);
       Question tempQuestion =
-      await category.getQuestion(tempID, public: isPublic);
+          await category.getQuestion(tempID, public: isPublic);
       _questions.add(tempQuestion);
     }
 
@@ -201,7 +201,7 @@ class Quiz {
   /// This method is an asynchronous method that will store the quiz into the
   /// firebase.
   Future<void> storeQuiz() async {
-    await this.firestore?.collection('quizzes').doc(id).set({
+    await this.firestore?.collection('quizzes').doc(ownerID).set({
       'id': id,
       'name': name,
       'creatorID': ownerID,
@@ -303,9 +303,9 @@ class Quiz {
   /// instance.
   Future<Quiz> createCustomQuiz(
       {required List<String> questions,
-        required Category category,
-        required String name,
-        FirebaseFirestore? firestore}) async {
+      required Category category,
+      required String name,
+      FirebaseFirestore? firestore}) async {
     this.isPublic = false;
     this._usedQuestions = questions;
     this.category = category;
@@ -328,31 +328,31 @@ class Quiz {
 
     for (int i = 0; i < noOfQuestions; i++) {
       Question tempQuestion =
-      await category.getPrivateQuestion(_usedQuestions[i], ownerID!);
+          await category.getPrivateQuestion(_usedQuestions[i], ownerID!);
       _questions.add(tempQuestion);
     }
     return this;
   }
 
-  Future<void> updateQuiz() async{
+  Future<void> updateQuiz() async {
     await firestore?.collection('quizzes').doc(id).update({
       'name': this.name,
       'questionIds': this._usedQuestions,
     });
   }
 
-  Future<void> fromJSON (Map<String, dynamic> json) async {
+  Future<void> fromJSON(Map<String, dynamic> json) async {
     this.id = json['id'];
     this.name = json['name'];
     this.ownerID = json['creatorID'];
-    this.category = new Category(name: json['category'], firestore: this.firestore);
+    this.category =
+        new Category(name: json['category'], firestore: this.firestore);
     this.noOfQuestions = json['questionIds'].length;
     this._usedQuestions = json['questionIds'].cast<String>();
     for (int i = 0; i < noOfQuestions; i++) {
       Question tempQuestion =
-      await category.getPrivateQuestion(_usedQuestions[i], ownerID!);
+          await category.getPrivateQuestion(_usedQuestions[i], ownerID!);
       _questions.add(tempQuestion);
     }
   }
-
 }

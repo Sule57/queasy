@@ -16,4 +16,4 @@ export 'src/model/leaderboard_entry.dart';
 export 'src/model/profile.dart';
 export 'src/model/question.dart';
 export 'src/model/quiz.dart';
-export 'src/view/see_quiz/see_quiz.dart';
+export 'src/view/see_quizzes/see_quizzes.dart';
