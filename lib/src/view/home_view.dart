@@ -279,7 +279,7 @@ class HomeWidgets extends StatelessWidget {
             const SizedBox(height: 5),
             ElevatedButton(
               onPressed: () => Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => SeeQuizzesView())),
+                  MaterialPageRoute(builder: (context) => SeeQuizListView())),
               child: Text(
                 'My quizzes',
                 style: TextStyle(

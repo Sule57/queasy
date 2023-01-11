@@ -217,7 +217,7 @@ class Profile {
   /// gets the current profile from user uid
   /// [uid] is the firebase user uid
   /// returns a [Profile] instance
-  static Future<Profile?> getProfilefromUID(String uid) async {
+  static Future<Profile?> getProfileFromUID(String uid) async {
     Profile? result;
     await FirebaseFirestore.instance
         .collection('users')
@@ -478,26 +478,31 @@ class Profile {
   }
   //END OF METHODS FOR PROFILE VIEW
 
-  static Future<List<Quiz>> getUserQuizzes({FirebaseFirestore? firestore}) async {
+  static Future<List<Quiz>> getUserQuizzes(
+      {FirebaseFirestore? firestore}) async {
     List<Quiz> quizzes = [];
-    Quiz temp = Quiz();
     String? uid;
+    firestore = FirebaseFirestore.instance;
 
-    if (firestore == null) {
-      firestore = FirebaseFirestore.instance;
-      uid = await getCurrentUserID();
-    }
-    else {
-      uid = "test123456789";
-    }
+    // if (firestore == null) {
+    //   firestore = FirebaseFirestore.instance;
+    //   uid = await getCurrentUserID();
+    // } else {
+    //   uid = "test123456789";
+    // }
 
     await firestore
         .collection('quizzes')
         .where('creatorID', isEqualTo: uid)
         .get()
-        .then((QuerySnapshot querySnapshot) async{
+        .then((QuerySnapshot querySnapshot) async {
       querySnapshot.docs.forEach((doc) async {
-        await temp.fromJSON(doc.data() as Map<String, dynamic>);
+        Quiz temp = Quiz();
+        await temp
+            .fromJSON(doc.data() as Map<String, dynamic>)
+            .then((quiz) async {
+          temp = await quiz;
+        });
         quizzes.add(temp);
       });
     });

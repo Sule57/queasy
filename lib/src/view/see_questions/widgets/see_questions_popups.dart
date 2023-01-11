@@ -1,5 +1,6 @@
 /// ****************************************************************************
 /// Created by Sophia Soares
+/// Collaborators: Julia Agüero
 ///
 /// This file is part of the project "Qeasy"
 /// Software Project on Technische Hochschule Ulm
@@ -8,6 +9,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:queasy/src/view/see_quizzes/see_quiz_questions_view.dart';
 import '../../../../src.dart';
 import '../see_questions_provider.dart';
 import '../see_questions_view.dart';
@@ -594,15 +596,7 @@ class CreateRandomQuizPopup extends StatelessWidget {
                         }
                         return null;
                       },
-                      onFieldSubmitted: (value) {
-                        if (controller.formKeyCreateRandomQuiz.currentState!
-                            .validate()) {
-                          controller.createAndStoreRandomQuiz();
-                          Navigator.pop(context);
-                          controller.numberOfQuestionsController.clear();
-                          controller.newQuizNameController.clear();
-                        }
-                      },
+                      onFieldSubmitted: (_) => _confirm(context),
                     ),
                   ),
                 ),
@@ -617,20 +611,39 @@ class CreateRandomQuizPopup extends StatelessWidget {
                   borderRadius: BorderRadius.circular(20.0),
                 ),
               ),
-              onPressed: () {
-                if (controller.formKeyCreateRandomQuiz.currentState!
-                    .validate()) {
-                  controller.createAndStoreRandomQuiz();
-                  Navigator.pop(context);
-                  controller.numberOfQuestionsController.clear();
-                  controller.newQuizNameController.clear();
-                }
-              },
+              onPressed: () => _confirm(context),
             ),
           ],
         ),
       ),
     );
+  }
+
+  _confirm(BuildContext context) async {
+    final SeeQuestionsProvider controller =
+        Provider.of<SeeQuestionsProvider>(context, listen: false);
+    String? quizId;
+
+    if (controller.formKeyCreateRandomQuiz.currentState!.validate()) {
+      quizId = await controller.createAndStoreRandomQuiz();
+
+      if (quizId == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('An error occurred'),
+          ),
+        );
+      } else {
+        Navigator.pop(context);
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => SeeQuizQuestionsView(
+                  quizId: quizId!,
+                  quizName: controller.newQuizNameController.text,
+                )));
+        controller.numberOfQuestionsController.clear();
+        controller.newQuizNameController.clear();
+      }
+    }
   }
 }
 
@@ -639,10 +652,13 @@ class CreateCustomQuizPopup extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double height = MediaQuery.of(context).size.height;
+    double width = MediaQuery.of(context).size.width;
+
     final theme = Provider.of<ThemeProvider>(context).currentTheme;
     final SeeQuestionsProvider controller =
         Provider.of<SeeQuestionsProvider>(context);
-    TextStyle? titleStyle = theme.textTheme.headline6!.copyWith(
+    TextStyle? titleStyle = theme.textTheme.headline5!.copyWith(
       color: theme.colorScheme.onPrimary,
     );
     TextStyle? textStyle = theme.textTheme.subtitle2?.copyWith(
@@ -657,44 +673,116 @@ class CreateCustomQuizPopup extends StatelessWidget {
       title: Text(
         'Creating a quiz',
         style: titleStyle,
+        textAlign: TextAlign.center,
       ),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Row(
-            children: [
-              Text(
-                'Name: ',
-                style: textStyle,
-              ),
-              Expanded(
-                child: SizedBox(
-                  height: 30,
-                  child: TextFormField(
-                    style: inputTextStyle,
-                    controller: controller.newQuizNameController,
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Please enter a name';
-                      }
-                      return null;
-                    },
-                    decoration: InputDecoration(
-                      contentPadding: EdgeInsets.only(bottom: 10, left: 20),
-                      filled: true,
-                      fillColor: Colors.white,
-                      border: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.white),
-                        borderRadius: BorderRadius.circular(25.7),
+      content: Form(
+        key: controller.formKeyCreateCustomQuiz,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              children: [
+                Text(
+                  'Name: ',
+                  style: textStyle,
+                ),
+                Expanded(
+                  child: SizedBox(
+                    height: 30,
+                    child: TextFormField(
+                      style: inputTextStyle,
+                      controller: controller.newQuizNameController,
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Please enter a name';
+                        }
+                        return null;
+                      },
+                      decoration: InputDecoration(
+                        contentPadding: EdgeInsets.only(bottom: 10, left: 20),
+                        filled: true,
+                        fillColor: Colors.white,
+                        border: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.white),
+                          borderRadius: BorderRadius.circular(25.7),
+                        ),
                       ),
                     ),
                   ),
                 ),
+              ],
+            ),
+            const SizedBox(height: 15),
+            SizedBox(
+              height: height / 2.5,
+              width: width,
+              child: ListView.builder(
+                itemCount: controller.questionList.length,
+                itemBuilder: (context, index) {
+                  return CheckboxListTile(
+                    title: Text(
+                      controller.questionList[index].text,
+                      style: textStyle,
+                    ),
+                    value: controller.isQuestionChecked[index],
+                    checkColor: theme.colorScheme.onPrimary,
+                    activeColor: theme.colorScheme.tertiary,
+                    controlAffinity: ListTileControlAffinity.trailing,
+                    onChanged: (value) => controller.updateIsQuestionChecked(
+                      index: index,
+                      value: value ?? false,
+                    ),
+                  );
+                },
               ),
-            ],
-          ),
-        ],
+            ),
+            ElevatedButton(
+              child: Text('Create quiz'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: theme.colorScheme.tertiary,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0),
+                ),
+              ),
+              onPressed: () => _confirm(context),
+            ),
+          ],
+        ),
       ),
     );
+  }
+
+  _confirm(BuildContext context) async {
+    final SeeQuestionsProvider controller =
+        Provider.of<SeeQuestionsProvider>(context, listen: false);
+
+    if (controller.formKeyCreateCustomQuiz.currentState!.validate()) {
+      List<String> questionIds = [];
+      String? quizId;
+
+      for (int i = 0; i < controller.isQuestionChecked.length; i++)
+        if (controller.isQuestionChecked[i])
+          questionIds.add(controller.questionList[i].id);
+
+      quizId =
+          await controller.createAndStoreCustomQuiz(questionIds: questionIds);
+
+      if (quizId == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('An error occurred'),
+          ),
+        );
+      } else {
+        Navigator.pop(context);
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => SeeQuizQuestionsView(
+                  quizId: quizId!,
+                  quizName: controller.newQuizNameController.text,
+                )));
+        controller.newQuizNameController.clear();
+        controller.clearIsQuestionChecked();
+      }
+    }
   }
 }

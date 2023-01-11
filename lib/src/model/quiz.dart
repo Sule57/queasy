@@ -341,12 +341,17 @@ class Quiz {
     });
   }
 
-  Future<void> fromJSON(Map<String, dynamic> json) async {
+  Future<Quiz> fromJSON(Map<String, dynamic> json) async {
+    //if you remove the if, try lo load, and then add it again and reload, it
+    //works.
+    if (firestore == null) {
+      firestore = FirebaseFirestore.instance;
+    }
+
     this.id = json['id'];
     this.name = json['name'];
     this.ownerID = json['creatorID'];
-    this.category =
-        new Category(name: json['category'], firestore: this.firestore);
+    this.category = new Category(name: json['category']);
     this.noOfQuestions = json['questionIds'].length;
     this._usedQuestions = json['questionIds'].cast<String>();
     for (int i = 0; i < noOfQuestions; i++) {
@@ -354,5 +359,7 @@ class Quiz {
           await category.getPrivateQuestion(_usedQuestions[i], ownerID!);
       _questions.add(tempQuestion);
     }
+
+    return this;
   }
 }

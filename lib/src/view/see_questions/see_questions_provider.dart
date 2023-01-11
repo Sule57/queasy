@@ -1,5 +1,6 @@
 /// ****************************************************************************
 /// Created by Sophia Soares
+/// Collaborator: Julia Agüero
 ///
 /// This file is part of the project "Qeasy"
 /// Software Project on Technische Hochschule Ulm
@@ -39,11 +40,14 @@ class SeeQuestionsProvider with ChangeNotifier {
 
   //List<Question> _questionList = [];
   late List<Question> _questionList;
-
   List<Question> get questionList => _questionList;
+
+  List<bool> _isQuestionChecked = [];
+  List<bool> get isQuestionChecked => _isQuestionChecked;
 
   set questionList(List<Question> questionList) {
     _questionList = questionList;
+    _isQuestionChecked = List.filled(_questionList.length, false);
   }
 
   TextEditingController questionController = TextEditingController();
@@ -66,13 +70,16 @@ class SeeQuestionsProvider with ChangeNotifier {
   GlobalKey<FormState> formKeyCreateRandomQuiz = GlobalKey<FormState>();
   GlobalKey<FormState> formKeyCreateCustomQuiz = GlobalKey<FormState>();
 
-  void updateListOfQuestions() async {
-    //print("Começa aqui");
-    //print("Category name: ${category.name}");
+  void updateQuestionsFromCategory() async {
     questionList = await category.getAllQuestions();
-    //print(questionList.toString());
-    //print("Termina aqui");
+    _isQuestionChecked = List.filled(_questionList.length, false);
     notifyListeners();
+  }
+
+  void updateQuestionsFromQuiz(String id) async {
+    await Quiz().retrieveQuizFromId(id: id).then((quiz) {
+      questionList = quiz.questions;
+    });
   }
 
   /// The method [addQuestion] is used to show a dialog to add a question to the category.
@@ -113,7 +120,7 @@ class SeeQuestionsProvider with ChangeNotifier {
       category: category.getName(),
     );
     await category.createQuestion(question);
-    updateListOfQuestions();
+    updateQuestionsFromCategory();
     print("Question added");
     //print("Question: $questionController.text]");
     // notifyListeners();
@@ -211,21 +218,58 @@ class SeeQuestionsProvider with ChangeNotifier {
 
   /// The method [createAndStoreRandomQuiz] is used to create a quiz with random questions and
   /// store it in the database.
-  void createAndStoreRandomQuiz() {
+  ///
+  /// It returns a Future<String?> with the id of the quiz that was created.
+  /// This id will be null if the quiz was not created successfully.
+  Future<String?> createAndStoreRandomQuiz() async {
     int numberOfQuestions = int.parse(numberOfQuestionsController.text);
     String quizName = newQuizNameController.text;
+    String? quizId;
 
     if (numberOfQuestions > questionList.length) {
       numberOfQuestions = questionList.length;
     }
 
-    Quiz()
+    await Quiz()
         .getRandomQuestions(
             name: quizName,
             category: Category(name: category.getName()),
             noOfQuestions: numberOfQuestions,
             isPublic: false)
-        .then((quiz) => quiz.storeQuiz());
+        .then((quiz) async {
+      await quiz.storeQuiz();
+      quizId = quiz.id;
+    });
+
+    return quizId;
+  }
+
+  /// The method [createAndStoreCustomQuiz] is used to create a quiz with custom questions and
+  /// store it in the database.
+  /// It takes a parameter [questionIds] which is the list of ids of the questions
+  /// that are going to be store in the custom quiz.
+  ///
+  /// It returns a Future<String?>
+  /// with the id of the quiz that was created.
+  /// This id will be null if the quiz was not created successfully.
+  Future<String?> createAndStoreCustomQuiz({
+    required List<String> questionIds,
+  }) async {
+    String quizName = newQuizNameController.text;
+    String? quizId;
+    // List<String> questionIds = ['question0', 'question1', 'question2'];
+    await Quiz()
+        .createCustomQuiz(
+      questions: questionIds,
+      category: category,
+      name: quizName,
+    )
+        .then((quiz) async {
+      await quiz.storeQuiz();
+      quizId = quiz.id;
+    });
+
+    return quizId;
   }
 
   /// The method [getCorrectRadioAnswer] gets the correct answer of a [question] and returns the
@@ -251,5 +295,15 @@ class SeeQuestionsProvider with ChangeNotifier {
     answer3Controller.clear();
     answer4Controller.clear();
     selectedRadioAnswer = AnswersRadioButton.ans1;
+  }
+
+  void updateIsQuestionChecked({required int index, required bool value}) {
+    _isQuestionChecked[index] = value;
+    notifyListeners();
+  }
+
+  void clearIsQuestionChecked() {
+    _isQuestionChecked = List.filled(_questionList.length, false);
+    notifyListeners();
   }
 }
