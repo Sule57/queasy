@@ -1,5 +1,6 @@
 /// ****************************************************************************
-/// Created by Gullu Gasimova and Endia Clark
+/// Created by Gullu Gasimova
+/// Collaborators: Endia Clark
 ///
 /// This file is part of the project "Qeasy"
 /// Software Project on Technische Hochschule Ulm
@@ -305,11 +306,11 @@ class ProfileMobileState extends State<ProfileViewMobile> {
                               children: [
                                 Column(
                                   children: [
-                                    Text(Provider.of<
-                                StatisticsProvider>(
-                                context)
-                                .numberQuiz
-                                .toString(), style: TextStyle(fontSize: 15)),
+                                    Text(
+                                        Provider.of<StatisticsProvider>(context)
+                                            .numberQuiz
+                                            .toString(),
+                                        style: TextStyle(fontSize: 15)),
                                     Text("Completed",
                                         style: TextStyle(fontSize: 15))
                                   ],
@@ -317,9 +318,12 @@ class ProfileMobileState extends State<ProfileViewMobile> {
                                 SizedBox(width: 50),
                                 Column(
                                   children: [
-                                    Text(Provider.of<StatisticsProvider>(context).overallPercentage.toString(),
+                                    Text(
+                                        Provider.of<StatisticsProvider>(context)
+                                            .overallPercentage
+                                            .toString(),
                                         style: TextStyle(fontSize: 15)),
-                                    Text("Percent",
+                                    Text("Overall Percentage",
                                         style: TextStyle(fontSize: 15))
                                   ],
                                 ),
