@@ -10,6 +10,8 @@ import 'package:queasy/src.dart';
 
 class SeeQuizzesProvider with ChangeNotifier {
   List<Quiz> quizList = [];
+  List<Question> _questionList = [];
+  List<Question> get questionList => _questionList;
 
   ///Obtains from Firestore all the quizzes that the current logged in user
   ///has stored. It is run when [SeeQuizListView] is initialized.

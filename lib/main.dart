@@ -12,7 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:queasy/constants/theme_provider.dart';
-import 'package:queasy/src/view/see_questions/see_questions_provider.dart';
+import 'package:queasy/src/view/see_questions/see_category_questions_provider.dart';
 import 'package:queasy/src/view/login/login_provider.dart';
 import 'package:queasy/src/view/play_quiz/play_quiz_provider.dart';
 import 'package:queasy/src/view/see_quizzes/see_quizzes_provider.dart';
@@ -48,7 +48,7 @@ Future<void> main() async {
           ChangeNotifierProvider(create: (_) => PlayQuizProvider()),
           ChangeNotifierProvider(create: (_) => LeaderboardProvider()),
           ChangeNotifierProvider(create: (_) => ProfileProvider()),
-          ChangeNotifierProvider(create: (_) => SeeQuestionsProvider()),
+          ChangeNotifierProvider(create: (_) => SeeCategoryQuestionsProvider()),
           ChangeNotifierProxyProvider<PlayQuizProvider, StatisticsProvider>(
             create: (BuildContext context) => StatisticsProvider(
                 Provider.of<PlayQuizProvider>(context, listen: false)),
@@ -59,6 +59,7 @@ Future<void> main() async {
           ChangeNotifierProvider(
               create: (_) => ThemeProvider(AppThemes().lightTheme)),
           ChangeNotifierProvider(create: (_) => LoginProvider()),
+          ChangeNotifierProvider(create: (_) => SeeCategoryQuestionsProvider()),
           ChangeNotifierProvider(create: (_) => SeeQuizzesProvider()),
         ],
         child: const Qeasy(),

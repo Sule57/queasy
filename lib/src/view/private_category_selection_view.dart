@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:queasy/src/model/category_repo.dart';
 import '../../constants/theme_provider.dart';
-import 'see_questions/see_questions_view.dart';
+import 'see_questions/see_category_questions_view.dart';
 import 'see_questions/widgets/see_questions_popups.dart';
 
 /// View for selecting a private category.
@@ -17,7 +17,7 @@ import 'see_questions/widgets/see_questions_popups.dart';
 /// This view is used to select a private category. It displays a progress
 /// indicator while the categories are being loaded from the database. When the
 /// categories are loaded, it displays a list of private categories and when a category
-/// is selected, it navigates to [SeeQuestionsView] with the selected category as a
+/// is selected, it navigates to [SeeCategoryQuestionsView] with the selected category as a
 /// parameter.
 class PrivateCategorySelectionView extends StatefulWidget {
   PrivateCategorySelectionView({Key? key}) : super(key: key);
@@ -66,7 +66,7 @@ class _PrivateCategorySelectionViewState
   /// the database.
   /// Once the categories are loaded, it displays a [ListView] with buttons for
   /// the list of categories returned from the database. When a category is
-  /// selected, it navigates to [SeeQuestionsView] with the selected category as a
+  /// selected, it navigates to [SeeCategoryQuestionsView] with the selected category as a
   /// parameter.
   @override
   Widget build(BuildContext context) {
@@ -219,8 +219,8 @@ class _CategoryListState extends State<CategoryList> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) =>
-                          SeeQuestionsView(categoryName: categoryName)));
+                      builder: (context) => SeeCategoryQuestionsView(
+                          categoryName: categoryName)));
             },
             child: Text(
               categoryName,

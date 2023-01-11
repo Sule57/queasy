@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../src.dart';
 import '../../widgets/rounded-button.dart';
-import '../see_questions_provider.dart';
+import '../see_category_questions_provider.dart';
 
 /// The widget [QuestionListTile] is used to show a question and its answers.
 ///
@@ -113,8 +113,8 @@ class MobileButtons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    SeeQuestionsProvider controller =
-        Provider.of<SeeQuestionsProvider>(context, listen: true);
+    SeeCategoryQuestionsProvider controller =
+        Provider.of<SeeCategoryQuestionsProvider>(context, listen: true);
     return Column(
       children: [
         RoundedButton(
@@ -155,8 +155,8 @@ class DesktopButtons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    SeeQuestionsProvider controller =
-        Provider.of<SeeQuestionsProvider>(context, listen: true);
+    SeeCategoryQuestionsProvider controller =
+        Provider.of<SeeCategoryQuestionsProvider>(context, listen: true);
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
