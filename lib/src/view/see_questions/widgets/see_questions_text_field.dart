@@ -32,7 +32,7 @@ class SeeQuestionsTextField extends StatefulWidget {
   final TextEditingController controller;
   final String hintText;
   final String validatorText;
-  final String controllerText;
+  late final String controllerText;
   final Question? question;
   final bool isQuestion;
   final bool isLastField;
@@ -78,7 +78,7 @@ class _SeeQuestionsTextFieldState extends State<SeeQuestionsTextField> {
     final _formKey = provider.formKeyAddEditQuestion;
 
     // set controllerText to 'a'
-    if((controller.text) != ''){
+    if ((controller.text) != '') {
       setControllerText(controller.text);
     }
 
