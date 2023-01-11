@@ -8,17 +8,16 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:queasy/src/model/category_repo.dart';
-import 'package:queasy/src/view/edit_quiz/edit_quiz_provider.dart';
 import '../../constants/theme_provider.dart';
-import 'edit_quiz/edit_quiz_view.dart';
-import 'edit_quiz/widgets/edit_quiz_popups.dart';
+import 'see_questions/see_questions_view.dart';
+import 'see_questions/widgets/see_questions_popups.dart';
 
 /// View for selecting a private category.
 ///
 /// This view is used to select a private category. It displays a progress
 /// indicator while the categories are being loaded from the database. When the
 /// categories are loaded, it displays a list of private categories and when a category
-/// is selected, it navigates to [EditQuizView] with the selected category as a
+/// is selected, it navigates to [SeeQuestionsView] with the selected category as a
 /// parameter.
 class PrivateCategorySelectionView extends StatefulWidget {
   PrivateCategorySelectionView({Key? key}) : super(key: key);
@@ -67,11 +66,10 @@ class _PrivateCategorySelectionViewState
   /// the database.
   /// Once the categories are loaded, it displays a [ListView] with buttons for
   /// the list of categories returned from the database. When a category is
-  /// selected, it navigates to [EditQuizView] with the selected category as a
+  /// selected, it navigates to [SeeQuestionsView] with the selected category as a
   /// parameter.
   @override
   Widget build(BuildContext context) {
-
     late Widget ListWidget;
     if (_isLoading) {
       return const Center(child: CircularProgressIndicator());
@@ -222,7 +220,7 @@ class _CategoryListState extends State<CategoryList> {
                   context,
                   MaterialPageRoute(
                       builder: (context) =>
-                          EditQuizView(categoryName: categoryName)));
+                          SeeQuestionsView(categoryName: categoryName)));
             },
             child: Text(
               categoryName,

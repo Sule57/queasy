@@ -201,7 +201,7 @@ class Quiz {
   /// This method is an asynchronous method that will store the quiz into the
   /// firebase.
   Future<void> storeQuiz() async {
-    await this.firestore?.collection('quizzes').doc(ownerID).set({
+    await this.firestore?.collection('quizzes').doc(id).set({
       'id': id,
       'name': name,
       'creatorID': ownerID,

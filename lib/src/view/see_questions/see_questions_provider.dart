@@ -6,13 +6,13 @@
 /// ****************************************************************************
 
 import 'package:flutter/material.dart';
-import 'package:queasy/src/view/edit_quiz/edit_quiz_view.dart';
-import 'package:queasy/src/view/edit_quiz/widgets/edit_quiz_popups.dart';
+import 'package:queasy/src/view/see_questions/see_questions_view.dart';
+import 'package:queasy/src/view/see_questions/widgets/see_questions_popups.dart';
 import '../../../src.dart';
 
 /// This is the edit quiz provider.
 ///
-/// It is the provider that the [EditQuizView] uses to get the questions of a
+/// It is the provider that the [SeeQuestionsView] uses to get the questions of a
 /// specific category and to edit them, add more or delete them.
 ///
 /// The variable [_questions] is a list that stores the questions of the category.
@@ -28,7 +28,7 @@ import '../../../src.dart';
 /// The variable [answer4Controller] is the controller for the fourth answer text field.
 ///
 /// The variable [_selectedRadioAnswer] is the variable that stores the selected radio button.
-class EditQuizProvider with ChangeNotifier {
+class SeeQuestionsProvider with ChangeNotifier {
   late Category _category;
 
   Category get category => _category;
@@ -63,6 +63,8 @@ class EditQuizProvider with ChangeNotifier {
   }
 
   GlobalKey<FormState> formKeyAddEditQuestion = GlobalKey<FormState>();
+  GlobalKey<FormState> formKeyCreateRandomQuiz = GlobalKey<FormState>();
+  GlobalKey<FormState> formKeyCreateCustomQuiz = GlobalKey<FormState>();
 
   void updateListOfQuestions() async {
     //print("Começa aqui");

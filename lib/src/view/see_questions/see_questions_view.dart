@@ -7,13 +7,13 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:queasy/src/view/edit_quiz/widgets/edit_quiz_popups.dart';
-import 'package:queasy/src/view/edit_quiz/widgets/question_list_tile.dart';
+import 'package:queasy/src/view/see_questions/widgets/see_questions_popups.dart';
+import 'package:queasy/src/view/see_questions/widgets/question_list_tile.dart';
 import 'package:queasy/src/model/category.dart';
 import 'package:queasy/src/model/category_repo.dart';
 import '../../../constants/theme_provider.dart';
 import '../../model/question.dart';
-import 'edit_quiz_provider.dart';
+import 'see_questions_provider.dart';
 
 /// The enum [AnswersRadioButton] is used to determine which radio button is selected when the user
 /// wants to add a question. It refers to the correct answer out of the options.
@@ -35,25 +35,25 @@ enum AnswersRadioButton { ans1, ans2, ans3, ans4 }
 /// The variable [controller] is the provider of the class.
 ///
 /// The variable [_isLoading] is a boolean that is used to determine if the view is loading or not.
-class EditQuizView extends StatefulWidget {
+class SeeQuestionsView extends StatefulWidget {
   final String categoryName;
 
-  EditQuizView({Key? key, required this.categoryName}) : super(key: key);
+  SeeQuestionsView({Key? key, required this.categoryName}) : super(key: key);
 
   @override
-  State<EditQuizView> createState() => _EditQuizViewState();
+  State<SeeQuestionsView> createState() => _SeeQuestionsViewState();
 }
 
-class _EditQuizViewState extends State<EditQuizView> {
+class _SeeQuestionsViewState extends State<SeeQuestionsView> {
   get categoryName => widget.categoryName;
   late Category _category;
   late List<Question> _questions;
-  late EditQuizProvider controller;
+  late SeeQuestionsProvider controller;
   bool _isLoading = true;
 
   @override
   void didChangeDependencies() {
-    controller = Provider.of<EditQuizProvider>(context, listen: true);
+    controller = Provider.of<SeeQuestionsProvider>(context, listen: true);
     controller.questionController = TextEditingController();
     controller.answer1Controller = TextEditingController();
     controller.answer2Controller = TextEditingController();
@@ -81,7 +81,7 @@ class _EditQuizViewState extends State<EditQuizView> {
     controller.updateListOfQuestions();
     _questions = await _category.getAllQuestions();
     //print("ok");
-    _questions = context.read<EditQuizProvider>().questionList;
+    _questions = context.read<SeeQuestionsProvider>().questionList;
     //_questions = controller.questionList;
     //controller.formKeyAddEditQuestion = GlobalKey<FormState>();
     setState(() {
@@ -97,8 +97,8 @@ class _EditQuizViewState extends State<EditQuizView> {
 
   @override
   Widget build(BuildContext context) {
-    EditQuizProvider controller =
-        Provider.of<EditQuizProvider>(context, listen: true);
+    SeeQuestionsProvider controller =
+        Provider.of<SeeQuestionsProvider>(context, listen: true);
     late Widget ListWidget;
 
     if (_isLoading) {
@@ -180,7 +180,7 @@ class _QuestionListState extends State<QuestionList> {
     return Expanded(
       child: Padding(
         padding: const EdgeInsets.only(top: 6.0, bottom: 8.0),
-        child: Consumer<EditQuizProvider>(
+        child: Consumer<SeeQuestionsProvider>(
           builder: (context, controller, child) {
             return ListView.builder(
               itemCount: controller.questionList.length,
@@ -245,7 +245,7 @@ class QuestionListEmpty extends StatelessWidget {
 }
 
 class CreateAndDeleteButtons extends StatelessWidget {
-  final EditQuizProvider controller;
+  final SeeQuestionsProvider controller;
 
   CreateAndDeleteButtons({Key? key, required this.controller})
       : super(key: key);
@@ -272,7 +272,18 @@ class CreateAndDeleteButtons extends StatelessWidget {
                     ),
                   ),
                   onPressed: () {
-                    //TODO create custom quiz
+                    if (controller.questionList.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('There are no questions yet'),
+                          duration: const Duration(seconds: 2),
+                        ),
+                      );
+                    } else {
+                      showDialog(
+                          context: context,
+                          builder: (context) => CreateCustomQuizPopup());
+                    }
                   },
                 ),
               ),

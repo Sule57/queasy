@@ -9,9 +9,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../../../../src.dart';
-import '../edit_quiz_provider.dart';
-import '../edit_quiz_view.dart';
-import 'edit_quiz_text_field.dart';
+import '../see_questions_provider.dart';
+import '../see_questions_view.dart';
+import 'see_questions_text_field.dart';
 
 /// The widget [AddOrEditQuestionPopUp] shows an [AlertDialog] with a form to add or edit a new question.
 ///
@@ -61,8 +61,8 @@ class _AddOrEditQuestionPopUpState extends State<AddOrEditQuestionPopUp> {
 
   @override
   Widget build(BuildContext context) {
-    EditQuizProvider controller =
-        Provider.of<EditQuizProvider>(context, listen: true);
+    SeeQuestionsProvider controller =
+        Provider.of<SeeQuestionsProvider>(context, listen: true);
     // If the question is not null, the user wants to edit a question, and the popup should
     // show the "old" correct answer as selected when the popup opens
     if (question != null) {
@@ -90,7 +90,7 @@ class _AddOrEditQuestionPopUpState extends State<AddOrEditQuestionPopUp> {
                 children: [
                   Row(
                     children: [
-                      EditQuizTextField(
+                      SeeQuestionsTextField(
                         controller: controller.questionController,
                         hintText: 'Question',
                         validatorText: 'Please enter a question',
@@ -106,7 +106,7 @@ class _AddOrEditQuestionPopUpState extends State<AddOrEditQuestionPopUp> {
                   Row(
                     //mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      EditQuizTextField(
+                      SeeQuestionsTextField(
                         controller: controller.answer1Controller,
                         hintText: 'Answer 1',
                         validatorText: 'Please enter an answer',
@@ -130,7 +130,7 @@ class _AddOrEditQuestionPopUpState extends State<AddOrEditQuestionPopUp> {
                   ),
                   Row(
                     children: [
-                      EditQuizTextField(
+                      SeeQuestionsTextField(
                         controller: controller.answer2Controller,
                         hintText: 'Answer 2',
                         validatorText: 'Please enter an answer',
@@ -154,7 +154,7 @@ class _AddOrEditQuestionPopUpState extends State<AddOrEditQuestionPopUp> {
                   ),
                   Row(
                     children: [
-                      EditQuizTextField(
+                      SeeQuestionsTextField(
                         controller: controller.answer3Controller,
                         hintText: 'Answer 3',
                         validatorText: 'Please enter an answer',
@@ -178,7 +178,7 @@ class _AddOrEditQuestionPopUpState extends State<AddOrEditQuestionPopUp> {
                   ),
                   Row(
                     children: [
-                      EditQuizTextField(
+                      SeeQuestionsTextField(
                         controller: controller.answer4Controller,
                         hintText: 'Answer 4',
                         validatorText: 'Please enter an answer',
@@ -266,8 +266,8 @@ class DeleteQuestionPopUp extends StatefulWidget {
 class _DeleteQuestionPopUpState extends State<DeleteQuestionPopUp> {
   @override
   Widget build(BuildContext context) {
-    final EditQuizProvider controller =
-        Provider.of<EditQuizProvider>(context, listen: true);
+    final SeeQuestionsProvider controller =
+        Provider.of<SeeQuestionsProvider>(context, listen: true);
     return AlertDialog(
       title:
           const Text('Delete question', style: TextStyle(color: Colors.white)),
@@ -334,8 +334,8 @@ class _NewCategoryPopUpState extends State<NewCategoryPopUp> {
 
   @override
   Widget build(BuildContext context) {
-    final EditQuizProvider controller =
-        Provider.of<EditQuizProvider>(context, listen: true);
+    final SeeQuestionsProvider controller =
+        Provider.of<SeeQuestionsProvider>(context, listen: true);
     return AlertDialog(
       title: const Text(
         'Add a new category',
@@ -447,8 +447,8 @@ class DeleteCategoryPopUp extends StatefulWidget {
 class _DeleteCategoryPopUpState extends State<DeleteCategoryPopUp> {
   @override
   Widget build(BuildContext context) {
-    final EditQuizProvider controller =
-        Provider.of<EditQuizProvider>(context, listen: true);
+    final SeeQuestionsProvider controller =
+        Provider.of<SeeQuestionsProvider>(context, listen: true);
     return AlertDialog(
       title:
           const Text('Delete category', style: TextStyle(color: Colors.white)),
@@ -503,7 +503,8 @@ class CreateRandomQuizPopup extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Provider.of<ThemeProvider>(context).currentTheme;
-    final EditQuizProvider controller = Provider.of<EditQuizProvider>(context);
+    final SeeQuestionsProvider controller =
+        Provider.of<SeeQuestionsProvider>(context);
     TextStyle? titleStyle = theme.textTheme.headline6!.copyWith(
       color: theme.colorScheme.onPrimary,
     );
@@ -522,9 +523,143 @@ class CreateRandomQuizPopup extends StatelessWidget {
         'Creating a quiz',
         style: titleStyle,
       ),
+      content: Form(
+        key: controller.formKeyCreateRandomQuiz,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Row(
+              children: [
+                Text(
+                  'Name: ',
+                  style: textStyle,
+                ),
+                Expanded(
+                  child: SizedBox(
+                    height: 30,
+                    child: TextFormField(
+                      style: inputTextStyle,
+                      controller: controller.newQuizNameController,
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Please enter a name';
+                        }
+                        return null;
+                      },
+                      decoration: InputDecoration(
+                        contentPadding: EdgeInsets.only(bottom: 10, left: 20),
+                        filled: true,
+                        fillColor: Colors.white,
+                        border: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.white),
+                          borderRadius: BorderRadius.circular(25.7),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 15),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Number of questions: ',
+                  style: textStyle,
+                ),
+                Expanded(
+                  child: SizedBox(
+                    height: 30,
+                    child: TextFormField(
+                      style: inputTextStyle,
+                      controller: controller.numberOfQuestionsController,
+                      keyboardType: TextInputType.number,
+                      inputFormatters: <TextInputFormatter>[
+                        FilteringTextInputFormatter.digitsOnly
+                      ],
+                      decoration: InputDecoration(
+                        contentPadding: EdgeInsets.only(bottom: 10, left: 20),
+                        filled: true,
+                        fillColor: Colors.white,
+                        border: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.white),
+                          borderRadius: BorderRadius.circular(25.7),
+                        ),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter a number';
+                        }
+                        return null;
+                      },
+                      onFieldSubmitted: (value) {
+                        if (controller.formKeyCreateRandomQuiz.currentState!
+                            .validate()) {
+                          controller.createAndStoreRandomQuiz();
+                          Navigator.pop(context);
+                          controller.numberOfQuestionsController.clear();
+                          controller.newQuizNameController.clear();
+                        }
+                      },
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 15),
+            ElevatedButton(
+              child: Text('Create quiz'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: theme.colorScheme.tertiary,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0),
+                ),
+              ),
+              onPressed: () {
+                if (controller.formKeyCreateRandomQuiz.currentState!
+                    .validate()) {
+                  controller.createAndStoreRandomQuiz();
+                  Navigator.pop(context);
+                  controller.numberOfQuestionsController.clear();
+                  controller.newQuizNameController.clear();
+                }
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class CreateCustomQuizPopup extends StatelessWidget {
+  const CreateCustomQuizPopup({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Provider.of<ThemeProvider>(context).currentTheme;
+    final SeeQuestionsProvider controller =
+        Provider.of<SeeQuestionsProvider>(context);
+    TextStyle? titleStyle = theme.textTheme.headline6!.copyWith(
+      color: theme.colorScheme.onPrimary,
+    );
+    TextStyle? textStyle = theme.textTheme.subtitle2?.copyWith(
+      color: theme.colorScheme.onPrimary,
+    );
+    TextStyle inputTextStyle = theme.textTheme.subtitle2?.copyWith(
+      color: theme.colorScheme.onBackground,
+    );
+
+    return AlertDialog(
+      backgroundColor: theme.colorScheme.primary,
+      title: Text(
+        'Creating a quiz',
+        style: titleStyle,
+      ),
       content: Column(
         mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Row(
             children: [
@@ -535,72 +670,28 @@ class CreateRandomQuizPopup extends StatelessWidget {
               Expanded(
                 child: SizedBox(
                   height: 30,
-                  child: TextField(
+                  child: TextFormField(
                     style: inputTextStyle,
                     controller: controller.newQuizNameController,
-                    decoration: InputDecoration(
-                      contentPadding: EdgeInsets.only(bottom: 10, left: 20),
-                      filled: true,
-                      fillColor: Colors.white,
-                      border: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.white),
-                        borderRadius: BorderRadius.circular(25.7),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 15),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Number of questions: ',
-                style: textStyle,
-              ),
-              Expanded(
-                child: SizedBox(
-                  height: 30,
-                  child: TextField(
-                    style: inputTextStyle,
-                    controller: controller.numberOfQuestionsController,
-                    keyboardType: TextInputType.number,
-                    inputFormatters: <TextInputFormatter>[
-                      FilteringTextInputFormatter.digitsOnly
-                    ],
-                    decoration: InputDecoration(
-                      contentPadding: EdgeInsets.only(bottom: 10, left: 20),
-                      filled: true,
-                      fillColor: Colors.white,
-                      border: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.white),
-                        borderRadius: BorderRadius.circular(25.7),
-                      ),
-                    ),
-                    onSubmitted: (value) {
-                      controller.createAndStoreRandomQuiz();
-                      Navigator.pop(context);
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Please enter a name';
+                      }
+                      return null;
                     },
+                    decoration: InputDecoration(
+                      contentPadding: EdgeInsets.only(bottom: 10, left: 20),
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white),
+                        borderRadius: BorderRadius.circular(25.7),
+                      ),
+                    ),
                   ),
                 ),
               ),
             ],
-          ),
-          const SizedBox(height: 15),
-          ElevatedButton(
-            child: Text('Create quiz'),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: theme.colorScheme.tertiary,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20.0),
-              ),
-            ),
-            onPressed: () {
-              controller.createAndStoreRandomQuiz();
-              Navigator.pop(context);
-            },
           ),
         ],
       ),
