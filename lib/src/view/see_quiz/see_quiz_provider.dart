@@ -15,24 +15,7 @@ class SeeQuizProvider with ChangeNotifier {
   ///has stored. It is run when [SeeQuizView] is initialized.
   Future<void> init() async {
     //TODO: get quiz list from model
-    quizList = [
-      Quiz.dummy(
-          name: 'First semester',
-          category: Category(name: 'Programming'),
-          id: 'kasjdowjbjekb'),
-      Quiz.dummy(
-          name: 'Second semester',
-          category: Category(name: 'Programming'),
-          id: '2ahskk'),
-      Quiz.dummy(
-          name: 'Literature',
-          category: Category(name: 'High School'),
-          id: '3ahskk'),
-      Quiz.dummy(
-          name: 'Black holes',
-          category: Category(name: 'Astronomy'),
-          id: '4ahskk'),
-    ];
+    quizList = await Profile.getUserQuizzes();
     notifyListeners();
   }
 

@@ -478,4 +478,30 @@ class Profile {
   }
   //END OF METHODS FOR PROFILE VIEW
 
+  static Future<List<Quiz>> getUserQuizzes({FirebaseFirestore? firestore}) async {
+    List<Quiz> quizzes = [];
+    Quiz temp = Quiz();
+    String? uid;
+
+    if (firestore == null) {
+      firestore = FirebaseFirestore.instance;
+      uid = await getCurrentUserID();
+    }
+    else {
+      uid = "test123456789";
+    }
+
+    await firestore
+        .collection('quizzes')
+        .where('creatorID', isEqualTo: uid)
+        .get()
+        .then((QuerySnapshot querySnapshot) async{
+      querySnapshot.docs.forEach((doc) async {
+        await temp.fromJSON(doc.data() as Map<String, dynamic>);
+        quizzes.add(temp);
+      });
+    });
+
+    return quizzes;
+  }
 }
