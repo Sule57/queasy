@@ -1,5 +1,6 @@
 /// ****************************************************************************
 /// Created by Sophia Soares
+/// Collaborators: Julia Agüero
 ///
 /// This file is part of the project "Qeasy"
 /// Software Project on Technische Hochschule Ulm
@@ -78,7 +79,7 @@ class _SeeQuestionsViewState extends State<SeeQuestionsView> {
     _isLoading = true;
     _category = await CategoryRepo().getCategory(categoryName);
     controller.category = _category;
-    controller.updateListOfQuestions();
+    controller.updateQuestionsFromCategory();
     _questions = await _category.getAllQuestions();
     //print("ok");
     _questions = context.read<SeeQuestionsProvider>().questionList;
