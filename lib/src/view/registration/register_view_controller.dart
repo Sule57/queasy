@@ -8,7 +8,7 @@ import '../../model/profile.dart';
 
 ///This is controller for RegisterView
 class RegisterViewController {
-
+  String errorMessage = "";
 
   ///constructor
   RegisterViewController();
@@ -31,12 +31,12 @@ class RegisterViewController {
       UserCredential userCredential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
       Auth a = Auth();
-      a.signInWithEmailAndPassword(
-          email: newUser.email, password: password);
+      a.signInWithEmailAndPassword(email: newUser.email, password: password);
       return await newUser.registerUser();
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        print('No user found for that email.');
+      if (e.code == 'email-already-in-use') {
+        errorMessage = "User already exists";
+        print('User already exists');
         return false;
       } else if (e.code == 'wrong-password') {
         print('Wrong password provided for that user.');
@@ -104,26 +104,26 @@ class RegisterViewController {
     Random rand = Random();
     String? usernamen;
     String? email;
-    if(user != null) {
-      if(user.email != null){
+    if (user != null) {
+      if (user.email != null) {
         usernamen = user.email;
 
         email = user.email;
       }
     }
     String username = "default" + rand.nextInt(10000).toString();
-    if(usernamen != null) {
+    if (usernamen != null) {
       username = usernamen;
       username = username.substring(0, username.indexOf("@"));
     }
-    if(email != null) {
+    if (email != null) {
       Profile newUser = Profile(
         username: username,
         email: email,
       );
       try {
         await newUser.registerUser();
-      }catch(e){
+      } catch (e) {
         print(e);
       }
     }
