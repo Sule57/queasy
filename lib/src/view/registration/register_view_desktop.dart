@@ -114,6 +114,10 @@ class _RegisterViewDesktopState extends State<RegisterViewDesktop> {
                               .hasMatch(value)) {
                             return "Invalid email address";
                           }
+                          if (controller.errorMessage ==
+                              "email-already-in-use") {
+                            return "User already exists";
+                          }
                           return null;
                         },
                         controller: controllerEmail,

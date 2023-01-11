@@ -113,6 +113,10 @@ class RegisterViewMobileState extends State<RegisterViewMobile> {
                               if (value == null || value.isEmpty) {
                                 return 'Please enter email';
                               }
+                              if (controller.errorMessage ==
+                                  "email-already-in-use") {
+                                return "User already exists";
+                              }
                               if (!RegExp(
                                       r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
                                   .hasMatch(value)) {
