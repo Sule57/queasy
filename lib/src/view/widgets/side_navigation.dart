@@ -6,11 +6,12 @@
 /// ****************************************************************************
 
 import 'package:flutter/material.dart';
-import 'package:queasy/src/view/category_selection_view.dart';
+import 'package:queasy/src/view/category_selection_view_mobile.dart';
 import 'package:queasy/src/view/home_view.dart';
 import 'package:queasy/src/view/see_leaderboard/leaderboard_view.dart';
 import 'package:queasy/src/view/see_profile/profile_view.dart';
 import 'package:queasy/src/view/see_profile/profile_view_controller.dart';
+import '../category_selection_view.dart';
 import '../login/login_view.dart';
 
 /// Defines the navigation bar used in big screens.

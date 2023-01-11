@@ -12,12 +12,13 @@ import 'package:queasy/constants/app_themes.dart';
 import 'package:provider/provider.dart';
 import 'package:queasy/src/view/play_quiz/quiz_view.dart';
 import 'package:queasy/src/view/see_leaderboard/leaderboard_view.dart';
-import 'package:queasy/src/view/category_selection_view.dart';
+import 'package:queasy/src/view/category_selection_view_mobile.dart';
 import 'package:queasy/src/view/see_profile/profile_view.dart';
 import 'package:queasy/src/view/private_category_selection_view.dart';
 import 'package:queasy/src/view/widgets/side_navigation.dart';
 
 import '../../src.dart';
+import 'category_selection_view.dart';
 import 'see_profile/profile_provider.dart';
 
 /// This is the base view for navigation. It contains the bottom navigation bar
