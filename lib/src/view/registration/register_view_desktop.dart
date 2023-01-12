@@ -120,7 +120,7 @@ class _RegisterViewDesktopState extends State<RegisterViewDesktop> {
                                   return 'Please enter email';
                                 }
                                 if (!RegExp(
-                                        r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                                        r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+\.[a-zA-Z]+")
                                     .hasMatch(value)) {
                                   return "Invalid email address";
                                 }
