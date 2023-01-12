@@ -11,6 +11,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:queasy/src/view/my_quizzes/quiz_questions_view.dart';
 import '../../../../src.dart';
+import '../../../../utils/exceptions.dart';
 import '../category_questions_provider.dart';
 import '../category_questions_view.dart';
 import 'questions_text_field.dart';
@@ -59,6 +60,7 @@ class _AddOrEditQuestionPopUpState extends State<AddOrEditQuestionPopUp> {
   final _formKey = GlobalKey<FormState>();
 
   get question => widget.question;
+
   get categoryName => widget.categoryName;
 
   @override
@@ -373,8 +375,23 @@ class _NewCategoryPopUpState extends State<NewCategoryPopUp> {
             });
           } else {
             // Add the new category to the database
-            controller.addCategoryToDatabase(newCategoryController.text);
-            Navigator.pop(context); // Close the alert dialog
+            try {
+              await controller.addCategoryToDatabase(newCategoryController.text);
+              Navigator.pop(context); // Close the alert dialog
+            } on CategoryAlreadyExistsException catch (e) {
+                // Show an alert dialog to inform the user that the category
+                // name already exists
+                Future.delayed(Duration.zero, () {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return const AlertDialog(
+                        title: Text('Category already exists'),
+                      );
+                    },
+                  );
+                });
+            }
           }
         },
       ),
@@ -415,8 +432,23 @@ class _NewCategoryPopUpState extends State<NewCategoryPopUp> {
                   });
                 } else {
                   // Add the new category to the database
-                  controller.addCategoryToDatabase(newCategoryController.text);
-                  Navigator.pop(context); // Close the alert dialog
+                  try {
+                    await controller.addCategoryToDatabase(newCategoryController.text);
+                    Navigator.pop(context); // Close the alert dialog
+                  } on CategoryAlreadyExistsException catch (e) {
+                    // Show an alert dialog to inform the user that the category
+                    // name already exists
+                    Future.delayed(Duration.zero, () {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return const AlertDialog(
+                            title: Text('Category already exists'),
+                          );
+                        },
+                      );
+                    });
+                  }
                 }
               },
               child: Text('Confirm'),

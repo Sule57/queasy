@@ -20,22 +20,12 @@ import 'category_questions_provider.dart';
 /// wants to add a question. It refers to the correct answer out of the options.
 enum AnswersRadioButton { ans1, ans2, ans3, ans4 }
 
-/// This is the edit quiz view.
+/// This is the Category Question view.
 ///
 /// It is the view that the user uses to see their questions from a specific
 /// category and edit them. It shows a [ListView] with questions, a button
 /// to add a new question, a button to delete the category and a button to
 /// create a quiz with random questions.
-///
-/// The variable [categoryName] is the name of the category that the user is currently in.
-///
-/// The variable [_category] is the category that the user is currently in.
-///
-/// The variable [_questions] is a list that stores the questions of the category.
-///
-/// The variable [controller] is the provider of the class.
-///
-/// The variable [_isLoading] is a boolean that is used to determine if the view is loading or not.
 class CategoryQuestionsView extends StatefulWidget {
   final String categoryName;
 
@@ -47,10 +37,19 @@ class CategoryQuestionsView extends StatefulWidget {
 }
 
 class _CategoryQuestionsViewState extends State<CategoryQuestionsView> {
+  /// Name of the category that the user is currently in.
   get categoryName => widget.categoryName;
+
+  /// Category that the user is currently in.
   late Category _category;
+
+  /// Stores the questions of the category.
   late List<Question> _questions;
+
+  /// Is the provider of the class.
   late CategoryQuestionsProvider controller;
+
+  /// Used to determine if the view is loading or not.
   bool _isLoading = true;
 
   @override
@@ -76,15 +75,18 @@ class _CategoryQuestionsViewState extends State<CategoryQuestionsView> {
     super.dispose();
   }
 
+  /// Called when the view is build for the first time, it initializes the
+  /// [_category] and [_questions] calling the database and sets [_isLoading] to false once the
+  /// data is loaded.
   init() async {
     _isLoading = true;
     _category = await CategoryRepo().getCategory(categoryName);
     controller.category = _category;
-    controller.updateQuestionsFromCategory();
-    _questions = await _category.getAllQuestions();
+    await controller.updateQuestionsFromCategory();
+    //_questions = controller.questionList;
+    //_questions = await _category.getAllQuestions(); // TODO: add
     _questions = context.read<CategoryQuestionsProvider>().questionList;
     //_questions = controller.questionList;
-    //controller.formKeyAddEditQuestion = GlobalKey<FormState>();
     setState(() {
       _isLoading = false;
     });
@@ -97,9 +99,10 @@ class _CategoryQuestionsViewState extends State<CategoryQuestionsView> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    CategoryQuestionsProvider controller =
-        Provider.of<CategoryQuestionsProvider>(context, listen: true);
+  Widget build(BuildContext context) {CategoryQuestionsProvider controller =
+  Provider.of<CategoryQuestionsProvider>(context, listen: true);
+
+    _questions = controller.questionList;
     late Widget ListWidget;
 
     if (_isLoading) {
@@ -110,7 +113,7 @@ class _CategoryQuestionsViewState extends State<CategoryQuestionsView> {
       if (_questions.isEmpty) {
         ListWidget = QuestionListEmpty();
       } else {
-        ListWidget = QuestionList(questions: _questions);
+        ListWidget = QuestionList();
       }
       return Scaffold(
         appBar: AppBar(
@@ -161,23 +164,15 @@ class _CategoryQuestionsViewState extends State<CategoryQuestionsView> {
 ///
 /// The variable [questions] is a list that stores the questions of the category.
 class QuestionList extends StatefulWidget {
-  final List<Question> questions;
-
-  QuestionList({
-    Key? key,
-    required this.questions,
-  }) : super(key: key);
+  QuestionList({Key? key}) : super(key: key);
 
   @override
   State<QuestionList> createState() => _QuestionListState();
 }
 
 class _QuestionListState extends State<QuestionList> {
-  get questions => widget.questions;
-
   @override
   Widget build(BuildContext context) {
-    //EditQuizProvider controller = Provider.of<EditQuizProvider>(context, listen: true);
     return Expanded(
       child: Padding(
         padding: const EdgeInsets.only(top: 6.0, bottom: 8.0),
@@ -198,7 +193,6 @@ class _QuestionListState extends State<QuestionList> {
                     ),
                     child: ExpansionTile(
                       title: Text(
-                          //questions[index],
                           controller.questionList[index].text,
                           style: Theme.of(context)
                               .textTheme
