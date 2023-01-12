@@ -18,6 +18,10 @@ import 'package:queasy/src/view/widgets/side_navigation.dart';
 
 import '../../src.dart';
 
+import 'login/login_view.dart';
+import 'see_profile/profile_provider.dart';
+
+
 /// This is the base view for navigation. It contains the bottom navigation bar
 /// and the [pages] that are navigated to when the bottom navigation bar is tapped.
 class HomeView extends StatefulWidget {
@@ -37,6 +41,13 @@ class _HomeViewState extends State<HomeView> {
   @override
   void initState() {
     super.initState();
+    if (getCurrentUserID() == null) {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (context) => LoginView(),
+        ),
+      );
+    }
     selectedPage = 0;
     pages = [
       HomeWidgets(),

@@ -1,5 +1,6 @@
 /// ****************************************************************************
-/// Created by Gullu Gasimova and Endia Clark
+/// Created by Gullu Gasimova
+/// Collaborators: Endia Clark
 ///
 /// This file is part of the project "Qeasy"
 /// Software Project on Technische Hochschule Ulm
@@ -10,7 +11,6 @@ import 'package:draw_graph/models/feature.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:queasy/constants/app_themes.dart';
-import 'package:queasy/src/view/see_profile/widgets/private_statistics_graph.dart';
 import 'package:queasy/src/view/see_profile/widgets/statistics_graph.dart';
 import 'package:queasy/src/view/see_profile/widgets/theme_button.dart';
 import 'package:queasy/src/view/see_profile/profile_view_controller.dart';
@@ -163,9 +163,6 @@ class _ProfileDesktopViewContentState extends State<ProfileDesktopViewContent> {
 
   ///[formKeyDelete] used for Form in DeleteAccount button
   final formKeyDelete = GlobalKey<FormState>();
-
-  ///[publicStats] is boolean used to toggle between public and private statistics graphs
-  bool publicStats = true;
 
   @override
   void dispose() {
@@ -539,6 +536,10 @@ class _ProfileDesktopViewContentState extends State<ProfileDesktopViewContent> {
                                                                       //     .clear();
                                                                       email
                                                                           .clear();
+                                                                      Provider.of<ProfileProvider>(
+                                                                              context,
+                                                                              listen: false)
+                                                                          .updateProfile();
                                                                     }
                                                                   }
                                                                 },
@@ -962,7 +963,8 @@ class _ProfileDesktopViewContentState extends State<ProfileDesktopViewContent> {
                                                                         .colorScheme
                                                                         .onSecondary,
                                                                   )),
-                                                              onPressed: () async {
+                                                              onPressed:
+                                                                  () async {
                                                                 bool success = await controller.deleteAccount(
                                                                     emailForDelete
                                                                         .text,
@@ -1288,14 +1290,14 @@ class _ProfileDesktopViewContentState extends State<ProfileDesktopViewContent> {
                                           SizedBox(width: 50),
                                           Column(
                                             children: [
-                                              Text(Provider.of<
-                                                          StatisticsProvider>(
-                                                      context)
-                                                  .overallPercentage
-                                                  .toString(),
+                                              Text(
+                                                  Provider.of<StatisticsProvider>(
+                                                          context)
+                                                      .overallPercentage
+                                                      .toString(),
                                                   style:
-                                                  TextStyle(fontSize: 15)),
-                                              Text("Percent",
+                                                      TextStyle(fontSize: 15)),
+                                              Text("Overall Score Percentage",
                                                   style:
                                                       TextStyle(fontSize: 15))
                                             ],
@@ -1305,24 +1307,17 @@ class _ProfileDesktopViewContentState extends State<ProfileDesktopViewContent> {
                                   Padding(
                                       padding: EdgeInsets.all(7),
                                       child: Text(
-                                        "Quiz Points",
+                                        "Quiz Points Graph",
                                         style: TextStyle(fontSize: 20),
                                       )),
-                                  Switch(
-                                    // This bool value toggles the switch.
-                                    value: publicStats,
-                                    activeColor: purple,
-                                    inactiveTrackColor: green,
-                                    onChanged: (bool value) {
-                                      // This is called when the user toggles the switch.
-                                      setState(() {
-                                        publicStats = value;
-                                      });
-                                    },
-                                  ),
-                                  publicStats
-                                      ? StatisticsGraph()
-                                      : PrivateStatisticsGraph(),
+                                  Provider.of<StatisticsProvider>(context)
+                                              .numberQuiz ==
+                                          0
+                                      ? Text(
+                                          "Complete a Quiz to Start your Graph!",
+                                          style: TextStyle(fontSize: 15),
+                                        )
+                                      : StatisticsGraph()
                                 ],
                               ),
                             ),

@@ -37,6 +37,10 @@ class _RegisterViewDesktopState extends State<RegisterViewDesktop> {
   bool passwordVisible = false;
   bool _isGoogleSigningIn = false;
 
+  ///_isLoading is used to determine whether to allow the user to click the register button.
+  ///This prevents double clicking leading to errors due to resubmitting the same data twice
+  bool _isLoading = false;
+
   Future<bool> signInWithEmailAndPassword() async {
     try {
       await Auth().signInWithEmailAndPassword(
@@ -78,294 +82,319 @@ class _RegisterViewDesktopState extends State<RegisterViewDesktop> {
                       color: light,
                       borderRadius:
                           const BorderRadius.all(Radius.circular(20))))),
-          SingleChildScrollView(
-            padding: EdgeInsets.only(
-                left: MediaQuery.of(context).size.width / 1.8,
-                right: MediaQuery.of(context).size.width / 10,
-                top: MediaQuery.of(context).size.height * .10,
-                bottom: MediaQuery.of(context).size.height * .10),
-            child: Form(
-                key: formKey,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    /// The log in title
-                    Padding(
-                      padding: EdgeInsets.only(
-                          bottom: MediaQuery.of(context).size.height * .05),
-                      child: Text(
-                        "Sign Up",
-                        style: TextStyle(
-                          fontSize: MediaQuery.of(context).size.height * .10,
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(vertical: 5),
-                      child: TextFormField(
-                        ///if the user hasn't entered anything, validation fails
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter email';
-                          }
-                          if (!RegExp(
-                                  r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-                              .hasMatch(value)) {
-                            return "Invalid email address";
-                          }
-                          return null;
-                        },
-                        controller: controllerEmail,
-                        decoration: const InputDecoration(
-                          hintText: 'Email',
-                          filled: true,
-                          fillColor: Colors.white,
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(vertical: 5),
-                      child: TextFormField(
-                        ///if the user hasn't entered anything, validation fails
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter username';
-                          }
-                          return null;
-                        },
-                        controller: controllerUsername,
-                        decoration: const InputDecoration(
-                          hintText: 'Username',
-                          filled: true,
-                          fillColor: Colors.white,
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(vertical: 5),
-                      child: TextFormField(
-                        ///hides/shows password based on user click
-                        obscureText: !passwordVisible,
-
-                        ///if the user hasn't entered anything, validation fails
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter password';
-                          }
-
-                          if (value.length < 6) {
-                            return 'Password needs to be at least 6 characters';
-                          }
-                          return null;
-                        },
-                        controller: controllerPassword,
-                        decoration: InputDecoration(
-                          hintText: 'Password',
-                          filled: true,
-                          fillColor: Colors.white,
-
-                          ///[IconButton] to click when user wants to see/hide password
-                          suffixIcon: IconButton(
-                            icon: Icon(
-                              passwordVisible
-                                  ? Icons.visibility
-                                  : Icons.visibility_off,
-                              color: Theme.of(context).primaryColorDark,
+          _isLoading
+              ? const Center(
+                  child: CircularProgressIndicator(),
+                )
+              : SingleChildScrollView(
+                  padding: EdgeInsets.only(
+                      left: MediaQuery.of(context).size.width / 1.8,
+                      right: MediaQuery.of(context).size.width / 10,
+                      top: MediaQuery.of(context).size.height * .10,
+                      bottom: MediaQuery.of(context).size.height * .10),
+                  child: Form(
+                      key: formKey,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          /// The log in title
+                          Padding(
+                            padding: EdgeInsets.only(
+                                bottom:
+                                    MediaQuery.of(context).size.height * .05),
+                            child: Text(
+                              "Sign Up",
+                              style: TextStyle(
+                                fontSize:
+                                    MediaQuery.of(context).size.height * .10,
+                              ),
                             ),
-                            onPressed: () {
-                              setState(() {
-                                passwordVisible = !passwordVisible;
-                              });
-                            },
                           ),
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(vertical: 5),
-                      child: TextFormField(
-                        ///hides/shows password based on user click
-                        obscureText: !passwordVisible,
-
-                        ///if the user hasn't entered anything, validation fails
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please confirm password';
-                          }
-
-                          if (value.isNotEmpty &&
-                              value != controllerPassword.text) {
-                            return 'Passwords do not match';
-                          }
-
-                          return null;
-                        },
-                        controller: controllerConfirmPassword,
-                        decoration: InputDecoration(
-                          hintText: 'Confirm Password',
-                          filled: true,
-                          fillColor: Colors.white,
-
-                          ///[IconButton] to click when user wants to see/hide password
-                          suffixIcon: IconButton(
-                            icon: Icon(
-                              passwordVisible
-                                  ? Icons.visibility
-                                  : Icons.visibility_off,
-                              color: Theme.of(context).primaryColorDark,
+                          Padding(
+                            padding: EdgeInsets.symmetric(vertical: 5),
+                            child: TextFormField(
+                              ///if the user hasn't entered anything, validation fails
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Please enter email';
+                                }
+                                if (!RegExp(
+                                        r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                                    .hasMatch(value)) {
+                                  return "Invalid email address";
+                                }
+                                return null;
+                              },
+                              controller: controllerEmail,
+                              decoration: const InputDecoration(
+                                hintText: 'Email',
+                                filled: true,
+                                fillColor: Colors.white,
+                              ),
                             ),
-                            onPressed: () {
-                              setState(() {
-                                passwordVisible = !passwordVisible;
-                              });
-                            },
                           ),
-                        ),
-                      ),
-                    ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(vertical: 5),
+                            child: TextFormField(
+                              ///if the user hasn't entered anything, validation fails
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Please enter username';
+                                }
+                                return null;
+                              },
+                              controller: controllerUsername,
+                              decoration: const InputDecoration(
+                                hintText: 'Username',
+                                filled: true,
+                                fillColor: Colors.white,
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(vertical: 5),
+                            child: TextFormField(
+                              ///hides/shows password based on user click
+                              obscureText: !passwordVisible,
 
-                    Container(
-                      padding: EdgeInsets.only(
-                        top: MediaQuery.of(context).size.height * .02,
-                        left: MediaQuery.of(context).size.width / 13,
-                        bottom: MediaQuery.of(context).size.height * .02,
-                      ),
-                      width: MediaQuery.of(context).size.width / 4,
+                              ///if the user hasn't entered anything, validation fails
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Please enter password';
+                                }
+                                if (value.length < 6) {
+                                  return 'Password needs to be at least 6 characters';
+                                }
+                                return null;
+                              },
+                              controller: controllerPassword,
+                              decoration: InputDecoration(
+                                hintText: 'Password',
+                                filled: true,
+                                fillColor: Colors.white,
 
-                      ///Sign up button
-                      child: ElevatedButton(
-                        onPressed: (() async {
-                          if (formKey.currentState!.validate()) {
-                            bool success = await controller.signUp(
-                              controllerEmail.text,
-                              controllerUsername.text,
-                              controllerPassword.text,
-                            );
-                            if (success) {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => const HomeView()));
-                            } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(controller.errorMessage),
+                                ///[IconButton] to click when user wants to see/hide password
+                                suffixIcon: IconButton(
+                                  icon: Icon(
+                                    passwordVisible
+                                        ? Icons.visibility
+                                        : Icons.visibility_off,
+                                    color: Theme.of(context).primaryColorDark,
+                                  ),
+                                  onPressed: () {
+                                    setState(() {
+                                      passwordVisible = !passwordVisible;
+                                    });
+                                  },
                                 ),
-                              );
-                            }
-                          }
-                        }),
-                        style: ButtonStyle(
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(18.0),
-                        ))),
-                        child: const Text(
-                          "Sign up",
-                          style: TextStyle(fontSize: 23),
-                        ),
-                      ),
-                    ),
-                    Row(
-                      children: <Widget>[
-                        Expanded(
-                          child: Container(
-                            margin:
-                                const EdgeInsets.only(left: 10.0, right: 14.0),
-                            child: const Divider(
-                                color: Colors.grey, height: 36, thickness: 1.0),
+                              ),
+                            ),
                           ),
-                        ),
-                        const Text("or", style: TextStyle(fontSize: 16.0)),
-                        Expanded(
-                          child: Container(
-                            margin:
-                                const EdgeInsets.only(left: 14.0, right: 10.0),
-                            child: const Divider(
-                                color: Colors.grey, height: 36, thickness: 1.0),
-                          ),
-                        ),
-                      ],
-                    ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(vertical: 5),
+                            child: TextFormField(
+                              ///hides/shows password based on user click
+                              obscureText: !passwordVisible,
 
-                    /// Here the user can see different options to create an account.
-                    /// This [Row] displays the social media sign up buttons.
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        _isGoogleSigningIn
-                            ? CircularProgressIndicator(
-                                valueColor: AlwaysStoppedAnimation<Color>(
-                                    Theme.of(context).colorScheme.primary),
-                              )
-                            : IconButton(
-                                icon:
-                                    Image.asset('lib/assets/images/google.png'),
-                                onPressed: () async {
-                                  setState(() {
-                                    _isGoogleSigningIn = true;
-                                  });
-                                  User? user = await controller
-                                      .signInWithGoogle(context: context);
-                                  setState(() {
-                                    _isGoogleSigningIn = false;
-                                  });
-                                  if (user != null) {
-                                    Navigator.of(context).pushReplacement(
-                                      MaterialPageRoute(
-                                        builder: (context) => HomeView(),
+                              ///if the user hasn't entered anything, validation fails
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Please confirm password';
+                                }
+
+                                if (value.isNotEmpty &&
+                                    value != controllerPassword.text) {
+                                  return 'Passwords do not match';
+                                }
+
+                                return null;
+                              },
+                              controller: controllerConfirmPassword,
+                              decoration: InputDecoration(
+                                hintText: 'Confirm Password',
+                                filled: true,
+                                fillColor: Colors.white,
+
+                                ///[IconButton] to click when user wants to see/hide password
+                                suffixIcon: IconButton(
+                                  icon: Icon(
+                                    passwordVisible
+                                        ? Icons.visibility
+                                        : Icons.visibility_off,
+                                    color: Theme.of(context).primaryColorDark,
+                                  ),
+                                  onPressed: () {
+                                    setState(() {
+                                      passwordVisible = !passwordVisible;
+                                    });
+                                  },
+                                ),
+                              ),
+                            ),
+                          ),
+
+                          Container(
+                            padding: EdgeInsets.only(
+                              top: MediaQuery.of(context).size.height * .02,
+                              left: MediaQuery.of(context).size.width / 13,
+                              bottom: MediaQuery.of(context).size.height * .02,
+                            ),
+                            width: MediaQuery.of(context).size.width / 4,
+
+                            ///Sign up button
+                            child: ElevatedButton(
+                              onPressed: (() async {
+                                setState(() {
+                                  _isLoading = true;
+                                });
+                                if (formKey.currentState!.validate()) {
+                                  bool success = await controller.signUp(
+                                    controllerEmail.text,
+                                    controllerUsername.text,
+                                    controllerPassword.text,
+                                  );
+                                  if (success) {
+                                    Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                const HomeView()));
+                                  } else {
+                                    setState(() {
+                                      _isLoading = false;
+                                    });
+                                    print(errorMessage);
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(controller.errorMessage),
                                       ),
                                     );
                                   }
-                                },
-                              ),
-                        IconButton(
-                          icon: Image.asset(
-                            'lib/assets/images/facebook.png',
-                          ),
-                          onPressed: () {},
-                        ),
-                        // IconButton(
-                        //   icon: Image.asset(
-                        //     'lib/assets/images/twitter.png',
-                        //   ),
-                        //   onPressed: () {},
-                        // ),
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "Already a user? ",
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 10, bottom: 10),
-                          child: ElevatedButton(
-                            child: Text(
-                              'Log In',
-                              style: TextStyle(
-                                color: Theme.of(context).colorScheme.background,
+                                }
+                              }),
+                              style: ButtonStyle(
+                                  shape: MaterialStateProperty.all<
+                                          RoundedRectangleBorder>(
+                                      RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(18.0),
+                              ))),
+                              child: const Text(
+                                "Sign up",
+                                style: TextStyle(fontSize: 23),
                               ),
                             ),
-                            style: ButtonStyle(
-                                shape: MaterialStateProperty.all<
-                                        RoundedRectangleBorder>(
-                                    RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(18.0),
-                            ))),
-                            onPressed: () => {
-                              Navigator.of(context).pop(),
-                            },
                           ),
-                        ),
-                      ],
-                    )
-                  ],
-                )),
-          ),
+                          Row(
+                            children: <Widget>[
+                              Expanded(
+                                child: Container(
+                                  margin: const EdgeInsets.only(
+                                      left: 10.0, right: 14.0),
+                                  child: const Divider(
+                                      color: Colors.grey,
+                                      height: 36,
+                                      thickness: 1.0),
+                                ),
+                              ),
+                              const Text("or",
+                                  style: TextStyle(fontSize: 16.0)),
+                              Expanded(
+                                child: Container(
+                                  margin: const EdgeInsets.only(
+                                      left: 14.0, right: 10.0),
+                                  child: const Divider(
+                                      color: Colors.grey,
+                                      height: 36,
+                                      thickness: 1.0),
+                                ),
+                              ),
+                            ],
+                          ),
+
+                          /// Here the user can see different options to create an account.
+                          /// This [Row] displays the social media sign up buttons.
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              _isGoogleSigningIn
+                                  ? CircularProgressIndicator(
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                          Theme.of(context)
+                                              .colorScheme
+                                              .primary),
+                                    )
+                                  : IconButton(
+                                      icon: Image.asset(
+                                          'lib/assets/images/google.png'),
+                                      onPressed: () async {
+                                        setState(() {
+                                          _isGoogleSigningIn = true;
+                                        });
+                                        User? user = await controller
+                                            .signInWithGoogle(context: context);
+                                        setState(() {
+                                          _isGoogleSigningIn = false;
+                                        });
+                                        if (user != null) {
+                                          Navigator.of(context).pushReplacement(
+                                            MaterialPageRoute(
+                                              builder: (context) => HomeView(),
+                                            ),
+                                          );
+                                        }
+                                      },
+                                    ),
+                              IconButton(
+                                icon: Image.asset(
+                                  'lib/assets/images/facebook.png',
+                                ),
+                                onPressed: () {},
+                              ),
+                              // IconButton(
+                              //   icon: Image.asset(
+                              //     'lib/assets/images/twitter.png',
+                              //   ),
+                              //   onPressed: () {},
+                              // ),
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                "Already a user? ",
+                                style: TextStyle(
+                                  color: Theme.of(context).colorScheme.primary,
+                                ),
+                              ),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.only(top: 10, bottom: 10),
+                                child: ElevatedButton(
+                                  child: Text(
+                                    'Log In',
+                                    style: TextStyle(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .background,
+                                    ),
+                                  ),
+                                  style: ButtonStyle(
+                                      shape: MaterialStateProperty.all<
+                                              RoundedRectangleBorder>(
+                                          RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(18.0),
+                                  ))),
+                                  onPressed: () => {
+                                    Navigator.of(context).pop(),
+                                  },
+                                ),
+                              ),
+                            ],
+                          )
+                        ],
+                      )),
+                ),
           Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
