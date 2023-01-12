@@ -4,12 +4,6 @@ import 'package:queasy/src/model/leaderboard.dart';
 import 'package:queasy/src/model/quiz.dart';
 
 /// Main function for testing the [Quiz] class.
-///
-/// [instance] is the Fake Firestore instance for mocking of the database
-///
-/// [UID1] and other uids are the UID of test users who 'play' the quiz
-///
-/// [username1] and other usernames are the names of the test users who 'play' the quiz
 void main() async {
 
   /// Initialize the [FakeFirebaseFirestore] instance.
@@ -21,11 +15,11 @@ void main() async {
   instance.collection('leaderboard').doc(cat).set({username1: {'position': 1, 'points': 100}});
 
   /// Instance of the [Leaderboard] class.
-  Leaderboard lb = await Leaderboard.createPublic(cat, username1, instance: instance, id: 'id1');
+  Leaderboard lb = await Leaderboard.createPublic(cat, username1, instance: instance, id: UID1);
 
   /// Initializing the default data for the [Leaderboard] class in database.
-  await lb.createRandomLeaderboard();
-  await lb.updateData();
+  await lb.createRandomLeaderboard(isTest: true);
+  await lb.updateData(isTest: true);
   await lb.getData();
 
   /// Update the current user's score.
@@ -106,7 +100,6 @@ void main() async {
 
   /// Update the current user's score.
   await lb2.updateCurrentUserPoints(20);
-  // lb2.printEntries();
 
   /// Third test: Points increase and player should have the same position as some other player
   test('Number of points for current player should be increased', () {

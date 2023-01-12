@@ -11,7 +11,7 @@ import 'package:provider/provider.dart';
 import 'package:queasy/src/model/category_repo.dart';
 import 'package:queasy/src/view/play_quiz/play_quiz_view.dart';
 
-import '../../constants/theme_provider.dart';
+import '../../../constants/theme_provider.dart';
 
 /// View for selecting a category.
 ///

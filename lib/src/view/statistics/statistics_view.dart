@@ -18,6 +18,22 @@ class StatisticsView extends StatefulWidget {
 
 /// State for [StatisticsView].
 class _StatisticsViewState extends State<StatisticsView> {
+  bool _isLoading = true;
+
+  init() async {
+    _isLoading = true;
+    await Provider.of<StatisticsProvider>(context, listen: false);
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
+  @override
+  void initState() {
+    init();
+    super.initState();
+  }
+
   /// Builds the view.
   ///
   /// Uses a [Stack] to display the
@@ -26,14 +42,16 @@ class _StatisticsViewState extends State<StatisticsView> {
   Widget build(BuildContext context) {
     Provider.of<StatisticsProvider>(context, listen: false)
         .setStatisticsProvider();
-    return Scaffold(
-      body: Stack(
-        children: const [
-          StatisticsDesktopViewBackground(),
-          StatisticsViewContent(),
-        ],
-      ),
-    );
+    return _isLoading
+        ? Center(child: CircularProgressIndicator())
+        : Scaffold(
+            body: Stack(
+              children: const [
+                StatisticsDesktopViewBackground(),
+                StatisticsViewContent(),
+              ],
+            ),
+          );
   }
 }
 

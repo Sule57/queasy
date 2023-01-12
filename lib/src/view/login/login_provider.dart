@@ -14,11 +14,11 @@ class LoginProvider with ChangeNotifier {
   String? _errorMessage = '';
   get errorMessage => _errorMessage;
 
-  final loginFormKeyMobile =
+  var loginFormKeyMobile =
       GlobalKey<FormState>(debugLabel: '_loginFormKeyMobile');
-  final loginFormKeyDesktop =
+  var loginFormKeyDesktop =
       GlobalKey<FormState>(debugLabel: '_loginFormKeyDesktop');
-  final forgotPasswordFormKey =
+  var forgotPasswordFormKey =
       GlobalKey<FormState>(debugLabel: '_forgotPasswordFormKey');
 
   late TextEditingController emailController;

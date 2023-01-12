@@ -12,7 +12,7 @@ import '../../utils/exceptions.dart';
 class Quiz {
   /// Represents the id of the quiz, this will be set only if the quiz is
   /// private, since public quizzes aren't stored.
-  late String id;
+  String id = '';
 
   /// Represents the category of the quiz, this is used to retrieve
   /// the questions from the firebase.
@@ -46,6 +46,10 @@ class Quiz {
   /// Represents whether the quiz is public or private.
   late bool isPublic;
 
+  void setUsedQuestions(List<String> usedQuestions) {
+    this._usedQuestions = usedQuestions;
+  }
+
   /// A getter for the list of questions.
   get questions => _questions;
 
@@ -78,10 +82,6 @@ class Quiz {
     }
     category = Category(name: 'default', firestore: firestore);
   }
-
-  ///Dummy constructor for quiz that accept these parameters: string id,
-  ///string name, list of questions, string category
-  Quiz.dummy({required this.id, required this.name, required this.category});
 
   /// Creates a random ID for the quiz by using the [Random] class and the
   /// [String] function that gets a character from an integer value.
@@ -149,10 +149,10 @@ class Quiz {
   /// the [assignUniqueID] method.
   Future<Quiz> getRandomQuestions(
       {required Category category,
-        required int noOfQuestions,
-        required bool isPublic,
-        String? name,
-        FirebaseFirestore? firestore}) async {
+      required int noOfQuestions,
+      required bool isPublic,
+      String? name,
+      FirebaseFirestore? firestore}) async {
     this.category = category;
     this.noOfQuestions = noOfQuestions;
     this.isPublic = isPublic;
@@ -191,7 +191,7 @@ class Quiz {
       }
       _usedQuestions.add(tempID);
       Question tempQuestion =
-      await category.getQuestion(tempID, public: isPublic);
+          await category.getQuestion(tempID, public: isPublic);
       _questions.add(tempQuestion);
     }
 
@@ -232,7 +232,6 @@ class Quiz {
   /// be used.
   Future<Quiz> retrieveQuizFromId(
       {required String id, FirebaseFirestore? firestore}) async {
-    print('inside retrieveQuizFromId method. Id: $id');
     this.isPublic = false;
 
     if (firestore == null) {
@@ -242,17 +241,14 @@ class Quiz {
       this.firestore = firestore;
       UID = "test123456789";
     }
-    print('id: ' + id + '');
     await this
         .firestore
         ?.collection('quizzes')
         .doc(id)
         .get()
         .then((DocumentSnapshot documentSnapshot) async {
-      print('it got the collection');
       if (documentSnapshot.exists) {
-        print('Document data: ${documentSnapshot.data()}');
-        await fromJSON(documentSnapshot.data() as Map<String, dynamic>);
+        await fromJSON(json: documentSnapshot.data() as Map<String, dynamic>);
       } else {
         print('Document does not exist on the database');
       }
@@ -303,9 +299,9 @@ class Quiz {
   /// instance.
   Future<Quiz> createCustomQuiz(
       {required List<String> questions,
-        required Category category,
-        required String name,
-        FirebaseFirestore? firestore}) async {
+      required Category category,
+      required String name,
+      FirebaseFirestore? firestore}) async {
     this.isPublic = false;
     this._usedQuestions = questions;
     this.category = category;
@@ -328,31 +324,49 @@ class Quiz {
 
     for (int i = 0; i < noOfQuestions; i++) {
       Question tempQuestion =
-      await category.getPrivateQuestion(_usedQuestions[i], ownerID!);
+          await category.getPrivateQuestion(_usedQuestions[i], ownerID!);
       _questions.add(tempQuestion);
     }
     return this;
   }
 
-  Future<void> updateQuiz() async{
+  /// Updates the name and the questions used in the quiz.
+  ///
+  /// Pushes the variables [name] and [_usedQuestions] into the firebase. The
+  /// reason only these two are pushed into the firebase is because they are the
+  /// only ones that should be editable once the quiz is created.
+  Future<void> updateQuiz() async {
     await firestore?.collection('quizzes').doc(id).update({
       'name': this.name,
       'questionIds': this._usedQuestions,
     });
   }
 
-  Future<void> fromJSON (Map<String, dynamic> json) async {
+  /// Sets the value of the quiz from which it's called to the values inside the
+  /// provided JSON object. Also takes a optional parameter [firestore] which is
+  /// the firestore instance that will be used to retrieve the data from the
+  /// firestore.
+  Future<void> fromJSON(
+      {required Map<String, dynamic> json,
+      FirebaseFirestore? firestore}) async {
+    //if you remove the if, try lo load, and then add it again and reload, it
+    //works.
+    if (firestore == null) {
+      this.firestore = FirebaseFirestore.instance;
+    } else {
+      this.firestore = firestore;
+    }
+
     this.id = json['id'];
     this.name = json['name'];
     this.ownerID = json['creatorID'];
-    this.category = new Category(name: json['category'], firestore: this.firestore);
+    this.category = new Category(name: json['category']);
     this.noOfQuestions = json['questionIds'].length;
     this._usedQuestions = json['questionIds'].cast<String>();
     for (int i = 0; i < noOfQuestions; i++) {
       Question tempQuestion =
-      await category.getPrivateQuestion(_usedQuestions[i], ownerID!);
+          await category.getPrivateQuestion(_usedQuestions[i], ownerID!);
       _questions.add(tempQuestion);
     }
   }
-
 }
