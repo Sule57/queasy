@@ -1,6 +1,6 @@
 /// ****************************************************************************
 /// Created by Gullu Gasimova
-/// Collaborators: Sophia Soares, Julia Agüero
+/// Collaborators: Sophia Soares, Julia Agüero, Nikol Kreshpoj
 ///
 /// This file is part of the project "Qeasy"
 /// Software Project on Technische Hochschule Ulm
@@ -12,7 +12,6 @@ import 'package:queasy/constants/app_themes.dart';
 import 'package:provider/provider.dart';
 import 'package:queasy/src/view/play_quiz/quiz_view.dart';
 import 'package:queasy/src/view/see_leaderboard/leaderboard_view.dart';
-import 'package:queasy/src/view/category_selection_view_mobile.dart';
 import 'package:queasy/src/view/see_profile/profile_view.dart';
 import 'package:queasy/src/view/private_category_selection_view.dart';
 import 'package:queasy/src/view/widgets/side_navigation.dart';
@@ -134,18 +133,52 @@ class _HomeViewState extends State<HomeView> {
                             borderRadius: BorderRadius.circular(30),
                             color: Theme.of(context).colorScheme.primary,
                           ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(20),
-                            child: RichText(
-                              text: TextSpan(
-                                text: 'Text your knowledge',
-                                style: const TextStyle(
-                                    color: const Color(0xffF1FFE7),
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 40),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text('Test Your Knowledge.',textAlign:TextAlign.center, style: TextStyle(fontSize: 45, color: const Color(0xfff1ffe7),),),
+                              Row(
+                                children: [
+                                    Expanded(
+                                    child: Text('Play now and compete in fun tournaments with people from all over in your desired category.', textAlign:TextAlign.center,style: TextStyle(fontSize: 25, color: const Color(0xfff1ffe7),),),
+                                    ),
+                                ]
                               ),
-                              textAlign: TextAlign.center,
-                            ),
+                              Row(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 30),
+                                      child: Icon(Icons.public, color: Colors.yellow,size: 40,),
+                                    ),
+                                    Expanded(
+                                      child: Text('''Compete once per day in the desired category and see your placement in the leaderboard.''',  style: TextStyle(fontSize: 20, color: const Color(0xfff1ffe7),),),
+                                    )
+                                  ]
+                              ),
+                              Row(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 30),
+                                      child: Icon(Icons.lock, color: const Color(0xffF19C79),size: 40,),
+                                    ),
+                                    Expanded(
+                                      child: Text('''Have a quiz key? \n Enter it and you can take the private quiz.''',  style: TextStyle(fontSize: 20, color: const Color(0xfff1ffe7),),),
+                                    )
+                                  ]
+                              ),
+                              Row(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 30),
+                                      child: Icon(Icons.list, color: const Color(0xff9fc490),size: 40,),
+                                    ),
+                                    Expanded(
+                                      child: Text('''Create your own quizzes and save them with your selected category.''',  style: TextStyle(fontSize: 20,color: const Color(0xfff1ffe7),),),
+                                    )
+                                  ]
+                              ),
+                            ],
                           ),
                         ),
                       ),

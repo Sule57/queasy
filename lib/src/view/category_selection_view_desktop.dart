@@ -79,6 +79,7 @@ class CategorySelectionDesktopViewBackground extends StatelessWidget {
                       borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(30),
                         bottomLeft: Radius.circular(30),
+                        topRight: Radius.circular(30),
                       ),
                       color: const Color(0xffF19C79),
                     ),
