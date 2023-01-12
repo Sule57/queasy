@@ -202,11 +202,11 @@ class Quiz {
   /// firebase.
   Future<void> storeQuiz() async {
     await this.firestore?.collection('quizzes').doc(id).set({
-      'id': id,
-      'name': name,
-      'creatorID': ownerID,
-      'category': category.name,
-      'questionIds': _usedQuestions,
+      'id': this.id,
+      'name': this.name,
+      'creatorID': this.ownerID,
+      'category': this.category.name,
+      'questionIds': this._usedQuestions,
     });
   }
 
