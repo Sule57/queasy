@@ -255,7 +255,8 @@ class _RegisterViewDesktopState extends State<RegisterViewDesktop> {
                                     controllerPassword.text,
                                   );
                                   if (success) {
-                                    Navigator.of(context).push(
+                                    Navigator.of(context).pop();
+                                    Navigator.of(context).pushReplacement(
                                         MaterialPageRoute(
                                             builder: (context) =>
                                                 const HomeView()));
@@ -336,6 +337,7 @@ class _RegisterViewDesktopState extends State<RegisterViewDesktop> {
                                           _isGoogleSigningIn = false;
                                         });
                                         if (user != null) {
+                                          Navigator.of(context).pop();
                                           Navigator.of(context).pushReplacement(
                                             MaterialPageRoute(
                                               builder: (context) => HomeView(),

@@ -28,6 +28,12 @@ class LoginProvider with ChangeNotifier {
   bool _isPasswordObscured = true;
   get isPasswordObscured => _isPasswordObscured;
 
+  void restartKeys(){
+    this.loginFormKeyDesktop = new GlobalKey<FormState>(debugLabel: '_loginFormKeyDesktop');
+    this.loginFormKeyMobile = new GlobalKey<FormState>(debugLabel: '_loginFormKeyMobile');
+    this.forgotPasswordFormKey = new GlobalKey<FormState>(debugLabel: '_forgotPasswordFormKey');
+  }
+
   void togglePasswordVisibility() {
     _isPasswordObscured = !_isPasswordObscured;
     notifyListeners();
