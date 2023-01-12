@@ -83,7 +83,7 @@ class StatisticsProvider with ChangeNotifier {
       }
       _overallPercentage = (sum / (_numberQuiz * 5) * 100).round();
 
-      notifyListeners();
+      // notifyListeners();
     }
   }
 }
