@@ -60,7 +60,7 @@ class _PrivateCategorySelectionViewState
     _isLoading = true;
     _categoryList = await CategoryRepo().getPrivateCategories();
     controller.categoryList = _categoryList;
-    controller.updateListOfCategories();
+    await controller.updateListOfCategories();
     _categoryList = context.read<CategoryQuestionsProvider>().categoryList;
     setState(() {
       _isLoading = false;
@@ -86,6 +86,9 @@ class _PrivateCategorySelectionViewState
   /// parameter.
   @override
   Widget build(BuildContext context) {
+
+    _categoryList = context.watch<CategoryQuestionsProvider>().categoryList;
+
     late Widget ListWidget;
     if (_isLoading) {
       return const Center(child: CircularProgressIndicator());

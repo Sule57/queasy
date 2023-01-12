@@ -156,6 +156,7 @@ class CategoryRepo {
         }
       }
     });
+    list.sort();
     return list;
   }
 
@@ -193,6 +194,7 @@ class CategoryRepo {
         }
       }
     });
+    list.sort();
     return list;
   }
 

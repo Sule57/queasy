@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:queasy/src/view/see_questions/category_questions_view.dart';
 import 'package:queasy/src/view/see_questions/widgets/questions_popups.dart';
 import '../../../src.dart';
+import '../../../utils/exceptions.dart';
 
 /// This is the category questions provider.
 ///
@@ -38,8 +39,7 @@ class CategoryQuestionsProvider with ChangeNotifier {
     _category = category;
   }
 
-  //List<Question> _questionList = [];
-  late List<Question> _questionList;
+  late List<Question> _questionList = [];
 
   List<Question> get questionList => _questionList;
 
@@ -51,7 +51,7 @@ class CategoryQuestionsProvider with ChangeNotifier {
     _isQuestionChecked = List.filled(_questionList.length, false);
   }
 
-  late List<String> _categoryList;
+  late List<String> _categoryList = [];
 
   List<String> get categoryList => _categoryList;
 
@@ -79,21 +79,26 @@ class CategoryQuestionsProvider with ChangeNotifier {
   GlobalKey<FormState> formKeyCreateRandomQuiz = GlobalKey<FormState>();
   GlobalKey<FormState> formKeyCreateCustomQuiz = GlobalKey<FormState>();
 
-  void updateQuestionsFromCategory() async {
+  /// The method [updateQuestionsFromCategory] is used to get the questions of a category to be displayed in the
+  /// [CategoryQuestionsView].
+  ///
+  /// It calls the database and stores the questions in [_questions].
+  Future<void> updateQuestionsFromCategory() async {
     questionList = await category.getAllQuestions();
     _isQuestionChecked = List.filled(_questionList.length, false);
     notifyListeners();
   }
 
-  /// The method [updateListOfCategories] updates the list of categories to be shown in the [PrivateCategorySelectionView].
+  /// The method [updateListOfCategories] updates the list of categories to be displayed in the
+  /// [PrivateCategorySelectionView].
   ///
   /// It gets the categories from the database and stores them in the variable [_categoryList].
-  updateListOfCategories() async {
+  Future<void> updateListOfCategories() async {
     categoryList = await CategoryRepo().getPrivateCategories();
     notifyListeners();
   }
 
-  void updateQuestionsFromQuiz(String id) async {
+  Future<void> updateQuestionsFromQuiz(String id) async {
     await Quiz().retrieveQuizFromId(id: id).then((quiz) {
       questionList = quiz.questions;
     });
@@ -109,8 +114,8 @@ class CategoryQuestionsProvider with ChangeNotifier {
           builder: (BuildContext context) {
             return AddOrEditQuestionPopUp(
               categoryName: category.getName(),
-              action: () {
-                addQuestionToDatabase();
+              action: () async {
+                await addQuestionToDatabase();
               },
             );
           });
@@ -121,7 +126,7 @@ class CategoryQuestionsProvider with ChangeNotifier {
   ///
   /// The variable [question] is the question that is going to be added.
   /// The variable [category] is the category that the question is going to be added to.
-  addQuestionToDatabase() async {
+  Future<void> addQuestionToDatabase() async {
     Question question = Question(
       text: questionController.text,
       answers: [
@@ -137,10 +142,7 @@ class CategoryQuestionsProvider with ChangeNotifier {
       category: category.getName(),
     );
     await category.createQuestion(question);
-    updateQuestionsFromCategory();
-    print("Question added");
-    //print("Question: $questionController.text]");
-    // notifyListeners();
+    await updateQuestionsFromCategory();
   }
 
   /// The method [editQuestion] is used to show a dialog to edit a question.
@@ -155,8 +157,8 @@ class CategoryQuestionsProvider with ChangeNotifier {
             return AddOrEditQuestionPopUp(
               categoryName: question.category,
               question: question,
-              action: () {
-                editQuestionOnDatabase(question);
+              action: () async{
+                await editQuestionOnDatabase(question);
               },
             );
           });
@@ -166,7 +168,7 @@ class CategoryQuestionsProvider with ChangeNotifier {
   /// This method [editQuestionOnDatabase] used to edit a question on the database.
   ///
   /// The variable [question] is the question that is going to be edited.
-  editQuestionOnDatabase(Question question) async {
+  Future<void> editQuestionOnDatabase(Question question) async {
     question.setText(questionController.text.toString());
     question.answers[0].setText(answer1Controller.text);
     question.answers[1].setText(answer2Controller.text);
@@ -174,7 +176,6 @@ class CategoryQuestionsProvider with ChangeNotifier {
     question.answers[3].setText(answer4Controller.text);
     question.setCorrectAnswer(_selectedRadioAnswer.index);
     await question.updateQuestion();
-    print("Question edited");
     notifyListeners();
   }
 
@@ -195,21 +196,25 @@ class CategoryQuestionsProvider with ChangeNotifier {
   /// This method [deleteQuestionFromDatabase] used to delete a question from the database.
   ///
   /// The variable [question] is the question that is going to be deleted.
-  deleteQuestionFromDatabase(Question question) async {
+  Future<void> deleteQuestionFromDatabase(Question question) async {
     await category.deleteQuestion(question);
-    updateQuestionsFromCategory();
-    print("Question deleted");
+    await updateQuestionsFromCategory();
     notifyListeners();
   }
 
   /// The method [addCategoryToDatabase] creates a new category and adds it to the database.
   ///
   /// The variable [name] is the name of the category that is going to be created.
-  addCategoryToDatabase(String name) async {
-    await CategoryRepo().createCategory(name, Colors.blue);
-    updateListOfCategories();
-    print("Category added");
-    notifyListeners();
+  Future<void> addCategoryToDatabase(String name) async {
+    // Check if the category already exists
+    if ((await CategoryRepo().getPrivateCategories()).contains(name)) {
+      throw CategoryAlreadyExistsException();
+      // add a snack bar to show that the category already exists
+    } else {
+      await CategoryRepo().createCategory(name, Colors.blue);
+      await updateListOfCategories();
+      notifyListeners();
+    }
   }
 
   /// The method [deleteCategory] is used to show a dialog to delete a category from the database.
@@ -226,10 +231,9 @@ class CategoryQuestionsProvider with ChangeNotifier {
   }
 
   /// This method [deleteCategoryFromDatabase] used to delete a category from the database.
-  deleteCategoryFromDatabase() async {
+  Future<void> deleteCategoryFromDatabase() async {
     await CategoryRepo().deleteCategory(category.getName());
-    updateListOfCategories();
-    print("Category deleted");
+    await updateListOfCategories();
     notifyListeners();
   }
 
