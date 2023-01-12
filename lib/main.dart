@@ -15,7 +15,7 @@ import 'package:queasy/constants/theme_provider.dart';
 import 'package:queasy/src/view/see_questions/see_category_questions_provider.dart';
 import 'package:queasy/src/view/login/login_provider.dart';
 import 'package:queasy/src/view/play_quiz/play_quiz_provider.dart';
-import 'package:queasy/src/view/see_quizzes/see_quizzes_provider.dart';
+import 'package:queasy/src/view/my_quizzes/my_quizzes_provider.dart';
 import 'package:queasy/src/view/statistics/statistics_provider.dart';
 import 'package:queasy/src/view/widgets/widget_tree.dart';
 

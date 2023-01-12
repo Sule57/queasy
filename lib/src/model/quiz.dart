@@ -232,7 +232,6 @@ class Quiz {
   /// be used.
   Future<Quiz> retrieveQuizFromId(
       {required String id, FirebaseFirestore? firestore}) async {
-    print('inside retrieveQuizFromId method. Id: $id');
     this.isPublic = false;
 
     if (firestore == null) {
@@ -242,16 +241,13 @@ class Quiz {
       this.firestore = firestore;
       UID = "test123456789";
     }
-    print('id: ' + id + '');
     await this
         .firestore
         ?.collection('quizzes')
         .doc(id)
         .get()
         .then((DocumentSnapshot documentSnapshot) async {
-      print('it got the collection');
       if (documentSnapshot.exists) {
-        print('Document data: ${documentSnapshot.data()}');
         await fromJSON(json: documentSnapshot.data() as Map<String, dynamic>);
       } else {
         print('Document does not exist on the database');
@@ -334,6 +330,11 @@ class Quiz {
     return this;
   }
 
+  /// Updates the name and the questions used in the quiz.
+  ///
+  /// Pushes the variables [name] and [_usedQuestions] into the firebase. The
+  /// reason only these two are pushed into the firebase is because they are the
+  /// only ones that should be editable once the quiz is created.
   Future<void> updateQuiz() async {
     await firestore?.collection('quizzes').doc(id).update({
       'name': this.name,
@@ -341,7 +342,13 @@ class Quiz {
     });
   }
 
-  Future<void> fromJSON({required Map<String, dynamic> json, FirebaseFirestore? firestore}) async {
+  /// Sets the value of the quiz from which it's called to the values inside the
+  /// provided JSON object. Also takes a optional parameter [firestore] which is
+  /// the firestore instance that will be used to retrieve the data from the
+  /// firestore.
+  Future<void> fromJSON(
+      {required Map<String, dynamic> json,
+      FirebaseFirestore? firestore}) async {
     //if you remove the if, try lo load, and then add it again and reload, it
     //works.
     if (firestore == null) {

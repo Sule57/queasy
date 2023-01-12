@@ -14,6 +14,8 @@ import 'package:queasy/src/view/see_leaderboard/leaderboard_view.dart';
 import 'package:queasy/src/view/see_profile/profile_view.dart';
 import 'package:queasy/src/view/see_profile/profile_view_controller.dart';
 import '../login/login_view.dart';
+import '../private_category_selection_view.dart';
+import 'join_quiz_popup.dart';
 
 /// Defines the navigation bar used in big screens.
 ///
@@ -106,9 +108,10 @@ class SideNavigation extends StatelessWidget {
                     "Join Quiz",
                     style: textStyle,
                   ),
-                  onTap: () {
-                    //TODO alert dialog to input key
-                  },
+                  onTap: () => showDialog(
+                    context: context,
+                    builder: (BuildContext context) => JoinQuizPopup(),
+                  ),
                 ),
                 ListTile(
                   leading: Icon(Icons.list),
@@ -117,7 +120,19 @@ class SideNavigation extends StatelessWidget {
                     style: textStyle,
                   ),
                   onTap: () {
-                    //TODO CategorySelectionView() but with user's categories
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => PrivateCategorySelectionView()));
+                  },
+                ),
+                ListTile(
+                  leading: Icon(Icons.fact_check_outlined),
+                  title: Text(
+                    "My quizzes",
+                    style: textStyle,
+                  ),
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => MyQuizzesView()));
                   },
                 ),
               ],

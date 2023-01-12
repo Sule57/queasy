@@ -478,28 +478,33 @@ class Profile {
   }
   //END OF METHODS FOR PROFILE VIEW
 
+  /// Returns a list of quizzes owned by the currently logged in user.
+  ///
+  /// Takes in an optional [firestore] parameter. If it's passed the code will
+  /// assume the developer is in testing and give it default values, if not, it
+  /// will use the default firestore instance.
   static Future<List<Quiz>> getUserQuizzes(
       {FirebaseFirestore? firestore}) async {
-
     if (firestore == null) {
       firestore = FirebaseFirestore.instance;
     }
 
     List<Quiz> quizzes = [];
-    Quiz tempQuiz = Quiz();
 
-    /// Get the the id's of all quizzes whose creatorID is the current user's id
-    await firestore
+    QuerySnapshot snapshot = await firestore
         .collection('quizzes')
         .where('creatorID', isEqualTo: getCurrentUserID())
-        .get()
-        .then((QuerySnapshot querySnapshot) {
-      querySnapshot.docs.forEach((doc) async {
-        await tempQuiz.retrieveQuizFromId(id: doc.id);
-        quizzes.add(tempQuiz);
-      });
-    });
-    return quizzes;
+        .get();
 
+    for (var doc in snapshot.docs) {
+      Quiz? tempQuiz;
+
+      await Quiz().retrieveQuizFromId(id: doc.id).then((value) {
+        tempQuiz = value;
+        quizzes.add(tempQuiz!);
+      });
+    }
+
+    return quizzes;
   }
 }

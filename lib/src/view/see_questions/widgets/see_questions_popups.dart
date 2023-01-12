@@ -9,7 +9,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:queasy/src/view/see_quizzes/see_quiz_questions_view.dart';
+import 'package:queasy/src/view/my_quizzes/quiz_questions_view.dart';
 import '../../../../src.dart';
 import '../see_category_questions_provider.dart';
 import '../see_category_questions_view.dart';
@@ -635,10 +635,10 @@ class CreateRandomQuizPopup extends StatelessWidget {
         );
       } else {
         Navigator.pop(context);
-        Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => SeeQuizQuestionsView(
+        Navigator.pop(context);
+        Navigator.of(context).pushReplacement(MaterialPageRoute(
+            builder: (context) => QuizQuestionsView(
                   quizId: quizId!,
-                  quizName: controller.newQuizNameController.text,
                 )));
         controller.numberOfQuestionsController.clear();
         controller.newQuizNameController.clear();
@@ -775,10 +775,10 @@ class CreateCustomQuizPopup extends StatelessWidget {
         );
       } else {
         Navigator.pop(context);
-        Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => SeeQuizQuestionsView(
+        Navigator.pop(context);
+        Navigator.of(context).pushReplacement(MaterialPageRoute(
+            builder: (context) => QuizQuestionsView(
                   quizId: quizId!,
-                  quizName: controller.newQuizNameController.text,
                 )));
         controller.newQuizNameController.clear();
         controller.clearIsQuestionChecked();

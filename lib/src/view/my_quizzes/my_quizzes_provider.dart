@@ -13,10 +13,17 @@ class SeeQuizzesProvider with ChangeNotifier {
   List<Question> _questionList = [];
   List<Question> get questionList => _questionList;
 
-  ///Obtains from Firestore all the quizzes that the current logged in user
-  ///has stored. It is run when [SeeQuizListView] is initialized.
-  Future<void> init() async {
+  // String currentQuizId = '';
+  // String currentQuizName = '';
+  late Quiz quizDisplaying;
+
+  Future<void> updateQuizList() async {
     quizList = await Profile.getUserQuizzes();
+    notifyListeners();
+  }
+
+  Future<void> updateCurrentQuizDisplaying(String quizId) async {
+    quizDisplaying = await Quiz().retrieveQuizFromId(id: quizId);
     notifyListeners();
   }
 
@@ -24,6 +31,6 @@ class SeeQuizzesProvider with ChangeNotifier {
   Future<void> deleteQuiz(String id) async {
     //TODO
     await Category.deleteQuiz(id: id);
-    notifyListeners();
+    updateQuizList();
   }
 }

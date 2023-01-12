@@ -124,7 +124,8 @@ class _PrivateCategorySelectionViewState
                 width: MediaQuery.of(context).size.width / 3,
                 decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.tertiary,
-                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                  borderRadius:
+                      BorderRadius.only(bottomRight: Radius.circular(20)),
                 ),
               ),
             ),
@@ -135,7 +136,7 @@ class _PrivateCategorySelectionViewState
                 width: MediaQuery.of(context).size.width / 3,
                 decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.secondary,
-                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                  borderRadius: BorderRadius.only(topLeft: Radius.circular(20)),
                 ),
               ),
             ),
