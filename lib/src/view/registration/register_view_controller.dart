@@ -133,6 +133,7 @@ class RegisterViewController {
     return user;
   }
 
+  ///signInWithFacebook method allows the user to register via Facebook
   Future<User?> signInWithFacebook({required BuildContext context}) async {
     FirebaseAuth auth = FirebaseAuth.instance;
     User? user;

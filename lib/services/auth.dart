@@ -37,7 +37,6 @@ class Auth with ChangeNotifier {
     if (kIsWeb) {
       await _firebaseAuth.signInWithPopup(googleProvider);
     } else {
-      //TODO implement mobile sign in
       // Trigger the authentication flow
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
@@ -52,7 +51,6 @@ class Auth with ChangeNotifier {
       );
       // return await FirebaseAuth.instance.signInWithCredential(credential);
     }
-    //TODO register user in firestore with email and give him a choice for username
   }
 
   Future<void> signInWithFacebook() async {
@@ -61,7 +59,6 @@ class Auth with ChangeNotifier {
     if (kIsWeb) {
       await _firebaseAuth.signInWithPopup(facebookProvider);
     } else {
-      //TODO implement mobile sign in
       final LoginResult loginResult = await FacebookAuth.instance.login();
 
       final OAuthCredential facebookAuthCredential =
