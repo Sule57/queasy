@@ -103,7 +103,7 @@ Chosen because:
 
 ### Home View
 
-<img src="https://user-images.githubusercontent.com/76959652/211169786-2e0bf255-3e95-473b-ae36-26c400be9397.png" height=500>
+<img src="https://user-images.githubusercontent.com/76959652/212055962-8e6d6e8f-a950-4b76-908b-66d4e3882177.png" height=500>
 
 * The user can go to the **Public Tournaments View**
 * The user can open the Join Quiz View
@@ -146,14 +146,51 @@ Chosen because:
 * If the user clicks join and the key is incorrect, the user is notified with a text "Invalid Quiz Key"
 * If the user clicks cancel, the App goes back to **Home View**
 
-### My Quizzes View
+### My Categories View
 
-<img src="https://user-images.githubusercontent.com/76959652/211185825-f7f5c8bf-80e7-4b11-8b43-9273a8e31f58.png" height=500>
+<img src="https://user-images.githubusercontent.com/76959652/212052211-b546429a-5bb9-462f-b71f-ab8a0889e9cd.png" height=500>
 
 * The user can create a category by clicking the plus in the top right corner
 * Clicking the pop up will promt the user with a pup up requesting a name
 * After giving a name to the new category the user can confirm or cancel the creation of a new category
-* The user can enter their category to view questions inside or create a quiz
+* The user can enter their category to **Category View** inside where questions can be seen/edited or a quiz created
+
+### Category View
+
+<img src="https://user-images.githubusercontent.com/76959652/212053015-f49db1f5-4c23-4bc5-a4c1-5d14cb6045da.png" height=500>
+
+<img src="https://user-images.githubusercontent.com/76959652/212053674-ae875004-0cab-433e-9c3c-fe94a33b7ce4.png" height=500>
+
+* The user can edit his questions and answers
+* The user can create a new quiz with random/chosen questions (with a custom name)
+* The user can delete the category
+
+### My Quizzes View
+
+<img src="https://user-images.githubusercontent.com/76959652/212054361-87a1ec85-132a-482e-b57b-3f30698a18be.png" height=500>
+
+* User can see his own quizzes
+* User can share or delete a quiz by clicking on the ***"..."*** on the right
+* User can enter inside of the ***Quiz Management View*** to play/delete a quiz
+
+### Quiz Management View
+
+<img src="https://user-images.githubusercontent.com/76959652/212055083-17881672-154a-4b86-b08a-90c89bf35c02.png" height=500>
+
+* The user can see their quiz in detail
+* The user can delete the quiz
+* The user can play the quiz
+
+### Leaderboard
+
+<img src="https://user-images.githubusercontent.com/76959652/212058070-92e9ac3f-066c-46d6-b0ee-85d4feac651c.png" height=500>
+
+* The user can view the global tournament (All categories combined) leaderboard top 10
+* The user can view the particular tournament category top 10
+
+### Profile
+
+
 
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!CONTINUE WHEN CONNECTED!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -165,7 +202,7 @@ Chosen because:
 
 * **Marin "**[Sule57](https://www.github.com/Sule57)**" Sušić**
 * **Savo "**[Rek27](https://www.github.com/Rek57)**" Simeunović**
-* **Stanislav "**[stani3](https://www.github.com/stani3)**" Dopalchev**
+* **Stanislav "**[stani3](https://www.github.com/stani3)**" Dolapchev**
 * **Endia "**[rhit-clarken](https://www.github.com/rhit-clarken)**" Clark**
 
 ### Frontend
