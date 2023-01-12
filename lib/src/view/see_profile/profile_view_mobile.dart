@@ -1,5 +1,6 @@
 /// ****************************************************************************
-/// Created by Gullu Gasimova and Endia Clark
+/// Created by Gullu Gasimova
+/// Collaborators: Endia Clark
 ///
 /// This file is part of the project "Qeasy"
 /// Software Project on Technische Hochschule Ulm
@@ -22,8 +23,6 @@ import '../registration/register_view.dart';
 import '../see_leaderboard/leaderboard_view.dart';
 import '../statistics/statistics_provider.dart';
 import 'profile_provider.dart';
-
-import 'widgets/private_statistics_graph.dart';
 import 'widgets/statistics_graph.dart';
 
 ///This is UserProfileMobile view
@@ -72,15 +71,6 @@ class ProfileMobileState extends State<ProfileViewMobile> {
   ///[formKeyDelete] used for Form in DeleteAccount button
   final formKeyDelete = GlobalKey<FormState>();
 
-  ///[publicStats] is boolean used to toggle between public and private statistics graphs
-  bool publicStats = true;
-
-  /// The index of the currently selected page.
-  late int selectedPage;
-
-  /// The list of pages that the user can navigate to.
-  List<Widget> pages = [];
-
   @override
   void dispose() {
     /// Cleans up the controllers when the widget is disposed.
@@ -97,14 +87,6 @@ class ProfileMobileState extends State<ProfileViewMobile> {
   void initState() {
     super.initState();
     passwordVisible = false;
-    selectedPage = 0;
-    pages = [
-      ProfileViewMobile(),
-
-      /// This avoids other pages to be built unnecessarily.
-      const SizedBox(),
-      const SizedBox(),
-    ];
   }
 
   /// Builds the view
@@ -305,11 +287,11 @@ class ProfileMobileState extends State<ProfileViewMobile> {
                               children: [
                                 Column(
                                   children: [
-                                    Text(Provider.of<
-                                StatisticsProvider>(
-                                context)
-                                .numberQuiz
-                                .toString(), style: TextStyle(fontSize: 15)),
+                                    Text(
+                                        Provider.of<StatisticsProvider>(context)
+                                            .numberQuiz
+                                            .toString(),
+                                        style: TextStyle(fontSize: 15)),
                                     Text("Completed",
                                         style: TextStyle(fontSize: 15))
                                   ],
@@ -317,9 +299,12 @@ class ProfileMobileState extends State<ProfileViewMobile> {
                                 SizedBox(width: 50),
                                 Column(
                                   children: [
-                                    Text(Provider.of<StatisticsProvider>(context).overallPercentage.toString(),
+                                    Text(
+                                        Provider.of<StatisticsProvider>(context)
+                                            .overallPercentage
+                                            .toString(),
                                         style: TextStyle(fontSize: 15)),
-                                    Text("Percent",
+                                    Text("Overall Score Percentage",
                                         style: TextStyle(fontSize: 15))
                                   ],
                                 ),
@@ -327,23 +312,14 @@ class ProfileMobileState extends State<ProfileViewMobile> {
                             )),
                         Padding(
                             padding: EdgeInsets.all(7),
-                            child: Text("Quiz Points",
+                            child: Text("Quiz Points Graph",
                                 style: TextStyle(fontSize: 20))),
-                        Switch(
-                          // This bool value toggles the switch.
-                          value: publicStats,
-                          activeColor: purple,
-                          inactiveTrackColor: green,
-                          onChanged: (bool value) {
-                            // This is called when the user toggles the switch.
-                            setState(() {
-                              publicStats = value;
-                            });
-                          },
-                        ),
-                        publicStats
-                            ? StatisticsGraph()
-                            : PrivateStatisticsGraph(),
+                        Provider.of<StatisticsProvider>(context).numberQuiz == 0
+                            ? Text(
+                                "Complete a Quiz to Start your Graph!",
+                                style: TextStyle(fontSize: 15),
+                              )
+                            : StatisticsGraph()
                       ],
                     ),
                   ),

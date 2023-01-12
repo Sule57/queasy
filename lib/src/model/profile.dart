@@ -259,13 +259,17 @@ class Profile {
     }
 
     final firebaseFirestore = FirebaseFirestore.instance;
-    await firebaseFirestore.collection('users').doc(await getCurrentUserID()).update({
+    await firebaseFirestore
+        .collection('users')
+        .doc(await getCurrentUserID())
+        .update({
       'scores.$category': FieldValue.increment(score),
     });
     //TODO
 
     if (is_public) {
-      Leaderboard leaderboard = await Leaderboard.createPublic(category, (await getCurrentUserUsername())!);
+      Leaderboard leaderboard = await Leaderboard.createPublic(
+          category, (await getCurrentUserUsername())!);
       await leaderboard.updateCurrentUserPoints(score);
     }
   }
@@ -351,7 +355,8 @@ class Profile {
   ///[password] is the current password of the user. It is used to reauthenticate the user.
   ///It returns true if the email was updated successfully
   ///and false if the email was not updated successfully.
-  Future<bool> updateEmail(String currentEmail, String newEmail, String password) async {
+  Future<bool> updateEmail(
+      String currentEmail, String newEmail, String password) async {
     try {
       await FirebaseAuth.instance.authStateChanges().listen((User? user) async {
         if (user != null) {
@@ -373,7 +378,8 @@ class Profile {
   ///[newPassword] is the value the current password will change to.
   ///It returns true if the password was updated successfully
   ///and false if the password was not updated successfully.
-  Future<bool> updatePassword(String email, String currentPassword, String newPassword) async {
+  Future<bool> updatePassword(
+      String email, String currentPassword, String newPassword) async {
     try {
       await FirebaseAuth.instance.authStateChanges().listen((User? user) async {
         if (user != null) {
@@ -423,8 +429,11 @@ class Profile {
         await leaderboard.removeUserFromPublicLeaderboards();
         await leaderboard.removeUserFromAllLeaderboard();
       }
-
-      await firestore
+      firestore
+          .collection('UserStatistics')
+          .doc(await getCurrentUserUsername())
+          .delete();
+      firestore
           .collection('users')
           .doc(test ? uid : await getCurrentUserID())
           .delete();
@@ -454,7 +463,8 @@ class Profile {
       maxHeight: 512,
       imageQuality: 75,
     );
-    Reference ref = await FirebaseStorage.instance.ref().child("profilePictures/${uid}");
+    Reference ref =
+        await FirebaseStorage.instance.ref().child("profilePictures/${uid}");
     final fileBytes = await image!.readAsBytes();
     try {
       await ref.putData(fileBytes);

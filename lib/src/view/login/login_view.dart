@@ -1,6 +1,6 @@
 /// ****************************************************************************
 /// Created by Julia Agüero
-/// Collaborators: Gullu Gasimova,
+/// Collaborators: Gullu Gasimova
 ///
 /// This file is part of the project "Qeasy"
 /// Software Project on Technische Hochschule Ulm
