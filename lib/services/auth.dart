@@ -22,7 +22,7 @@ class Auth with ChangeNotifier {
 
   Future<bool> signOut() async {
     try {
-      FirebaseAuth.instance.signOut();
+      await FirebaseAuth.instance.signOut();
       notifyListeners();
       return true;
     } catch (e) {

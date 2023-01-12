@@ -30,8 +30,8 @@ class ProfileProvider with ChangeNotifier {
   ProfileProvider() {}
 
   Future<bool> setProfile() async {
-    if (getCurrentUserID() != null) {
-      currentUID = getCurrentUserID()!;
+    if (await getCurrentUserID() != null) {
+      currentUID = await getCurrentUserID()!;
       Profile? p = await Profile.getProfileFromUID(currentUID);
       if (p != null) {
         player = p;

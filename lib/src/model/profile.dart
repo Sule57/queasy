@@ -259,12 +259,23 @@ class Profile {
     }
 
     final firebaseFirestore = FirebaseFirestore.instance;
-    await firebaseFirestore
-        .collection('users')
-        .doc(await getCurrentUserID())
-        .update({
-      'scores.$category': FieldValue.increment(score),
-    });
+    if(is_public){
+      await firebaseFirestore
+          .collection('users')
+          .doc(await getCurrentUserID())
+          .update({
+        'scores.$category': FieldValue.increment(score),
+      });
+    }else{
+      await firebaseFirestore
+          .collection('users')
+          .doc(await getCurrentUserID())
+          .update({
+        'privateScore.$category': FieldValue.increment(score),
+      });
+    }
+
+
     //TODO
 
     if (is_public) {
