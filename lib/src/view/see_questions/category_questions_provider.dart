@@ -39,7 +39,7 @@ class CategoryQuestionsProvider with ChangeNotifier {
   }
 
   //List<Question> _questionList = [];
-  late List<Question> _questionList;
+  List<Question> _questionList = [];
   List<Question> get questionList => _questionList;
 
   List<bool> _isQuestionChecked = [];
