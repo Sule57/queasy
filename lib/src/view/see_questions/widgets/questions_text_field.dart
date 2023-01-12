@@ -32,7 +32,7 @@ class QuestionsTextField extends StatefulWidget {
   final TextEditingController controller;
   final String hintText;
   final String validatorText;
-  late final String controllerText;
+  String controllerText;
   final Question? question;
   final bool isQuestion;
   final bool isLastField;
@@ -74,7 +74,7 @@ class _QuestionsTextFieldState extends State<QuestionsTextField> {
   @override
   Widget build(BuildContext context) {
     CategoryQuestionsProvider provider =
-        Provider.of<CategoryQuestionsProvider>(context);
+    Provider.of<CategoryQuestionsProvider>(context);
     final theme = Provider.of<ThemeProvider>(context).currentTheme;
     final _formKey = provider.formKeyAddEditQuestion;
 
