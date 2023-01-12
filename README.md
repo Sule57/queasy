@@ -181,6 +181,16 @@ Chosen because:
 * The user can delete the quiz
 * The user can play the quiz
 
+### Leaderboard
+
+<img src="https://user-images.githubusercontent.com/76959652/212058070-92e9ac3f-066c-46d6-b0ee-85d4feac651c.png" height=500>
+
+* The user can view the global tournament (All categories combined) leaderboard top 10
+* The user can view the particular tournament category top 10
+
+### Profile
+
+
 
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!CONTINUE WHEN CONNECTED!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
