@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:queasy/src/model/category_repo.dart';
 import '../../../constants/theme_provider.dart';
+import '../see_questions/category_questions_provider.dart';
 import '../see_questions/category_questions_view.dart';
 import '../see_questions/widgets/questions_popups.dart';
 
@@ -37,13 +38,13 @@ class PrivateCategorySelectionView extends StatefulWidget {
 /// display a loading indicator or the list of categories.
 class _PrivateCategorySelectionViewState
     extends State<PrivateCategorySelectionView> {
-  late EditQuizProvider controller;
+  late CategoryQuestionsProvider controller;
   late List<String> _categoryList;
   bool _isLoading = true;
 
   @override
   void didChangeDependencies() {
-    controller = Provider.of<EditQuizProvider>(context, listen: true);
+    controller = Provider.of<CategoryQuestionsProvider>(context, listen: true);
     super.didChangeDependencies();
   }
 
@@ -60,7 +61,7 @@ class _PrivateCategorySelectionViewState
     _categoryList = await CategoryRepo().getPrivateCategories();
     controller.categoryList = _categoryList;
     controller.updateListOfCategories();
-    _categoryList = context.read<EditQuizProvider>().categoryList;
+    _categoryList = context.read<CategoryQuestionsProvider>().categoryList;
     setState(() {
       _isLoading = false;
     });
@@ -213,7 +214,7 @@ class _CategoryListState extends State<CategoryList> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<EditQuizProvider>(
+    return Consumer<CategoryQuestionsProvider>(
         builder: (context, controller, child) {
           return ListView.builder(
             itemCount: controller.categoryList.length,
@@ -243,7 +244,7 @@ class _CategoryListState extends State<CategoryList> {
                         context,
                         MaterialPageRoute(
                             builder: (context) =>
-                                EditQuizView(categoryName: categoryName)));
+                                CategoryQuestionsView(categoryName: categoryName)));
                   },
                   child: Text(
                     categoryName,
