@@ -249,7 +249,8 @@ class RegisterViewMobileState extends State<RegisterViewMobile> {
                                                   textController[1].text,
                                                   textController[2].text);
                                           if (success) {
-                                            Navigator.of(context).push(
+                                            Navigator.of(context).pop();
+                                            Navigator.of(context).pushReplacement(
                                                 MaterialPageRoute(
                                                     builder: (context) =>
                                                         const HomeView()));
@@ -334,6 +335,7 @@ class RegisterViewMobileState extends State<RegisterViewMobile> {
                               _isGoogleSigningIn = false;
                             });
                             if (user != null) {
+                              Navigator.of(context).pop();
                               Navigator.of(context).pushReplacement(
                                 MaterialPageRoute(
                                   builder: (context) => HomeView(),

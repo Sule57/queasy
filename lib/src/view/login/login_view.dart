@@ -43,6 +43,7 @@ class _LoginViewState extends State<LoginView> {
     controller.forgotPasswordController.dispose();
     controller.passwordController.dispose();
     controller.emailController.dispose();
+    controller.restartKeys();
     super.dispose();
   }
 
