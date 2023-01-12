@@ -82,7 +82,6 @@ class _CategoryQuestionsViewState extends State<CategoryQuestionsView> {
     controller.category = _category;
     controller.updateQuestionsFromCategory();
     _questions = await _category.getAllQuestions();
-    //print("ok");
     _questions = context.read<CategoryQuestionsProvider>().questionList;
     //_questions = controller.questionList;
     //controller.formKeyAddEditQuestion = GlobalKey<FormState>();

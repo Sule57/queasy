@@ -11,7 +11,7 @@ import 'package:queasy/src/view/see_questions/category_questions_view.dart';
 import 'package:queasy/src/view/see_questions/widgets/questions_popups.dart';
 import '../../../src.dart';
 
-/// This is the edit quiz provider.
+/// This is the category questions provider.
 ///
 /// It is the provider that the [CategoryQuestionsView] uses to get the questions of a
 /// specific category and to edit them, add more or delete them.
@@ -39,7 +39,8 @@ class CategoryQuestionsProvider with ChangeNotifier {
   }
 
   //List<Question> _questionList = [];
-  List<Question> _questionList = [];
+  late List<Question> _questionList;
+
   List<Question> get questionList => _questionList;
 
   List<bool> _isQuestionChecked = [];
@@ -48,6 +49,14 @@ class CategoryQuestionsProvider with ChangeNotifier {
   set questionList(List<Question> questionList) {
     _questionList = questionList;
     _isQuestionChecked = List.filled(_questionList.length, false);
+  }
+
+  late List<String> _categoryList;
+
+  List<String> get categoryList => _categoryList;
+
+  set categoryList(List<String> categoryList) {
+    _categoryList = categoryList;
   }
 
   TextEditingController questionController = TextEditingController();
@@ -73,6 +82,14 @@ class CategoryQuestionsProvider with ChangeNotifier {
   void updateQuestionsFromCategory() async {
     questionList = await category.getAllQuestions();
     _isQuestionChecked = List.filled(_questionList.length, false);
+    notifyListeners();
+  }
+
+  /// The method [updateListOfCategories] updates the list of categories to be shown in the [PrivateCategorySelectionView].
+  ///
+  /// It gets the categories from the database and stores them in the variable [_categoryList].
+  updateListOfCategories() async {
+    categoryList = await CategoryRepo().getPrivateCategories();
     notifyListeners();
   }
 
@@ -158,7 +175,6 @@ class CategoryQuestionsProvider with ChangeNotifier {
     question.setCorrectAnswer(_selectedRadioAnswer.index);
     await question.updateQuestion();
     print("Question edited");
-    //print("Question: $questionController.text]");
     notifyListeners();
   }
 
@@ -174,7 +190,6 @@ class CategoryQuestionsProvider with ChangeNotifier {
             return DeleteQuestionPopUp(question: question);
           });
     });
-    //notifyListeners();
   }
 
   /// This method [deleteQuestionFromDatabase] used to delete a question from the database.
@@ -182,8 +197,8 @@ class CategoryQuestionsProvider with ChangeNotifier {
   /// The variable [question] is the question that is going to be deleted.
   deleteQuestionFromDatabase(Question question) async {
     await category.deleteQuestion(question);
+    updateQuestionsFromCategory();
     print("Question deleted");
-    //print("Question: $questionController.text]");
     notifyListeners();
   }
 
@@ -192,6 +207,7 @@ class CategoryQuestionsProvider with ChangeNotifier {
   /// The variable [name] is the name of the category that is going to be created.
   addCategoryToDatabase(String name) async {
     await CategoryRepo().createCategory(name, Colors.blue);
+    updateListOfCategories();
     print("Category added");
     notifyListeners();
   }
@@ -212,6 +228,7 @@ class CategoryQuestionsProvider with ChangeNotifier {
   /// This method [deleteCategoryFromDatabase] used to delete a category from the database.
   deleteCategoryFromDatabase() async {
     await CategoryRepo().deleteCategory(category.getName());
+    updateListOfCategories();
     print("Category deleted");
     notifyListeners();
   }
