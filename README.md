@@ -103,7 +103,7 @@ Chosen because:
 
 ### Home View
 
-<img src="https://user-images.githubusercontent.com/76959652/211169786-2e0bf255-3e95-473b-ae36-26c400be9397.png" height=500>
+<img src="https://user-images.githubusercontent.com/76959652/212055962-8e6d6e8f-a950-4b76-908b-66d4e3882177.png" height=500>
 
 * The user can go to the **Public Tournaments View**
 * The user can open the Join Quiz View
