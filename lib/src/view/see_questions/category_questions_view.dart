@@ -98,7 +98,7 @@ class _CategoryQuestionsViewState extends State<CategoryQuestionsView> {
   @override
   Widget build(BuildContext context) {
     CategoryQuestionsProvider controller =
-    Provider.of<CategoryQuestionsProvider>(context);
+        Provider.of<CategoryQuestionsProvider>(context);
     _questions = controller.questionList;
     late Widget ListWidget;
 
@@ -189,8 +189,7 @@ class _QuestionListState extends State<QuestionList> {
                       ),
                     ),
                     child: ExpansionTile(
-                      title: Text(
-                          controller.questionList[index].text,
+                      title: Text(controller.questionList[index].text,
                           style: Theme.of(context)
                               .textTheme
                               .bodyText1
