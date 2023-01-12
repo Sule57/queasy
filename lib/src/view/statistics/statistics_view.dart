@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:queasy/src/view/home_view.dart';
 import 'package:queasy/src/view/statistics/statistics_provider.dart';
-
+import 'package:flutter/foundation.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
 import '../../../constants/theme_provider.dart';
@@ -18,6 +18,22 @@ class StatisticsView extends StatefulWidget {
 
 /// State for [StatisticsView].
 class _StatisticsViewState extends State<StatisticsView> {
+  bool _isLoading = true;
+
+  init() async {
+    _isLoading = true;
+    await Provider.of<StatisticsProvider>(context, listen: false);
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
+  @override
+  void initState() {
+    init();
+    super.initState();
+  }
+
   /// Builds the view.
   ///
   /// Uses a [Stack] to display the
@@ -26,14 +42,16 @@ class _StatisticsViewState extends State<StatisticsView> {
   Widget build(BuildContext context) {
     Provider.of<StatisticsProvider>(context, listen: false)
         .setStatisticsProvider();
-    return Scaffold(
-      body: Stack(
-        children: const [
-          StatisticsDesktopViewBackground(),
-          StatisticsViewContent(),
-        ],
-      ),
-    );
+    return _isLoading
+        ? Center(child: CircularProgressIndicator())
+        : Scaffold(
+            body: Stack(
+              children: const [
+                StatisticsDesktopViewBackground(),
+                StatisticsViewContent(),
+              ],
+            ),
+          );
   }
 }
 
@@ -216,8 +234,8 @@ class StatisticsMobileContent extends StatelessWidget {
                               lineWidth: 20,
                               percent: (Provider.of<StatisticsProvider>(context)
                                       .correct /
-                                  10 *
-                                  2),
+                                  Provider.of<StatisticsProvider>(context)
+                                      .allQuestions),
                               progressColor: Color(0xff72479d),
                               center: Container(
                                   width: 150,
@@ -233,11 +251,14 @@ class StatisticsMobileContent extends StatelessWidget {
                                           CrossAxisAlignment.center,
                                       children: [
                                         Text(
-                                          (Provider.of<StatisticsProvider>(
-                                                              context)
-                                                          .correct *
-                                                      20)
-                                                  .toString() +
+                                          ((Provider.of<StatisticsProvider>(
+                                                                  context)
+                                                              .correct /
+                                                          Provider.of<StatisticsProvider>(
+                                                                  context)
+                                                              .allQuestions) *
+                                                      100)
+                                                  .toStringAsFixed(0) +
                                               '%',
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
@@ -370,8 +391,8 @@ class StatisticsDesktopContent extends StatelessWidget {
                         lineWidth: 20,
                         percent:
                             (Provider.of<StatisticsProvider>(context).correct /
-                                10 *
-                                2),
+                                Provider.of<StatisticsProvider>(context)
+                                    .allQuestions),
                         progressColor: Color(0xff72479d),
                         center: Container(
                             width: 150,
@@ -385,10 +406,13 @@ class StatisticsDesktopContent extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Text(
-                                    (Provider.of<StatisticsProvider>(context)
-                                                    .correct *
-                                                20)
-                                            .toString() +
+                                    ((Provider.of<StatisticsProvider>(context)
+                                                        .correct /
+                                                    Provider.of<StatisticsProvider>(
+                                                            context)
+                                                        .allQuestions) *
+                                                100)
+                                            .toStringAsFixed(0) +
                                         '%',
                                     textAlign: TextAlign.center,
                                     style: TextStyle(

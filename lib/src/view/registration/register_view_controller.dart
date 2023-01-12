@@ -31,7 +31,7 @@ class RegisterViewController {
       UserCredential userCredential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
       Auth a = Auth();
-      a.signInWithEmailAndPassword(email: newUser.email, password: password);
+      await a.signInWithEmailAndPassword(email: newUser.email, password: password);
       return await newUser.registerUser();
     } on FirebaseAuthException catch (e) {
       if (e.code == 'email-already-in-use') {

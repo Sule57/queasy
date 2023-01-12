@@ -10,7 +10,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:queasy/src.dart';
 
-import '../edit_quiz_provider.dart';
+import '../category_questions_provider.dart';
 
 /// This is the edit quiz text field.
 ///
@@ -28,17 +28,17 @@ import '../edit_quiz_provider.dart';
 /// is using the text field to add a question.
 ///
 /// The variable [MAX_INPUT_LENGTH] is the maximum length of the text field.
-class EditQuizTextField extends StatefulWidget {
-  TextEditingController controller;
-  String hintText;
-  String validatorText;
+class QuestionsTextField extends StatefulWidget {
+  final TextEditingController controller;
+  final String hintText;
+  final String validatorText;
   String controllerText;
-  Question? question;
-  bool isQuestion;
-  bool isLastField;
-  Function action;
+  final Question? question;
+  final bool isQuestion;
+  final bool isLastField;
+  final Function action;
 
-  EditQuizTextField({
+  QuestionsTextField({
     Key? key,
     required this.controller,
     required this.hintText,
@@ -51,26 +51,19 @@ class EditQuizTextField extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<EditQuizTextField> createState() => _EditQuizTextFieldState();
+  State<QuestionsTextField> createState() => _QuestionsTextFieldState();
 }
 
-class _EditQuizTextFieldState extends State<EditQuizTextField> {
-  int MAX_INPUT_LENGTH = 50;
+class _QuestionsTextFieldState extends State<QuestionsTextField> {
+  final int MAX_INPUT_LENGTH = 50;
 
   get question => widget.question;
-
   get validatorText => widget.validatorText;
-
   get hintText => widget.hintText;
-
   get controllerText => widget.controllerText;
-
   get controller => widget.controller;
-
   get isQuestion => widget.isQuestion;
-
   get isLastField => widget.isLastField;
-
   get action => widget.action;
 
   // setter for controllerText
@@ -80,11 +73,13 @@ class _EditQuizTextFieldState extends State<EditQuizTextField> {
 
   @override
   Widget build(BuildContext context) {
-    EditQuizProvider provider =
-        Provider.of<EditQuizProvider>(context, listen: true);
+    CategoryQuestionsProvider provider =
+    Provider.of<CategoryQuestionsProvider>(context);
+    final theme = Provider.of<ThemeProvider>(context).currentTheme;
     final _formKey = provider.formKeyAddEditQuestion;
+
     // set controllerText to 'a'
-    if((controller.text) != ''){
+    if ((controller.text) != '') {
       setControllerText(controller.text);
     }
     return Expanded(
@@ -98,8 +93,10 @@ class _EditQuizTextFieldState extends State<EditQuizTextField> {
               ? MediaQuery.of(context).size.width / 2
               : MediaQuery.of(context).size.width / 3,
           child: TextFormField(
-            onFieldSubmitted: (value) { // if i use _formKey.currentState!.validate() it throws an exception
-              if (_formKey.currentState?.validate() ?? true) { // TODO: not validating correctly
+            onFieldSubmitted: (value) {
+              // if i use _formKey.currentState!.validate() it throws an exception
+              if (_formKey.currentState?.validate() ?? true) {
+                // TODO: not validating correctly
                 action();
                 provider.clearTextFieldsAndButton();
                 Navigator.pop(context);
@@ -117,7 +114,7 @@ class _EditQuizTextFieldState extends State<EditQuizTextField> {
               }
               return null;
             },
-            style: TextStyle(color: Theme.of(context).colorScheme.primary),
+            style: theme.textTheme.subtitle2,
             decoration: InputDecoration(
               contentPadding: EdgeInsets.only(bottom: 10, left: 20),
               filled: true,

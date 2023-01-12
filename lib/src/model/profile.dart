@@ -217,7 +217,7 @@ class Profile {
   /// gets the current profile from user uid
   /// [uid] is the firebase user uid
   /// returns a [Profile] instance
-  static Future<Profile?> getProfilefromUID(String uid) async {
+  static Future<Profile?> getProfileFromUID(String uid) async {
     Profile? result;
     await FirebaseFirestore.instance
         .collection('users')
@@ -259,13 +259,28 @@ class Profile {
     }
 
     final firebaseFirestore = FirebaseFirestore.instance;
-    await firebaseFirestore.collection('users').doc(await getCurrentUserID()).update({
-      'scores.$category': FieldValue.increment(score),
-    });
+    if(is_public){
+      await firebaseFirestore
+          .collection('users')
+          .doc(await getCurrentUserID())
+          .update({
+        'scores.$category': FieldValue.increment(score),
+      });
+    }else{
+      await firebaseFirestore
+          .collection('users')
+          .doc(await getCurrentUserID())
+          .update({
+        'privateScore.$category': FieldValue.increment(score),
+      });
+    }
+
+
     //TODO
 
     if (is_public) {
-      Leaderboard leaderboard = await Leaderboard.createPublic(category, (await getCurrentUserUsername())!);
+      Leaderboard leaderboard = await Leaderboard.createPublic(
+          category, (await getCurrentUserUsername())!);
       await leaderboard.updateCurrentUserPoints(score);
     }
   }
@@ -351,7 +366,8 @@ class Profile {
   ///[password] is the current password of the user. It is used to reauthenticate the user.
   ///It returns true if the email was updated successfully
   ///and false if the email was not updated successfully.
-  Future<bool> updateEmail(String currentEmail, String newEmail, String password) async {
+  Future<bool> updateEmail(
+      String currentEmail, String newEmail, String password) async {
     try {
       await FirebaseAuth.instance.authStateChanges().listen((User? user) async {
         if (user != null) {
@@ -373,7 +389,8 @@ class Profile {
   ///[newPassword] is the value the current password will change to.
   ///It returns true if the password was updated successfully
   ///and false if the password was not updated successfully.
-  Future<bool> updatePassword(String email, String currentPassword, String newPassword) async {
+  Future<bool> updatePassword(
+      String email, String currentPassword, String newPassword) async {
     try {
       await FirebaseAuth.instance.authStateChanges().listen((User? user) async {
         if (user != null) {
@@ -423,8 +440,11 @@ class Profile {
         await leaderboard.removeUserFromPublicLeaderboards();
         await leaderboard.removeUserFromAllLeaderboard();
       }
-
-      await firestore
+      firestore
+          .collection('UserStatistics')
+          .doc(await getCurrentUserUsername())
+          .delete();
+      firestore
           .collection('users')
           .doc(test ? uid : await getCurrentUserID())
           .delete();
@@ -454,7 +474,8 @@ class Profile {
       maxHeight: 512,
       imageQuality: 75,
     );
-    Reference ref = await FirebaseStorage.instance.ref().child("profilePictures/${uid}");
+    Reference ref =
+        await FirebaseStorage.instance.ref().child("profilePictures/${uid}");
     final fileBytes = await image!.readAsBytes();
     try {
       await ref.putData(fileBytes);
@@ -471,4 +492,33 @@ class Profile {
   }
   //END OF METHODS FOR PROFILE VIEW
 
+  /// Returns a list of quizzes owned by the currently logged in user.
+  ///
+  /// Takes in an optional [firestore] parameter. If it's passed the code will
+  /// assume the developer is in testing and give it default values, if not, it
+  /// will use the default firestore instance.
+  static Future<List<Quiz>> getUserQuizzes(
+      {FirebaseFirestore? firestore}) async {
+    if (firestore == null) {
+      firestore = FirebaseFirestore.instance;
+    }
+
+    List<Quiz> quizzes = [];
+
+    QuerySnapshot snapshot = await firestore
+        .collection('quizzes')
+        .where('creatorID', isEqualTo: getCurrentUserID())
+        .get();
+
+    for (var doc in snapshot.docs) {
+      Quiz? tempQuiz;
+
+      await Quiz().retrieveQuizFromId(id: doc.id).then((value) {
+        tempQuiz = value;
+        quizzes.add(tempQuiz!);
+      });
+    }
+
+    return quizzes;
+  }
 }

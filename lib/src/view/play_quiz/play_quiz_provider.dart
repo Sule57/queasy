@@ -95,7 +95,7 @@ class PlayQuizProvider with ChangeNotifier {
     if (userId != null) {
       // very important class method creating Profile instance
       // from profile UID !!!!
-      profile = await Profile.getProfilefromUID(userId);
+      profile = await Profile.getProfileFromUID(userId);
       if (profile != null) {
         player = profile;
       } else {
@@ -145,6 +145,7 @@ class PlayQuizProvider with ChangeNotifier {
       _quiz = await Quiz().retrieveQuizFromId(
         id: _quizId!,
       );
+      print(_quiz.noOfQuestions);
       _quizCategory = _quiz.category.name;
       _totalQuestions = _quiz.noOfQuestions;
       isLoading = false;
@@ -220,7 +221,6 @@ class PlayQuizProvider with ChangeNotifier {
         // YOU CANNOT CALL STATISTICS PROVIDER BEFORE QUIZ PROVIDER !!!
         _quizzResult = UserQuizzResult(
             name, correctAnswers, _totalQuestions, _secondsPassed);
-        ;
         stat.addUserQuizzResult(_quizzResult);
         await stat.saveStatistics();
       }
@@ -238,7 +238,8 @@ class PlayQuizProvider with ChangeNotifier {
     );
     _secondsPassed = 0;
     correctAnswers = 0;
-    // _totalQuestions = 0;
+    _totalQuestions =
+        5; //after playing private quiz, quiz length is set to 3 for any quiz played after, setting to 5 here to fix
   }
 
   /// Edits the current score of the user. Takes [isCorrect] as parameter to

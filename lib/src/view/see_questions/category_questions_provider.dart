@@ -1,19 +1,19 @@
 /// ****************************************************************************
 /// Created by Sophia Soares
+/// Collaborator: Julia Agüero
 ///
 /// This file is part of the project "Qeasy"
 /// Software Project on Technische Hochschule Ulm
 /// ****************************************************************************
 
 import 'package:flutter/material.dart';
-import 'package:queasy/src/view/edit_quiz/edit_quiz_view.dart';
-import 'package:queasy/src/view/edit_quiz/widgets/edit_quiz_popups.dart';
-import 'package:queasy/src/view/private_category_selection_view.dart';
+import 'package:queasy/src/view/see_questions/category_questions_view.dart';
+import 'package:queasy/src/view/see_questions/widgets/questions_popups.dart';
 import '../../../src.dart';
 
 /// This is the edit quiz provider.
 ///
-/// It is the provider that the [EditQuizView] uses to get the questions of a
+/// It is the provider that the [CategoryQuestionsView] uses to get the questions of a
 /// specific category and to edit them, add more or delete them.
 ///
 /// The variable [_questions] is a list that stores the questions of the category.
@@ -29,7 +29,7 @@ import '../../../src.dart';
 /// The variable [answer4Controller] is the controller for the fourth answer text field.
 ///
 /// The variable [_selectedRadioAnswer] is the variable that stores the selected radio button.
-class EditQuizProvider with ChangeNotifier {
+class CategoryQuestionsProvider with ChangeNotifier {
   late Category _category;
 
   Category get category => _category;
@@ -38,12 +38,18 @@ class EditQuizProvider with ChangeNotifier {
     _category = category;
   }
 
+  //List<Question> _questionList = [];
+  List<Question> _questionList = [];
   late List<Question> _questionList;
 
   List<Question> get questionList => _questionList;
 
+  List<bool> _isQuestionChecked = [];
+  List<bool> get isQuestionChecked => _isQuestionChecked;
+
   set questionList(List<Question> questionList) {
     _questionList = questionList;
+    _isQuestionChecked = List.filled(_questionList.length, false);
   }
 
   late List<String> _categoryList;
@@ -60,8 +66,10 @@ class EditQuizProvider with ChangeNotifier {
   TextEditingController answer3Controller = TextEditingController();
   TextEditingController answer4Controller = TextEditingController();
 
-  AnswersRadioButton _selectedRadioAnswer = AnswersRadioButton.ans1;
+  TextEditingController numberOfQuestionsController = TextEditingController();
+  TextEditingController newQuizNameController = TextEditingController();
 
+  AnswersRadioButton _selectedRadioAnswer = AnswersRadioButton.ans1;
   AnswersRadioButton get selectedRadioAnswer => _selectedRadioAnswer;
 
   set selectedRadioAnswer(AnswersRadioButton value) {
@@ -69,21 +77,19 @@ class EditQuizProvider with ChangeNotifier {
   }
 
   GlobalKey<FormState> formKeyAddEditQuestion = GlobalKey<FormState>();
+  GlobalKey<FormState> formKeyCreateRandomQuiz = GlobalKey<FormState>();
+  GlobalKey<FormState> formKeyCreateCustomQuiz = GlobalKey<FormState>();
 
-  /// The method [updateListOfQuestions] updates the list of questions to be shown in the [EditQuizView].
-  ///
-  /// It gets the questions from the database and stores them in the variable [_questions].
-  updateListOfQuestions() async {
+  void updateQuestionsFromCategory() async {
     questionList = await category.getAllQuestions();
+    _isQuestionChecked = List.filled(_questionList.length, false);
     notifyListeners();
   }
 
-  /// The method [updateListOfCategories] updates the list of categories to be shown in the [PrivateCategorySelectionView].
-  ///
-  /// It gets the categories from the database and stores them in the variable [_categoryList].
-  updateListOfCategories() async {
-    categoryList = await CategoryRepo().getPrivateCategories();
-    notifyListeners();
+  void updateQuestionsFromQuiz(String id) async {
+    await Quiz().retrieveQuizFromId(id: id).then((quiz) {
+      questionList = quiz.questions;
+    });
   }
 
   /// The method [addQuestion] is used to show a dialog to add a question to the category.
@@ -124,10 +130,10 @@ class EditQuizProvider with ChangeNotifier {
       category: category.getName(),
     );
     await category.createQuestion(question);
-    updateListOfQuestions();
+    updateQuestionsFromCategory();
     print("Question added");
     //print("Question: $questionController.text]");
-    //notifyListeners();
+    // notifyListeners();
   }
 
   /// The method [editQuestion] is used to show a dialog to edit a question.
@@ -189,7 +195,7 @@ class EditQuizProvider with ChangeNotifier {
     updateListOfQuestions();
     print("Question deleted");
     //print("Question: $questionController.text]");
-    //notifyListeners();
+    notifyListeners();
   }
 
   /// The method [addCategoryToDatabase] creates a new category and adds it to the database.
@@ -199,7 +205,7 @@ class EditQuizProvider with ChangeNotifier {
     await CategoryRepo().createCategory(name, Colors.blue);
     updateListOfCategories();
     print("Category added");
-    //notifyListeners();
+    notifyListeners();
   }
 
   /// The method [deleteCategory] is used to show a dialog to delete a category from the database.
@@ -220,26 +226,63 @@ class EditQuizProvider with ChangeNotifier {
     await CategoryRepo().deleteCategory(category.getName());
     updateListOfCategories();
     print("Category deleted");
-    //notifyListeners();
+    notifyListeners();
   }
 
-  /// The method [createRandomQuiz] is used to create a quiz with random questions and
+  /// The method [createAndStoreRandomQuiz] is used to create a quiz with random questions and
   /// store it in the database.
-  bool createRandomQuiz() {
-    // Check if there are question in the category. If not, no quiz can be created
-    if (category.getAllQuestions() == []) { // TODO: fix condition
-      print("No questions in category");
-      // Show an alert that says the quiz cannot be created because there are no
-      // questions in the category
-      return false;
-    } else {
-      //print("Creating random quiz");
-      // get random questions from the database
-      // TODO
-      // store the quiz in the database
-      // TODO
-      return true;
+  ///
+  /// It returns a Future<String?> with the id of the quiz that was created.
+  /// This id will be null if the quiz was not created successfully.
+  Future<String?> createAndStoreRandomQuiz() async {
+    int numberOfQuestions = int.parse(numberOfQuestionsController.text);
+    String quizName = newQuizNameController.text;
+    String? quizId;
+
+    if (numberOfQuestions > questionList.length) {
+      numberOfQuestions = questionList.length;
     }
+
+    await Quiz()
+        .getRandomQuestions(
+            name: quizName,
+            category: Category(name: category.getName()),
+            noOfQuestions: numberOfQuestions,
+            isPublic: false)
+        .then((quiz) async {
+      await quiz.storeQuiz();
+      quizId = quiz.id;
+    });
+
+    return quizId;
+  }
+
+  /// The method [createAndStoreCustomQuiz] is used to create a quiz with custom questions and
+  /// store it in the database.
+  /// It takes a parameter [questionIds] which is the list of ids of the questions
+  /// that are going to be store in the custom quiz.
+  ///
+  /// It returns a Future<String?>
+  /// with the id of the quiz that was created.
+  /// This id will be null if the quiz was not created successfully.
+  Future<String?> createAndStoreCustomQuiz({
+    required List<String> questionIds,
+  }) async {
+    String quizName = newQuizNameController.text;
+    String? quizId;
+    // List<String> questionIds = ['question0', 'question1', 'question2'];
+    await Quiz()
+        .createCustomQuiz(
+      questions: questionIds,
+      category: category,
+      name: quizName,
+    )
+        .then((quiz) async {
+      await quiz.storeQuiz();
+      quizId = quiz.id;
+    });
+
+    return quizId;
   }
 
   /// The method [getCorrectRadioAnswer] gets the correct answer of a [question] and returns the
@@ -265,5 +308,15 @@ class EditQuizProvider with ChangeNotifier {
     answer3Controller.clear();
     answer4Controller.clear();
     selectedRadioAnswer = AnswersRadioButton.ans1;
+  }
+
+  void updateIsQuestionChecked({required int index, required bool value}) {
+    _isQuestionChecked[index] = value;
+    notifyListeners();
+  }
+
+  void clearIsQuestionChecked() {
+    _isQuestionChecked = List.filled(_questionList.length, false);
+    notifyListeners();
   }
 }

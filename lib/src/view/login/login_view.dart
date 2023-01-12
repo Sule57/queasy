@@ -1,6 +1,6 @@
 /// ****************************************************************************
 /// Created by Julia Agüero
-/// Collaborators: Gullu Gasimova,
+/// Collaborators: Gullu Gasimova
 ///
 /// This file is part of the project "Qeasy"
 /// Software Project on Technische Hochschule Ulm
@@ -43,6 +43,7 @@ class _LoginViewState extends State<LoginView> {
     controller.forgotPasswordController.dispose();
     controller.passwordController.dispose();
     controller.emailController.dispose();
+    controller.restartKeys();
     super.dispose();
   }
 
