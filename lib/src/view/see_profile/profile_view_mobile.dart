@@ -366,7 +366,8 @@ class ProfileMobileState extends State<ProfileViewMobile> {
                                     alignment: Alignment.topCenter,
                                     child: Text(
                                       "Edit Profile",
-                                      style: TextStyle(color: Colors.white),
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 30),
                                     ),
                                   ),
                                   actions: [
@@ -529,7 +530,7 @@ class ProfileMobileState extends State<ProfileViewMobile> {
                                           width: MediaQuery.of(context)
                                                   .size
                                                   .width /
-                                              1.3,
+                                              1.0,
 
                                           ///[Form] to validate user input (in this case only current password)
                                           child: Form(
