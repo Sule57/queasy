@@ -144,6 +144,7 @@ class Category {
         }
       });
     });
+    questions.sort((a, b) => a.questionId!.compareTo(b.questionId!));
     return questions;
   }
 
