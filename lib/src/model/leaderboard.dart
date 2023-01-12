@@ -1,54 +1,53 @@
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:queasy/src.dart';
-import 'package:queasy/src/model/leaderboard_entry.dart';
-import 'package:queasy/src/model/profile.dart';
 
 /// This is the Model class for the Leaderboard
 ///
 /// It is responsible for connecting the [Leaderboard] to the [LeaderboardEntry]s
 /// in the database. It also contains the logic for updating the leaderboard in the database.
-///
-/// [_entries] is a list of all the [LeaderboardEntry]s in the database.
-///
-/// [_category] is the name of the category that the leaderboard is for.
-///
-/// [_owner] is the username of the owner of the category that the leaderboard is for.
-///
-/// [_currentPlayer] is the Player that is currently logged in and is playing the game.
-///
-/// [_firebaseFirestore] is the instance of the [FirebaseFirestore] database.
-///
-/// [_collection] is the collection in the database that the leaderboard is stored in.
-///
-/// [_doc] is the document in the database that the leaderboard is stored in for public leaderboards.
-///
-/// [_docPriv] is the document in the database that the leaderboard is stored in for private leaderboards.
-///
-/// [_isPublic] is a boolean that is true if the leaderboard is public and false if it is private.
 class Leaderboard {
+  /// Represents a list of all the [LeaderboardEntry]s in the database.
   late List<LeaderboardEntry> _entries = [];
+
+  /// Represents the name of the category that the leaderboard is for.
   late String _category;
-  late String _owner;
+
+  /// Represents the Player that is currently logged in and is playing the game.
   late LeaderboardEntry _currentPlayer;
+
+  /// Represents a boolean that is true if the leaderboard is public and false if it is private.
   late final bool _isPublic;
+
+  /// Represents the UID of the current user.
   late String? UID;
 
+  /// Represents the instance of the [FirebaseFirestore] database.
   late var _firebaseFirestore;
+
+  /// Represents the collection in the database that the leaderboard is stored in.
   late CollectionReference _collection = _firebaseFirestore.collection('leaderboard');
+
+  /// Represents the document in the database that the leaderboard is stored in for public leaderboards.
   late DocumentReference _doc = _collection.doc(_category);
+
+  /// Represents the document in the database that the leaderboard is stored in for combined All leaderboard.
   late DocumentReference _docAll = _collection.doc('All');
+
 
   /// Private constructor for [Leaderboard] that deals with initializing the private parameters.
   ///
   /// [category] is the name of the category that the leaderboard is for. [username] is the username of the current user playing.
   /// [isPublic] is a boolean that is true if the leaderboard is public and false if it is private.
+  /// [firestore] is the instance of the Firestore database. If it is passed,
+  /// the constructor assumes that the developer is in testing and will
+  /// initialize the [UID] with a default value and [_collection], [_doc] and [_docAll] with the references in the test database.
   Leaderboard._create(String category, String username, bool isPublic, {FirebaseFirestore? instance, String? id}) {
     _entries = [];
     _currentPlayer = LeaderboardEntry(username, 0, -1);
     _category = category;
     this._isPublic = isPublic;
-
 
     if(instance == null) {
       _firebaseFirestore = FirebaseFirestore.instance;
@@ -65,20 +64,13 @@ class Leaderboard {
     }
   }
 
-  /// Factory constructor for public [Leaderboard] that creates a new [Leaderboard] object.
+  /// Public factory constructor for public [Leaderboard] that creates a new [Leaderboard] object.
   ///
+  /// [category] is the name of the category that the leaderboard is for. [username] is the username of the current user playing.
+  /// [instance] is the instance of the Firestore database. It is just passed in the private constructor.
   /// It calls the private constructor and then waits for the data from the database to fill the [_entries] list.
   static Future<Leaderboard> createPublic(String category, String username, {FirebaseFirestore? instance, String? id}) async {
     var leaderboard = Leaderboard._create(category, username, true, instance: instance, id: id);
-    await leaderboard.getData();
-    return leaderboard;
-  }
-
-  /// Factory constructor for private [Leaderboard] that creates a new [Leaderboard] object.
-  ///
-  /// It calls the private constructor and then waits for the data from the database to fill the [_entries] list.
-  static Future<Leaderboard> createPrivate(String category, String username, {FirebaseFirestore? instance, String? id}) async {
-    var leaderboard = Leaderboard._create(category, username, false, instance: instance, id: id);
     await leaderboard.getData();
     return leaderboard;
   }
@@ -98,12 +90,14 @@ class Leaderboard {
     return _entries;
   }
 
+  /// Removes the current user from the All leaderboard.
   Future<void> removeUserFromAllLeaderboard() async {
     await _docAll.update({
       _currentPlayer.getName: FieldValue.delete()
     });
   }
 
+  /// Removes the current user from the current leaderboard.
   Future<void> removeUserFromPublicLeaderboards() async {
     await updateCurrentUserPoints(_currentPlayer.getScore * -1);
     await _collection.doc(_category).update({
@@ -240,17 +234,14 @@ class Leaderboard {
   Future<void> getData() async {
     final docSnap;
     if(_isPublic){
-      print('public');
       docSnap = await _doc.get();
     }else{
-      print('private');
       return;
     }
 
-    print('Data: ' + docSnap.data().toString());
     if(docSnap.data() == null){
       _entries = [];
-      _currentPlayer = LeaderboardEntry('', 0, -1);
+      _currentPlayer = LeaderboardEntry(_currentPlayer.getName, 0, 0);
       return;
     }
     Map<String, dynamic> data = docSnap.data() as Map<String, dynamic>;
@@ -276,76 +267,52 @@ class Leaderboard {
   void sortEntries() {
     _entries.sort((a, b) => b.getScore.compareTo(a.getScore));
   }
-  //
-  // /// Constructor for [Leaderboard] that creates a new [Leaderboard] object with the Mock database for testing purposes.
-  // ///
-  // /// [_firebaseFirestore] in this case it the mock database while the rest of the parameters are the same as other constructors.
-  // /// Used for testing of the public categories.
-  // Leaderboard.testPublic(
-  //     this._category,
-  //     String username,
-  //     this._firebaseFirestore,
-  //     ) {
-  //   _entries = [];
-  //   _currentPlayer = LeaderboardEntry(username, -1, -1);
-  //   _isPublic = true;
-  // }
-  //
-  // /// Constructor for [Leaderboard] that creates a new [Leaderboard] object with the Mock database for testing.
-  // ///
-  // /// [_firebaseFirestore] in this case it the mock database while the rest of the parameters are the same as other constructors.
-  // /// Used for testing of the private categories.
-  // Leaderboard.testPrivate(
-  //     this._category,
-  //     String username,
-  //     this._firebaseFirestore,
-  //     ) {
-  //   _entries = [];
-  //   _currentPlayer = LeaderboardEntry(username, -1, -1);
-  //   _isPublic = false;
-  // }
 
-  /// Adds a new [LeaderboardEntry] to the existing list of entries. (testing purposes)
-  Future<void> _addEntry(LeaderboardEntry entry) async {
+  /// Adds a new [LeaderboardEntry] to the existing list of entries. (testing purposes).
+  ///
+  /// It takes the [isTest] parameter which should be set to true if you are using it for testing.
+  Future<void> _addEntry(LeaderboardEntry entry, {required bool isTest}) async {
+    if(!isTest){
+      throw Exception('This method is only for testing purposes');
+    }
     _entries.add(entry);
   }
 
-  /// Prints the [Leaderboard] list entries in the console. (testing purposes)
-  void printEntries() {
-    for (LeaderboardEntry entry in _entries) {
-      print(entry.getPosition.toString() +
-          ". " +
-          entry.getName +
-          ": " +
-          entry.getScore.toString());
-    }
-  }
 
   /// create a new [Leaderboard] with 10 entries with random data (for testing purposes).
-  Future<void> createRandomLeaderboard() async {
+  ///
+  /// It takes the [isTest] parameter which should be set to true if you are using it for testing.
+  Future<void> createRandomLeaderboard({required bool isTest}) async {
+    if(!isTest){
+      throw Exception('This method is only for testing purposes');
+    }
     _entries = [];
-    _addEntry(LeaderboardEntry("Anika", 75, 6));
-    _addEntry(LeaderboardEntry("John", 40, 11));
-    _addEntry(LeaderboardEntry("Stanislav", 80, 4));
-    _addEntry(LeaderboardEntry("Julia", 100, 1));
-    _addEntry(LeaderboardEntry("Sophia", 85, 3));
-    _addEntry(LeaderboardEntry("Marin", 80, 4));
-    _addEntry(LeaderboardEntry("Nikol", 75, 6));
-    _addEntry(LeaderboardEntry("Endia", 75, 6));
-    _addEntry(LeaderboardEntry("Gullu", 60, 9));
-    _addEntry(LeaderboardEntry("Savo", 95, 2));
-    _addEntry(LeaderboardEntry("Mark", 55, 10));
+    _addEntry(LeaderboardEntry("Anika", 75, 6), isTest: true);
+    _addEntry(LeaderboardEntry("John", 40, 11), isTest: true);
+    _addEntry(LeaderboardEntry("Stanislav", 80, 4), isTest: true);
+    _addEntry(LeaderboardEntry("Julia", 100, 1), isTest: true);
+    _addEntry(LeaderboardEntry("Sophia", 85, 3), isTest: true);
+    _addEntry(LeaderboardEntry("Marin", 80, 4), isTest: true);
+    _addEntry(LeaderboardEntry("Nikol", 75, 6), isTest: true);
+    _addEntry(LeaderboardEntry("Endia", 75, 6), isTest: true);
+    _addEntry(LeaderboardEntry("Gullu", 60, 9), isTest: true);
+    _addEntry(LeaderboardEntry("Savo", 95, 2), isTest: true);
+    _addEntry(LeaderboardEntry("Mark", 55, 10), isTest: true);
   }
 
-  /// Updates the database with the current leaderboard [_entries]. (for testing purposes)
-  Future<void> updateData() async {
+  /// Updates the database with the current leaderboard [_entries]. (for testing purposes).
+  ///
+  /// It takes the [isTest] parameter which should be set to true if you are using it for testing.
+  Future<void> updateData({required bool isTest}) async {
+    if(!isTest){
+      throw Exception('This method is only for testing purposes');
+    }
     DocumentReference doc = _collection.doc(_category);
     if(_isPublic){
       doc = _doc;
     }else{
       return;
     }
-
     sortEntries();
     // make document empty
     await doc.delete();

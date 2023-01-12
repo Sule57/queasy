@@ -7,7 +7,7 @@ import 'package:queasy/src/view/statistics/statistics_provider.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
 import '../../../constants/theme_provider.dart';
-import '../play_quiz/quiz_provider.dart';
+import '../play_quiz/play_quiz_provider.dart';
 
 class StatisticsView extends StatefulWidget {
   const StatisticsView({Key? key}) : super(key: key);
@@ -18,6 +18,22 @@ class StatisticsView extends StatefulWidget {
 
 /// State for [StatisticsView].
 class _StatisticsViewState extends State<StatisticsView> {
+  bool _isLoading = true;
+
+  init() async {
+    _isLoading = true;
+    await Provider.of<StatisticsProvider>(context, listen: false);
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
+  @override
+  void initState() {
+    init();
+    super.initState();
+  }
+
   /// Builds the view.
   ///
   /// Uses a [Stack] to display the
@@ -26,14 +42,16 @@ class _StatisticsViewState extends State<StatisticsView> {
   Widget build(BuildContext context) {
     Provider.of<StatisticsProvider>(context, listen: false)
         .setStatisticsProvider();
-    return Scaffold(
-      body: Stack(
-        children: const [
-          StatisticsDesktopViewBackground(),
-          StatisticsViewContent(),
-        ],
-      ),
-    );
+    return _isLoading
+        ? Center(child: CircularProgressIndicator())
+        : Scaffold(
+            body: Stack(
+              children: const [
+                StatisticsDesktopViewBackground(),
+                StatisticsViewContent(),
+              ],
+            ),
+          );
   }
 }
 
@@ -187,7 +205,7 @@ class StatisticsMobileContent extends StatelessWidget {
                               ),
                               Expanded(
                                 child: Text(
-                                  Provider.of<QuizProvider>(context)
+                                  Provider.of<PlayQuizProvider>(context)
                                           .currentPoints
                                           .toString() +
                                       '\n Points',
@@ -340,7 +358,7 @@ class StatisticsDesktopContent extends StatelessWidget {
                       ),
                       Expanded(
                         child: Text(
-                          Provider.of<QuizProvider>(context)
+                          Provider.of<PlayQuizProvider>(context)
                                   .currentPoints
                                   .toString() +
                               '\n Points',

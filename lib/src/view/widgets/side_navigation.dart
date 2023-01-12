@@ -6,6 +6,8 @@
 /// ****************************************************************************
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:queasy/src.dart';
 import 'package:queasy/src/view/category_selection_view.dart';
 import 'package:queasy/src/view/home_view.dart';
 import 'package:queasy/src/view/see_leaderboard/leaderboard_view.dart';
@@ -27,17 +29,19 @@ class SideNavigation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TextStyle textStyle = Theme.of(context).textTheme.subtitle1!.copyWith(
-          color: Colors.grey,
+    final theme = Provider.of<ThemeProvider>(context).currentTheme;
+    TextStyle textStyle = Theme.of(context).textTheme.subtitle2!.copyWith(
+          fontSize: 18,
+          color: theme.colorScheme.onBackground,
         );
 
     return Container(
       width: width,
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.background,
+        color: theme.colorScheme.background,
         border: Border(
           right: BorderSide(
-            color: Colors.grey,
+            color: theme.colorScheme.onBackground,
             width: 1,
           ),
         ),
@@ -147,8 +151,8 @@ class SideNavigation extends StatelessWidget {
                       color: Theme.of(context).colorScheme.error,
                     ),
                   ),
-                  onTap: () {
-                    bool success = ProfileViewController().signOut();
+                  onTap: () async {
+                    bool success = await ProfileViewController().signOut();
                     if (success) {
                       Navigator.of(context).pushReplacement(
                         MaterialPageRoute(

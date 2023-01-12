@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../constants/theme_provider.dart';
-import '../quiz_provider.dart';
+import '../play_quiz_provider.dart';
 
 /// Widget for every answer of the quiz.
 ///
@@ -71,9 +71,10 @@ class _AnswerButtonState extends State<AnswerButton>
   /// the user clicks on it if the answer is correct, and red if it is not.
   @override
   Widget build(BuildContext context) {
-    var provider = Provider.of<QuizProvider>(context);
+    var provider = Provider.of<PlayQuizProvider>(context);
     String text = provider.getAnswerText(widget.index);
     bool isCorrect = provider.isAnswerCorrect(widget.index);
+    bool isClicked = provider.currentQuestionAnswered;
 
     _colorTween = ColorTween(
       begin: Provider.of<ThemeProvider>(context)
@@ -87,7 +88,7 @@ class _AnswerButtonState extends State<AnswerButton>
     }
 
     return Expanded(
-      child: Consumer<QuizProvider>(builder: (context, quizProvider, _) {
+      child: Consumer<PlayQuizProvider>(builder: (context, quizProvider, _) {
         return Container(
           height: double.infinity,
           decoration: BoxDecoration(
@@ -96,21 +97,21 @@ class _AnswerButtonState extends State<AnswerButton>
           child: AnimatedBuilder(
             animation: _colorTween,
             builder: (context, child) => ElevatedButton(
-              onPressed: () {
-                if (_animationController.status == AnimationStatus.completed) {
-                  _animationController.reverse();
-                } else {
-                  _animationController.forward();
-                  Future.delayed(const Duration(milliseconds: 500)).then((_) {
-                    quizProvider.editScore(isCorrect);
-
-                    _animationController.reverse();
-                    quizProvider.nextQuestion();
-                  });
-                }
-              },
+              onPressed: isClicked
+                  ? null
+                  : () {
+                      quizProvider.editScore(isCorrect);
+                      provider.toggleQuestionAnswered();
+                      _animationController.forward();
+                      Future.delayed(const Duration(milliseconds: 500))
+                          .then((_) {
+                        _animationController.reverse();
+                        quizProvider.nextQuestion();
+                      });
+                    },
               style: ElevatedButton.styleFrom(
-                backgroundColor: _colorTween.value,
+                backgroundColor: Colors.white,
+                disabledBackgroundColor: _colorTween.value,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
                 ),

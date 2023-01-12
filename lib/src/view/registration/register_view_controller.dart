@@ -8,6 +8,8 @@ import '../../model/profile.dart';
 
 ///This is controller for RegisterView
 class RegisterViewController {
+  String errorMessage = "";
+
   ///constructor
   RegisterViewController();
 
@@ -32,8 +34,9 @@ class RegisterViewController {
       a.signInWithEmailAndPassword(email: newUser.email, password: password);
       return await newUser.registerUser();
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        print('No user found for that email.');
+      if (e.code == 'email-already-in-use') {
+        errorMessage = "User already exists";
+        print('User already exists');
         return false;
       } else if (e.code == 'wrong-password') {
         print('Wrong password provided for that user.');

@@ -9,7 +9,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:queasy/src/model/category_repo.dart';
-import 'package:queasy/src/view/play_quiz/quiz_view.dart';
+import 'package:queasy/src/view/play_quiz/play_quiz_view.dart';
 
 import '../../constants/theme_provider.dart';
 
@@ -18,7 +18,7 @@ import '../../constants/theme_provider.dart';
 /// This view is used to select a category for the quiz. It displays a progress
 /// indicator while the categories are being loaded from the database. When the
 /// categories are loaded, it displays a list of categories and when a category
-/// is selected, it navigates to [QuizView] with the selected category as a
+/// is selected, it navigates to [PlayQuizView] with the selected category as a
 /// parameter.
 class CategorySelectionView extends StatefulWidget {
   CategorySelectionView({Key? key}) : super(key: key);
@@ -65,7 +65,7 @@ class _CategorySelectionViewState extends State<CategorySelectionView> {
   /// the database.
   /// Once the categories are loaded, it displays a [ListView] with buttons for
   /// the list of categories returned from the database. When a category is
-  /// selected, it navigates to [QuizView] with the selected category as a
+  /// selected, it navigates to [PlayQuizView] with the selected category as a
   /// parameter.
   @override
   Widget build(BuildContext context) {
@@ -138,7 +138,7 @@ class _CategorySelectionViewState extends State<CategorySelectionView> {
                     onPressed: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (context) => QuizView(
+                          builder: (context) => PlayQuizView(
                             category: categoryName,
                           ),
                         ),
