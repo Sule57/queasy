@@ -8,13 +8,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:queasy/src.dart';
-import 'package:queasy/src/view/category_selection/category_selection_view.dart';
-import 'package:queasy/src/view/home_view.dart';
-import 'package:queasy/src/view/see_leaderboard/leaderboard_view.dart';
-import 'package:queasy/src/view/see_profile/profile_view.dart';
-import 'package:queasy/src/view/see_profile/profile_view_controller.dart';
-import '../login/login_view.dart';
-import '../category_selection/private_category_selection_view.dart';
 import 'join_quiz_popup.dart';
 
 /// Defines the navigation bar used in big screens.

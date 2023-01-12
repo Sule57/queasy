@@ -9,18 +9,11 @@
 import 'package:flutter/material.dart';
 import 'package:motion_tab_bar_v2/motion-tab-bar.dart';
 import 'package:queasy/constants/app_themes.dart';
-import 'package:queasy/src/view/see_leaderboard/leaderboard_view.dart';
-import 'package:queasy/src/view/category_selection/category_selection_view.dart';
-import 'package:queasy/src/view/see_profile/profile_view.dart';
-import 'package:queasy/src/view/category_selection/private_category_selection_view.dart';
 import 'package:queasy/src/view/widgets/join_quiz_popup.dart';
 import 'package:queasy/src/view/widgets/side_navigation.dart';
 
 import '../../src.dart';
-
-import 'login/login_view.dart';
-import 'see_profile/profile_provider.dart';
-
+import 'my_quizzes/my_quizzes_view.dart';
 
 /// This is the base view for navigation. It contains the bottom navigation bar
 /// and the [pages] that are navigated to when the bottom navigation bar is tapped.
@@ -126,79 +119,100 @@ class HomeWidgets extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+
     return SafeArea(
       child: Center(
-        child: Column(
-          children: [
-            /// App logo
-            Container(
-              padding: EdgeInsets.all(13),
-              child: Image.asset(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            vertical: 20,
+            horizontal: 40,
+          ),
+          child: Column(
+            children: [
+              /// App logo
+              Image.asset(
                 height: MediaQuery.of(context).size.height * .40,
                 width: double.infinity,
                 'lib/assets/images/logo_vertical.png',
               ),
-            ),
-            ElevatedButton(
-              onPressed: () => Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => CategorySelectionView())),
-              child: Text(
-                'Public Tournaments',
-                style: TextStyle(
-                  color: purple,
+              SizedBox(
+                width: width / 2,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                              builder: (context) => CategorySelectionView())),
+                      child: Text(
+                        'Public Tournaments',
+                        style: TextStyle(
+                          color: purple,
+                        ),
+                      ),
+                      style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.all<Color>(light),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.all<Color>(light),
+                      ),
+                      child: Text(
+                        'Join Quiz',
+                        style: TextStyle(
+                          color: purple,
+                        ),
+                      ),
+                      onPressed: () => showDialog(
+                        context: context,
+                        builder: (BuildContext context) => JoinQuizPopup(),
+                      ),
+                    ),
+                    SizedBox(height: 5),
+                    ElevatedButton(
+                      onPressed: () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  PrivateCategorySelectionView())),
+                      child: Text(
+                        'My Categories',
+                        style: TextStyle(
+                          color: purple,
+                        ),
+                      ),
+                      style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.all<Color>(light),
+                      ),
+                    ),
+                    const SizedBox(height: 5),
+                    ElevatedButton(
+                      onPressed: () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                              builder: (context) => MyQuizzesView())),
+                      child: Text(
+                        'My quizzes',
+                        style: TextStyle(
+                          color: purple,
+                        ),
+                      ),
+                      style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.all<Color>(light),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(light),
-              ),
-            ),
-            SizedBox(
-              height: 5,
-            ),
-            ElevatedButton(
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(light),
-              ),
-              child: Text(
-                'Join Quiz',
-                style: TextStyle(
-                  color: purple,
-                ),
-              ),
-              onPressed: () => showDialog(
-                context: context,
-                builder: (BuildContext context) => JoinQuizPopup(),
-              ),
-            ),
-            SizedBox(height: 5),
-            ElevatedButton(
-              onPressed: () => Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => PrivateCategorySelectionView())),
-              child: Text(
-                'My Categories',
-                style: TextStyle(
-                  color: purple,
-                ),
-              ),
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(light),
-              ),
-            ),
-            const SizedBox(height: 5),
-            ElevatedButton(
-              onPressed: () => Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => MyQuizzesView())),
-              child: Text(
-                'My quizzes',
-                style: TextStyle(
-                  color: purple,
-                ),
-              ),
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(light),
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

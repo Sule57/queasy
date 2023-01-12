@@ -100,6 +100,7 @@ class _CategoryQuestionsViewState extends State<CategoryQuestionsView> {
   Widget build(BuildContext context) {
     CategoryQuestionsProvider controller =
         Provider.of<CategoryQuestionsProvider>(context, listen: true);
+    _questions = controller.questionList;
     late Widget ListWidget;
 
     if (_isLoading) {
@@ -276,7 +277,8 @@ class CreateAndDeleteButtons extends StatelessWidget {
                     if (controller.questionList.isEmpty) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: Text('There are no questions yet'),
+                          content: Text(
+                              'You should create a question first, don\'t you think?'),
                           duration: const Duration(seconds: 2),
                         ),
                       );
@@ -305,7 +307,8 @@ class CreateAndDeleteButtons extends StatelessWidget {
                     if (controller.questionList.isEmpty) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: Text('There are no questions yet'),
+                          content: Text(
+                              'You should create a question first, don\'t you think?'),
                           duration: const Duration(seconds: 2),
                         ),
                       );

@@ -90,6 +90,7 @@ class _PrivateCategorySelectionViewState
     if (_isLoading) {
       return const Center(child: CircularProgressIndicator());
     } else {
+      _categoryList = context.watch<CategoryQuestionsProvider>().categoryList;
       if (_categoryList.isEmpty) {
         ListWidget = CategoryListEmpty();
       } else {
@@ -216,53 +217,46 @@ class _CategoryListState extends State<CategoryList> {
   Widget build(BuildContext context) {
     return Consumer<CategoryQuestionsProvider>(
         builder: (context, controller, child) {
-          return ListView.builder(
-            itemCount: controller.categoryList.length,
-            itemBuilder: (BuildContext context, int index) {
-              String categoryName = controller.categoryList[index];
-              return Container(
-                padding: const EdgeInsets.only(
-                    left: 30.0, right: 30.0, top: 20.0),
-                width: 70,
-                height: MediaQuery
-                    .of(context)
-                    .size
-                    .height / 8,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Provider
-                        .of<ThemeProvider>(context)
-                        .currentTheme
-                        .colorScheme
-                        .background,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                  ),
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                CategoryQuestionsView(categoryName: categoryName)));
-                  },
-                  child: Text(
-                    categoryName,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 35,
-                      color: Provider
-                          .of<ThemeProvider>(context)
-                          .currentTheme
-                          .colorScheme
-                          .onBackground,
-                    ),
-                  ),
+      return ListView.builder(
+        itemCount: controller.categoryList.length,
+        itemBuilder: (BuildContext context, int index) {
+          String categoryName = controller.categoryList[index];
+          return Container(
+            padding: const EdgeInsets.only(left: 30.0, right: 30.0, top: 20.0),
+            width: 70,
+            height: MediaQuery.of(context).size.height / 8,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Provider.of<ThemeProvider>(context)
+                    .currentTheme
+                    .colorScheme
+                    .background,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
                 ),
-              );
-            },
+              ),
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            CategoryQuestionsView(categoryName: categoryName)));
+              },
+              child: Text(
+                categoryName,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 35,
+                  color: Provider.of<ThemeProvider>(context)
+                      .currentTheme
+                      .colorScheme
+                      .onBackground,
+                ),
+              ),
+            ),
           );
-        }
-    );
+        },
+      );
+    });
   }
 }
