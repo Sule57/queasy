@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class Auth with ChangeNotifier {
@@ -42,7 +43,7 @@ class Auth with ChangeNotifier {
 
       // Obtain the auth details from the request
       final GoogleSignInAuthentication? googleAuth =
-      await googleUser?.authentication;
+          await googleUser?.authentication;
 
       // Create a new credential
       final credential = GoogleAuthProvider.credential(
@@ -61,8 +62,11 @@ class Auth with ChangeNotifier {
       await _firebaseAuth.signInWithPopup(facebookProvider);
     } else {
       //TODO implement mobile sign in
+      final LoginResult loginResult = await FacebookAuth.instance.login();
+
+      final OAuthCredential facebookAuthCredential =
+          FacebookAuthProvider.credential(loginResult.accessToken!.token);
     }
-    //TODO register user in firestore with email and give him a choice for username
   }
 
   Future<void> signInWithTwitter() async {
