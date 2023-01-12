@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:queasy/src/view/registration/register_view_controller.dart';
 import 'package:queasy/src/view/home_view.dart';
 
@@ -21,6 +23,7 @@ class RegisterViewMobile extends StatefulWidget {
 /// to sign up. When the registration is over, the user is taken to [HomeView].
 /// It uses colors from [AppThemes].
 class RegisterViewMobileState extends State<RegisterViewMobile> {
+
   ///[controller] register-view controller
   get controller => widget.controller;
 
@@ -40,6 +43,7 @@ class RegisterViewMobileState extends State<RegisterViewMobile> {
       List.generate(5, (i) => TextEditingController());
 
   bool _isGoogleSigningIn = false;
+  bool _isFacebookSigningIn = false;
 
   @override
   void initState() {
@@ -344,11 +348,29 @@ class RegisterViewMobileState extends State<RegisterViewMobile> {
                             }
                           },
                         ),
-                  IconButton(
-                    icon: Image.asset(
-                      'lib/assets/images/facebook.png',
-                    ),
-                    onPressed: () {},
+                  _isFacebookSigningIn
+                      ? CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                        Theme.of(context).colorScheme.primary),
+                  )
+                  : IconButton(icon: Image.asset('lib/assets/images/facebook.png'),
+                    onPressed: () async {
+                      setState(() {
+                        _isFacebookSigningIn = true;
+                      });
+                      User? user = await controller.signInWithFacebook(
+                          context: context);
+                      setState(() {
+                        _isFacebookSigningIn = false;
+                      });
+                      if (user != null) {
+                        Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(
+                            builder: (context) => HomeView(),
+                          ),
+                        );
+                      }
+                    },
                   ),
                   // IconButton(
                   //   icon: Image.asset(
