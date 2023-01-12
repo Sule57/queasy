@@ -33,14 +33,12 @@ class StatisticsProvider with ChangeNotifier {
   get overallPercentage => _overallPercentage;
 
   StatisticsProvider(this.qp) {
-    // setStatisticsProvider();
     initStatisticsProvider();
   }
 
-  bool setStatisticsProvider() {
+  bool setStatisticsView() {
     try {
       _lastQuiz = qp.quizzResult;
-
       _quizzName = _lastQuiz.quizzName;
       _allQestions = _lastQuiz.allQestions;
       _correct = _lastQuiz.correct;
@@ -52,14 +50,15 @@ class StatisticsProvider with ChangeNotifier {
     }
   }
 
-  void initStatisticsProvider() async {
+  Future<void> initStatisticsProvider() async {
     var uid = await getCurrentUserID();
     if (uid != null) {
       // get the user profile who played the quizz
       p = (await Profile.getProfileFromUID(uid))!;
       statistics = (await p.getUserStatistics())!;
-    } else
+    } else {
       throw UserNotLoggedInException();
+    }
     if (statistics.userQuizzes.isNotEmpty) {
       _numberQuiz = statistics.userQuizzes.length;
       //Chart Data
@@ -82,8 +81,6 @@ class StatisticsProvider with ChangeNotifier {
         m++;
       }
       _overallPercentage = (sum / (_numberQuiz * 5) * 100).round();
-
-      // notifyListeners();
     }
   }
 }

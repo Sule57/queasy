@@ -28,8 +28,8 @@ class _ProfileViewContentState extends State<ProfileView> {
   init() async {
     isLoading = !(await Provider.of<ProfileProvider>(context, listen: false)
         .setProfile());
-    isLoading = !(await Provider.of<StatisticsProvider>(context, listen: false)
-        .setStatisticsProvider());
+    await Provider.of<StatisticsProvider>(context, listen: false)
+        .initStatisticsProvider();
     setState(() {});
   }
 
