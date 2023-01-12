@@ -83,10 +83,7 @@ class _CategoryQuestionsViewState extends State<CategoryQuestionsView> {
     _category = await CategoryRepo().getCategory(categoryName);
     controller.category = _category;
     await controller.updateQuestionsFromCategory();
-    //_questions = controller.questionList;
-    //_questions = await _category.getAllQuestions(); // TODO: add
     _questions = context.read<CategoryQuestionsProvider>().questionList;
-    //_questions = controller.questionList;
     setState(() {
       _isLoading = false;
     });
