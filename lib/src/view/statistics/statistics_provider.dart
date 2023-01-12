@@ -53,7 +53,7 @@ class StatisticsProvider with ChangeNotifier {
   }
 
   void initStatisticsProvider() async {
-    var uid = getCurrentUserID();
+    var uid = await getCurrentUserID();
     if (uid != null) {
       // get the user profile who played the quizz
       p = (await Profile.getProfileFromUID(uid))!;
