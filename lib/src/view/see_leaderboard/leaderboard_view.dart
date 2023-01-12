@@ -18,9 +18,16 @@ class LeaderboardView extends StatefulWidget {
 class _LeaderboardViewState extends State<LeaderboardView> {
   bool _isLoading = true;
 
+  String _currentCategory = 'All';
+
   init() async {
-    _isLoading = true;
-    await Provider.of<LeaderboardProvider>(context, listen: false);
+    setState(() {
+      _isLoading = true;
+    });
+    _currentCategory =
+        await Provider.of<LeaderboardProvider>(context, listen: false).category;
+    Provider.of<LeaderboardProvider>(context, listen: false)
+        .setLeaderboard(_currentCategory);
     setState(() {
       _isLoading = false;
     });
@@ -168,6 +175,7 @@ class _LeaderboardViewContentState extends State<LeaderboardViewContent> {
 
 class LeaderboardMobileContent extends StatelessWidget {
   const LeaderboardMobileContent({Key? key}) : super(key: key);
+
   //TODO: manually add all public category names to this list
   static const List<String> list = <String>[
     'All',
