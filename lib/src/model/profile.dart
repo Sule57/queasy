@@ -217,7 +217,7 @@ class Profile {
   /// gets the current profile from user uid
   /// [uid] is the firebase user uid
   /// returns a [Profile] instance
-  static Future<Profile?> getProfilefromUID(String uid) async {
+  static Future<Profile?> getProfileFromUID(String uid) async {
     Profile? result;
     await FirebaseFirestore.instance
         .collection('users')
@@ -481,4 +481,33 @@ class Profile {
   }
   //END OF METHODS FOR PROFILE VIEW
 
+  /// Returns a list of quizzes owned by the currently logged in user.
+  ///
+  /// Takes in an optional [firestore] parameter. If it's passed the code will
+  /// assume the developer is in testing and give it default values, if not, it
+  /// will use the default firestore instance.
+  static Future<List<Quiz>> getUserQuizzes(
+      {FirebaseFirestore? firestore}) async {
+    if (firestore == null) {
+      firestore = FirebaseFirestore.instance;
+    }
+
+    List<Quiz> quizzes = [];
+
+    QuerySnapshot snapshot = await firestore
+        .collection('quizzes')
+        .where('creatorID', isEqualTo: getCurrentUserID())
+        .get();
+
+    for (var doc in snapshot.docs) {
+      Quiz? tempQuiz;
+
+      await Quiz().retrieveQuizFromId(id: doc.id).then((value) {
+        tempQuiz = value;
+        quizzes.add(tempQuiz!);
+      });
+    }
+
+    return quizzes;
+  }
 }

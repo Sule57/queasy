@@ -32,7 +32,7 @@ class ProfileProvider with ChangeNotifier {
   Future<bool> setProfile() async {
     if (getCurrentUserID() != null) {
       currentUID = getCurrentUserID()!;
-      Profile? p = await Profile.getProfilefromUID(currentUID);
+      Profile? p = await Profile.getProfileFromUID(currentUID);
       if (p != null) {
         player = p;
         notifyListeners();
@@ -45,7 +45,7 @@ class ProfileProvider with ChangeNotifier {
   Future<bool> updateProfile() async {
     if (getCurrentUserID() != null) {
       currentUID = getCurrentUserID()!;
-      Profile? p = await Profile.getProfilefromUID(currentUID);
+      Profile? p = await Profile.getProfileFromUID(currentUID);
       if (p != null) {
         player = p;
         notifyListeners();

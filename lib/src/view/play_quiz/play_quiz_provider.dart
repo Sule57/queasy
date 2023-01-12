@@ -95,7 +95,7 @@ class PlayQuizProvider with ChangeNotifier {
     if (userId != null) {
       // very important class method creating Profile instance
       // from profile UID !!!!
-      profile = await Profile.getProfilefromUID(userId);
+      profile = await Profile.getProfileFromUID(userId);
       if (profile != null) {
         player = profile;
       } else {

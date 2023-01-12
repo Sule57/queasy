@@ -9,18 +9,18 @@
 import 'package:flutter/material.dart';
 import 'package:motion_tab_bar_v2/motion-tab-bar.dart';
 import 'package:queasy/constants/app_themes.dart';
-import 'package:provider/provider.dart';
-import 'package:queasy/src/view/play_quiz/play_quiz_view.dart';
 import 'package:queasy/src/view/see_leaderboard/leaderboard_view.dart';
-import 'package:queasy/src/view/category_selection_view.dart';
+import 'package:queasy/src/view/category_selection/category_selection_view.dart';
 import 'package:queasy/src/view/see_profile/profile_view.dart';
-import 'package:queasy/src/view/private_category_selection_view.dart';
-import 'package:queasy/src/view/see_quiz/see_quiz_view.dart';
+import 'package:queasy/src/view/category_selection/private_category_selection_view.dart';
+import 'package:queasy/src/view/widgets/join_quiz_popup.dart';
 import 'package:queasy/src/view/widgets/side_navigation.dart';
 
 import '../../src.dart';
+
 import 'login/login_view.dart';
 import 'see_profile/profile_provider.dart';
+
 
 /// This is the base view for navigation. It contains the bottom navigation bar
 /// and the [pages] that are navigated to when the bottom navigation bar is tapped.
@@ -124,9 +124,6 @@ class _HomeViewState extends State<HomeView> {
 class HomeWidgets extends StatelessWidget {
   HomeWidgets({Key? key}) : super(key: key);
 
-  ///@param [textController] for getting user input
-  final textController = TextEditingController();
-
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -168,109 +165,9 @@ class HomeWidgets extends StatelessWidget {
                   color: purple,
                 ),
               ),
-
-              /// Opens a dialog for the user to enter a key to be able to enter a quiz
               onPressed: () => showDialog(
                 context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    backgroundColor: purple,
-                    title: Container(
-                        alignment: Alignment.topCenter,
-                        child: const Text('Enter key',
-                            style: TextStyle(color: Colors.white))),
-                    content: Container(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          /// User input
-                          Container(
-                              height: MediaQuery.of(context).size.height * .07,
-                              width: MediaQuery.of(context).size.width / 2,
-                              child: TextField(
-                                controller: textController,
-                                decoration: InputDecoration(
-                                  filled: true,
-                                  fillColor: Colors.white,
-                                  border: UnderlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.white),
-                                    borderRadius: BorderRadius.circular(25.7),
-                                  ),
-                                ),
-                              ))
-                        ],
-                      ),
-                    ),
-                    actions: [
-                      Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            ///[ElevatedButton] to close the dialog if user wants to exit
-                            ElevatedButton(
-                              child:
-                                  Text("Cancel", style: TextStyle(color: dark)),
-
-                              ///if clicked clears all the text editing controllers
-                              onPressed: () => {
-                                Navigator.of(context).pop(),
-                              },
-                              style: ButtonStyle(
-                                  backgroundColor:
-                                      MaterialStateProperty.all<Color>(orange),
-                                  shape: MaterialStateProperty.all<
-                                          RoundedRectangleBorder>(
-                                      RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(18.0),
-                                  ))),
-                            ),
-
-                            ///[ElevatedButton] to confirm the entered key
-                            ElevatedButton(
-                              child:
-                                  Text("Join", style: TextStyle(color: dark)),
-                              onPressed: () async {
-                                if (textController.text.isNotEmpty) {
-                                  // /confirmKey method is called from the controller
-                                  // /result is saved in [success] variable
-                                  bool success = await Quiz.checkIfQuizExists(
-                                      id: textController.text);
-
-                                  if (success) {
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (context) => PlayQuizView(
-                                          id: textController.text,
-                                        ),
-                                      ),
-                                    );
-                                  } else {
-                                    Navigator.pop(context);
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Text(
-                                          'Invalid key',
-                                          textAlign: TextAlign.center,
-                                        ),
-                                        duration: Duration(seconds: 1),
-                                      ),
-                                    );
-                                  }
-                                }
-                              },
-                              style: ButtonStyle(
-                                  backgroundColor:
-                                      MaterialStateProperty.all<Color>(green),
-                                  shape: MaterialStateProperty.all<
-                                          RoundedRectangleBorder>(
-                                      RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(18.0),
-                                  ))),
-                            ),
-                          ]),
-                    ],
-                  );
-                },
+                builder: (BuildContext context) => JoinQuizPopup(),
               ),
             ),
             SizedBox(height: 5),
@@ -289,8 +186,8 @@ class HomeWidgets extends StatelessWidget {
             ),
             const SizedBox(height: 5),
             ElevatedButton(
-              onPressed: () => Navigator.of(context)
-                  .push(MaterialPageRoute(builder: (context) => SeeQuizView())),
+              onPressed: () => Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => MyQuizzesView())),
               child: Text(
                 'My quizzes',
                 style: TextStyle(

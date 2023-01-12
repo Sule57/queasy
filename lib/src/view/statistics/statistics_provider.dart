@@ -56,7 +56,7 @@ class StatisticsProvider with ChangeNotifier {
     var uid = getCurrentUserID();
     if (uid != null) {
       // get the user profile who played the quizz
-      p = (await Profile.getProfilefromUID(uid))!;
+      p = (await Profile.getProfileFromUID(uid))!;
       statistics = (await p.getUserStatistics())!;
     } else
       throw UserNotLoggedInException();
