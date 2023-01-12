@@ -166,8 +166,8 @@ class SideNavigation extends StatelessWidget {
                       color: Theme.of(context).colorScheme.error,
                     ),
                   ),
-                  onTap: () {
-                    bool success = ProfileViewController().signOut();
+                  onTap: () async {
+                    bool success = await ProfileViewController().signOut();
                     if (success) {
                       Navigator.of(context).pushReplacement(
                         MaterialPageRoute(
