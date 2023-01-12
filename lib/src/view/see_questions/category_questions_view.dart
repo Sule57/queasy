@@ -8,13 +8,13 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:queasy/src/view/see_questions/widgets/see_questions_popups.dart';
+import 'package:queasy/src/view/see_questions/widgets/questions_popups.dart';
 import 'package:queasy/src/view/see_questions/widgets/question_list_tile.dart';
 import 'package:queasy/src/model/category.dart';
 import 'package:queasy/src/model/category_repo.dart';
 import '../../../constants/theme_provider.dart';
 import '../../model/question.dart';
-import 'see_category_questions_provider.dart';
+import 'category_questions_provider.dart';
 
 /// The enum [AnswersRadioButton] is used to determine which radio button is selected when the user
 /// wants to add a question. It refers to the correct answer out of the options.
@@ -36,28 +36,26 @@ enum AnswersRadioButton { ans1, ans2, ans3, ans4 }
 /// The variable [controller] is the provider of the class.
 ///
 /// The variable [_isLoading] is a boolean that is used to determine if the view is loading or not.
-class SeeCategoryQuestionsView extends StatefulWidget {
+class CategoryQuestionsView extends StatefulWidget {
   final String categoryName;
 
-  SeeCategoryQuestionsView({Key? key, required this.categoryName})
+  CategoryQuestionsView({Key? key, required this.categoryName})
       : super(key: key);
 
   @override
-  State<SeeCategoryQuestionsView> createState() =>
-      _SeeCategoryQuestionsViewState();
+  State<CategoryQuestionsView> createState() => _CategoryQuestionsViewState();
 }
 
-class _SeeCategoryQuestionsViewState extends State<SeeCategoryQuestionsView> {
+class _CategoryQuestionsViewState extends State<CategoryQuestionsView> {
   get categoryName => widget.categoryName;
   late Category _category;
   late List<Question> _questions;
-  late SeeCategoryQuestionsProvider controller;
+  late CategoryQuestionsProvider controller;
   bool _isLoading = true;
 
   @override
   void didChangeDependencies() {
-    controller =
-        Provider.of<SeeCategoryQuestionsProvider>(context, listen: true);
+    controller = Provider.of<CategoryQuestionsProvider>(context, listen: true);
     controller.questionController = TextEditingController();
     controller.answer1Controller = TextEditingController();
     controller.answer2Controller = TextEditingController();
@@ -85,7 +83,7 @@ class _SeeCategoryQuestionsViewState extends State<SeeCategoryQuestionsView> {
     controller.updateQuestionsFromCategory();
     _questions = await _category.getAllQuestions();
     //print("ok");
-    _questions = context.read<SeeCategoryQuestionsProvider>().questionList;
+    _questions = context.read<CategoryQuestionsProvider>().questionList;
     //_questions = controller.questionList;
     //controller.formKeyAddEditQuestion = GlobalKey<FormState>();
     setState(() {
@@ -101,8 +99,8 @@ class _SeeCategoryQuestionsViewState extends State<SeeCategoryQuestionsView> {
 
   @override
   Widget build(BuildContext context) {
-    SeeCategoryQuestionsProvider controller =
-        Provider.of<SeeCategoryQuestionsProvider>(context, listen: true);
+    CategoryQuestionsProvider controller =
+        Provider.of<CategoryQuestionsProvider>(context, listen: true);
     late Widget ListWidget;
 
     if (_isLoading) {
@@ -184,7 +182,7 @@ class _QuestionListState extends State<QuestionList> {
     return Expanded(
       child: Padding(
         padding: const EdgeInsets.only(top: 6.0, bottom: 8.0),
-        child: Consumer<SeeCategoryQuestionsProvider>(
+        child: Consumer<CategoryQuestionsProvider>(
           builder: (context, controller, child) {
             return ListView.builder(
               itemCount: controller.questionList.length,
@@ -249,7 +247,7 @@ class QuestionListEmpty extends StatelessWidget {
 }
 
 class CreateAndDeleteButtons extends StatelessWidget {
-  final SeeCategoryQuestionsProvider controller;
+  final CategoryQuestionsProvider controller;
 
   CreateAndDeleteButtons({Key? key, required this.controller})
       : super(key: key);

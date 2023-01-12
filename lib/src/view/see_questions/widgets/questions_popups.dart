@@ -11,9 +11,9 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:queasy/src/view/my_quizzes/quiz_questions_view.dart';
 import '../../../../src.dart';
-import '../see_category_questions_provider.dart';
-import '../see_category_questions_view.dart';
-import 'see_questions_text_field.dart';
+import '../category_questions_provider.dart';
+import '../category_questions_view.dart';
+import 'questions_text_field.dart';
 
 /// The widget [AddOrEditQuestionPopUp] shows an [AlertDialog] with a form to add or edit a new question.
 ///
@@ -63,8 +63,8 @@ class _AddOrEditQuestionPopUpState extends State<AddOrEditQuestionPopUp> {
 
   @override
   Widget build(BuildContext context) {
-    SeeCategoryQuestionsProvider controller =
-        Provider.of<SeeCategoryQuestionsProvider>(context, listen: true);
+    CategoryQuestionsProvider controller =
+        Provider.of<CategoryQuestionsProvider>(context, listen: true);
     // If the question is not null, the user wants to edit a question, and the popup should
     // show the "old" correct answer as selected when the popup opens
     if (question != null) {
@@ -92,7 +92,7 @@ class _AddOrEditQuestionPopUpState extends State<AddOrEditQuestionPopUp> {
                 children: [
                   Row(
                     children: [
-                      SeeQuestionsTextField(
+                      QuestionsTextField(
                         controller: controller.questionController,
                         hintText: 'Question',
                         validatorText: 'Please enter a question',
@@ -108,7 +108,7 @@ class _AddOrEditQuestionPopUpState extends State<AddOrEditQuestionPopUp> {
                   Row(
                     //mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      SeeQuestionsTextField(
+                      QuestionsTextField(
                         controller: controller.answer1Controller,
                         hintText: 'Answer 1',
                         validatorText: 'Please enter an answer',
@@ -132,7 +132,7 @@ class _AddOrEditQuestionPopUpState extends State<AddOrEditQuestionPopUp> {
                   ),
                   Row(
                     children: [
-                      SeeQuestionsTextField(
+                      QuestionsTextField(
                         controller: controller.answer2Controller,
                         hintText: 'Answer 2',
                         validatorText: 'Please enter an answer',
@@ -156,7 +156,7 @@ class _AddOrEditQuestionPopUpState extends State<AddOrEditQuestionPopUp> {
                   ),
                   Row(
                     children: [
-                      SeeQuestionsTextField(
+                      QuestionsTextField(
                         controller: controller.answer3Controller,
                         hintText: 'Answer 3',
                         validatorText: 'Please enter an answer',
@@ -180,7 +180,7 @@ class _AddOrEditQuestionPopUpState extends State<AddOrEditQuestionPopUp> {
                   ),
                   Row(
                     children: [
-                      SeeQuestionsTextField(
+                      QuestionsTextField(
                         controller: controller.answer4Controller,
                         hintText: 'Answer 4',
                         validatorText: 'Please enter an answer',
@@ -268,8 +268,8 @@ class DeleteQuestionPopUp extends StatefulWidget {
 class _DeleteQuestionPopUpState extends State<DeleteQuestionPopUp> {
   @override
   Widget build(BuildContext context) {
-    final SeeCategoryQuestionsProvider controller =
-        Provider.of<SeeCategoryQuestionsProvider>(context, listen: true);
+    final CategoryQuestionsProvider controller =
+        Provider.of<CategoryQuestionsProvider>(context, listen: true);
     return AlertDialog(
       title:
           const Text('Delete question', style: TextStyle(color: Colors.white)),
@@ -336,8 +336,8 @@ class _NewCategoryPopUpState extends State<NewCategoryPopUp> {
 
   @override
   Widget build(BuildContext context) {
-    final SeeCategoryQuestionsProvider controller =
-        Provider.of<SeeCategoryQuestionsProvider>(context, listen: true);
+    final CategoryQuestionsProvider controller =
+        Provider.of<CategoryQuestionsProvider>(context, listen: true);
     return AlertDialog(
       title: const Text(
         'Add a new category',
@@ -449,8 +449,8 @@ class DeleteCategoryPopUp extends StatefulWidget {
 class _DeleteCategoryPopUpState extends State<DeleteCategoryPopUp> {
   @override
   Widget build(BuildContext context) {
-    final SeeCategoryQuestionsProvider controller =
-        Provider.of<SeeCategoryQuestionsProvider>(context, listen: true);
+    final CategoryQuestionsProvider controller =
+        Provider.of<CategoryQuestionsProvider>(context, listen: true);
     return AlertDialog(
       title:
           const Text('Delete category', style: TextStyle(color: Colors.white)),
@@ -505,8 +505,8 @@ class CreateRandomQuizPopup extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Provider.of<ThemeProvider>(context).currentTheme;
-    final SeeCategoryQuestionsProvider controller =
-        Provider.of<SeeCategoryQuestionsProvider>(context);
+    final CategoryQuestionsProvider controller =
+        Provider.of<CategoryQuestionsProvider>(context);
     TextStyle? titleStyle = theme.textTheme.headline6!.copyWith(
       color: theme.colorScheme.onPrimary,
     );
@@ -620,8 +620,8 @@ class CreateRandomQuizPopup extends StatelessWidget {
   }
 
   _confirm(BuildContext context) async {
-    final SeeCategoryQuestionsProvider controller =
-        Provider.of<SeeCategoryQuestionsProvider>(context, listen: false);
+    final CategoryQuestionsProvider controller =
+        Provider.of<CategoryQuestionsProvider>(context, listen: false);
     String? quizId;
 
     if (controller.formKeyCreateRandomQuiz.currentState!.validate()) {
@@ -656,8 +656,8 @@ class CreateCustomQuizPopup extends StatelessWidget {
     double width = MediaQuery.of(context).size.width;
 
     final theme = Provider.of<ThemeProvider>(context).currentTheme;
-    final SeeCategoryQuestionsProvider controller =
-        Provider.of<SeeCategoryQuestionsProvider>(context);
+    final CategoryQuestionsProvider controller =
+        Provider.of<CategoryQuestionsProvider>(context);
     TextStyle? titleStyle = theme.textTheme.headline5!.copyWith(
       color: theme.colorScheme.onPrimary,
     );
@@ -753,8 +753,8 @@ class CreateCustomQuizPopup extends StatelessWidget {
   }
 
   _confirm(BuildContext context) async {
-    final SeeCategoryQuestionsProvider controller =
-        Provider.of<SeeCategoryQuestionsProvider>(context, listen: false);
+    final CategoryQuestionsProvider controller =
+        Provider.of<CategoryQuestionsProvider>(context, listen: false);
 
     if (controller.formKeyCreateCustomQuiz.currentState!.validate()) {
       List<String> questionIds = [];

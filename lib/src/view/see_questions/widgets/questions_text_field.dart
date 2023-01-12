@@ -10,7 +10,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:queasy/src.dart';
 
-import '../see_category_questions_provider.dart';
+import '../category_questions_provider.dart';
 
 /// This is the edit quiz text field.
 ///
@@ -28,7 +28,7 @@ import '../see_category_questions_provider.dart';
 /// is using the text field to add a question.
 ///
 /// The variable [MAX_INPUT_LENGTH] is the maximum length of the text field.
-class SeeQuestionsTextField extends StatefulWidget {
+class QuestionsTextField extends StatefulWidget {
   final TextEditingController controller;
   final String hintText;
   final String validatorText;
@@ -38,7 +38,7 @@ class SeeQuestionsTextField extends StatefulWidget {
   final bool isLastField;
   final Function action;
 
-  SeeQuestionsTextField({
+  QuestionsTextField({
     Key? key,
     required this.controller,
     required this.hintText,
@@ -51,10 +51,10 @@ class SeeQuestionsTextField extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<SeeQuestionsTextField> createState() => _SeeQuestionsTextFieldState();
+  State<QuestionsTextField> createState() => _QuestionsTextFieldState();
 }
 
-class _SeeQuestionsTextFieldState extends State<SeeQuestionsTextField> {
+class _QuestionsTextFieldState extends State<QuestionsTextField> {
   final int MAX_INPUT_LENGTH = 50;
 
   get question => widget.question;
@@ -73,8 +73,8 @@ class _SeeQuestionsTextFieldState extends State<SeeQuestionsTextField> {
 
   @override
   Widget build(BuildContext context) {
-    SeeCategoryQuestionsProvider provider =
-        Provider.of<SeeCategoryQuestionsProvider>(context);
+    CategoryQuestionsProvider provider =
+        Provider.of<CategoryQuestionsProvider>(context);
     final theme = Provider.of<ThemeProvider>(context).currentTheme;
     final _formKey = provider.formKeyAddEditQuestion;
 
