@@ -259,14 +259,14 @@ class Profile {
     }
 
     final firebaseFirestore = FirebaseFirestore.instance;
-    if(is_public){
+    if (is_public) {
       await firebaseFirestore
           .collection('users')
           .doc(await getCurrentUserID())
           .update({
         'scores.$category': FieldValue.increment(score),
       });
-    }else{
+    } else {
       await firebaseFirestore
           .collection('users')
           .doc(await getCurrentUserID())
@@ -274,7 +274,6 @@ class Profile {
         'privateScore.$category': FieldValue.increment(score),
       });
     }
-
 
     //TODO
 
@@ -369,11 +368,20 @@ class Profile {
   Future<bool> updateEmail(
       String currentEmail, String newEmail, String password) async {
     try {
+      print("current email: " + currentEmail);
+      print("new email: " + newEmail);
       await FirebaseAuth.instance.authStateChanges().listen((User? user) async {
         if (user != null) {
+          String curremail = user.email as String;
           await user.reauthenticateWithCredential(EmailAuthProvider.credential(
-              email: currentEmail, password: password));
+              email: curremail, password: password));
           await user.updateEmail(newEmail);
+          await firestore
+              .collection('users')
+              .doc(test ? uid : await getCurrentUserID())
+              .update({
+            'email': newEmail,
+          });
         }
       });
       return true;
