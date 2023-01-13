@@ -373,9 +373,12 @@ class Profile {
         if (user != null) {
           await user.reauthenticateWithCredential(EmailAuthProvider.credential(
               email: currentEmail, password: password));
+          await firestore.collection('users').doc(user.uid).update({"email": newEmail});
           await user.updateEmail(newEmail);
+
         }
       });
+
       return true;
     } catch (e) {
       return false;
