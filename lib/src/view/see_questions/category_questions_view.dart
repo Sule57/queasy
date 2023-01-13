@@ -96,9 +96,9 @@ class _CategoryQuestionsViewState extends State<CategoryQuestionsView> {
   }
 
   @override
-  Widget build(BuildContext context) {CategoryQuestionsProvider controller =
-  Provider.of<CategoryQuestionsProvider>(context, listen: true);
-
+  Widget build(BuildContext context) {
+    CategoryQuestionsProvider controller =
+        Provider.of<CategoryQuestionsProvider>(context);
     _questions = controller.questionList;
     late Widget ListWidget;
 
@@ -189,8 +189,7 @@ class _QuestionListState extends State<QuestionList> {
                       ),
                     ),
                     child: ExpansionTile(
-                      title: Text(
-                          controller.questionList[index].text,
+                      title: Text(controller.questionList[index].text,
                           style: Theme.of(context)
                               .textTheme
                               .bodyText1
@@ -267,7 +266,8 @@ class CreateAndDeleteButtons extends StatelessWidget {
                     if (controller.questionList.isEmpty) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: Text('There are no questions yet'),
+                          content: Text(
+                              'You should create a question first, don\'t you think?'),
                           duration: const Duration(seconds: 2),
                         ),
                       );
@@ -296,7 +296,8 @@ class CreateAndDeleteButtons extends StatelessWidget {
                     if (controller.questionList.isEmpty) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: Text('There are no questions yet'),
+                          content: Text(
+                              'You should create a question first, don\'t you think?'),
                           duration: const Duration(seconds: 2),
                         ),
                       );

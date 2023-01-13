@@ -9,15 +9,15 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:queasy/src.dart';
 
-class QuestionListTile extends StatefulWidget {
-  const QuestionListTile({Key? key, required this.index}) : super(key: key);
+class QuizQuestionListTile extends StatefulWidget {
+  const QuizQuestionListTile({Key? key, required this.index}) : super(key: key);
   final int index;
 
   @override
-  State<QuestionListTile> createState() => _QuestionListTileState();
+  State<QuizQuestionListTile> createState() => _QuizQuestionListTileState();
 }
 
-class _QuestionListTileState extends State<QuestionListTile> {
+class _QuizQuestionListTileState extends State<QuizQuestionListTile> {
   @override
   Widget build(BuildContext context) {
     final theme = Provider.of<ThemeProvider>(context).currentTheme;

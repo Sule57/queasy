@@ -12,8 +12,9 @@ import 'package:provider/provider.dart';
 
 import '../../../src.dart';
 import '../play_quiz/play_quiz_view.dart';
-import 'widgets/question_list_tile.dart';
+import 'widgets/quiz_question_list_tile.dart';
 
+/// Displays the questions of the quiz
 class QuizQuestionsView extends StatefulWidget {
   final String quizId;
 
@@ -109,7 +110,7 @@ class _QuizQuestionsViewState extends State<QuizQuestionsView> {
                           // print('index: $index');
                           return Padding(
                             padding: const EdgeInsets.symmetric(vertical: 4),
-                            child: QuestionListTile(index: index),
+                            child: QuizQuestionListTile(index: index),
                           );
                         },
                       ),
