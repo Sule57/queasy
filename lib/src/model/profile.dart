@@ -384,6 +384,7 @@ class Profile {
           });
         }
       });
+
       return true;
     } catch (e) {
       return false;
