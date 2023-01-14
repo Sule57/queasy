@@ -36,7 +36,6 @@ class ProfileProvider with ChangeNotifier {
       if (p != null) {
         player = p;
         notifyListeners();
-        print(p);
         return true;
       }
     }

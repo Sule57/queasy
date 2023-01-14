@@ -225,6 +225,7 @@ class Profile {
         .get()
         .then((DocumentSnapshot documentSnapshot) {
       Map<String, dynamic> j = documentSnapshot.data() as Map<String, dynamic>;
+      print(j);
       result = new Profile.fromJson(j);
     });
     return result;
@@ -359,6 +360,7 @@ class Profile {
 
   ///updates the email of the user in the Firebase Database.
   ///It reauthenticates the user before updating the email to avoid errors with Firebase Authentication.
+  ///It also updates the email in the Firestore database for the current user.
   ///It takes [currentEmail], [newEmail] and [password] as parameters.
   ///[currentEmail] is the current email of the user. It is used to reauthenticate the user.
   ///[newEmail] is the value the current email will change to.
@@ -368,15 +370,13 @@ class Profile {
   Future<bool> updateEmail(
       String currentEmail, String newEmail, String password) async {
     try {
-      print("current email: " + currentEmail);
-      print("new email: " + newEmail);
       await FirebaseAuth.instance.authStateChanges().listen((User? user) async {
         if (user != null) {
           String curremail = user.email as String;
-          await user.reauthenticateWithCredential(EmailAuthProvider.credential(
+          user.reauthenticateWithCredential(EmailAuthProvider.credential(
               email: curremail, password: password));
-          await user.updateEmail(newEmail);
-          await firestore
+          user.updateEmail(newEmail);
+          firestore
               .collection('users')
               .doc(test ? uid : await getCurrentUserID())
               .update({

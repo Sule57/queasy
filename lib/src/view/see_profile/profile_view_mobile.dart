@@ -943,8 +943,8 @@ class ProfileMobileState extends State<ProfileViewMobile> {
             Container(
                 padding: EdgeInsets.only(top: 7),
                 child: ElevatedButton(
-                  onPressed: () {
-                    bool success = controller.signOut();
+                  onPressed: () async {
+                    bool success = await controller.signOut();
                     if (success) {
                       if (Navigator.canPop(context)) {
                         Navigator.pop(context);
