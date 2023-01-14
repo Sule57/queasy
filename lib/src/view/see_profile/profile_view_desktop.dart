@@ -382,6 +382,7 @@ class _ProfileDesktopViewContentState extends State<ProfileDesktopViewContent> {
                                                                   lastname
                                                                       .clear(),
                                                                   bio.clear(),
+                                                                  email.clear(),
                                                                   currentPassword
                                                                       .clear(),
                                                                   newPassword
@@ -650,6 +651,8 @@ class _ProfileDesktopViewContentState extends State<ProfileDesktopViewContent> {
                                                                               borderRadius: BorderRadius.circular(25.7),
                                                                             ),
                                                                           ),
+                                                                          style:
+                                                                              TextStyle(color: Colors.black),
                                                                         ),
                                                                       ),
 
@@ -678,6 +681,8 @@ class _ProfileDesktopViewContentState extends State<ProfileDesktopViewContent> {
                                                                               borderRadius: BorderRadius.circular(25.7),
                                                                             ),
                                                                           ),
+                                                                          style:
+                                                                              TextStyle(color: Colors.black),
                                                                         ),
                                                                       ),
 
@@ -734,6 +739,8 @@ class _ProfileDesktopViewContentState extends State<ProfileDesktopViewContent> {
                                                                               borderRadius: BorderRadius.circular(25.7),
                                                                             ),
                                                                           ),
+                                                                          style:
+                                                                              TextStyle(color: Colors.black),
                                                                         ),
                                                                       ),
 
@@ -762,6 +769,8 @@ class _ProfileDesktopViewContentState extends State<ProfileDesktopViewContent> {
                                                                               borderRadius: BorderRadius.circular(25.7),
                                                                             ),
                                                                           ),
+                                                                          style:
+                                                                              TextStyle(color: Colors.black),
                                                                         ),
                                                                       ),
                                                                       Stack(
@@ -815,6 +824,7 @@ class _ProfileDesktopViewContentState extends State<ProfileDesktopViewContent> {
                                                                                       },
                                                                                     ),
                                                                                   ),
+                                                                                  style: TextStyle(color: Colors.black),
                                                                                 )),
 
                                                                             ///if validation failed then error message is displayed under text field
@@ -869,6 +879,8 @@ class _ProfileDesktopViewContentState extends State<ProfileDesktopViewContent> {
                                                                                 },
                                                                               ),
                                                                             ),
+                                                                            style:
+                                                                                TextStyle(color: Colors.black),
                                                                           )),
                                                                     ],
                                                                   ),
@@ -1230,19 +1242,6 @@ class _ProfileDesktopViewContentState extends State<ProfileDesktopViewContent> {
                                   .background,
                               borderRadius:
                                   BorderRadius.all(Radius.circular(20)),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Provider.of<ThemeProvider>(context)
-                                      .currentTheme
-                                      .colorScheme
-                                      .onBackground
-                                      .withOpacity(0.05), //color of shadow
-                                  spreadRadius: 0, //spread radius
-                                  blurRadius: 10, // blur radius
-                                  offset: Offset(0,
-                                      4), // changes position of shadow (x, y)
-                                ),
-                              ],
                             )),
                       ),
 
@@ -1328,19 +1327,6 @@ class _ProfileDesktopViewContentState extends State<ProfileDesktopViewContent> {
                                   .background,
                               borderRadius:
                                   BorderRadius.all(Radius.circular(20)),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Provider.of<ThemeProvider>(context)
-                                      .currentTheme
-                                      .colorScheme
-                                      .onBackground
-                                      .withOpacity(0.05), //color of shadow
-                                  spreadRadius: 0, //spread radius
-                                  blurRadius: 10, // blur radius
-                                  offset: Offset(0,
-                                      4), // changes position of shadow (x, y)
-                                ),
-                              ],
                             )),
                       ),
                     ]),
