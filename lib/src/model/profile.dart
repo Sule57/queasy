@@ -225,6 +225,7 @@ class Profile {
         .get()
         .then((DocumentSnapshot documentSnapshot) {
       Map<String, dynamic> j = documentSnapshot.data() as Map<String, dynamic>;
+      print(j);
       result = new Profile.fromJson(j);
     });
     return result;
@@ -259,14 +260,14 @@ class Profile {
     }
 
     final firebaseFirestore = FirebaseFirestore.instance;
-    if(is_public){
+    if (is_public) {
       await firebaseFirestore
           .collection('users')
           .doc(await getCurrentUserID())
           .update({
         'scores.$category': FieldValue.increment(score),
       });
-    }else{
+    } else {
       await firebaseFirestore
           .collection('users')
           .doc(await getCurrentUserID())
@@ -274,7 +275,6 @@ class Profile {
         'privateScore.$category': FieldValue.increment(score),
       });
     }
-
 
     //TODO
 
@@ -360,6 +360,7 @@ class Profile {
 
   ///updates the email of the user in the Firebase Database.
   ///It reauthenticates the user before updating the email to avoid errors with Firebase Authentication.
+  ///It also updates the email in the Firestore database for the current user.
   ///It takes [currentEmail], [newEmail] and [password] as parameters.
   ///[currentEmail] is the current email of the user. It is used to reauthenticate the user.
   ///[newEmail] is the value the current email will change to.
@@ -371,11 +372,16 @@ class Profile {
     try {
       await FirebaseAuth.instance.authStateChanges().listen((User? user) async {
         if (user != null) {
-          await user.reauthenticateWithCredential(EmailAuthProvider.credential(
-              email: currentEmail, password: password));
-          await firestore.collection('users').doc(user.uid).update({"email": newEmail});
-          await user.updateEmail(newEmail);
-
+          String curremail = user.email as String;
+          user.reauthenticateWithCredential(EmailAuthProvider.credential(
+              email: curremail, password: password));
+          user.updateEmail(newEmail);
+          firestore
+              .collection('users')
+              .doc(test ? uid : await getCurrentUserID())
+              .update({
+            'email': newEmail,
+          });
         }
       });
 

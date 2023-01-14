@@ -247,18 +247,6 @@ class ProfileMobileState extends State<ProfileViewMobile> {
                       .colorScheme
                       .background,
                   borderRadius: BorderRadius.all(Radius.circular(20)),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Provider.of<ThemeProvider>(context)
-                          .currentTheme
-                          .colorScheme
-                          .onBackground
-                          .withOpacity(0.05), //color of shadow
-                      spreadRadius: 0, //spread radius
-                      blurRadius: 10, // blur radius
-                      offset: Offset(0, 4), // changes position of shadow (x, y)
-                    ),
-                  ],
                 )),
 
             ///[Container] to display Personal Statistics of the user
@@ -329,19 +317,6 @@ class ProfileMobileState extends State<ProfileViewMobile> {
                         .colorScheme
                         .background,
                     borderRadius: BorderRadius.all(Radius.circular(20)),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Provider.of<ThemeProvider>(context)
-                            .currentTheme
-                            .colorScheme
-                            .onBackground
-                            .withOpacity(0.05), //color of shadow
-                        spreadRadius: 0, //spread radius
-                        blurRadius: 10, // blur radius
-                        offset:
-                            Offset(0, 4), // changes position of shadow (x, y)
-                      ),
-                    ],
                   )),
             ),
             Container(
@@ -389,6 +364,7 @@ class ProfileMobileState extends State<ProfileViewMobile> {
                                             firstname.clear(),
                                             lastname.clear(),
                                             bio.clear(),
+                                            email.clear(),
                                             currentPassword.clear(),
                                             newPassword.clear(),
                                             newPassword.clear(),
@@ -616,6 +592,9 @@ class ProfileMobileState extends State<ProfileViewMobile> {
                                                                         25.7),
                                                           ),
                                                         ),
+                                                        style: TextStyle(
+                                                            color:
+                                                                Colors.black),
                                                       ),
                                                     ),
 
@@ -650,6 +629,9 @@ class ProfileMobileState extends State<ProfileViewMobile> {
                                                                         25.7),
                                                           ),
                                                         ),
+                                                        style: TextStyle(
+                                                            color:
+                                                                Colors.black),
                                                       ),
                                                     ),
 
@@ -718,6 +700,9 @@ class ProfileMobileState extends State<ProfileViewMobile> {
                                                                         25.7),
                                                           ),
                                                         ),
+                                                        style: TextStyle(
+                                                            color:
+                                                                Colors.black),
                                                       ),
                                                     ),
 
@@ -752,6 +737,9 @@ class ProfileMobileState extends State<ProfileViewMobile> {
                                                                         25.7),
                                                           ),
                                                         ),
+                                                        style: TextStyle(
+                                                            color:
+                                                                Colors.black),
                                                       ),
                                                     ),
                                                     Stack(children: [
@@ -837,6 +825,9 @@ class ProfileMobileState extends State<ProfileViewMobile> {
                                                                 },
                                                               ),
                                                             ),
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .black),
                                                           )),
 
                                                       ///if validation failed then error message is displayed under text field
@@ -923,6 +914,9 @@ class ProfileMobileState extends State<ProfileViewMobile> {
                                                               },
                                                             ),
                                                           ),
+                                                          style: TextStyle(
+                                                              color:
+                                                                  Colors.black),
                                                         )),
                                                   ],
                                                 ),
@@ -943,8 +937,8 @@ class ProfileMobileState extends State<ProfileViewMobile> {
             Container(
                 padding: EdgeInsets.only(top: 7),
                 child: ElevatedButton(
-                  onPressed: () {
-                    bool success = controller.signOut();
+                  onPressed: () async {
+                    bool success = await controller.signOut();
                     if (success) {
                       if (Navigator.canPop(context)) {
                         Navigator.pop(context);
