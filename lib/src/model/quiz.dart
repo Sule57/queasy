@@ -347,11 +347,10 @@ class Quiz {
   /// the firestore instance that will be used to retrieve the data from the
   /// firestore.
   Future<void> fromJSON(
-      {required Map<String, dynamic> json,
-      FirebaseFirestore? firestore}) async {
+      {required Map<String, dynamic> json}) async {
     //if you remove the if, try lo load, and then add it again and reload, it
     //works.
-    if (firestore == null) {
+    if (this.firestore == null) {
       this.firestore = FirebaseFirestore.instance;
     } else {
       this.firestore = firestore;
@@ -360,7 +359,8 @@ class Quiz {
     this.id = json['id'];
     this.name = json['name'];
     this.ownerID = json['creatorID'];
-    this.category = new Category(name: json['category']);
+    this.category = new Category(name: json['category'], firestore: this.firestore,
+    UID: this.UID);
     this.noOfQuestions = json['questionIds'].length;
     this._usedQuestions = json['questionIds'].cast<String>();
     for (int i = 0; i < noOfQuestions; i++) {
