@@ -508,15 +508,19 @@ class Profile {
   /// will use the default firestore instance.
   static Future<List<Quiz>> getUserQuizzes(
       {FirebaseFirestore? firestore}) async {
+    String? uid;
     if (firestore == null) {
+      uid = await getCurrentUserID();
       firestore = FirebaseFirestore.instance;
+    } else {
+      uid = 'test123456789';
     }
 
     List<Quiz> quizzes = [];
 
     QuerySnapshot snapshot = await firestore
         .collection('quizzes')
-        .where('creatorID', isEqualTo: getCurrentUserID())
+        .where('creatorID', isEqualTo: uid)
         .get();
 
     for (var doc in snapshot.docs) {
