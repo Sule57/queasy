@@ -190,11 +190,14 @@ Chosen because:
 
 ### Profile
 
+<img src="https://user-images.githubusercontent.com/76959652/212647238-aa50c3a2-55ee-4ef6-a8f8-bf757460405b.png" height=500>
+<img src="https://user-images.githubusercontent.com/76959652/212647358-163360b9-1b57-4197-9a9a-cfaa121f732f.png" height=500>
+<img src="https://user-images.githubusercontent.com/76959652/212647397-eb6ad71d-1f27-497c-b17f-484a55b290eb.png" height=500>
 
-
-
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!CONTINUE WHEN CONNECTED!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
+* The user can view their profile, bio, profile picture, statistics
+* The user can change their profile picture, bio, email, password, First and Last name
+* The user can change their theme to dark or light
+* The user can delete the account
 
 ## Authors
 
@@ -214,9 +217,7 @@ Chosen because:
 * **Nikol "**[nkreshpaj](https://github.com/nkreshpaj)**" Kreshpaj**
 * **Sophia "**[sophiasoares](https://github.com/sophiasoares)**" Soares**
 
+### Design
 
-
-
-
-
-
+* **Endia "**[rhit-clarken](https://www.github.com/rhit-clarken)**" Clark**
+* **Nikol "**[nkreshpaj](https://github.com/nkreshpaj)**" Kreshpaj**
