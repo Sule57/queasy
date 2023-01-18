@@ -20,28 +20,16 @@ import 'questions_text_field.dart';
 ///
 /// It shows a [TextFormField] for the question, four [TextFormField]s for the
 /// options, and four [Radio]s for the correct answer.
-///
-/// The [validator]s check if the fields are empty or null.
-///
-/// The [question] variable is the question that is going to be edited. If it is null,
-/// then the question is going to be added.
-///
-/// The [action] variable is the function that is going to be called when the user
-/// confirms the addition or edition of the question.
-///
-/// The variable [categoryName] is the name of the category that the user is currently in.
-///
-/// The [_formKey] is used to validate the form.
-///
-/// The [_selectedRadioAnswer] is the index of the correct answer.
-///
-/// The [_category] is the category of the question.
-///
-/// The [MAX_LENGTH] is the maximum number of characters that can be entered in the
-/// [TextFormField]s.
 class AddOrEditQuestionPopUp extends StatefulWidget {
+
+  /// The function that is going to be called when the user confirms the addition or edition of the question.
   final Function() action;
+
+  /// The question that is going to be edited or added. If it is null, the
+  /// question is going to be added, otherwise it is going to be edited.
   final Question? question;
+
+  /// The name of the category that the user is currently in.
   final String categoryName;
 
   AddOrEditQuestionPopUp({
@@ -56,7 +44,8 @@ class AddOrEditQuestionPopUp extends StatefulWidget {
 }
 
 class _AddOrEditQuestionPopUpState extends State<AddOrEditQuestionPopUp> {
-  // This [GlobalKey] is used to validate the form.
+
+  /// Used to validate the form.
   final _formKey = GlobalKey<FormState>();
 
   get question => widget.question;
@@ -65,13 +54,13 @@ class _AddOrEditQuestionPopUpState extends State<AddOrEditQuestionPopUp> {
 
   @override
   Widget build(BuildContext context) {
-    CategoryQuestionsProvider controller =
-        Provider.of<CategoryQuestionsProvider>(context, listen: true);
+    /// The provider of the class
+    CategoryQuestionsProvider controller = Provider.of<CategoryQuestionsProvider>(context, listen: true);
+
     // If the question is not null, the user wants to edit a question, and the popup should
     // show the "old" correct answer as selected when the popup opens
     if (question != null) {
-      controller.selectedRadioAnswer =
-          controller.getCorrectRadioAnswer(question);
+      controller.selectedRadioAnswer = controller.getCorrectRadioAnswer(question);
     }
 
     return AlertDialog(
@@ -87,7 +76,6 @@ class _AddOrEditQuestionPopUpState extends State<AddOrEditQuestionPopUp> {
           return Container(
             child: Form(
               key: _formKey,
-              //key: _formKeyAddQuestion, _formKeyEditQuestion
               child: Column(
                 // This makes the dialog have the smallest needed height.
                 mainAxisSize: MainAxisSize.min,
@@ -102,13 +90,11 @@ class _AddOrEditQuestionPopUpState extends State<AddOrEditQuestionPopUp> {
                             question == null ? '' : question.getText(),
                         question: question,
                         isQuestion: true,
-                        isLastField: false,
                         action: widget.action,
                       ),
                     ],
                   ),
                   Row(
-                    //mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       QuestionsTextField(
                         controller: controller.answer1Controller,
@@ -118,7 +104,6 @@ class _AddOrEditQuestionPopUpState extends State<AddOrEditQuestionPopUp> {
                             question == null ? '' : question.answers[0].text,
                         question: question,
                         isQuestion: false,
-                        isLastField: false,
                         action: widget.action,
                       ),
                       Radio<AnswersRadioButton>(
@@ -142,7 +127,6 @@ class _AddOrEditQuestionPopUpState extends State<AddOrEditQuestionPopUp> {
                             question == null ? '' : question.answers[1].text,
                         question: question,
                         isQuestion: false,
-                        isLastField: false,
                         action: widget.action,
                       ),
                       Radio<AnswersRadioButton>(
@@ -166,7 +150,6 @@ class _AddOrEditQuestionPopUpState extends State<AddOrEditQuestionPopUp> {
                             question == null ? '' : question.answers[2].text,
                         question: question,
                         isQuestion: false,
-                        isLastField: false,
                         action: widget.action,
                       ),
                       Radio<AnswersRadioButton>(
@@ -190,7 +173,6 @@ class _AddOrEditQuestionPopUpState extends State<AddOrEditQuestionPopUp> {
                             question == null ? '' : question.answers[3].text,
                         question: question,
                         isQuestion: false,
-                        isLastField: true,
                         action: widget.action,
                       ),
                       Radio<AnswersRadioButton>(
@@ -270,8 +252,9 @@ class DeleteQuestionPopUp extends StatefulWidget {
 class _DeleteQuestionPopUpState extends State<DeleteQuestionPopUp> {
   @override
   Widget build(BuildContext context) {
-    final CategoryQuestionsProvider controller =
-        Provider.of<CategoryQuestionsProvider>(context, listen: true);
+    /// The provider of the class
+    final CategoryQuestionsProvider controller = Provider.of<CategoryQuestionsProvider>(context, listen: true);
+
     return AlertDialog(
       title:
           const Text('Delete question', style: TextStyle(color: Colors.white)),
@@ -328,6 +311,8 @@ class NewCategoryPopUp extends StatefulWidget {
 }
 
 class _NewCategoryPopUpState extends State<NewCategoryPopUp> {
+
+  /// The controller of the text field of the category name.
   final TextEditingController newCategoryController = TextEditingController();
 
   @override
@@ -338,8 +323,9 @@ class _NewCategoryPopUpState extends State<NewCategoryPopUp> {
 
   @override
   Widget build(BuildContext context) {
-    final CategoryQuestionsProvider controller =
-        Provider.of<CategoryQuestionsProvider>(context, listen: true);
+    /// The provider of the class
+    final CategoryQuestionsProvider controller = Provider.of<CategoryQuestionsProvider>(context, listen: true);
+
     return AlertDialog(
       title: const Text(
         'Add a new category',
@@ -468,10 +454,10 @@ class _NewCategoryPopUpState extends State<NewCategoryPopUp> {
 }
 
 /// The widget [DeleteCategoryPopUp] shows an [AlertDialog] to confirm the deletion of a category.
-///
-/// The variable [category] is the category that is going to be deleted.
 class DeleteCategoryPopUp extends StatefulWidget {
   DeleteCategoryPopUp({Key? key, required this.category}) : super(key: key);
+
+  /// The category that is going to be deleted.
   final String category;
 
   @override
@@ -481,8 +467,9 @@ class DeleteCategoryPopUp extends StatefulWidget {
 class _DeleteCategoryPopUpState extends State<DeleteCategoryPopUp> {
   @override
   Widget build(BuildContext context) {
-    final CategoryQuestionsProvider controller =
-        Provider.of<CategoryQuestionsProvider>(context, listen: true);
+    /// The provider of the class
+    final CategoryQuestionsProvider controller = Provider.of<CategoryQuestionsProvider>(context, listen: true);
+
     return AlertDialog(
       title:
           const Text('Delete category', style: TextStyle(color: Colors.white)),
@@ -549,8 +536,8 @@ class CreateRandomQuizPopup extends StatelessWidget {
       color: theme.colorScheme.onBackground,
     );
 
-    //returns an alert dialog that asks the user how many questions he wants to include in the quiz
-    // and takes only an int in the textfield
+    // Returns an alert dialog that asks the user how many questions he wants to include in the quiz
+    // and takes only an int in the text-field
     return AlertDialog(
       backgroundColor: theme.colorScheme.primary,
       title: Text(
@@ -652,8 +639,7 @@ class CreateRandomQuizPopup extends StatelessWidget {
   }
 
   _confirm(BuildContext context) async {
-    final CategoryQuestionsProvider controller =
-        Provider.of<CategoryQuestionsProvider>(context, listen: false);
+    final CategoryQuestionsProvider controller = Provider.of<CategoryQuestionsProvider>(context, listen: false);
     String? quizId;
 
     if (controller.formKeyCreateRandomQuiz.currentState!.validate()) {
@@ -688,8 +674,7 @@ class CreateCustomQuizPopup extends StatelessWidget {
     double width = MediaQuery.of(context).size.width;
 
     final theme = Provider.of<ThemeProvider>(context).currentTheme;
-    final CategoryQuestionsProvider controller =
-        Provider.of<CategoryQuestionsProvider>(context);
+    final CategoryQuestionsProvider controller = Provider.of<CategoryQuestionsProvider>(context);
     TextStyle? titleStyle = theme.textTheme.headline5!.copyWith(
       color: theme.colorScheme.onPrimary,
     );
@@ -785,8 +770,7 @@ class CreateCustomQuizPopup extends StatelessWidget {
   }
 
   _confirm(BuildContext context) async {
-    final CategoryQuestionsProvider controller =
-        Provider.of<CategoryQuestionsProvider>(context, listen: false);
+    final CategoryQuestionsProvider controller = Provider.of<CategoryQuestionsProvider>(context, listen: false);
 
     if (controller.formKeyCreateCustomQuiz.currentState!.validate()) {
       List<String> questionIds = [];
@@ -796,8 +780,7 @@ class CreateCustomQuizPopup extends StatelessWidget {
         if (controller.isQuestionChecked[i])
           questionIds.add(controller.questionList[i].id);
 
-      quizId =
-          await controller.createAndStoreCustomQuiz(questionIds: questionIds);
+      quizId = await controller.createAndStoreCustomQuiz(questionIds: questionIds);
 
       if (quizId == null) {
         ScaffoldMessenger.of(context).showSnackBar(

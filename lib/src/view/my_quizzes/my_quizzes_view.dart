@@ -149,7 +149,7 @@ class _MyQuizzesContentState extends State<MyQuizzesContent> {
                 child: Container(
                   width: width / 2,
                   padding: EdgeInsets.all(20),
-                  child: Text('Seems like you didn\'t add a quizz yet',
+                  child: Text('Seems like you haven\'t added a quiz yet',
                       textAlign: TextAlign.center, style: bodyTextStyle),
                 ),
               );

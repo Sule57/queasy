@@ -8,20 +8,17 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../src.dart';
-import '../../widgets/rounded-button.dart';
+import '../../widgets/rounded_button.dart';
 import '../category_questions_provider.dart';
 
 /// The widget [QuestionListTile] is used to show a question and its answers.
 ///
-/// The variable [question] is the question that is going to be shown.
-///
-/// The variable [isContainerVisible] is used to show or hide the container that
-/// contains the answers.
-///
 /// The [RoundedButton] widgets are used to edit or delete the question.
 class QuestionListTile extends StatefulWidget {
-  /// [isContainerVisible] determines the size of the container
+  /// Used to show or hide the container that contains the answers.
   final bool isContainerVisible;
+
+  /// Question that is going to be shown.
   final Question question;
 
   QuestionListTile({
@@ -76,9 +73,9 @@ class _QuestionListTileState extends State<QuestionListTile> {
 }
 
 /// This widget is used to show the correct answer of a question in green.
-///
-/// The variable [text] is the text of the correct answer.
 class CorrectAnswerContainer extends StatelessWidget {
+
+  /// Text of the correct answer.
   final String text;
 
   CorrectAnswerContainer({Key? key, required this.text}) : super(key: key);
@@ -104,17 +101,18 @@ class CorrectAnswerContainer extends StatelessWidget {
 
 /// This widget is used to show the buttons to edit or delete a question on a
 /// mobile device. The buttons are displayed on top of each other.
-///
-/// The variable [question] is the question that is going to be passed to the
-/// methods of the buttons.
 class MobileButtons extends StatelessWidget {
+
+  /// Question that is going to be edited or deleted.
   final Question question;
+
   MobileButtons({Key? key, required this.question}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    CategoryQuestionsProvider controller =
-        Provider.of<CategoryQuestionsProvider>(context, listen: true);
+    /// The provider of the class
+    CategoryQuestionsProvider controller = Provider.of<CategoryQuestionsProvider>(context, listen: true);
+
     return Column(
       children: [
         RoundedButton(
@@ -146,17 +144,18 @@ class MobileButtons extends StatelessWidget {
 
 /// This widget is used to show the buttons to edit or delete a question on a
 /// desktop device. The buttons are displayed next to each each other.
-///
-/// The variable [question] is the question that is going to be passed to the
-/// methods of the buttons.
 class DesktopButtons extends StatelessWidget {
+
+  /// Question that is going to be edited or deleted.
   final Question question;
+
   DesktopButtons({Key? key, required this.question}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    CategoryQuestionsProvider controller =
-        Provider.of<CategoryQuestionsProvider>(context, listen: true);
+    /// The provider of the class
+    CategoryQuestionsProvider controller = Provider.of<CategoryQuestionsProvider>(context, listen: true);
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [

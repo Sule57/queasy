@@ -32,14 +32,16 @@ class PrivateCategorySelectionView extends StatefulWidget {
 ///
 /// This state is responsible for updating the view when the user selects a
 /// category.
-/// The late parameter [_categoryList] is used to store the list of categories to be
-/// displayed.
-/// The parameter [_isLoading] is used to determine whether the view should
-/// display a loading indicator or the list of categories.
 class _PrivateCategorySelectionViewState
     extends State<PrivateCategorySelectionView> {
+
+  /// The provider of the class
   late CategoryQuestionsProvider controller;
+
+  /// Used to store the list of categories to be displayed.
   late List<String> _categoryList;
+
+  /// Used to determine whether the view should display a loading indicator or the list of categories.
   bool _isLoading = true;
 
   @override
@@ -89,7 +91,10 @@ class _PrivateCategorySelectionViewState
 
     _categoryList = context.watch<CategoryQuestionsProvider>().categoryList;
 
+    /// Widget that is going to be displayed in the screen. If there are no categories, the widget
+    /// CategoryListEmpty is assigned, otherwise, the list of categories is displayed (CategoryList).
     late Widget ListWidget;
+
     if (_isLoading) {
       return const Center(child: CircularProgressIndicator());
     } else {
@@ -202,9 +207,9 @@ class CategoryListEmpty extends StatelessWidget {
 /// of the user.
 ///
 /// It is called when private categories are found in the database.
-///
-/// The variable [list] is the list of private categories.
 class CategoryList extends StatefulWidget {
+
+  /// List of private categories.
   List<String> list;
 
   CategoryList({Key? key, required this.list}) : super(key: key);
