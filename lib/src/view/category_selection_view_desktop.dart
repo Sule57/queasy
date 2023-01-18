@@ -16,7 +16,6 @@ import 'package:queasy/src/view/play_quiz/quiz_view.dart';
 ///It displays web version of the category selection page. It is the view where the user
 ///can see all the categories available to play a quiz. Upon selection of the category
 ///the user is taken to [QuizView].
-///
 class CategorySelectionViewDesktop extends StatefulWidget {
   CategorySelectionViewDesktop({Key? key}) : super(key: key);
 
