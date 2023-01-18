@@ -1,11 +1,22 @@
+/// ****************************************************************************
+/// Created by Nikol Kreshpaj
+///
+/// This file is part of the project "Qeasy"
+/// Software Project on Technische Hochschule Ulm
+/// ****************************************************************************
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:queasy/src/view/widgets/side_navigation.dart';
 import '../../src.dart';
 import 'package:queasy/src/view/play_quiz/quiz_view.dart';
 
-///This is UserProfileDesktop view
-///It displays web version of the profile page
+///This is Category Selection view
+///
+///It displays web version of the category selection page. It is the view where the user
+///can see all the categories available to play a quiz. Upon selection of the category
+///the user is taken to [QuizView].
+///
 class CategorySelectionViewDesktop extends StatefulWidget {
   CategorySelectionViewDesktop({Key? key}) : super(key: key);
 
@@ -15,9 +26,10 @@ class CategorySelectionViewDesktop extends StatefulWidget {
       CategorySelectionDesktopState();
 }
 
+///State for [CategorySelectionViewDesktop].
 class CategorySelectionDesktopState
     extends State<CategorySelectionViewDesktop> {
-  // Builds the view.
+  /// Builds the view.
   ///
   /// Uses a [Stack] to display the
   /// [CategorySelectionDesktopViewBackground] and the [CategorySelectionDesktopViewContent] on top.
@@ -38,9 +50,13 @@ class CategorySelectionDesktopState
 ///
 /// Uses a [StatelessWidget] to display a background color.
 class CategorySelectionDesktopViewBackground extends StatelessWidget {
-  /// Constructor for [ProfileDesktopViewBackground].
+  /// Constructor for [CategorySelectionDesktopViewBackground].
   const CategorySelectionDesktopViewBackground({Key? key}) : super(key: key);
 
+  /// Builds the background.
+  ///
+  /// It shows a container of size one third of the screen and with the main
+  /// color of [AppThemes].
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
@@ -132,6 +148,10 @@ class CategorySelectionDesktopViewBackground extends StatelessWidget {
   }
 }
 
+/// Content for [CategorySelectionViewDesktop].
+///
+/// Uses a [StatefulWidget] to display questions and answers and update the
+/// text contained in the widgets.
 class CategorySelectionDesktopViewContent extends StatefulWidget {
   const CategorySelectionDesktopViewContent({Key? key}) : super(key: key);
 
@@ -141,6 +161,7 @@ class CategorySelectionDesktopViewContent extends StatefulWidget {
       _CategorySelectionDesktopViewContentState();
 }
 
+/// State for [QuizViewContent]
 class _CategorySelectionDesktopViewContentState
     extends State<CategorySelectionDesktopViewContent> {
   late List<String> list;
@@ -166,6 +187,7 @@ class _CategorySelectionDesktopViewContentState
     super.initState();
   }
 
+  /// Builds the content.
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
