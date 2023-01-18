@@ -1,7 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:queasy/src/view/registration/register_view_controller.dart';
 import 'package:queasy/src/view/home_view.dart';
 
@@ -31,7 +29,7 @@ class RegisterViewMobileState extends State<RegisterViewMobile> {
   bool _passwordVisible = false;
   bool _confirmPasswordVisible = false;
 
-  ///_isLoading is used to determine whether to allow the user to click the register button.
+  ///[_isLoading] is used to determine whether to allow the user to click the register button.
   ///This prevents double clicking leading to errors due to resubmitting the same data twice
   bool _isLoading = false;
 

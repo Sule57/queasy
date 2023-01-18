@@ -97,9 +97,14 @@ class _CategoryQuestionsViewState extends State<CategoryQuestionsView> {
 
   @override
   Widget build(BuildContext context) {
-    CategoryQuestionsProvider controller =
-        Provider.of<CategoryQuestionsProvider>(context);
+
+    /// The provider of the class
+    CategoryQuestionsProvider controller = Provider.of<CategoryQuestionsProvider>(context);
+
     _questions = controller.questionList;
+
+    /// Widget that is going to be displayed in the screen. If there are no questions, the widget
+    /// QuestionListEmpty is assigned, otherwise, the list of questions is displayed (QuestionList).
     late Widget ListWidget;
 
     if (_isLoading) {
@@ -158,8 +163,6 @@ class _CategoryQuestionsViewState extends State<CategoryQuestionsView> {
 /// The widget [QuestionList] is used when there are questions in the category. It shows
 /// a [ListView] with the questions and when a question is pressed, it
 /// shows their answers and the correct answer.
-///
-/// The variable [questions] is a list that stores the questions of the category.
 class QuestionList extends StatefulWidget {
   QuestionList({Key? key}) : super(key: key);
 
@@ -236,6 +239,8 @@ class QuestionListEmpty extends StatelessWidget {
 }
 
 class CreateAndDeleteButtons extends StatelessWidget {
+
+  /// The provider of the class
   final CategoryQuestionsProvider controller;
 
   CreateAndDeleteButtons({Key? key, required this.controller})

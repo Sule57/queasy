@@ -13,7 +13,7 @@ import 'package:queasy/src/view/home_view.dart';
 import 'package:queasy/src/view/login/login_provider.dart';
 import 'package:queasy/src/view/login/widgets/social_media_buttons.dart';
 import 'package:queasy/src/view/registration/register_view.dart';
-import 'package:queasy/src/view/widgets/rounded-button.dart';
+import 'package:queasy/src/view/widgets/rounded_button.dart';
 
 import 'forgot_password_dialog.dart';
 

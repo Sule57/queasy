@@ -15,27 +15,29 @@ import '../category_questions_provider.dart';
 /// This is the edit quiz text field.
 ///
 /// It is the text field that is used in the [EditQuizView] to edit or add the questions.
-///
-/// The variable [controller] is the controller for the text field.
-///
-/// The variable [hintText] is the hint text that is shown in the text field.
-///
-/// The variable [validatorText] is the text that is shown if the text field is empty.
-///
-/// The variable [controllerText] is the text that is shown in the text field.
-///
-/// The variable [question] is the question that is about to be created, if the used
-/// is using the text field to add a question.
-///
-/// The variable [MAX_INPUT_LENGTH] is the maximum length of the text field.
 class QuestionsTextField extends StatefulWidget {
+
+  /// The controller for the text field.
   final TextEditingController controller;
+
+  /// The hint text that is shown in the text field.
   final String hintText;
+
+  /// The text that is shown if the text field is empty.
   final String validatorText;
+
+  /// The text that is shown in the text field.
   String controllerText;
+
+  /// The question that is about to be created, if the user is using the text field
+  /// to add a question and not to edit it.
   final Question? question;
+
+  /// Check if that text field is being used for a question.
   final bool isQuestion;
-  final bool isLastField;
+
+  /// Function that is called when the Confirm button is pressed. It will either
+  /// add a question or edit it.
   final Function action;
 
   QuestionsTextField({
@@ -45,7 +47,6 @@ class QuestionsTextField extends StatefulWidget {
     required this.validatorText,
     required this.controllerText,
     required this.isQuestion,
-    required this.isLastField,
     required this.action,
     this.question,
   }) : super(key: key);
@@ -55,6 +56,8 @@ class QuestionsTextField extends StatefulWidget {
 }
 
 class _QuestionsTextFieldState extends State<QuestionsTextField> {
+
+  /// The maximum length of the text field.
   final int MAX_INPUT_LENGTH = 50;
 
   get question => widget.question;
@@ -63,25 +66,24 @@ class _QuestionsTextFieldState extends State<QuestionsTextField> {
   get controllerText => widget.controllerText;
   get controller => widget.controller;
   get isQuestion => widget.isQuestion;
-  get isLastField => widget.isLastField;
   get action => widget.action;
 
-  // setter for controllerText
+  // Setter for controllerText
   void setControllerText(String value) {
     widget.controllerText = value;
   }
 
   @override
   Widget build(BuildContext context) {
-    CategoryQuestionsProvider provider =
-    Provider.of<CategoryQuestionsProvider>(context);
+    /// The provider of the class
+    CategoryQuestionsProvider provider = Provider.of<CategoryQuestionsProvider>(context);
     final theme = Provider.of<ThemeProvider>(context).currentTheme;
     final _formKey = provider.formKeyAddEditQuestion;
 
-    // set controllerText to 'a'
     if ((controller.text) != '') {
       setControllerText(controller.text);
     }
+
     return Expanded(
       child: Padding(
         padding: MediaQuery.of(context).size.width < 700
@@ -94,9 +96,8 @@ class _QuestionsTextFieldState extends State<QuestionsTextField> {
               : MediaQuery.of(context).size.width / 3,
           child: TextFormField(
             onFieldSubmitted: (value) {
-              // if i use _formKey.currentState!.validate() it throws an exception
+              // If i use _formKey.currentState!.validate() it throws an exception
               if (_formKey.currentState?.validate() ?? true) {
-                // TODO: not validating correctly
                 action();
                 provider.clearTextFieldsAndButton();
                 Navigator.pop(context);

@@ -15,7 +15,7 @@ import 'package:queasy/src/view/play_quiz/widgets/exit_button.dart';
 import 'package:queasy/src/view/play_quiz/widgets/question_container.dart';
 import 'package:queasy/src/view/play_quiz/widgets/score_tracking.dart';
 import 'package:queasy/src/view/statistics/statistics_view.dart';
-import 'package:queasy/src/view/widgets/rounded-button.dart';
+import 'package:queasy/src/view/widgets/rounded_button.dart';
 
 /// This is the main quiz view.
 ///
