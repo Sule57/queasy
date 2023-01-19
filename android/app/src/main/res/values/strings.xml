@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Qeasy</string>
+    <string name="facebook_app_id">554657606556465</string>
+    <string name="fb_login_protocol_scheme">fb554657606556465</string>
+    <string name="facebook_client_token">932a88f4d9a060828e8a60aa48b09a7d</string>
+</resources>

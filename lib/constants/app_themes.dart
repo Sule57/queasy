@@ -1,3 +1,11 @@
+/// ****************************************************************************
+/// Created by Julia Agüero
+/// Collaborator: Endia Clark
+///
+/// This file is part of the project "Qeasy"
+/// Software Project on Technische Hochschule Ulm
+/// ****************************************************************************
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -14,11 +22,11 @@ Color dark = const Color(0xff0d0106);
 
 /// Defines the themes of the app.
 ///
-/// The [lightTheme] is the default theme of the app, selected at the start.
-/// The [darkTheme] is the theme that is selected when the user presses the
-/// dark mode button.
+/// The app has two themes: light and dark. The light theme is the default theme.
+/// The dark theme is used when the user enables dark mode in the app settings.
 class AppThemes {
-  /// Theme taken by the app if user has selects the light theme.
+  /// Default theme of the app, taken by the app if user has selects the light
+  /// theme.
   ThemeData lightTheme = ThemeData(
     colorScheme: ColorScheme.light(
       primary: purple,

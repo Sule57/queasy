@@ -55,6 +55,8 @@ dependencies:
   firebase_dart: ^1.0.11
   draw_graph: ^1.0.0
   google_sign_in: ^5.4.2
+  flutter_radar_chart: ^0.2.1
+  spider_chart: ^0.2.0
 
 
 
@@ -66,7 +68,7 @@ dev_dependencies:
 flutter_icons:
   android: true
   ios: true
-  image_path: "lib/assets/images/logo_white_oval.png"
+  image_path: "lib/assets/images/launcher_icon.png"
   min_sdk_android: 21 # android min sdk min:16, default 21
   web:
     generate: true

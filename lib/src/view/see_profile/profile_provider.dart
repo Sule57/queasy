@@ -30,12 +30,12 @@ class ProfileProvider with ChangeNotifier {
   ProfileProvider() {}
 
   Future<bool> setProfile() async {
-    if (getCurrentUserID() != null) {
-      currentUID = getCurrentUserID()!;
+    if (await getCurrentUserID() != null) {
+      currentUID = await getCurrentUserID()!;
       Profile? p = await Profile.getProfileFromUID(currentUID);
       if (p != null) {
         player = p;
-        // notifyListeners();
+        notifyListeners();
         return true;
       }
     }
@@ -57,34 +57,17 @@ class ProfileProvider with ChangeNotifier {
 
   List<double> getGraphData() {
     List<double> data = [];
+    //data.add(0.0);
     for (var value in player.publicScore.values) {
-      data.add(value / 1000);
+      data.add(value + 0.0);
     }
-    print(data);
     return data;
   }
 
   List<String> getGraphKeys() {
     List<String> data = [];
+    //data.add("");
     for (var value in player.publicScore.keys) {
-      data.add(value);
-    }
-    print(data);
-    return data;
-  }
-
-  List<double> getPrivateGraphData() {
-    List<double> data = [];
-    for (var value in player.privatecScore.values) {
-      data.add(value / 1000);
-    }
-    print(data);
-    return data;
-  }
-
-  List<String> getPrivateGraphKeys() {
-    List<String> data = [];
-    for (var value in player.privatecScore.keys) {
       data.add(value);
     }
     print(data);

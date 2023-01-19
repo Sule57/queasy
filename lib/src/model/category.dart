@@ -85,7 +85,6 @@ class Category {
     return {_name: _color.value};
   }
 
-
   /// Sets the new color of the current [Category]
   ///
   /// [color] is the new color of the [Category].
@@ -128,7 +127,6 @@ class Category {
     if (username == null) {
       throw UserNotLoggedInException();
     }
-
     List<Question> questions = [];
     // get all document id from public categories
     await _privateDoc
@@ -144,6 +142,7 @@ class Category {
         }
       });
     });
+    questions.sort((a, b) => a.questionId!.compareTo(b.questionId!));
     return questions;
   }
 
@@ -419,93 +418,4 @@ class Category {
 
     await firestore.collection('quizzes').doc(id).delete();
   }
-
-
-
-
-
-// /// Changes the name of the current [Category].
-// ///
-// /// [newName] is the new name of the [Category]. First it updates the name of the category in the database where the category color is stored.
-// /// Then it deletes the
-// Future<void> changeNameOfCategory(String newName) async {
-//   String? username = UID;
-//   if (username == null) {
-//     throw UserNotLoggedInException();
-//   }
-//
-//   // Update the name of the category in the database and it's color is kept
-//   _privateDoc.update({
-//     _name: FieldValue.delete(),
-//   });
-//   _privateDoc.set({
-//     newName: _color.value,
-//   });
-//
-//   // Copy collection from Firestore old category to 'newName' and delete the old collection
-//   await _privateDoc
-//       .collection(_name)
-//       .get()
-//       .then((QuerySnapshot querySnapshot) {
-//     querySnapshot.docs.forEach((doc) {
-//       _privateDoc
-//           .collection(newName)
-//           .doc(doc.id)
-//           .set(doc.data() as Map<String, dynamic>);
-//       _privateDoc.collection(newName).doc(doc.id).delete();
-//     });
-//   });
-//
-//   if (this.firestore == null) {
-//     this.firestore = FirebaseFirestore.instance;
-//   }
-//
-//   var newDocumentRef =
-//       this.firestore!.collection('leaderboard').doc(username + '-' + newName);
-//   // iterate over the leaderboard in the Firestore, and copy all the record to the new leaderboard with the new name
-//   await this
-//       .firestore!
-//       .collection('leaderboard')
-//       .doc(username + '-' + this._name)
-//       .get()
-//       .then((DocumentSnapshot documentSnapshot) {
-//     if (documentSnapshot.exists) {
-//       Map<String, dynamic> data =
-//           documentSnapshot.data() as Map<String, dynamic>;
-//
-//       for (String key in data.keys) {
-//         newDocumentRef.update(data[key]);
-//       }
-//     }
-//   });
-//   await this
-//       .firestore!
-//       .collection('leaderboard')
-//       .doc(username + '-' + this._name)
-//       .delete();
-//
-//   // iterate over quizzes collection, find all documents which have the attribute 'category' which equals to _name and change it to newName
-//   await this
-//       .firestore!
-//       .collection('quizzes')
-//       .get()
-//       .then((QuerySnapshot querySnapshot) {
-//     querySnapshot.docs.forEach((doc) {
-//       if (doc.exists) {
-//         if ((doc.data()! as Map<String, dynamic>)['category'] == this._name) {
-//           doc.reference.update({'category': newName});
-//         }
-//       }
-//     });
-//   });
-//
-//   // iterate through all questions in the category and delete them
-//   await _privateDoc.collection(_name).get().then((snapshot) {
-//     for (DocumentSnapshot ds in snapshot.docs) {
-//       ds.reference.delete();
-//     }
-//   });
-//
-//   _name = newName;
-// }
 }

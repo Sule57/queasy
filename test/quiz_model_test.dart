@@ -1,8 +1,12 @@
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:queasy/exports/model.dart';
 import 'package:queasy/src/model/category.dart';
 import 'package:queasy/src/model/question.dart';
 import 'package:queasy/src/model/quiz.dart';
+
+// The function fromJSON is tested through retrieveQuizFromID()
+
 
 /// Main function for testing the [Quiz] class.
 void main() async {
@@ -173,6 +177,9 @@ void main() async {
   _questions2 = quiz2.questions;
   quiz.storeQuiz();
 
+  List<String> questionIds = ['question0', 'question1'];
+  Quiz quiz3 = await Quiz(firestore: instance).createCustomQuiz(questions: questionIds, category: category, name: 'testQuiz3', firestore: instance);
+
   /// Test group that tests if the public quiz was initialized properly from
   /// the previously provided questions.
   group('Tests the public quiz (retrieving questions)', () {
@@ -235,9 +242,14 @@ void main() async {
 
     /// Testing if the quiz is stored in the database
     test('Quiz should be stored in the database', () {
-      expect(instance.collection('quizzes').doc('testQuiz').get(), isNotNull);
+      expect(instance.collection('quizzes').doc('quiz123').get(), isNotNull);
     });
   });
+
+    /// Testing if the checkIfQuizExists method works properly
+    test('Quiz should exist in the database', () async {
+      expect(await Quiz.checkIfQuizExists(id: 'quiz123', firestore: instance), true);
+    });
 
   /// Tests the quiz.retrieveQuizFromId() method works and retrieves the quiz
   /// object as it was in the map.
@@ -296,6 +308,28 @@ void main() async {
                       (element) => element.text == 'What is the capital of Spain?'),
               true);
         });
+
+    /// Testing if the quiz3 has values in the question list
+    test('Quiz3 should have a question list with 2 questions', () {
+      expect(quiz3.questions.length, 2);
+    });
+
+    /// Checking if the quiz3 has the correct questions
+    test('Quiz3 should have the correct questions', () {
+      expect(quiz3.questions[0].text, 'What is the capital of France?');
+      expect(quiz3.questions[1].text, 'What is the capital of Germany?');
+    });
+
+    /// Tests if the updateQuiz function works properly
+    test('Quiz should be updated in the database', () async {
+      List<String> questionIds = ['question0', 'question1', 'question2'];
+      quiz.setUsedQuestions(questionIds);
+      await quiz.updateQuiz();
+      Quiz quiz4 = await Quiz(firestore: instance).retrieveQuizFromId(id: quiz.id, firestore: instance);
+      expect(quiz4.questions.length, 3);
+      expect(quiz4.questions[0].text, 'What is the capital of France?');
+    });
+
   });
 
 }

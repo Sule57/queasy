@@ -41,7 +41,7 @@ class _ForgotPasswordDialogState extends State<ForgotPasswordDialog> {
         style: titleTextStyle,
       ),
       content: SizedBox(
-        height: 100,
+        height: MediaQuery.of(context).size.height * .20,
         width: 300,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -65,14 +65,15 @@ class _ForgotPasswordDialogState extends State<ForgotPasswordDialog> {
                   ),
                 ),
                 validator: controller.validateEmail,
-                onFieldSubmitted: (value) {
-                  if (controller.forgotPasswordFormKey.currentState!
-                      .validate()) {
-                    controller.forgotPasswordController.clear();
-                    controller.sendForgotPasswordEmail();
-                    Navigator.pop(context);
-                  }
-                },
+                // onFieldSubmitted: (value) {
+                //   if (controller.forgotPasswordFormKey.currentState!
+                //       .validate()) {
+                //     print(controller.forgotPasswordController.text);
+                //     controller.sendForgotPasswordEmail();
+                //     controller.forgotPasswordController.clear();
+                //     Navigator.pop(context);
+                //   }
+                // },
               ),
             ),
           ],
@@ -95,8 +96,8 @@ class _ForgotPasswordDialogState extends State<ForgotPasswordDialog> {
               child: Text('Send'),
               onPressed: () {
                 if (controller.forgotPasswordFormKey.currentState!.validate()) {
-                  controller.forgotPasswordController.clear();
                   controller.sendForgotPasswordEmail();
+                  controller.forgotPasswordController.clear();
                   Navigator.pop(context);
                 }
               },

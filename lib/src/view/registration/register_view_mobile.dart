@@ -21,12 +21,17 @@ class RegisterViewMobile extends StatefulWidget {
 /// to sign up. When the registration is over, the user is taken to [HomeView].
 /// It uses colors from [AppThemes].
 class RegisterViewMobileState extends State<RegisterViewMobile> {
+
   ///[controller] register-view controller
   get controller => widget.controller;
 
   ///[_passwordVisible] and [_confirmPasswordVisible] are to hide/show the passwords
   bool _passwordVisible = false;
   bool _confirmPasswordVisible = false;
+
+  ///[_isLoading] is used to determine whether to allow the user to click the register button.
+  ///This prevents double clicking leading to errors due to resubmitting the same data twice
+  bool _isLoading = false;
 
   ///[formKey] is registration form
   final formKey = GlobalKey<FormState>();
@@ -36,6 +41,7 @@ class RegisterViewMobileState extends State<RegisterViewMobile> {
       List.generate(5, (i) => TextEditingController());
 
   bool _isGoogleSigningIn = false;
+  bool _isFacebookSigningIn = false;
 
   @override
   void initState() {
@@ -78,191 +84,211 @@ class RegisterViewMobileState extends State<RegisterViewMobile> {
                   ),
                 ),
               ),
+              //Checks if the view should show a loading circle or the sign up ext fiels and button
+              _isLoading
+                  ? const Center(
+                      child: CircularProgressIndicator(),
+                    )
+                  :
 
-              /// This [Column] displays the text fields and the sign up button,
-              /// so the user can type their information and, if successful, create
-              /// an account.
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-                    child: Container(
-                      padding: const EdgeInsets.only(left: 15.0, right: 15.0),
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.onPrimary,
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(16.0)),
-                      ),
-                      child: Column(
-                        children: [
-                          const Padding(
-                            padding: EdgeInsets.only(top: 10.0),
-                            child: Text(
-                              'Sign Up',
-                              style: TextStyle(
-                                  fontSize: 30.0, fontWeight: FontWeight.bold),
+                  /// This [Column] displays the text fields and the sign up button,
+                  /// so the user can type their information and, if successful, create
+                  /// an account.
+                  Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+                          child: Container(
+                            padding:
+                                const EdgeInsets.only(left: 15.0, right: 15.0),
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).colorScheme.onPrimary,
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(16.0)),
                             ),
-                          ),
-
-                          /// Each [TextFormField] is used to get the user's
-                          /// information and validate it
-                          TextFormField(
-                            ///if the user hasn't entered anything, validation fails
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please enter email';
-                              }
-                              if (!RegExp(
-                                      r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-                                  .hasMatch(value)) {
-                                return "Invalid email address";
-                              }
-                              return null;
-                            },
-                            controller: textController[0],
-                            decoration: const InputDecoration(
-                                labelText: 'E-mail',
-                                hintText: 'yourname@example.com'),
-                          ),
-                          TextFormField(
-                            ///if the user hasn't entered anything, validation fails
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please enter username';
-                              }
-                              return null;
-                            },
-                            controller: textController[1],
-                            decoration: const InputDecoration(
-                              labelText: 'Username',
-                            ),
-                          ),
-                          TextFormField(
-                            ///hides/shows password based on user click
-                            obscureText: !_passwordVisible,
-                            controller: textController[2],
-
-                            ///if the user hasn't entered anything, validation fails
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please enter password';
-                              }
-                              if (value.length < 6) {
-                                return 'Password needs to be at least 6 characters';
-                              }
-                              return null;
-                            },
-                            decoration: InputDecoration(
-                              labelText: 'Password',
-                              hintText: 'Password',
-
-                              ///[IconButton] to click when user wants to see/hide password
-                              suffixIcon: IconButton(
-                                icon: Icon(
-                                  _passwordVisible
-                                      ? Icons.visibility
-                                      : Icons.visibility_off,
-                                  color: Theme.of(context).primaryColorDark,
-                                ),
-                                onPressed: () {
-                                  setState(() {
-                                    _passwordVisible = !_passwordVisible;
-                                  });
-                                },
-                              ),
-                            ),
-                          ),
-                          TextFormField(
-                            ///hides/shows password based on user click
-                            obscureText: !_confirmPasswordVisible,
-                            controller: textController[3],
-
-                            ///if the user hasn't entered anything
-                            ///or if passwords don't match, validation fails
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please confirm password';
-                              }
-                              if (value != textController[2].text) {
-                                return 'Passwords do not match';
-                              }
-                              return null;
-                            },
-                            decoration: InputDecoration(
-                              labelText: 'Confirm Password',
-                              hintText: 'Password',
-
-                              ///[IconButton] to click when user wants to see/hide password
-                              suffixIcon: IconButton(
-                                icon: Icon(
-                                  _confirmPasswordVisible
-                                      ? Icons.visibility
-                                      : Icons.visibility_off,
-                                  color: Theme.of(context).primaryColorDark,
-                                ),
-                                onPressed: () {
-                                  setState(() {
-                                    _confirmPasswordVisible =
-                                        !_confirmPasswordVisible;
-                                  });
-                                },
-                              ),
-                            ),
-                          ),
-
-                          /// This [Container] is contains [TextButton] to create a new account
-                          /// to the user.
-                          Padding(
-                            padding: const EdgeInsets.only(top: 10, bottom: 10),
-                            child: Container(
-                              height: size.height * 0.07,
-                              alignment: Alignment.center,
-                              width: size.width * 0.5,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
-                                  color: Colors.white),
-                              child: TextButton(
-                                onPressed: () async {
-                                  if (formKey.currentState!.validate()) {
-                                    bool success = await controller.signUp(
-                                        textController[0].text,
-                                        textController[1].text,
-                                        textController[2].text);
-                                    if (success) {
-                                      Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  const HomeView()));
-                                    } else {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        SnackBar(
-                                          content:
-                                              Text(controller.errorMessage),
-                                        ),
-                                      );
-                                    }
-                                  }
-                                },
-                                child: Text(
-                                  'Sign Up',
-                                  style: TextStyle(
-                                    fontSize: 24,
-                                    color:
-                                        Theme.of(context).colorScheme.primary,
-                                    fontWeight: FontWeight.bold,
+                            child: Column(
+                              children: [
+                                const Padding(
+                                  padding: EdgeInsets.only(top: 10.0),
+                                  child: Text(
+                                    'Sign Up',
+                                    style: TextStyle(
+                                        fontSize: 30.0,
+                                        fontWeight: FontWeight.bold),
                                   ),
                                 ),
-                              ),
+
+                                /// Each [TextFormField] is used to get the user's
+                                /// information and validate it
+                                TextFormField(
+                                  ///if the user hasn't entered anything, validation fails
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Please enter email';
+                                    }
+                                    if (!RegExp(
+                                            r"^[a-zA-Z0-9.a-zA-Z0-9!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9-]+\.[a-zA-Z]+")
+                                        .hasMatch(value)) {
+                                      return "Invalid email address";
+                                    }
+                                    return null;
+                                  },
+                                  controller: textController[0],
+                                  decoration: const InputDecoration(
+                                      labelText: 'E-mail',
+                                      hintText: 'yourname@example.com'),
+                                ),
+                                TextFormField(
+                                  ///if the user hasn't entered anything, validation fails
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Please enter username';
+                                    }
+                                    return null;
+                                  },
+                                  controller: textController[1],
+                                  decoration: const InputDecoration(
+                                    labelText: 'Username',
+                                  ),
+                                ),
+                                TextFormField(
+                                  ///hides/shows password based on user click
+                                  obscureText: !_passwordVisible,
+                                  controller: textController[2],
+
+                                  ///if the user hasn't entered anything, validation fails
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Please enter password';
+                                    }
+                                    if (value.length < 6) {
+                                      return 'Password needs to be at least 6 characters';
+                                    }
+                                    return null;
+                                  },
+                                  decoration: InputDecoration(
+                                    labelText: 'Password',
+                                    hintText: 'Password',
+
+                                    ///[IconButton] to click when user wants to see/hide password
+                                    suffixIcon: IconButton(
+                                      icon: Icon(
+                                        _passwordVisible
+                                            ? Icons.visibility
+                                            : Icons.visibility_off,
+                                        color:
+                                            Theme.of(context).primaryColorDark,
+                                      ),
+                                      onPressed: () {
+                                        setState(() {
+                                          _passwordVisible = !_passwordVisible;
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                ),
+                                TextFormField(
+                                  ///hides/shows password based on user click
+                                  obscureText: !_confirmPasswordVisible,
+                                  controller: textController[3],
+
+                                  ///if the user hasn't entered anything
+                                  ///or if passwords don't match, validation fails
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Please confirm password';
+                                    }
+                                    if (value != textController[2].text) {
+                                      return 'Passwords do not match';
+                                    }
+                                    return null;
+                                  },
+                                  decoration: InputDecoration(
+                                    labelText: 'Confirm Password',
+                                    hintText: 'Password',
+
+                                    ///[IconButton] to click when user wants to see/hide password
+                                    suffixIcon: IconButton(
+                                      icon: Icon(
+                                        _confirmPasswordVisible
+                                            ? Icons.visibility
+                                            : Icons.visibility_off,
+                                        color:
+                                            Theme.of(context).primaryColorDark,
+                                      ),
+                                      onPressed: () {
+                                        setState(() {
+                                          _confirmPasswordVisible =
+                                              !_confirmPasswordVisible;
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                ),
+
+                                /// This [Container] is contains [TextButton] to create a new account
+                                /// to the user.
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 10, bottom: 10),
+                                  child: Container(
+                                    height: size.height * 0.07,
+                                    alignment: Alignment.center,
+                                    width: size.width * 0.5,
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(20),
+                                        color: Colors.white),
+                                    child: TextButton(
+                                      onPressed: () async {
+                                        setState(() {
+                                          _isLoading = true;
+                                        });
+                                        if (formKey.currentState!.validate()) {
+                                          bool success =
+                                              await controller.signUp(
+                                                  textController[0].text,
+                                                  textController[1].text,
+                                                  textController[2].text);
+                                          if (success) {
+                                            Navigator.of(context).pop();
+                                            Navigator.of(context).pushReplacement(
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        const HomeView()));
+                                          } else {
+                                            setState(() {
+                                              _isLoading = false;
+                                            });
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              SnackBar(
+                                                content: Text(
+                                                    controller.errorMessage),
+                                              ),
+                                            );
+                                          }
+                                        }
+                                      },
+                                      child: Text(
+                                        'Sign Up',
+                                        style: TextStyle(
+                                          fontSize: 24,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                  ),
-                ],
-              ),
 
               /// The [Row] widgets display line dividers and the
               /// [Expanded] one shows the 'or' text, so the user can
@@ -311,6 +337,7 @@ class RegisterViewMobileState extends State<RegisterViewMobile> {
                               _isGoogleSigningIn = false;
                             });
                             if (user != null) {
+                              Navigator.of(context).pop();
                               Navigator.of(context).pushReplacement(
                                 MaterialPageRoute(
                                   builder: (context) => HomeView(),
@@ -319,11 +346,29 @@ class RegisterViewMobileState extends State<RegisterViewMobile> {
                             }
                           },
                         ),
-                  IconButton(
-                    icon: Image.asset(
-                      'lib/assets/images/facebook.png',
-                    ),
-                    onPressed: () {},
+                  _isFacebookSigningIn
+                      ? CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                        Theme.of(context).colorScheme.primary),
+                  )
+                  : IconButton(icon: Image.asset('lib/assets/images/facebook.png'),
+                    onPressed: () async {
+                      setState(() {
+                        _isFacebookSigningIn = true;
+                      });
+                      User? user = await controller.signInWithFacebook(
+                          context: context);
+                      setState(() {
+                        _isFacebookSigningIn = false;
+                      });
+                      if (user != null) {
+                        Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(
+                            builder: (context) => HomeView(),
+                          ),
+                        );
+                      }
+                    },
                   ),
                   // IconButton(
                   //   icon: Image.asset(

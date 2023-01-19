@@ -6,7 +6,7 @@ import 'package:queasy/src/view/registration/register_view_mobile.dart';
 class RegisterView extends StatefulWidget {
   RegisterView({Key? key}) : super(key: key);
 
-  ///creates RegisterViewState class
+  /// Creates RegisterViewState class
   @override
   State<RegisterView> createState() => RegisterViewState();
 }
@@ -18,11 +18,11 @@ class RegisterView extends StatefulWidget {
 class RegisterViewState extends State<RegisterView> {
   /// Builds the view.
   ///
-  ///Depending on the width of the device that the app is on two different versions of register view are shown
+  /// Depending on the width of the device that the app is on two different versions of register view are shown
   @override
   Widget build(BuildContext context) {
-    ///if width of the device is less than 700 then UserProfileMobile is shown
-    ///if more than 700 then the user sees UserProfileDesktop
+    // If width of the device is less than 700 then UserProfileMobile is shown
+    // If more than 700 then the user sees UserProfileDesktop
     return MediaQuery.of(context).size.width > 700
         ? RegisterViewDesktop()
         : RegisterViewMobile();

@@ -8,7 +8,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:queasy/src.dart';
-import 'package:queasy/src/view/see_quizzes/see_quiz_questions_view.dart';
+import 'package:queasy/src/view/my_quizzes/quiz_questions_view.dart';
 
 class QuizListTile extends StatelessWidget {
   final int index;
@@ -31,39 +31,39 @@ class QuizListTile extends StatelessWidget {
       ),
       child: Container(
         decoration: BoxDecoration(
+          color: Colors.white,
           borderRadius: BorderRadius.circular(10),
-          border: Border.all(
-            color: theme.colorScheme.primary,
-            width: 2.0,
-          ),
         ),
         child: ListTile(
-          title: Text(
-            quizList[index].name!,
-            style: quizNameTextStyle,
-          ),
-          subtitle: Text(
-            quizList[index].category.name!,
-            style: categoryNameTextStyle,
-          ),
-          trailing: GestureDetector(
-            child: Icon(Icons.more_vert),
-            onTapDown: (details) => _showPopupMenu(
-              context: context,
-              details: details,
-              quizId: quizList[index].id,
+            title: Text(
+              quizList[index].name!,
+              style: quizNameTextStyle,
             ),
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => SeeQuizQuestionsView(
-                  quizId: quizList[index].id,
-                  quizName: quizList[index].name!,
-                ),
+            subtitle: Text(
+              quizList[index].category.name!,
+              style: categoryNameTextStyle,
+            ),
+            trailing: GestureDetector(
+              child: Icon(Icons.more_vert),
+              onTapDown: (details) => _showPopupMenu(
+                context: context,
+                details: details,
+                quizId: quizList[index].id,
               ),
             ),
-          ),
-        ),
+            onTap: () {
+              print(quizList[index].id);
+              print(quizList[index].name);
+              print(quizList[index].ownerID);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => QuizQuestionsView(
+                    quizId: quizList[index].id,
+                  ),
+                ),
+              );
+            }),
       ),
     );
   }
@@ -107,33 +107,13 @@ class QuizListTile extends StatelessWidget {
         ),
         PopupMenuItem(
           child: ListTile(
-            leading: const Icon(Icons.edit),
-            title: Text(
-              'Edit',
-              style: bodyTextStyle,
-            ),
-            // TODO: edit quiz
-            // onTap: () {
-            //   Navigator.of(context).pop();
-            //   Navigator.push(
-            //     context,
-            //     MaterialPageRoute(
-            //       builder: (context) => EditQuizView(
-            //         quizId: quizId,
-            //       ),
-            //     ),
-            //   );
-            // },
-          ),
-        ),
-        PopupMenuItem(
-          child: ListTile(
             leading: const Icon(Icons.delete),
             title: Text(
               'Delete',
               style: bodyTextStyle,
             ),
             onTap: () {
+              Navigator.of(context).pop();
               provider.deleteQuiz(quizId);
               Future.delayed(Duration.zero, () {
                 ScaffoldMessenger.of(context).showSnackBar(

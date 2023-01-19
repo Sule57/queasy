@@ -175,9 +175,8 @@ class Leaderboard {
   Future<void> updateAllLeaderboard(int newPoints) async {
     int oldPoints = _currentPlayer.getScore;
 
-    if(_currentPlayer.getPosition == -1){
-      oldPoints = 0;
-    }
+    oldPoints = 0;
+
 
     await _docAll.get().then((DocumentSnapshot documentSnapshot) {
       if (documentSnapshot.exists) {

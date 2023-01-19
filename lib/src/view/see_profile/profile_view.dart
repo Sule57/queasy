@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:queasy/src/view/see_profile/profile_view_desktop.dart';
 import 'package:queasy/src/view/see_profile/profile_view_mobile.dart';
 
+import '../statistics/statistics_provider.dart';
 import 'profile_provider.dart';
 
 /// Content for [ProfileView].
@@ -27,6 +28,8 @@ class _ProfileViewContentState extends State<ProfileView> {
   init() async {
     isLoading = !(await Provider.of<ProfileProvider>(context, listen: false)
         .setProfile());
+    await Provider.of<StatisticsProvider>(context, listen: false)
+        .initStatisticsProvider();
     setState(() {});
   }
 

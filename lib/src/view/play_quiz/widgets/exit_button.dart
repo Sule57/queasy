@@ -7,7 +7,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:queasy/src/view/home_view.dart';
-import 'package:queasy/src/view/widgets/rounded-button.dart';
+import 'package:queasy/src/view/widgets/rounded_button.dart';
 
 class ExitButton extends StatelessWidget {
   const ExitButton({Key? key}) : super(key: key);

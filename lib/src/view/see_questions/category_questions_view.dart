@@ -8,56 +8,53 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:queasy/src/view/see_questions/widgets/see_questions_popups.dart';
+import 'package:queasy/src/view/see_questions/widgets/questions_popups.dart';
 import 'package:queasy/src/view/see_questions/widgets/question_list_tile.dart';
 import 'package:queasy/src/model/category.dart';
 import 'package:queasy/src/model/category_repo.dart';
 import '../../../constants/theme_provider.dart';
 import '../../model/question.dart';
-import 'see_category_questions_provider.dart';
+import 'category_questions_provider.dart';
 
 /// The enum [AnswersRadioButton] is used to determine which radio button is selected when the user
 /// wants to add a question. It refers to the correct answer out of the options.
 enum AnswersRadioButton { ans1, ans2, ans3, ans4 }
 
-/// This is the edit quiz view.
+/// This is the Category Question view.
 ///
 /// It is the view that the user uses to see their questions from a specific
 /// category and edit them. It shows a [ListView] with questions, a button
 /// to add a new question, a button to delete the category and a button to
 /// create a quiz with random questions.
-///
-/// The variable [categoryName] is the name of the category that the user is currently in.
-///
-/// The variable [_category] is the category that the user is currently in.
-///
-/// The variable [_questions] is a list that stores the questions of the category.
-///
-/// The variable [controller] is the provider of the class.
-///
-/// The variable [_isLoading] is a boolean that is used to determine if the view is loading or not.
-class SeeCategoryQuestionsView extends StatefulWidget {
+class CategoryQuestionsView extends StatefulWidget {
   final String categoryName;
 
-  SeeCategoryQuestionsView({Key? key, required this.categoryName})
+  CategoryQuestionsView({Key? key, required this.categoryName})
       : super(key: key);
 
   @override
-  State<SeeCategoryQuestionsView> createState() =>
-      _SeeCategoryQuestionsViewState();
+  State<CategoryQuestionsView> createState() => _CategoryQuestionsViewState();
 }
 
-class _SeeCategoryQuestionsViewState extends State<SeeCategoryQuestionsView> {
+class _CategoryQuestionsViewState extends State<CategoryQuestionsView> {
+  /// Name of the category that the user is currently in.
   get categoryName => widget.categoryName;
+
+  /// Category that the user is currently in.
   late Category _category;
+
+  /// Stores the questions of the category.
   late List<Question> _questions;
-  late SeeCategoryQuestionsProvider controller;
+
+  /// Is the provider of the class.
+  late CategoryQuestionsProvider controller;
+
+  /// Used to determine if the view is loading or not.
   bool _isLoading = true;
 
   @override
   void didChangeDependencies() {
-    controller =
-        Provider.of<SeeCategoryQuestionsProvider>(context, listen: true);
+    controller = Provider.of<CategoryQuestionsProvider>(context, listen: true);
     controller.questionController = TextEditingController();
     controller.answer1Controller = TextEditingController();
     controller.answer2Controller = TextEditingController();
@@ -78,16 +75,15 @@ class _SeeCategoryQuestionsViewState extends State<SeeCategoryQuestionsView> {
     super.dispose();
   }
 
+  /// Called when the view is build for the first time, it initializes the
+  /// [_category] and [_questions] calling the database and sets [_isLoading] to false once the
+  /// data is loaded.
   init() async {
     _isLoading = true;
     _category = await CategoryRepo().getCategory(categoryName);
     controller.category = _category;
-    controller.updateQuestionsFromCategory();
-    _questions = await _category.getAllQuestions();
-    //print("ok");
-    _questions = context.read<SeeCategoryQuestionsProvider>().questionList;
-    //_questions = controller.questionList;
-    //controller.formKeyAddEditQuestion = GlobalKey<FormState>();
+    await controller.updateQuestionsFromCategory();
+    _questions = context.read<CategoryQuestionsProvider>().questionList;
     setState(() {
       _isLoading = false;
     });
@@ -101,8 +97,14 @@ class _SeeCategoryQuestionsViewState extends State<SeeCategoryQuestionsView> {
 
   @override
   Widget build(BuildContext context) {
-    SeeCategoryQuestionsProvider controller =
-        Provider.of<SeeCategoryQuestionsProvider>(context, listen: true);
+
+    /// The provider of the class
+    CategoryQuestionsProvider controller = Provider.of<CategoryQuestionsProvider>(context);
+
+    _questions = controller.questionList;
+
+    /// Widget that is going to be displayed in the screen. If there are no questions, the widget
+    /// QuestionListEmpty is assigned, otherwise, the list of questions is displayed (QuestionList).
     late Widget ListWidget;
 
     if (_isLoading) {
@@ -113,7 +115,7 @@ class _SeeCategoryQuestionsViewState extends State<SeeCategoryQuestionsView> {
       if (_questions.isEmpty) {
         ListWidget = QuestionListEmpty();
       } else {
-        ListWidget = QuestionList(questions: _questions);
+        ListWidget = QuestionList();
       }
       return Scaffold(
         appBar: AppBar(
@@ -161,30 +163,20 @@ class _SeeCategoryQuestionsViewState extends State<SeeCategoryQuestionsView> {
 /// The widget [QuestionList] is used when there are questions in the category. It shows
 /// a [ListView] with the questions and when a question is pressed, it
 /// shows their answers and the correct answer.
-///
-/// The variable [questions] is a list that stores the questions of the category.
 class QuestionList extends StatefulWidget {
-  final List<Question> questions;
-
-  QuestionList({
-    Key? key,
-    required this.questions,
-  }) : super(key: key);
+  QuestionList({Key? key}) : super(key: key);
 
   @override
   State<QuestionList> createState() => _QuestionListState();
 }
 
 class _QuestionListState extends State<QuestionList> {
-  get questions => widget.questions;
-
   @override
   Widget build(BuildContext context) {
-    //EditQuizProvider controller = Provider.of<EditQuizProvider>(context, listen: true);
     return Expanded(
       child: Padding(
         padding: const EdgeInsets.only(top: 6.0, bottom: 8.0),
-        child: Consumer<SeeCategoryQuestionsProvider>(
+        child: Consumer<CategoryQuestionsProvider>(
           builder: (context, controller, child) {
             return ListView.builder(
               itemCount: controller.questionList.length,
@@ -200,9 +192,7 @@ class _QuestionListState extends State<QuestionList> {
                       ),
                     ),
                     child: ExpansionTile(
-                      title: Text(
-                          //questions[index],
-                          controller.questionList[index].text,
+                      title: Text(controller.questionList[index].text,
                           style: Theme.of(context)
                               .textTheme
                               .bodyText1
@@ -249,7 +239,9 @@ class QuestionListEmpty extends StatelessWidget {
 }
 
 class CreateAndDeleteButtons extends StatelessWidget {
-  final SeeCategoryQuestionsProvider controller;
+
+  /// The provider of the class
+  final CategoryQuestionsProvider controller;
 
   CreateAndDeleteButtons({Key? key, required this.controller})
       : super(key: key);
@@ -279,7 +271,8 @@ class CreateAndDeleteButtons extends StatelessWidget {
                     if (controller.questionList.isEmpty) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: Text('There are no questions yet'),
+                          content: Text(
+                              'You should create a question first, don\'t you think?'),
                           duration: const Duration(seconds: 2),
                         ),
                       );
@@ -308,7 +301,8 @@ class CreateAndDeleteButtons extends StatelessWidget {
                     if (controller.questionList.isEmpty) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: Text('There are no questions yet'),
+                          content: Text(
+                              'You should create a question first, don\'t you think?'),
                           duration: const Duration(seconds: 2),
                         ),
                       );

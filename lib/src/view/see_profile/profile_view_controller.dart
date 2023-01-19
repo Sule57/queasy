@@ -15,7 +15,7 @@ class ProfileViewController {
   ProfileViewController();
 
   ///[success] a list that collects returned values of edit methods
-  List<bool> success = new List.empty();
+  List<bool> success = [true];
 
   ///getter methods for user data
   Profile get user => player;
@@ -35,7 +35,8 @@ class ProfileViewController {
 
   ///changes the [currentEmail] with the given [newEmail] and confirms it through [password]
   ///and the value is added to the [success] list
-  Future<void> editEmail(String currentEmail, String newEmail, String password) async {
+  Future<void> editEmail(
+      String currentEmail, String newEmail, String password) async {
     success = [
       ...success,
       await player.updateEmail(currentEmail, newEmail, password)
@@ -56,7 +57,8 @@ class ProfileViewController {
 
   ///changes the current password [currentPassword] with the given [newPassword] and confirms it through [email]
   ///and the value is added to the [success] list
-  Future<void> editPassword(String currentPassword, String newPassword, String email) async {
+  Future<void> editPassword(
+      String currentPassword, String newPassword, String email) async {
     success = [
       ...success,
       await player.updatePassword(email, currentPassword, newPassword)

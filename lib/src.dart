@@ -5,15 +5,18 @@
 /// Software Project on Technische Hochschule Ulm
 /// ****************************************************************************
 
-export 'src/view/see_profile/widgets/theme_button.dart';
-export 'constants/theme_provider.dart';
-export 'src/model/statistics.dart';
-export 'src/model/answer.dart';
-export 'src/model/category.dart';
-export 'src/model/category_repo.dart';
-export 'src/model/leaderboard.dart';
-export 'src/model/leaderboard_entry.dart';
-export 'src/model/profile.dart';
-export 'src/model/question.dart';
-export 'src/model/quiz.dart';
-export 'src/view/see_quizzes/see_quizzes.dart';
+export 'exports/model.dart';
+export 'exports/view_category_selection.dart';
+export 'exports/view_login.dart';
+export 'exports/view_my_quizzes.dart';
+export 'exports/view_play_quiz.dart';
+export 'exports/view_registration.dart';
+export 'exports/view_see_leaderboard.dart';
+export 'exports/view_see_profile.dart';
+export 'exports/view_see_questions.dart';
+export 'exports/view_statistics.dart';
+export 'exports/services.dart';
+export 'exports/themes.dart';
+export 'src/view/home_view.dart';
+export 'src/view/widget_tree.dart';
+export 'utils/exceptions.dart';

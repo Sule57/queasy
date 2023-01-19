@@ -7,29 +7,18 @@
 /// ****************************************************************************
 
 import 'package:flutter/material.dart';
-import 'package:queasy/src/view/see_questions/see_category_questions_view.dart';
-import 'package:queasy/src/view/see_questions/widgets/see_questions_popups.dart';
+import 'package:queasy/src/view/see_questions/category_questions_view.dart';
+import 'package:queasy/src/view/see_questions/widgets/questions_popups.dart';
 import '../../../src.dart';
+import '../../../utils/exceptions.dart';
 
-/// This is the edit quiz provider.
+/// This is the category questions provider.
 ///
-/// It is the provider that the [SeeCategoryQuestionsView] uses to get the questions of a
+/// It is the provider that the [CategoryQuestionsView] uses to get the questions of a
 /// specific category and to edit them, add more or delete them.
-///
-/// The variable [_questions] is a list that stores the questions of the category.
-///
-/// The variable [_isLoading] is a boolean that is used to determine if the view is loading or not.
-///
-/// The variable [_category] is the category that the user is currently in.
-///
-/// The variable [questionController] is the controller for the question text field.
-/// The variable [answer1Controller] is the controller for the first answer text field.
-/// The variable [answer2Controller] is the controller for the second answer text field.
-/// The variable [answer3Controller] is the controller for the third answer text field.
-/// The variable [answer4Controller] is the controller for the fourth answer text field.
-///
-/// The variable [_selectedRadioAnswer] is the variable that stores the selected radio button.
-class SeeCategoryQuestionsProvider with ChangeNotifier {
+class CategoryQuestionsProvider with ChangeNotifier {
+
+  /// The category that the user is currently in.
   late Category _category;
 
   Category get category => _category;
@@ -38,11 +27,14 @@ class SeeCategoryQuestionsProvider with ChangeNotifier {
     _category = category;
   }
 
-  //List<Question> _questionList = [];
-  late List<Question> _questionList;
+  /// Stores the questions of the category.
+  late List<Question> _questionList = [];
+
   List<Question> get questionList => _questionList;
 
+  /// Checks if the question is checked or not.
   List<bool> _isQuestionChecked = [];
+
   List<bool> get isQuestionChecked => _isQuestionChecked;
 
   set questionList(List<Question> questionList) {
@@ -50,33 +42,80 @@ class SeeCategoryQuestionsProvider with ChangeNotifier {
     _isQuestionChecked = List.filled(_questionList.length, false);
   }
 
+  /// Stores the categories of the user.
+  late List<String> _categoryList = [];
+
+  List<String> get categoryList => _categoryList;
+
+  set categoryList(List<String> categoryList) {
+    _categoryList = categoryList;
+  }
+
+  /// The controller for the question text field.
   TextEditingController questionController = TextEditingController();
+
+  /// The controller for the first answer text field.
   TextEditingController answer1Controller = TextEditingController();
+
+  /// The controller for the second answer text field.
   TextEditingController answer2Controller = TextEditingController();
+
+  /// The controller for the third answer text field.
   TextEditingController answer3Controller = TextEditingController();
+
+  /// The controller for the fourth answer text field.
   TextEditingController answer4Controller = TextEditingController();
 
+  /// The controller for the number of questions.
   TextEditingController numberOfQuestionsController = TextEditingController();
+
+  /// The controller for the name of the quiz.
   TextEditingController newQuizNameController = TextEditingController();
 
+  /// The variable that stores the selected radio button.
   AnswersRadioButton _selectedRadioAnswer = AnswersRadioButton.ans1;
+
   AnswersRadioButton get selectedRadioAnswer => _selectedRadioAnswer;
 
   set selectedRadioAnswer(AnswersRadioButton value) {
     _selectedRadioAnswer = value;
   }
 
+  /// Form key to add or edit a question.
   GlobalKey<FormState> formKeyAddEditQuestion = GlobalKey<FormState>();
+
+  /// Form key to create a random quiz.
   GlobalKey<FormState> formKeyCreateRandomQuiz = GlobalKey<FormState>();
+
+  /// Form key to create a custom quiz.
   GlobalKey<FormState> formKeyCreateCustomQuiz = GlobalKey<FormState>();
 
-  void updateQuestionsFromCategory() async {
+  /// The method [updateQuestionsFromCategory] is used to get the questions of a category to be displayed in the
+  /// [CategoryQuestionsView].
+  ///
+  /// It calls the database and stores the questions in the [questionList].
+  Future<void> updateQuestionsFromCategory() async {
     questionList = await category.getAllQuestions();
     _isQuestionChecked = List.filled(_questionList.length, false);
     notifyListeners();
   }
 
-  void updateQuestionsFromQuiz(String id) async {
+  /// The method [updateListOfCategories] updates the list of categories to be displayed in the
+  /// [PrivateCategorySelectionView].
+  ///
+  /// It gets the categories from the database and stores them in the [categoryList].
+  Future<void> updateListOfCategories() async {
+    categoryList = await CategoryRepo().getPrivateCategories();
+    notifyListeners();
+  }
+
+  /// The method [updateQuestionsFromQuiz] is used to update the questions of a quiz to be
+  /// displayed in the [QuizQuestionsView].
+  ///
+  /// It gets the questions from the database and stores them in the [questionList].
+  ///
+  /// It takes the id of the quiz as a parameter.
+  Future<void> updateQuestionsFromQuiz(String id) async {
     await Quiz().retrieveQuizFromId(id: id).then((quiz) {
       questionList = quiz.questions;
     });
@@ -92,8 +131,8 @@ class SeeCategoryQuestionsProvider with ChangeNotifier {
           builder: (BuildContext context) {
             return AddOrEditQuestionPopUp(
               categoryName: category.getName(),
-              action: () {
-                addQuestionToDatabase();
+              action: () async {
+                await addQuestionToDatabase();
               },
             );
           });
@@ -103,8 +142,9 @@ class SeeCategoryQuestionsProvider with ChangeNotifier {
   /// The method [addQuestionToDatabase] is used to add a question to the database.
   ///
   /// The variable [question] is the question that is going to be added.
+  ///
   /// The variable [category] is the category that the question is going to be added to.
-  addQuestionToDatabase() async {
+  Future<void> addQuestionToDatabase() async {
     Question question = Question(
       text: questionController.text,
       answers: [
@@ -120,15 +160,13 @@ class SeeCategoryQuestionsProvider with ChangeNotifier {
       category: category.getName(),
     );
     await category.createQuestion(question);
-    updateQuestionsFromCategory();
-    print("Question added");
-    //print("Question: $questionController.text]");
-    // notifyListeners();
+    await updateQuestionsFromCategory();
   }
 
   /// The method [editQuestion] is used to show a dialog to edit a question.
   ///
   /// The variable [context] is used to show the dialog.
+  ///
   /// The variable [question] is the question that is going to be edited.
   editQuestion(BuildContext context, Question question) {
     Future.delayed(Duration.zero, () {
@@ -138,8 +176,8 @@ class SeeCategoryQuestionsProvider with ChangeNotifier {
             return AddOrEditQuestionPopUp(
               categoryName: question.category,
               question: question,
-              action: () {
-                editQuestionOnDatabase(question);
+              action: () async{
+                await editQuestionOnDatabase(question);
               },
             );
           });
@@ -149,7 +187,7 @@ class SeeCategoryQuestionsProvider with ChangeNotifier {
   /// This method [editQuestionOnDatabase] used to edit a question on the database.
   ///
   /// The variable [question] is the question that is going to be edited.
-  editQuestionOnDatabase(Question question) async {
+  Future<void> editQuestionOnDatabase(Question question) async {
     question.setText(questionController.text.toString());
     question.answers[0].setText(answer1Controller.text);
     question.answers[1].setText(answer2Controller.text);
@@ -157,14 +195,13 @@ class SeeCategoryQuestionsProvider with ChangeNotifier {
     question.answers[3].setText(answer4Controller.text);
     question.setCorrectAnswer(_selectedRadioAnswer.index);
     await question.updateQuestion();
-    print("Question edited");
-    //print("Question: $questionController.text]");
     notifyListeners();
   }
 
   /// The method [deleteQuestion] is used to show a dialog to delete a question from the database.
   ///
   /// The variable [context] is used to show the dialog.
+  ///
   /// The variable [question] is the question that is going to be deleted.
   deleteQuestion(BuildContext context, Question question) {
     Future.delayed(Duration.zero, () {
@@ -174,26 +211,29 @@ class SeeCategoryQuestionsProvider with ChangeNotifier {
             return DeleteQuestionPopUp(question: question);
           });
     });
-    //notifyListeners();
   }
 
   /// This method [deleteQuestionFromDatabase] used to delete a question from the database.
   ///
   /// The variable [question] is the question that is going to be deleted.
-  deleteQuestionFromDatabase(Question question) async {
+  Future<void> deleteQuestionFromDatabase(Question question) async {
     await category.deleteQuestion(question);
-    print("Question deleted");
-    //print("Question: $questionController.text]");
+    await updateQuestionsFromCategory();
     notifyListeners();
   }
 
   /// The method [addCategoryToDatabase] creates a new category and adds it to the database.
   ///
   /// The variable [name] is the name of the category that is going to be created.
-  addCategoryToDatabase(String name) async {
-    await CategoryRepo().createCategory(name, Colors.blue);
-    print("Category added");
-    notifyListeners();
+  Future<void> addCategoryToDatabase(String name) async {
+    // Check if the category already exists
+    if ((await CategoryRepo().getPrivateCategories()).contains(name)) {
+      throw CategoryAlreadyExistsException();
+    } else {
+      await CategoryRepo().createCategory(name, Colors.blue);
+      await updateListOfCategories();
+      notifyListeners();
+    }
   }
 
   /// The method [deleteCategory] is used to show a dialog to delete a category from the database.
@@ -210,9 +250,9 @@ class SeeCategoryQuestionsProvider with ChangeNotifier {
   }
 
   /// This method [deleteCategoryFromDatabase] used to delete a category from the database.
-  deleteCategoryFromDatabase() async {
+  Future<void> deleteCategoryFromDatabase() async {
     await CategoryRepo().deleteCategory(category.getName());
-    print("Category deleted");
+    await updateListOfCategories();
     notifyListeners();
   }
 
@@ -220,6 +260,7 @@ class SeeCategoryQuestionsProvider with ChangeNotifier {
   /// store it in the database.
   ///
   /// It returns a Future<String?> with the id of the quiz that was created.
+  ///
   /// This id will be null if the quiz was not created successfully.
   Future<String?> createAndStoreRandomQuiz() async {
     int numberOfQuestions = int.parse(numberOfQuestionsController.text);
@@ -246,11 +287,12 @@ class SeeCategoryQuestionsProvider with ChangeNotifier {
 
   /// The method [createAndStoreCustomQuiz] is used to create a quiz with custom questions and
   /// store it in the database.
+  ///
   /// It takes a parameter [questionIds] which is the list of ids of the questions
   /// that are going to be store in the custom quiz.
   ///
-  /// It returns a Future<String?>
-  /// with the id of the quiz that was created.
+  /// It returns a Future<String?> with the id of the quiz that was created.
+  ///
   /// This id will be null if the quiz was not created successfully.
   Future<String?> createAndStoreCustomQuiz({
     required List<String> questionIds,
@@ -297,11 +339,13 @@ class SeeCategoryQuestionsProvider with ChangeNotifier {
     selectedRadioAnswer = AnswersRadioButton.ans1;
   }
 
+  /// The method [updateIsQuestionChecked] updates the value of the variable [isQuestionChecked].
   void updateIsQuestionChecked({required int index, required bool value}) {
     _isQuestionChecked[index] = value;
     notifyListeners();
   }
 
+  /// The method [clearIsQuestionChecked] clears the [isQuestionChecked].
   void clearIsQuestionChecked() {
     _isQuestionChecked = List.filled(_questionList.length, false);
     notifyListeners();

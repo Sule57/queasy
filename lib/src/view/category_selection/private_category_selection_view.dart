@@ -8,16 +8,17 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:queasy/src/model/category_repo.dart';
-import '../../constants/theme_provider.dart';
-import 'see_questions/see_category_questions_view.dart';
-import 'see_questions/widgets/see_questions_popups.dart';
+import '../../../constants/theme_provider.dart';
+import '../see_questions/category_questions_provider.dart';
+import '../see_questions/category_questions_view.dart';
+import '../see_questions/widgets/questions_popups.dart';
 
 /// View for selecting a private category.
 ///
 /// This view is used to select a private category. It displays a progress
 /// indicator while the categories are being loaded from the database. When the
 /// categories are loaded, it displays a list of private categories and when a category
-/// is selected, it navigates to [SeeCategoryQuestionsView] with the selected category as a
+/// is selected, it navigates to [CategoryQuestionsView] with the selected category as a
 /// parameter.
 class PrivateCategorySelectionView extends StatefulWidget {
   PrivateCategorySelectionView({Key? key}) : super(key: key);
@@ -31,21 +32,38 @@ class PrivateCategorySelectionView extends StatefulWidget {
 ///
 /// This state is responsible for updating the view when the user selects a
 /// category.
-/// The late parameter [list] is used to store the list of categories to be
-/// displayed.
-/// The parameter [_isLoading] is used to determine whether the view should
-/// display a loading indicator or the list of categories.
 class _PrivateCategorySelectionViewState
     extends State<PrivateCategorySelectionView> {
-  late List<String> list;
+
+  /// The provider of the class
+  late CategoryQuestionsProvider controller;
+
+  /// Used to store the list of categories to be displayed.
+  late List<String> _categoryList;
+
+  /// Used to determine whether the view should display a loading indicator or the list of categories.
   bool _isLoading = true;
 
+  @override
+  void didChangeDependencies() {
+    controller = Provider.of<CategoryQuestionsProvider>(context, listen: true);
+    super.didChangeDependencies();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
   /// Called when the view is build for the first time, it initializes the
-  /// [list] calling the database and sets [_isLoading] to false once the
+  /// [_categoryList] calling the database and sets [_isLoading] to false once the
   /// data is loaded.
   init() async {
     _isLoading = true;
-    list = await CategoryRepo().getPrivateCategories();
+    _categoryList = await CategoryRepo().getPrivateCategories();
+    controller.categoryList = _categoryList;
+    await controller.updateListOfCategories();
+    _categoryList = context.read<CategoryQuestionsProvider>().categoryList;
     setState(() {
       _isLoading = false;
     });
@@ -66,18 +84,25 @@ class _PrivateCategorySelectionViewState
   /// the database.
   /// Once the categories are loaded, it displays a [ListView] with buttons for
   /// the list of categories returned from the database. When a category is
-  /// selected, it navigates to [SeeCategoryQuestionsView] with the selected category as a
+  /// selected, it navigates to [CategoryQuestionsView] with the selected category as a
   /// parameter.
   @override
   Widget build(BuildContext context) {
+
+    _categoryList = context.watch<CategoryQuestionsProvider>().categoryList;
+
+    /// Widget that is going to be displayed in the screen. If there are no categories, the widget
+    /// CategoryListEmpty is assigned, otherwise, the list of categories is displayed (CategoryList).
     late Widget ListWidget;
+
     if (_isLoading) {
       return const Center(child: CircularProgressIndicator());
     } else {
-      if (list.isEmpty) {
+      _categoryList = context.watch<CategoryQuestionsProvider>().categoryList;
+      if (_categoryList.isEmpty) {
         ListWidget = CategoryListEmpty();
       } else {
-        ListWidget = CategoryList(list: list);
+        ListWidget = CategoryList(list: _categoryList);
       }
       return Scaffold(
         backgroundColor: Theme.of(context).colorScheme.primary,
@@ -124,7 +149,8 @@ class _PrivateCategorySelectionViewState
                 width: MediaQuery.of(context).size.width / 3,
                 decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.tertiary,
-                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                  borderRadius:
+                      BorderRadius.only(bottomRight: Radius.circular(20)),
                 ),
               ),
             ),
@@ -135,7 +161,7 @@ class _PrivateCategorySelectionViewState
                 width: MediaQuery.of(context).size.width / 3,
                 decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.secondary,
-                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                  borderRadius: BorderRadius.only(topLeft: Radius.circular(20)),
                 ),
               ),
             ),
@@ -181,9 +207,9 @@ class CategoryListEmpty extends StatelessWidget {
 /// of the user.
 ///
 /// It is called when private categories are found in the database.
-///
-/// The variable [list] is the list of private categories.
 class CategoryList extends StatefulWidget {
+
+  /// List of private categories.
   List<String> list;
 
   CategoryList({Key? key, required this.list}) : super(key: key);
@@ -197,45 +223,48 @@ class _CategoryListState extends State<CategoryList> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: list.length,
-      itemBuilder: (BuildContext context, int index) {
-        String categoryName = list[index];
-        return Container(
-          padding: const EdgeInsets.only(left: 30.0, right: 30.0, top: 20.0),
-          width: 70,
-          height: MediaQuery.of(context).size.height / 8,
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Provider.of<ThemeProvider>(context)
-                  .currentTheme
-                  .colorScheme
-                  .background,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
-              ),
-            ),
-            onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => SeeCategoryQuestionsView(
-                          categoryName: categoryName)));
-            },
-            child: Text(
-              categoryName,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 35,
-                color: Provider.of<ThemeProvider>(context)
+    return Consumer<CategoryQuestionsProvider>(
+        builder: (context, controller, child) {
+      return ListView.builder(
+        itemCount: controller.categoryList.length,
+        itemBuilder: (BuildContext context, int index) {
+          String categoryName = controller.categoryList[index];
+          return Container(
+            padding: const EdgeInsets.only(left: 30.0, right: 30.0, top: 20.0),
+            width: 70,
+            height: MediaQuery.of(context).size.height / 8,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Provider.of<ThemeProvider>(context)
                     .currentTheme
                     .colorScheme
-                    .onBackground,
+                    .background,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+              ),
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            CategoryQuestionsView(categoryName: categoryName)));
+              },
+              child: Text(
+                categoryName,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 35,
+                  color: Provider.of<ThemeProvider>(context)
+                      .currentTheme
+                      .colorScheme
+                      .onBackground,
+                ),
               ),
             ),
-          ),
-        );
-      },
-    );
+          );
+        },
+      );
+    });
   }
 }
