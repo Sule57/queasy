@@ -9,6 +9,9 @@ import 'package:flutter/material.dart';
 import 'package:queasy/src/view/home_view.dart';
 import 'package:queasy/src/view/widgets/rounded_button.dart';
 
+/// Widget for the button to exit the quiz
+///
+///
 class ExitButton extends StatelessWidget {
   const ExitButton({Key? key}) : super(key: key);
 

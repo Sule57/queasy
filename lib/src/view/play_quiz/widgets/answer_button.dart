@@ -16,8 +16,10 @@ import '../play_quiz_provider.dart';
 /// It is a [StatefulWidget] that displays the answer text and changes
 /// its color when the user clicks it depending on whether the answer is correct
 /// or not.
+///
 /// It takes a parameter [index] to determine which answer to display.
 class AnswerButton extends StatefulWidget {
+  /// Index of the answer to display.
   final int index;
 
   const AnswerButton({super.key, required this.index});
@@ -30,14 +32,13 @@ class AnswerButton extends StatefulWidget {
 ///
 /// This state is responsible for updating the view when the user clicks an
 /// answer.
-///
-/// It has a parameter [_animationController] that controls the time of the
-/// Tween animation.
-/// It has a parameter [_colorTween] that is used to animate the answer button
-/// when the user clicks it. It controls the color of the button.
 class _AnswerButtonState extends State<AnswerButton>
     with SingleTickerProviderStateMixin {
+  /// Controls the time of the Tween animation.
   late AnimationController _animationController;
+
+  /// Used to animate the answer button when the user clicks it. It controls the
+  /// color of the button.
   late Animation _colorTween;
 
   /// Initializes the state.
