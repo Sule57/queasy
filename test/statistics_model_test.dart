@@ -1,37 +1,58 @@
 import 'dart:convert';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:queasy/src/model/profile.dart';
 import 'package:queasy/src/model/statistics.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:queasy/utils/exceptions.dart';
 
 
+
+/// mock register so you avoid using firebase auth in tests
+Future<bool> mockRegister(Profile p) async {
+  String uid = "mockedyou";
+  await p
+      .firestore
+      .collection('users')
+      .doc(uid)
+      .get()
+      .then((DocumentSnapshot documentSnapshot) {
+    if (documentSnapshot.exists) {
+      throw UserAlreadyExistsException();
+    }
+  });
+
+  if (uid != null) {
+    // create the document for categories created by the user
+    await p.firestore.collection('categories').doc(uid).set({});
+
+    await p.firestore
+        .collection('users')
+        .doc(uid)
+        .set(p.toJson());
+    UserStatistics s = UserStatistics(p.username, []);
+    //Adding the user to the statistics
+    Map<String, dynamic> data = {};
+    await p.firestore.collection('UserStatistics').doc(p.username).set(data);
+    return true;
+  }
+
+  return false;
+}
 
 
 
 void main() async {
-  TestWidgetsFlutterBinding.ensureInitialized();
+
   final instance = FakeFirebaseFirestore();
-  await Firebase.initializeApp(
-    name: 'quizzapp-eb0f2',
-    options: const FirebaseOptions(
-      apiKey: 'AIzaSyCNGjdJ0j86h8b_Bk7d9ts-hY4JZ7aNWcQ',
-      appId: '1:17686953226:web:81a053f17c2b317edd0ef3',
-      messagingSenderId: '17686953226',
-      projectId: 'quizzapp-eb0f2',
-      authDomain: 'quizzapp-eb0f2.firebaseapp.com',
-      databaseURL:
-      'https://quizzapp-eb0f2-default-rtdb.europe-west1.firebasedatabase.app',
-      storageBucket: 'gs://quizzapp-eb0f2.appspot.com',
-      measurementId: 'G-MSF5DXS9QN',
-    ),
-  );
+
   Profile user_test = Profile.test(
       username: 'TEST21',
       email: 'email@test.com',
       firestore: instance);
   // it is assumed that registerUser is working properly
-  await user_test.registerUser();
+  await mockRegister(user_test);
 
   Map<String, dynamic> expectedDumpAfterset = {
     "quizz1": {

@@ -3,9 +3,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:queasy/src.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:queasy/src/model/statistics.dart';
 import '../../utils/exceptions.dart';
 
+///Returns the current user's uid that is stored in Firebase Authentication.
+///It returns null if the uid cannot be found. This can happen when the user is not signed in.
 String? getCurrentUserID() {
   if (FirebaseAuth.instance.currentUser != null) {
     return FirebaseAuth.instance.currentUser?.uid;
@@ -13,6 +14,8 @@ String? getCurrentUserID() {
   return null;
 }
 
+///Reutrns the current user's username that is stored in their document in the Firebase Database.
+///Returns 'something' if the username cannot be found.
 Future<String?> getCurrentUserUsername() async {
   String? id;
   if (await FirebaseAuth.instance.currentUser != null) {
@@ -31,6 +34,8 @@ Future<String?> getCurrentUserUsername() async {
 
 ///Profile class is an extention of the firebase user
 ///adapted for the needs of the quizz application
+///It has direct access to the
+///firebase and is used to store a user or update it in the database.
 /// [email] email field
 /// [username] username
 /// [firstName] user first name
@@ -39,21 +44,60 @@ Future<String?> getCurrentUserUsername() async {
 /// [bio] user description
 /// [age] user age
 class Profile {
+  //TODO: Comment for global counter
   static int globalCounter = 0;
+
+  ///The parameter [email] represents the email of this profile.
   String email;
+
+  ///The parameter username represents the username of this profile.
   String username;
+
+  ///The parameter firstName represents the firstName of this profile.
   String? firstName;
+
+  ///The parameter lastName represents the lastName of this profile.
   String? lastName;
+
+  ///The parameter profilePicture represents the profilePicture of this profile.
   String? profilePicture;
+
+  ///The parameter bio represents the bio of this profile.
   String? bio;
+
+  ///The parameter age represents the age of this profile.
   int? age;
+
+  ///The parameter birthdayMonth represents the birthdayMonth of this profile.
   String? birthdayMonth;
+
+  ///The parameter birthdayDay represents the birthdayDay of this profile.
   int? birthdayDay;
+
+  ///The parameter uid represents the uid of this profile.
+  String? uid;
+
+  ///The parameter test represents whether this profile is constructed for tests or for app use.
+  late bool test = false;
+
   // it must be late so
+  ///The parameter firestore represents the firestore of this profile.
+  ///It shouldn't change for default profiles, but it must be changed for testing purposes.
   late var firestore = FirebaseFirestore.instance;
+
   //In the database publicScore and private score are stored as collections
+  ///The parameter publicScore represents a Map of the stored public scores.
+  ///These scores are only collected from quizzes in public categories.
+  ///For example, if the profile scored 13 points in the Science category,
+  ///privateScore would contain 'Science':13.
   Map<String, dynamic> publicScore = {};
+
+  ///The parameter privatecScore represents a Map of the stored private scores.
+  //////These scores are only collected from quizzes in private categories.
+  ///For example, if the profile scored 13 points in the Science category,
+  ///privateScore would contain 'Science':13.
   Map<String, dynamic> privatecScore = {};
+
   Profile({
     required this.username,
     required this.email,
@@ -64,8 +108,11 @@ class Profile {
     this.age = 0,
     this.birthdayMonth = '',
     this.birthdayDay = 0,
-  });
+  }) {
+    uid = getCurrentUserID();
+  }
 
+  ///This constructor is used only for unit tests
   Profile.test({
     required this.username,
     required this.email,
@@ -77,9 +124,10 @@ class Profile {
     this.birthdayMonth = '',
     this.birthdayDay = 0,
     required this.firestore,
-  });
-
-  ///This constructor is used only for unit tests
+    this.test = true,
+  }) {
+    uid = "mockedyouu";
+  }
 
   /// Creates a user instance from json
   /// Note: the json format must be the following:
@@ -102,6 +150,8 @@ class Profile {
         profilePicture = json['profilePicture'],
         bio = json['bio'],
         age = json['age'],
+        birthdayMonth = json['birthdayMonth'],
+        birthdayDay = json['birthdayDay'],
         privatecScore = json['privateScore'],
         publicScore = json['scores'];
 
@@ -115,9 +165,12 @@ class Profile {
         'username': username,
         'lastName': lastName,
         'firstName': firstName,
+        'profilePicture': profilePicture,
         'email': email,
         'bio': bio,
         'age': age,
+        'birthdayMonth': birthdayMonth,
+        'birthdayDay': birthdayDay,
         'scores': publicScore,
         'privateScore': privatecScore,
       };
@@ -129,7 +182,7 @@ class Profile {
     await this
         .firestore
         .collection('users')
-        .doc(getCurrentUserID())
+        .doc(await getCurrentUserID())
         .get()
         .then((DocumentSnapshot documentSnapshot) {
       if (documentSnapshot.exists) {
@@ -137,13 +190,19 @@ class Profile {
       }
     });
 
-    if (getCurrentUserID() != null) {
+    if (await getCurrentUserID() != null) {
       // create the document for categories created by the user
-      await firestore.collection('categories').doc(getCurrentUserID()).set({});
+      print(uid);
+      print(await getCurrentUserID());
+      await this
+          .firestore
+          .collection('categories')
+          .doc(await getCurrentUserID())
+          .set({});
 
       await firestore
           .collection('users')
-          .doc(getCurrentUserID())
+          .doc(await getCurrentUserID())
           .set(this.toJson());
       UserStatistics s = UserStatistics(this.username, []);
       //Adding the user to the statistics
@@ -157,8 +216,8 @@ class Profile {
 
   /// gets the current profile from user uid
   /// [uid] is the firebase user uid
-  /// returns a Profile instance
-  static Future<Profile?> getProfilefromUID(String uid) async {
+  /// returns a [Profile] instance
+  static Future<Profile?> getProfileFromUID(String uid) async {
     Profile? result;
     await FirebaseFirestore.instance
         .collection('users')
@@ -166,6 +225,7 @@ class Profile {
         .get()
         .then((DocumentSnapshot documentSnapshot) {
       Map<String, dynamic> j = documentSnapshot.data() as Map<String, dynamic>;
+      print(j);
       result = new Profile.fromJson(j);
     });
     return result;
@@ -193,61 +253,86 @@ class Profile {
   }
 
   /// Increment the score of the user in the firebase by the score achieved in the current quiz.
-  void updateScore(String category, int score) {
+  Future<void> updateScore(String category, int score, bool is_public) async {
+    if (await getCurrentUserID() == null ||
+        await getCurrentUserUsername() == null) {
+      throw UserNotLoggedInException();
+    }
+
     final firebaseFirestore = FirebaseFirestore.instance;
-    firebaseFirestore.collection('users').doc(getCurrentUserID()).update({
-      'scores.$category': FieldValue.increment(score),
-    });
+    if (is_public) {
+      await firebaseFirestore
+          .collection('users')
+          .doc(await getCurrentUserID())
+          .update({
+        'scores.$category': FieldValue.increment(score),
+      });
+    } else {
+      await firebaseFirestore
+          .collection('users')
+          .doc(await getCurrentUserID())
+          .update({
+        'privateScore.$category': FieldValue.increment(score),
+      });
+    }
+
     //TODO
-    // Leaderboard().updateCurrentUserPoints(score);
+
+    if (is_public) {
+      Leaderboard leaderboard = await Leaderboard.createPublic(
+          category, (await getCurrentUserUsername())!);
+      await leaderboard.updateCurrentUserPoints(score);
+    }
   }
 
   //START OF METHODS FOR PROFILE VIEW
-  /// Updates the user's username in the Firebase Database
-  /// @param [newUsername] - username to change the current username to
-  /// @return true - username was updated successfully
-  /// @return false - username was not updated successfully
-  bool updateUsername(String newUsername) {
+  ///Updates the user's username in the Firebase Database.
+  ///It takes [newUsername] as a parameter which is the value the current username will change to.
+  ///It returns true if the username was updated successfully
+  ///and false if the username was not updated successfully.
+  Future<bool> updateUsername(String newUsername) async {
     try {
-      firestore
+      await firestore
           .collection('users')
-          .doc(getCurrentUserID())
+          .doc(test ? uid : await getCurrentUserID())
           .update({'username': newUsername});
+
       return true;
     } catch (e) {
       return false;
     }
   }
 
-  ///updates the bio information of the user in the Firebase Database
-  ///@param [username] - the current username of the user
-  ///@param [newBio] - the new bio information
-  ///@return true - bio was updated successfully
-  ///@return false - bio was not updated successfully
-  bool updateBio(String newBio) {
+  ///updates the bio information of the user in the Firebase Database.
+  ///It takes [newBio] as a new parameter which is the value the current bio will change to.
+  ///It returns true if the bio was updated successfully
+  ///and false if the bio was not updated successfully.
+  Future<bool> updateBio(String newBio) async {
     try {
       firestore
           .collection('users')
-          .doc(getCurrentUserID())
+          .doc(test ? uid : await getCurrentUserID())
           .update({'bio': newBio});
+
       return true;
     } catch (e) {
       return false;
     }
   }
 
-  ///updates the first and lastname of the user in the Firebase Database
-  ///@param [username] - the current username of the user
-  ///@param [newFirstName] - the new firstname
-  ///@param [newLastName] - the new lastname
-  ///@return true - name was updated successfully
-  ///@return false - name was not updated successfully
-  bool updateName(String newFirstName, String newLastName) {
+  ///Updates the first and lastname of the user in the Firebase Database
+  ///It takes [newFirstName] and [newLastName] as parameters.
+  ///[newFirstName] is the value the current first name will change to.
+  ///[newLastName] is the value the current last name will change to.
+  ///It returns true if the first and last name was updated successfully
+  ///and false if the first and last name was not updated successfully.
+  Future<bool> updateName(String newFirstName, String newLastName) async {
     try {
-      firestore
+      await firestore
           .collection('users')
-          .doc(getCurrentUserID())
+          .doc(test ? uid : await getCurrentUserID())
           .update({'firstName': newFirstName, 'lastName': newLastName});
+
       return true;
     } catch (e) {
       return false;
@@ -255,115 +340,142 @@ class Profile {
   }
 
   ///updates the birthday of the user in the Firebase Database
-  ///@param [username] - the current username of the user
-  ///@param [newMonth] - the new month of birth
-  ///@param [newDay] - the new day of birth
-  ///@return true - birthday was updated successfully
-  ///@return false - birthday couldn't be updated
-  bool updateBirthday(String newMonth, int newDay) {
+  ///It takes [newMonth] and [newDay] as parameters.
+  ///[newMonth] is the value the current birthdayMonth will change to.
+  ///[newDay] is the value the current birthdayDay will change to.
+  ///It returns true if the birthday was updated successfully
+  ///and false if the birthday was not updated successfully.
+  Future<bool> updateBirthday(String newMonth, int newDay) async {
     try {
-      firestore
+      await firestore
           .collection('users')
-          .doc(getCurrentUserID())
+          .doc(test ? uid : await getCurrentUserID())
           .update({'birthdayMonth': newMonth, 'birthdayDay': newDay});
+
       return true;
     } catch (e) {
       return false;
     }
   }
 
-  ///updates the Profile Picture of the user in the Firebase Database
-  ///@param [username] - the current username of the user
-  ///@param [newPic] - the new picture
-  ///@return true - picture was updated successfully
-  ///@return false - picture couldn't be updated
-  bool updatePicture(String newPic) {
+  ///updates the email of the user in the Firebase Database.
+  ///It reauthenticates the user before updating the email to avoid errors with Firebase Authentication.
+  ///It also updates the email in the Firestore database for the current user.
+  ///It takes [currentEmail], [newEmail] and [password] as parameters.
+  ///[currentEmail] is the current email of the user. It is used to reauthenticate the user.
+  ///[newEmail] is the value the current email will change to.
+  ///[password] is the current password of the user. It is used to reauthenticate the user.
+  ///It returns true if the email was updated successfully
+  ///and false if the email was not updated successfully.
+  Future<bool> updateEmail(
+      String currentEmail, String newEmail, String password) async {
     try {
+      await FirebaseAuth.instance.authStateChanges().listen((User? user) async {
+        if (user != null) {
+          String curremail = user.email as String;
+          user.reauthenticateWithCredential(EmailAuthProvider.credential(
+              email: curremail, password: password));
+          user.updateEmail(newEmail);
+          firestore
+              .collection('users')
+              .doc(test ? uid : await getCurrentUserID())
+              .update({
+            'email': newEmail,
+          });
+        }
+      });
+
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  ///Updates the password of the user in the Firebase Database.
+  ///It reauthenticates the user before updating the email to avoid errors with Firebase Authentication.
+  ///[email] is the current email of the user. It is used to reauthenticate the user.
+  ///[currentPassword] is the current password of the user. It is used to reauthenticate the user.
+  ///[newPassword] is the value the current password will change to.
+  ///It returns true if the password was updated successfully
+  ///and false if the password was not updated successfully.
+  Future<bool> updatePassword(
+      String email, String currentPassword, String newPassword) async {
+    try {
+      await FirebaseAuth.instance.authStateChanges().listen((User? user) async {
+        if (user != null) {
+          await user.reauthenticateWithCredential(EmailAuthProvider.credential(
+              email: email, password: currentPassword));
+          await user.updatePassword(newPassword);
+        }
+      });
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  ///Signs out the user from the system.
+  ///It returns true if the user is signed out successfully
+  ///and false if the user couldn't be signed out.
+  Future<bool> signOut() async {
+    try {
+      await FirebaseAuth.instance.signOut();
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  ///Deletes the account of the user from the Firebase Database.
+  ///[email] is the current email of the user. It is used to reauthenticate the user.
+  ///[password] is the current password of the user. It is used to reauthenticate the user.
+  ///It returns true if the account is deleted successfully
+  ///and false if the account couldn't be deleted.
+  Future<bool> deleteAccount(String email, String password) async {
+    try {
+      // delete all categories that this user created. In the collection 'categories',
+      // get the document with the id=id of the user, find all categories and delete them
+      List<String> categories = await CategoryRepo().getPrivateCategories();
+      for (String category in categories) {
+        await CategoryRepo().deleteCategory(category);
+      }
+      await CategoryRepo().deleteUserCollection();
+
+      // delete all record in all public leaderboards where the user appears
+      categories = await CategoryRepo().getPublicCategories();
+      for (String category in categories) {
+        Leaderboard leaderboard = await Leaderboard.createPublic(
+            category, (await getCurrentUserUsername())!);
+        await leaderboard.removeUserFromPublicLeaderboards();
+        await leaderboard.removeUserFromAllLeaderboard();
+      }
+      firestore
+          .collection('UserStatistics')
+          .doc(await getCurrentUserUsername())
+          .delete();
       firestore
           .collection('users')
-          .doc(getCurrentUserID())
-          .update({'profilePicture': newPic});
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
-
-  ///updates the email of the user in the Firebase Database
-  ///@param [currentEmail] - the current email of the user
-  ///@param [newEmail] - the new email
-  ///@param [password] - the password of the user for authentication
-  ///@return true - email was updated successfully
-  ///@return false - email couldn't be updated
-  bool updateEmail(String currentEmail, String newEmail, String password) {
-    try {
-      FirebaseAuth.instance.authStateChanges().listen((User? user) {
+          .doc(test ? uid : await getCurrentUserID())
+          .delete();
+      await FirebaseAuth.instance.authStateChanges().listen((User? user) async {
         if (user != null) {
-          user.reauthenticateWithCredential(EmailAuthProvider.credential(
-              email: currentEmail, password: password));
-          user.updateEmail(newEmail);
-        }
-      });
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
-
-  ///updates the password of the user in the Firebase Database
-  ///@param [email] - the current username of the user for authentication
-  ///@param [currentPassword] - the current password of the user
-  ///@param [newPassword] - the new password
-  ///@return true - password was updated successfully
-  ///@return false - password couldn't be updated
-  bool updatePassword(
-      String email, String currentPassword, String newPassword) {
-    try {
-      FirebaseAuth.instance.authStateChanges().listen((User? user) {
-        if (user != null) {
-          user.reauthenticateWithCredential(EmailAuthProvider.credential(
-              email: email, password: currentPassword));
-          user.updatePassword(newPassword);
-        }
-      });
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
-
-  ///signs out the user from the system
-  ///@return true - the user is signed out successfully
-  ///@return false - the user couldn't be signed out
-  bool signOut() {
-    try {
-      FirebaseAuth.instance.signOut();
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
-
-  ///deletes the account of the user from the Firebase Database
-  ///@param [email] - the current username of the user needed for confirmation
-  ///@param [password] - the current password of the user needed for confirmation
-  ///@return true - account is deleted successfully
-  ///@return false - account couldn't be deleted
-  bool deleteAccount(String email, String password) {
-    try {
-      FirebaseAuth.instance.authStateChanges().listen((User? user) {
-        if (user != null) {
-          user.reauthenticateWithCredential(
+          await user.reauthenticateWithCredential(
               EmailAuthProvider.credential(email: email, password: password));
-          user.delete();
+          await user.delete();
         }
       });
+
       return true;
     } catch (e) {
       return false;
     }
   }
 
+  ///Updates the Profile Picture of the user in the Firebase Database and in the Firebase Storage.
+  ///The new image's reference is stored in Firebase Storage with the current user's uid
+  ///and the link to the pictue is stored in the current user's Firebase Database document.
+  ///It returns true if the picture was updated successfully
+  ///and false if the picture was not updated successfully.
   Future<void> pickProfileImage() async {
     final image = await ImagePicker().pickImage(
       source: ImageSource.gallery,
@@ -371,75 +483,55 @@ class Profile {
       maxHeight: 512,
       imageQuality: 75,
     );
-    Reference ref = FirebaseStorage.instance
-        .ref()
-        .child("profilePictures/${getCurrentUserID()}");
-    // File file = File(image!.path);
-    // print(file.path);
-    // final metadata = SettableMetadata(
-    //     contentType: 'imange/png',
-    //     customMetadata: {'picked-file-path': file.path});
-    // final uploadTask = ref.putData(await file.readAsBytes(), metadata);
-    // ref.getDownloadURL().then((value) {
-    //   print(value);
-    //   firestore
-    //       .collection('users')
-    //       .doc(getCurrentUserID())
-    //       .update({'profilePicture': value});
-    // });
-    // try {
-    //   await ref.putFile(file);
-    // } catch (e) {
-    //   print(e);
-    // }
+    Reference ref =
+        await FirebaseStorage.instance.ref().child("profilePictures/${uid}");
     final fileBytes = await image!.readAsBytes();
-// var now = DateTime.now().millisecondsSinceEpoch;
-// StorageReference reference =
-//   FirebaseStorage.instance.ref().child("images/$now");
-
     try {
       await ref.putData(fileBytes);
-      ref.getDownloadURL().then((value) {
+      ref.getDownloadURL().then((value) async {
         print(value);
-        firestore
+        await firestore
             .collection('users')
-            .doc(getCurrentUserID())
+            .doc(uid)
             .update({'profilePicture': value});
       });
     } catch (e) {
       print(e);
     }
-
-    // uploadTask.snapshotEvents.listen((TaskSnapshot taskSnapshot) {
-    //   switch (taskSnapshot.state) {
-    //     case TaskState.running:
-    //       final progress =
-    //           100.0 * (taskSnapshot.bytesTransferred / taskSnapshot.totalBytes);
-    //       print("Upload is $progress% complete.");
-    //       break;
-    //     case TaskState.paused:
-    //       print("Upload is paused.");
-    //       break;
-    //     case TaskState.canceled:
-    //       print("Upload was canceled");
-    //       break;
-    //     case TaskState.error:
-    //       // Handle unsuccessful uploads
-    //       print("Upload FAILED");
-    //       break;
-    //     case TaskState.success:
-    //       // Handle successful uploads on complete
-    //       // ...
-    //       break;
-    //   }
-    // });
   }
-
-  // File getProfilePicture(){
-  //   Reference ref = FirebaseStorage.instance
-  //       .ref()
-  //       .child("profilePictures/${getCurrentUserID()}")
-  // }
   //END OF METHODS FOR PROFILE VIEW
 
+  /// Returns a list of quizzes owned by the currently logged in user.
+  ///
+  /// Takes in an optional [firestore] parameter. If it's passed the code will
+  /// assume the developer is in testing and give it default values, if not, it
+  /// will use the default firestore instance.
+  static Future<List<Quiz>> getUserQuizzes(
+      {FirebaseFirestore? firestore}) async {
+    String? uid;
+    if (firestore == null) {
+      uid = await getCurrentUserID();
+      firestore = FirebaseFirestore.instance;
+    } else {
+      uid = 'test123456789';
+    }
+
+    List<Quiz> quizzes = [];
+
+    QuerySnapshot snapshot = await firestore
+        .collection('quizzes')
+        .where('creatorID', isEqualTo: uid)
+        .get();
+
+    for (var doc in snapshot.docs) {
+      Quiz? tempQuiz;
+
+      await Quiz().retrieveQuizFromId(id: doc.id).then((value) {
+        tempQuiz = value;
+        quizzes.add(tempQuiz!);
+      });
+    }
+
+    return quizzes;
+  }
 }

@@ -15,7 +15,7 @@ class ProfileViewController {
   ProfileViewController();
 
   ///[success] a list that collects returned values of edit methods
-  List<bool> success = new List.empty();
+  List<bool> success = [true];
 
   ///getter methods for user data
   Profile get user => player;
@@ -29,58 +29,54 @@ class ProfileViewController {
 
   ///changes the [currentUsername] with the given new [newUsername]
   ///and the value is added to the [success] list
-  void editUsername(String newUsername) {
-    success = [...success, player.updateUsername(newUsername)];
+  Future<void> editUsername(String newUsername) async {
+    success = [...success, await player.updateUsername(newUsername)];
   }
 
   ///changes the [currentEmail] with the given [newEmail] and confirms it through [password]
   ///and the value is added to the [success] list
-  void editEmail(String currentEmail, String newEmail, String password) {
+  Future<void> editEmail(
+      String currentEmail, String newEmail, String password) async {
     success = [
       ...success,
-      player.updateEmail(currentEmail, newEmail, password)
+      await player.updateEmail(currentEmail, newEmail, password)
     ];
   }
 
   ///changes the current name with the given [newFirstname] and [newLastname] and requires [username]
   ///and the valufe is added to the [success] list
-  void editName(String newFirstname, String newLastname) {
-    success = [...success, player.updateName(newFirstname, newLastname)];
+  Future<void> editName(String newFirstname, String newLastname) async {
+    success = [...success, await player.updateName(newFirstname, newLastname)];
   }
 
   ///changes the current bio with the given [newBio] and requires [username]
   ///and the value is added to the [success] list
-  void editBio(String newBio) {
-    success = [...success, player.updateBio(newBio)];
-  }
-
-  ///changes the current profile picture with the given [newPic]
-  ///and the value is added to the [success] list
-  void editProfilePic(String newPic) {
-    success = [...success, player.updatePicture(newPic)];
+  Future<void> editBio(String newBio) async {
+    success = [...success, await player.updateBio(newBio)];
   }
 
   ///changes the current password [currentPassword] with the given [newPassword] and confirms it through [email]
   ///and the value is added to the [success] list
-  void editPassword(String currentPassword, String newPassword, String email) {
+  Future<void> editPassword(
+      String currentPassword, String newPassword, String email) async {
     success = [
       ...success,
-      player.updatePassword(email, currentPassword, newPassword)
+      await player.updatePassword(email, currentPassword, newPassword)
     ];
   }
 
   ///deletes the account by confirming it via [email] and [password]
   ///and the value is added to the [success] list
-  bool deleteAccount(String email, String password) {
+  Future<bool> deleteAccount(String email, String password) async {
     if (email.isNotEmpty && password.isNotEmpty) {
-      return player.deleteAccount(email, password);
+      return await player.deleteAccount(email, password);
     }
     return false;
   }
 
   ///signs out of the account
-  bool signOut() {
-    return player.signOut();
+  Future<bool> signOut() async {
+    return await player.signOut();
   }
 
   ///this is the method that is called in profile views (both mobile and desktop)

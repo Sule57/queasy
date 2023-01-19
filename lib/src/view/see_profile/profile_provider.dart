@@ -25,13 +25,14 @@ class ProfileProvider with ChangeNotifier {
   String get profilePicture => player.profilePicture.toString();
   String get birthdayMonth => player.birthdayMonth.toString();
   int? get birthdayDay => player.birthdayDay;
+  Map<String, dynamic> get scores => player.publicScore;
 
   ProfileProvider() {}
 
   Future<bool> setProfile() async {
-    if (getCurrentUserID() != null) {
-      currentUID = getCurrentUserID()!;
-      Profile? p = await Profile.getProfilefromUID(currentUID);
+    if (await getCurrentUserID() != null) {
+      currentUID = await getCurrentUserID()!;
+      Profile? p = await Profile.getProfileFromUID(currentUID);
       if (p != null) {
         player = p;
         notifyListeners();
@@ -39,5 +40,37 @@ class ProfileProvider with ChangeNotifier {
       }
     }
     return false;
+  }
+
+  Future<bool> updateProfile() async {
+    if (getCurrentUserID() != null) {
+      currentUID = getCurrentUserID()!;
+      Profile? p = await Profile.getProfileFromUID(currentUID);
+      if (p != null) {
+        player = p;
+        notifyListeners();
+        return true;
+      }
+    }
+    return false;
+  }
+
+  List<double> getGraphData() {
+    List<double> data = [];
+    data.add(0.0);
+    for (var value in player.publicScore.values) {
+      data.add(value / 1000);
+    }
+    return data;
+  }
+
+  List<String> getGraphKeys() {
+    List<String> data = [];
+    data.add("");
+    for (var value in player.publicScore.keys) {
+      data.add(value);
+    }
+    print(data);
+    return data;
   }
 }

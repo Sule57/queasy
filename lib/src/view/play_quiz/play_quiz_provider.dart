@@ -49,16 +49,20 @@ import '../../model/quiz.dart';
 /// decremented every second. It gets reset to 15 seconds for every new
 /// question.
 ///
+/// The parameter [_quizzResult] stores the result of the quizz and
+/// later is passed to the StatisticsProvider imp
+///
 /// The parameter [_timeLeft] is the time left for the user to answer the
 /// question. It is initialized to 15 seconds and is decremented every second.
 /// It gets reset to 15 seconds for every new question. It is used to display
 /// the time left in the UI. It is also used to calculate the score.
-class QuizProvider with ChangeNotifier {
+class PlayQuizProvider with ChangeNotifier {
   late Quiz _quiz;
   late Profile player;
   late String? _quizCategory;
   late String? _quizId;
   late int _totalQuestions = 5;
+  late UserQuizzResult _quizzResult;
   int _currentQuestionIndex = 0;
   int _currentPoints = 0;
   int correctAnswers = 0;
@@ -69,9 +73,12 @@ class QuizProvider with ChangeNotifier {
   get quizCategory => _quizCategory;
   get quiz => _quiz;
   get timeLeft => _timeLeft.inSeconds.toString();
+  get currentPoints => _currentPoints;
+  get quizzResult => _quizzResult;
+  get currentQuestionAnswered => _currentQuestionAnswered;
 
 // assign the current user to the app
-  QuizProvider() {
+  PlayQuizProvider() {
     // default profile
     player = Profile(
       username: 'Savo',
@@ -88,7 +95,7 @@ class QuizProvider with ChangeNotifier {
     if (userId != null) {
       // very important class method creating Profile instance
       // from profile UID !!!!
-      profile = await Profile.getProfilefromUID(userId);
+      profile = await Profile.getProfileFromUID(userId);
       if (profile != null) {
         player = profile;
       } else {
@@ -128,18 +135,17 @@ class QuizProvider with ChangeNotifier {
     bool isLoading = true;
 
     if (_quizCategory != null && _quizId == null) {
-      _quiz = await Quiz.createRandom(
-        category: Category(
-          name: _quizCategory!,
-        ),
+      _quiz = await Quiz().getRandomQuestions(
+        category: Category(name: _quizCategory!),
         noOfQuestions: _totalQuestions,
         isPublic: true,
-      ).getRandomQuestions();
+      );
       isLoading = false;
     } else if (_quizId != null && _quizCategory == null) {
       _quiz = await Quiz().retrieveQuizFromId(
         id: _quizId!,
       );
+      print(_quiz.noOfQuestions);
       _quizCategory = _quiz.category.name;
       _totalQuestions = _quiz.noOfQuestions;
       isLoading = false;
@@ -177,6 +183,13 @@ class QuizProvider with ChangeNotifier {
     return '${_currentQuestionIndex + 1} / $_totalQuestions';
   }
 
+  /// Indicates that the user has answered the current question.
+  /// It sets the [_currentQuestionAnswered] to true.
+  void toggleQuestionAnswered() {
+    _currentQuestionAnswered = true;
+    notifyListeners();
+  }
+
   /// Updates [_currentQuestionIndex] and [_currentQuestionAnswered] to
   /// display the next question in the UI. It also resets the timer.
   /// If there are no more question, it calls the method [endQuiz].
@@ -204,22 +217,29 @@ class QuizProvider with ChangeNotifier {
       if (stat != null) {
         String name = _quizCategory! + (stat.userQuizzes.length + 1).toString();
 
-        UserQuizzResult r = UserQuizzResult(
+        //IMPORTANT YOU CANNOT PLAY 2 QUIZZES AT THE SAME TIME OTHERWISE THIS WILL BREAK !!!
+        // YOU CANNOT CALL STATISTICS PROVIDER BEFORE QUIZ PROVIDER !!!
+        _quizzResult = UserQuizzResult(
             name, correctAnswers, _totalQuestions, _secondsPassed);
-
-        stat.addUserQuizzResult(r);
+        stat.addUserQuizzResult(_quizzResult);
         await stat.saveStatistics();
       }
     }
-    if (_quizCategory != null) {
+    if (_quiz.isPublic == true) {
       //TODO check this
-      player.updateScore(_quizCategory!, _currentPoints);
-      print('seconds passed at the end of the quizz: $_secondsPassed');
+      await player.updateScore(_quizCategory!, _currentPoints, true);
+    } else {
+      await player.updateScore(_quizCategory!, _currentPoints, false);
     }
+
     navigator.currentState?.pop();
     navigator.currentState?.push(
       MaterialPageRoute(builder: (_) => StatisticsView()),
     );
+    _secondsPassed = 0;
+    correctAnswers = 0;
+    _totalQuestions =
+        5; //after playing private quiz, quiz length is set to 3 for any quiz played after, setting to 5 here to fix
   }
 
   /// Edits the current score of the user. Takes [isCorrect] as parameter to
@@ -280,7 +300,6 @@ class QuizProvider with ChangeNotifier {
     } else {
       _timeLeft = Duration(seconds: seconds);
       _secondsPassed++;
-      print('$_secondsPassed seconds passed');
       notifyListeners();
     }
   }

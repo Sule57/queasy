@@ -1,16 +1,63 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:queasy/src/view/see_profile/profile_view_desktop.dart';
 import 'package:queasy/src/view/see_profile/profile_view_mobile.dart';
 
-///This is Profile View
-///It displays Mobile or Desktop versions of Profile View depending on width of the screen
-class ProfileView extends StatelessWidget {
+import '../statistics/statistics_provider.dart';
+import 'profile_provider.dart';
+
+/// Content for [ProfileView].
+///
+/// Uses a [StatefulWidget] to display questions and answers and update the
+/// text contained in the widgets.
+class ProfileView extends StatefulWidget {
+  const ProfileView({Key? key, this.category, this.id}) : super(key: key);
+
+  final String? category;
+  final String? id;
+
+  /// Creates a [ProfileView] state.
+  @override
+  State<ProfileView> createState() => _ProfileViewContentState();
+}
+
+/// State for [ProfileViewContent].
+class _ProfileViewContentState extends State<ProfileView> {
+  bool isLoading = true;
+
+  init() async {
+    isLoading = !(await Provider.of<ProfileProvider>(context, listen: false)
+        .setProfile());
+    await Provider.of<StatisticsProvider>(context, listen: false)
+        .initStatisticsProvider();
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    init();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  /// Builds the content depending on the screen size, with a threshold of 700
+  /// pixels. If the screen is smaller than 700 pixels, the function displays
+  /// [ProfileViewMobileContent]. Otherwise, it displays [ProfileViewDesktopContent].
+  /// It also displays a [CircularProgressIndicator] while the profile data is loading.
+  /// When the profile data is loaded, the [CircularProgressIndicator] is replaced by
+  /// the content.
   @override
   Widget build(BuildContext context) {
-    ///if width of the device is less than 700 then UserProfileMobile is shown
-    ///if more than 700 then the user sees UserProfileDesktop
-    return MediaQuery.of(context).size.width > 700
-        ? ProfileViewDesktop()
-        : ProfileViewMobile();
+    return isLoading
+        ? const Center(
+            child: CircularProgressIndicator(),
+          )
+        : MediaQuery.of(context).size.width > 700
+            ? ProfileViewDesktop()
+            : ProfileViewMobile();
   }
 }

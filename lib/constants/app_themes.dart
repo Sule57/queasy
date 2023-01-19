@@ -1,3 +1,11 @@
+/// ****************************************************************************
+/// Created by Julia Agüero
+/// Collaborator: Endia Clark
+///
+/// This file is part of the project "Qeasy"
+/// Software Project on Technische Hochschule Ulm
+/// ****************************************************************************
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -14,11 +22,11 @@ Color dark = const Color(0xff0d0106);
 
 /// Defines the themes of the app.
 ///
-/// The [lightTheme] is the default theme of the app, selected at the start.
-/// The [darkTheme] is the theme that is selected when the user presses the
-/// dark mode button.
+/// The app has two themes: light and dark. The light theme is the default theme.
+/// The dark theme is used when the user enables dark mode in the app settings.
 class AppThemes {
-  // Theme taken by the app if user has selects the light theme.
+  /// Default theme of the app, taken by the app if user has selects the light
+  /// theme.
   ThemeData lightTheme = ThemeData(
     colorScheme: ColorScheme.light(
       primary: purple,
@@ -63,11 +71,11 @@ class AppThemes {
         color: dark,
       ),
       subtitle1: TextStyle(
-        fontSize: 16,
+        fontSize: 24,
         color: dark,
       ),
       subtitle2: TextStyle(
-        fontSize: 14,
+        fontSize: 16,
         color: dark,
       ),
       bodyText1: TextStyle(
@@ -78,7 +86,6 @@ class AppThemes {
         fontSize: 10,
         color: dark,
       ),
-
       button: TextStyle(
         fontSize: 14,
         fontWeight: FontWeight.bold,
@@ -95,7 +102,7 @@ class AppThemes {
     ),
   );
 
-  // Theme taken by the app if user has selects the dark theme.
+  /// Theme taken by the app if user has selects the dark theme.
   ThemeData darkTheme = ThemeData(
     colorScheme: ColorScheme.dark(
       primary: purple,
@@ -104,7 +111,7 @@ class AppThemes {
       onSecondary: dark,
       tertiary: green,
       onTertiary: light,
-      background: dark,
+      background: Colors.black87,
       onBackground: Colors.white,
     ),
     fontFamily: GoogleFonts.nunito().fontFamily,
@@ -140,11 +147,11 @@ class AppThemes {
         color: Colors.white,
       ),
       subtitle1: TextStyle(
-        fontSize: 16,
+        fontSize: 24,
         color: Colors.white,
       ),
       subtitle2: TextStyle(
-        fontSize: 14,
+        fontSize: 16,
         color: Colors.white,
       ),
       bodyText1: TextStyle(

@@ -13,6 +13,9 @@ import 'package:queasy/src/view/see_profile/profile_view.dart';
 import 'package:queasy/src/view/see_profile/profile_view_controller.dart';
 import '../category_selection_view.dart';
 import '../login/login_view.dart';
+import 'package:provider/provider.dart';
+import 'package:queasy/src.dart';
+import 'join_quiz_popup.dart';
 
 /// Defines the navigation bar used in big screens.
 ///
@@ -28,17 +31,19 @@ class SideNavigation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TextStyle textStyle = Theme.of(context).textTheme.subtitle1!.copyWith(
-          color: Colors.grey,
+    final theme = Provider.of<ThemeProvider>(context).currentTheme;
+    TextStyle textStyle = Theme.of(context).textTheme.subtitle2!.copyWith(
+          fontSize: 18,
+          color: theme.colorScheme.onBackground,
         );
 
     return Container(
       width: width,
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.background,
+        color: theme.colorScheme.background,
         border: Border(
           right: BorderSide(
-            color: Colors.grey,
+            color: theme.colorScheme.onBackground,
             width: 1,
           ),
         ),
@@ -103,9 +108,10 @@ class SideNavigation extends StatelessWidget {
                     "Join Quiz",
                     style: textStyle,
                   ),
-                  onTap: () {
-                    //TODO alert dialog to input key
-                  },
+                  onTap: () => showDialog(
+                    context: context,
+                    builder: (BuildContext context) => JoinQuizPopup(),
+                  ),
                 ),
                 ListTile(
                   leading: Icon(Icons.list),
@@ -114,7 +120,19 @@ class SideNavigation extends StatelessWidget {
                     style: textStyle,
                   ),
                   onTap: () {
-                    //TODO CategorySelectionView() but with user's categories
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => PrivateCategorySelectionView()));
+                  },
+                ),
+                ListTile(
+                  leading: Icon(Icons.fact_check_outlined),
+                  title: Text(
+                    "My quizzes",
+                    style: textStyle,
+                  ),
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => MyQuizzesView()));
                   },
                 ),
               ],
@@ -148,8 +166,8 @@ class SideNavigation extends StatelessWidget {
                       color: Theme.of(context).colorScheme.error,
                     ),
                   ),
-                  onTap: () {
-                    bool success = ProfileViewController().signOut();
+                  onTap: () async {
+                    bool success = await ProfileViewController().signOut();
                     if (success) {
                       Navigator.of(context).pushReplacement(
                         MaterialPageRoute(

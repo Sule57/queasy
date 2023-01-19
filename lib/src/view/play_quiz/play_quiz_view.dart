@@ -9,13 +9,13 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:queasy/constants/app_themes.dart';
 import 'package:queasy/src.dart';
-import 'package:queasy/src/view/play_quiz/quiz_provider.dart';
+import 'package:queasy/src/view/play_quiz/play_quiz_provider.dart';
 import 'package:queasy/src/view/play_quiz/widgets/answer_button.dart';
 import 'package:queasy/src/view/play_quiz/widgets/exit_button.dart';
 import 'package:queasy/src/view/play_quiz/widgets/question_container.dart';
 import 'package:queasy/src/view/play_quiz/widgets/score_tracking.dart';
 import 'package:queasy/src/view/statistics/statistics_view.dart';
-import 'package:queasy/src/view/widgets/rounded-button.dart';
+import 'package:queasy/src/view/widgets/rounded_button.dart';
 
 /// This is the main quiz view.
 ///
@@ -26,26 +26,26 @@ import 'package:queasy/src/view/widgets/rounded-button.dart';
 ///
 /// The widget takes a parameter [category] when it is created. This parameter
 /// is used to get the questions from the database.
-class QuizView extends StatefulWidget {
+class PlayQuizView extends StatefulWidget {
   final String? category;
   final String? id;
 
-  /// Constructor for [QuizView].
-  const QuizView({Key? key, this.category, this.id}) : super(key: key);
+  /// Constructor for [PlayQuizView].
+  const PlayQuizView({Key? key, this.category, this.id}) : super(key: key);
 
-  /// Creates a [QuizView] state.
+  /// Creates a [PlayQuizView] state.
   @override
-  State<QuizView> createState() => _QuizViewState();
+  State<PlayQuizView> createState() => _PlayQuizViewState();
 }
 
-/// State for [QuizView].
+/// State for [PlayQuizView].
 ///
 /// This state is responsible for updating the view when the user answers a
 /// question.
 ///
 /// The state has a parameter [category] taken from the widget. This parameter
 /// is used to get the questions from the database.
-class _QuizViewState extends State<QuizView> {
+class _PlayQuizViewState extends State<PlayQuizView> {
   get category => widget.category;
   get id => widget.id;
 
@@ -66,7 +66,7 @@ class _QuizViewState extends State<QuizView> {
   }
 }
 
-/// Background for [QuizView].
+/// Background for [PlayQuizView].
 ///
 /// Uses a [StatelessWidget] to display the background colors.
 class QuizViewBackground extends StatelessWidget {
@@ -103,7 +103,7 @@ class QuizViewBackground extends StatelessWidget {
   }
 }
 
-/// Content for [QuizView].
+/// Content for [PlayQuizView].
 ///
 /// Uses a [StatefulWidget] to display questions and answers and update the
 /// text contained in the widgets.
@@ -129,12 +129,12 @@ class _QuizViewContentState extends State<QuizViewContent> {
     id = widget.id;
 
     isLoading = await context
-        .read<QuizProvider>()
+        .read<PlayQuizProvider>()
         .startQuiz(category: category, id: id);
 
-    category = context.read<QuizProvider>().quizCategory;
+    category = context.read<PlayQuizProvider>().quizCategory;
 
-    Provider.of<QuizProvider>(context, listen: false).startTimer();
+    Provider.of<PlayQuizProvider>(context, listen: false).startTimer();
 
     setState(() {});
   }
@@ -164,12 +164,12 @@ class _QuizViewContentState extends State<QuizViewContent> {
   //   super.didChangeDependencies();
   // }
 
-  /// This function is called every time [QuizView] stops being displayed on
+  /// This function is called every time [PlayQuizView] stops being displayed on
   /// screen. It stops the timer.
   @override
   void deactivate() {
     print("Quiz View deactivated");
-    Provider.of<QuizProvider>(context, listen: false).stopTimer();
+    Provider.of<PlayQuizProvider>(context, listen: false).stopTimer();
     super.deactivate();
   }
 
@@ -193,7 +193,7 @@ class _QuizViewContentState extends State<QuizViewContent> {
   }
 }
 
-/// Content for [QuizView] on desktop devices and bigger screens. It shows
+/// Content for [PlayQuizView] on desktop devices and bigger screens. It shows
 /// the question and the answer in 2 rows of 2 columns.
 class QuizViewDesktopContent extends StatelessWidget {
   const QuizViewDesktopContent({Key? key}) : super(key: key);
@@ -223,7 +223,7 @@ class QuizViewDesktopContent extends StatelessWidget {
             ),
           ),
           Text(
-            Provider.of<QuizProvider>(context).quizCategory,
+            Provider.of<PlayQuizProvider>(context).quizCategory,
             style: Theme.of(context).textTheme.headline2,
           ),
           const ScoreTracking(),
@@ -262,7 +262,7 @@ class QuizViewDesktopContent extends StatelessWidget {
   }
 }
 
-/// Content for [QuizView] on mobile devices and smaller screens. It shows
+/// Content for [PlayQuizView] on mobile devices and smaller screens. It shows
 /// the question and the answers in one column.
 class QuizViewMobileContent extends StatelessWidget {
   const QuizViewMobileContent({Key? key}) : super(key: key);
@@ -288,7 +288,7 @@ class QuizViewMobileContent extends StatelessWidget {
               child: ExitButton(),
             ),
             Text(
-              Provider.of<QuizProvider>(context).quizCategory,
+              Provider.of<PlayQuizProvider>(context).quizCategory,
               style: Theme.of(context).textTheme.headline2,
             ),
             const ScoreTracking(),

@@ -28,7 +28,7 @@ apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 
 android {
-    compileSdkVersion flutter.compileSdkVersion
+    compileSdkVersion 33
     ndkVersion flutter.ndkVersion
 
     compileOptions {
@@ -61,4 +61,8 @@ android {
 
 flutter {
     source '../..'
+}
+
+dependencies {
+    implementation 'com.facebook.android:facebook-login:[8.1)'
 }

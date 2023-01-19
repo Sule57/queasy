@@ -1,5 +1,6 @@
 /// ****************************************************************************
 /// Created by Gullu Gasimova
+/// Collaborators: Endia Clark
 ///
 /// This file is part of the project "Qeasy"
 /// Software Project on Technische Hochschule Ulm
@@ -8,15 +9,21 @@
 import 'package:draw_graph/models/feature.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_profile_picture/flutter_profile_picture.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:motion_tab_bar_v2/motion-tab-bar.dart';
 import 'package:provider/provider.dart';
 import 'package:queasy/constants/app_themes.dart';
+import 'package:queasy/src/view/home_view.dart';
 import 'package:queasy/src/view/see_profile/widgets/theme_button.dart';
 import 'package:queasy/src/view/login/login_view.dart';
 import 'package:queasy/src/view/see_profile/profile_view_controller.dart';
 import 'package:draw_graph/draw_graph.dart';
 import '../../../constants/theme_provider.dart';
 import '../registration/register_view.dart';
+import '../see_leaderboard/leaderboard_view.dart';
+import '../statistics/statistics_provider.dart';
 import 'profile_provider.dart';
+import 'widgets/statistics_graph.dart';
 
 ///This is UserProfileMobile view
 ///It displays mobile version of the profile page
@@ -38,7 +45,7 @@ class ProfileMobileState extends State<ProfileViewMobile> {
   ///Text editing controllers to save user input
   TextEditingController firstname = new TextEditingController();
   TextEditingController lastname = new TextEditingController();
-  TextEditingController username = new TextEditingController();
+  // TextEditingController username = new TextEditingController();
   TextEditingController bio = new TextEditingController();
   TextEditingController currentPassword = new TextEditingController();
   TextEditingController newPassword = new TextEditingController();
@@ -64,21 +71,12 @@ class ProfileMobileState extends State<ProfileViewMobile> {
   ///[formKeyDelete] used for Form in DeleteAccount button
   final formKeyDelete = GlobalKey<FormState>();
 
-  ///[features] is to store data used for line graph. Scores must be represented as decimals (eg. 3 points = 0.3).
-  final List<Feature> features = [
-    Feature(
-      title: "Public Quizzes",
-      color: purple,
-      data: [0.3, 0.6, 0.8, 0.9, 1, 1.2],
-    ),
-  ];
-
   @override
   void dispose() {
     /// Cleans up the controllers when the widget is disposed.
     firstname.dispose();
     lastname.dispose();
-    username.dispose();
+    // username.dispose();
     bio.dispose();
     currentPassword.dispose();
     newPassword.dispose();
@@ -208,7 +206,8 @@ class ProfileMobileState extends State<ProfileViewMobile> {
                 bottom: 7,
               ),
               child: Text(
-                  "${Provider.of<ProfileProvider>(context).firstName} ${Provider.of<ProfileProvider>(context).lastName}"),
+                  "${Provider.of<ProfileProvider>(context).firstName} ${Provider.of<ProfileProvider>(context).lastName}",
+                  style: TextStyle(fontSize: 15)),
             ),
 
             ///[Container] to show email of the user
@@ -216,7 +215,8 @@ class ProfileMobileState extends State<ProfileViewMobile> {
               padding: EdgeInsets.only(
                 bottom: 7,
               ),
-              child: Text(Provider.of<ProfileProvider>(context).email),
+              child: Text(Provider.of<ProfileProvider>(context).email,
+                  style: TextStyle(fontSize: 15)),
             ),
 
             ///[Container] to display Bio of the user
@@ -232,12 +232,12 @@ class ProfileMobileState extends State<ProfileViewMobile> {
                     children: [
                       Padding(
                         padding: EdgeInsets.all(7),
-                        child: Text("Bio"),
+                        child: Text("Bio", style: TextStyle(fontSize: 20)),
                       ),
                       Padding(
                           padding: EdgeInsets.all(7),
-                          child:
-                              Text(Provider.of<ProfileProvider>(context).bio))
+                          child: Text(Provider.of<ProfileProvider>(context).bio,
+                              style: TextStyle(fontSize: 15)))
                     ],
                   ),
                 ),
@@ -247,18 +247,6 @@ class ProfileMobileState extends State<ProfileViewMobile> {
                       .colorScheme
                       .background,
                   borderRadius: BorderRadius.all(Radius.circular(20)),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Provider.of<ThemeProvider>(context)
-                          .currentTheme
-                          .colorScheme
-                          .onBackground
-                          .withOpacity(0.05), //color of shadow
-                      spreadRadius: 0, //spread radius
-                      blurRadius: 10, // blur radius
-                      offset: Offset(0, 4), // changes position of shadow (x, y)
-                    ),
-                  ],
                 )),
 
             ///[Container] to display Personal Statistics of the user
@@ -278,42 +266,48 @@ class ProfileMobileState extends State<ProfileViewMobile> {
                       children: [
                         Padding(
                             padding: EdgeInsets.all(7),
-                            child: Text("Personal Statistics")),
+                            child: Text("Personal Statistics",
+                                style: TextStyle(fontSize: 20))),
                         Padding(
                             padding: EdgeInsets.all(7),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Column(
-                                  children: [Text("5"), Text("completed")],
+                                  children: [
+                                    Text(
+                                        Provider.of<StatisticsProvider>(context)
+                                            .numberQuiz
+                                            .toString(),
+                                        style: TextStyle(fontSize: 15)),
+                                    Text("Completed",
+                                        style: TextStyle(fontSize: 15))
+                                  ],
                                 ),
                                 SizedBox(width: 50),
                                 Column(
-                                  children: [Text("5"), Text("10/10 %")],
+                                  children: [
+                                    Text(
+                                        Provider.of<StatisticsProvider>(context)
+                                            .overallPercentage
+                                            .toString(),
+                                        style: TextStyle(fontSize: 15)),
+                                    Text("Overall Score Percentage",
+                                        style: TextStyle(fontSize: 15))
+                                  ],
                                 ),
                               ],
                             )),
                         Padding(
                             padding: EdgeInsets.all(7),
-                            child: Text("Score Distribution")),
-                        LineGraph(
-                          features: features,
-                          size: Size(420, 450),
-                          labelX: [
-                            'Quiz 1',
-                            'Quiz 2',
-                            'Quiz 3',
-                            'Quiz 4',
-                            'Quiz 5',
-                            'Quiz 6'
-                          ],
-                          labelY: ['2', '4', '6', '8', '10'],
-                          showDescription: true,
-                          graphColor: Provider.of<ThemeProvider>(context)
-                              .currentTheme
-                              .colorScheme
-                              .onBackground,
-                        ),
+                            child: Text("Quiz Points Graph",
+                                style: TextStyle(fontSize: 20))),
+                        Provider.of<StatisticsProvider>(context).numberQuiz == 0
+                            ? Text(
+                                "Complete a Quiz to Start your Graph!",
+                                style: TextStyle(fontSize: 15),
+                              )
+                            : StatisticsGraph()
                       ],
                     ),
                   ),
@@ -323,19 +317,6 @@ class ProfileMobileState extends State<ProfileViewMobile> {
                         .colorScheme
                         .background,
                     borderRadius: BorderRadius.all(Radius.circular(20)),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Provider.of<ThemeProvider>(context)
-                            .currentTheme
-                            .colorScheme
-                            .onBackground
-                            .withOpacity(0.05), //color of shadow
-                        spreadRadius: 0, //spread radius
-                        blurRadius: 10, // blur radius
-                        offset:
-                            Offset(0, 4), // changes position of shadow (x, y)
-                      ),
-                    ],
                   )),
             ),
             Container(
@@ -360,7 +341,8 @@ class ProfileMobileState extends State<ProfileViewMobile> {
                                     alignment: Alignment.topCenter,
                                     child: Text(
                                       "Edit Profile",
-                                      style: TextStyle(color: Colors.white),
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 30),
                                     ),
                                   ),
                                   actions: [
@@ -378,10 +360,11 @@ class ProfileMobileState extends State<ProfileViewMobile> {
                                           ///if clicked clears all the text editing controllers
                                           onPressed: () => {
                                             Navigator.of(context).pop(),
-                                            username.clear(),
+                                            // username.clear(),
                                             firstname.clear(),
                                             lastname.clear(),
                                             bio.clear(),
+                                            email.clear(),
                                             currentPassword.clear(),
                                             newPassword.clear(),
                                             newPassword.clear(),
@@ -407,10 +390,10 @@ class ProfileMobileState extends State<ProfileViewMobile> {
                                             ///it calls different edit methods depending on which text field is not empty
                                             if (formKey.currentState!
                                                 .validate()) {
-                                              if (username.text.isNotEmpty) {
-                                                controller.editUsername(
-                                                    username.text);
-                                              }
+                                              // if (username.text.isNotEmpty) {
+                                              //   controller.editUsername(
+                                              //       username.text);
+                                              // }
                                               if (bio.text.isNotEmpty) {
                                                 controller.editBio(bio.text);
                                               }
@@ -425,14 +408,16 @@ class ProfileMobileState extends State<ProfileViewMobile> {
                                                 controller.editName(
                                                     firstname.text,
                                                     Provider.of<ProfileProvider>(
-                                                            context)
+                                                            context,
+                                                            listen: false)
                                                         .lastName);
                                               }
                                               if (firstname.text.isEmpty &&
                                                   lastname.text.isNotEmpty) {
                                                 controller.editName(
                                                   Provider.of<ProfileProvider>(
-                                                          context)
+                                                          context,
+                                                          listen: false)
                                                       .firstName,
                                                   lastname.text,
                                                 );
@@ -442,14 +427,16 @@ class ProfileMobileState extends State<ProfileViewMobile> {
                                                     currentPassword.text,
                                                     newPassword.text,
                                                     Provider.of<ProfileProvider>(
-                                                            context)
+                                                            context,
+                                                            listen: false)
                                                         .email);
                                               }
                                               ;
                                               if (email.text.isNotEmpty) {
                                                 controller.editEmail(
                                                     Provider.of<ProfileProvider>(
-                                                            context)
+                                                            context,
+                                                            listen: false)
                                                         .email,
                                                     email.text,
                                                     currentPassword.text);
@@ -483,8 +470,12 @@ class ProfileMobileState extends State<ProfileViewMobile> {
                                                 lastname.clear();
                                                 firstname.clear();
                                                 bio.clear();
-                                                username.clear();
+                                                // username.clear();
                                                 email.clear();
+                                                Provider.of<ProfileProvider>(
+                                                        context,
+                                                        listen: false)
+                                                    .updateProfile();
                                               }
                                             }
                                           },
@@ -515,7 +506,7 @@ class ProfileMobileState extends State<ProfileViewMobile> {
                                           width: MediaQuery.of(context)
                                                   .size
                                                   .width /
-                                              1.3,
+                                              1.0,
 
                                           ///[Form] to validate user input (in this case only current password)
                                           child: Form(
@@ -536,10 +527,10 @@ class ProfileMobileState extends State<ProfileViewMobile> {
                                                         style: TextStyle(
                                                             color:
                                                                 Colors.white)),
-                                                    Text("Username",
-                                                        style: TextStyle(
-                                                            color:
-                                                                Colors.white)),
+                                                    // Text("Username",
+                                                    //     style: TextStyle(
+                                                    //         color:
+                                                    //             Colors.white)),
                                                     Text("Bio",
                                                         style: TextStyle(
                                                             color:
@@ -601,6 +592,9 @@ class ProfileMobileState extends State<ProfileViewMobile> {
                                                                         25.7),
                                                           ),
                                                         ),
+                                                        style: TextStyle(
+                                                            color:
+                                                                Colors.black),
                                                       ),
                                                     ),
 
@@ -635,42 +629,45 @@ class ProfileMobileState extends State<ProfileViewMobile> {
                                                                         25.7),
                                                           ),
                                                         ),
+                                                        style: TextStyle(
+                                                            color:
+                                                                Colors.black),
                                                       ),
                                                     ),
 
                                                     ///[Container] which includes [TextFormField] for username
-                                                    Container(
-                                                      height: 30,
-                                                      width:
-                                                          MediaQuery.of(context)
-                                                                  .size
-                                                                  .width /
-                                                              3,
-                                                      child: TextFormField(
-                                                        controller: username,
-                                                        decoration:
-                                                            InputDecoration(
-                                                          contentPadding:
-                                                              EdgeInsets.only(
-                                                                  bottom: 15,
-                                                                  left: 20),
-                                                          filled: true,
-                                                          fillColor:
-                                                              Colors.white,
-                                                          border:
-                                                              UnderlineInputBorder(
-                                                            borderSide:
-                                                                BorderSide(
-                                                                    color: Colors
-                                                                        .white),
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        25.7),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
+                                                    // Container(
+                                                    //   height: 30,
+                                                    //   width:
+                                                    //       MediaQuery.of(context)
+                                                    //               .size
+                                                    //               .width /
+                                                    //           3,
+                                                    //   child: TextFormField(
+                                                    //     controller: username,
+                                                    //     decoration:
+                                                    //         InputDecoration(
+                                                    //       contentPadding:
+                                                    //           EdgeInsets.only(
+                                                    //               bottom: 15,
+                                                    //               left: 20),
+                                                    //       filled: true,
+                                                    //       fillColor:
+                                                    //           Colors.white,
+                                                    //       border:
+                                                    //           UnderlineInputBorder(
+                                                    //         borderSide:
+                                                    //             BorderSide(
+                                                    //                 color: Colors
+                                                    //                     .white),
+                                                    //         borderRadius:
+                                                    //             BorderRadius
+                                                    //                 .circular(
+                                                    //                     25.7),
+                                                    //       ),
+                                                    //     ),
+                                                    //   ),
+                                                    // ),
 
                                                     ///[Container] which includes [TextFormField] for bio
                                                     Container(
@@ -703,6 +700,9 @@ class ProfileMobileState extends State<ProfileViewMobile> {
                                                                         25.7),
                                                           ),
                                                         ),
+                                                        style: TextStyle(
+                                                            color:
+                                                                Colors.black),
                                                       ),
                                                     ),
 
@@ -737,6 +737,9 @@ class ProfileMobileState extends State<ProfileViewMobile> {
                                                                         25.7),
                                                           ),
                                                         ),
+                                                        style: TextStyle(
+                                                            color:
+                                                                Colors.black),
                                                       ),
                                                     ),
                                                     Stack(children: [
@@ -822,6 +825,9 @@ class ProfileMobileState extends State<ProfileViewMobile> {
                                                                 },
                                                               ),
                                                             ),
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .black),
                                                           )),
 
                                                       ///if validation failed then error message is displayed under text field
@@ -908,6 +914,9 @@ class ProfileMobileState extends State<ProfileViewMobile> {
                                                               },
                                                             ),
                                                           ),
+                                                          style: TextStyle(
+                                                              color:
+                                                                  Colors.black),
                                                         )),
                                                   ],
                                                 ),
@@ -928,10 +937,10 @@ class ProfileMobileState extends State<ProfileViewMobile> {
             Container(
                 padding: EdgeInsets.only(top: 7),
                 child: ElevatedButton(
-                  onPressed: () {
-                    bool success = controller.signOut();
+                  onPressed: () async {
+                    bool success = await controller.signOut();
                     if (success) {
-                      if (Navigator.canPop(context)){
+                      if (Navigator.canPop(context)) {
                         Navigator.pop(context);
                       }
                       Navigator.of(context).pushReplacement(

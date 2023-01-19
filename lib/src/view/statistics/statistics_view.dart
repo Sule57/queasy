@@ -2,9 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:queasy/src/view/home_view.dart';
-import 'package:queasy/src/view/statistics/statistic_view_controller.dart';
+import 'package:queasy/src/view/statistics/statistics_provider.dart';
+import 'package:flutter/foundation.dart';
+import 'package:percent_indicator/circular_percent_indicator.dart';
 
 import '../../../constants/theme_provider.dart';
+import '../play_quiz/play_quiz_provider.dart';
 
 class StatisticsView extends StatefulWidget {
   const StatisticsView({Key? key}) : super(key: key);
@@ -15,20 +18,39 @@ class StatisticsView extends StatefulWidget {
 
 /// State for [StatisticsView].
 class _StatisticsViewState extends State<StatisticsView> {
+  bool _isLoading = true;
+
+  init() async {
+    _isLoading = true;
+    await Provider.of<StatisticsProvider>(context, listen: false);
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
+  @override
+  void initState() {
+    init();
+    super.initState();
+  }
+
   /// Builds the view.
   ///
   /// Uses a [Stack] to display the
   /// [StatisticsDesktopViewBackground] and the [StatisticsViewContent] on top.
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: const [
-          StatisticsDesktopViewBackground(),
-          StatisticsViewContent(),
-        ],
-      ),
-    );
+    Provider.of<StatisticsProvider>(context, listen: false).setStatisticsView();
+    return _isLoading
+        ? Center(child: CircularProgressIndicator())
+        : Scaffold(
+            body: Stack(
+              children: const [
+                StatisticsDesktopViewBackground(),
+                StatisticsViewContent(),
+              ],
+            ),
+          );
   }
 }
 
@@ -90,16 +112,11 @@ class _StatisticsViewContentState extends State<StatisticsViewContent> {
 
 class StatisticsMobileContent extends StatelessWidget {
   StatisticsMobileContent({Key? key}) : super(key: key);
-  final StatisticsViewController controller = StatisticsViewController();
 
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
-    final int correct = controller.getCorrectAnswers();
-    final int points = controller.getPoints();
-    final int secondsSpent = controller.getSecondsSpent();
-    final int correctPercentage = controller.getCorrectPercentage();
 
     return Scaffold(
         // backgroundColor: const Color(0xfff1ffe7),
@@ -175,7 +192,10 @@ class StatisticsMobileContent extends StatelessWidget {
                             children: <Widget>[
                               Expanded(
                                 child: Text(
-                                  correct.toString() + '\n Correct',
+                                  Provider.of<StatisticsProvider>(context)
+                                          .correct
+                                          .toString() +
+                                      '\n Correct',
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     fontSize: 20,
@@ -184,7 +204,10 @@ class StatisticsMobileContent extends StatelessWidget {
                               ),
                               Expanded(
                                 child: Text(
-                                  points.toString() + '\n Points',
+                                  Provider.of<PlayQuizProvider>(context)
+                                          .currentPoints
+                                          .toString() +
+                                      '\n Points',
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     fontSize: 20,
@@ -193,7 +216,10 @@ class StatisticsMobileContent extends StatelessWidget {
                               ),
                               Expanded(
                                 child: Text(
-                                  secondsSpent.toString() + '\n Seconds',
+                                  Provider.of<StatisticsProvider>(context)
+                                          .secondsSpent
+                                          .toString() +
+                                      '\n Seconds',
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     fontSize: 20,
@@ -202,32 +228,52 @@ class StatisticsMobileContent extends StatelessWidget {
                               ),
                             ],
                           ),
-                          Container(
-                              width: 150,
-                              height: 150,
-                              decoration: const BoxDecoration(
-                                  color: Color(0xfff1ffe7),
-                                  shape: BoxShape.circle),
-                              child: Center(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      correctPercentage.toString() + '%',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          fontSize: 20, color: Colors.black),
+                          CircularPercentIndicator(
+                              radius: 90,
+                              lineWidth: 20,
+                              percent: (Provider.of<StatisticsProvider>(context)
+                                      .correct /
+                                  Provider.of<StatisticsProvider>(context)
+                                      .allQuestions),
+                              progressColor: Color(0xff72479d),
+                              center: Container(
+                                  width: 150,
+                                  height: 150,
+                                  decoration: const BoxDecoration(
+                                      color: Color(0xfff1ffe7),
+                                      shape: BoxShape.circle),
+                                  child: Center(
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          ((Provider.of<StatisticsProvider>(
+                                                                  context)
+                                                              .correct /
+                                                          Provider.of<StatisticsProvider>(
+                                                                  context)
+                                                              .allQuestions) *
+                                                      100)
+                                                  .toStringAsFixed(0) +
+                                              '%',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                              fontSize: 20,
+                                              color: Colors.black),
+                                        ),
+                                        Text(
+                                          'Correct',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                              fontSize: 10,
+                                              color: Colors.black),
+                                        ),
+                                      ],
                                     ),
-                                    Text(
-                                      'Correct',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          fontSize: 10, color: Colors.black),
-                                    ),
-                                  ],
-                                ),
-                              ))
+                                  )))
                         ],
                       )),
                 ],
@@ -267,15 +313,9 @@ class StatisticsMobileContent extends StatelessWidget {
 
 class StatisticsDesktopContent extends StatelessWidget {
   StatisticsDesktopContent({Key? key}) : super(key: key);
-  final StatisticsViewController controller = StatisticsViewController();
 
   @override
   Widget build(BuildContext context) {
-    final int correct = controller.getCorrectAnswers();
-    final int points = controller.getPoints();
-    final int secondsSpent = controller.getSecondsSpent();
-    final int correctPercentage = controller.getCorrectPercentage();
-
     return Scaffold(
         backgroundColor: const Color(0xfff1ffe7),
         appBar: AppBar(
@@ -308,7 +348,10 @@ class StatisticsDesktopContent extends StatelessWidget {
                     children: <Widget>[
                       Expanded(
                         child: Text(
-                          correct.toString() + '\n Correct',
+                          Provider.of<StatisticsProvider>(context)
+                                  .correct
+                                  .toString() +
+                              '\n Correct',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 30,
@@ -317,7 +360,10 @@ class StatisticsDesktopContent extends StatelessWidget {
                       ),
                       Expanded(
                         child: Text(
-                          points.toString() + '\n Points',
+                          Provider.of<PlayQuizProvider>(context)
+                                  .currentPoints
+                                  .toString() +
+                              '\n Points',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 30,
@@ -326,7 +372,10 @@ class StatisticsDesktopContent extends StatelessWidget {
                       ),
                       Expanded(
                         child: Text(
-                          secondsSpent.toString() + '\n Seconds',
+                          Provider.of<StatisticsProvider>(context)
+                                  .secondsSpent
+                                  .toString() +
+                              '\n Seconds',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 30,
@@ -335,33 +384,51 @@ class StatisticsDesktopContent extends StatelessWidget {
                       ),
                     ],
                   ),
-                  Container(
-                      width: 150,
-                      height: 150,
-                      decoration: const BoxDecoration(
-                          color: Color(0xfff1ffe7), shape: BoxShape.circle),
-                      child: Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text(
-                              correctPercentage.toString() + '%',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 30,
-                                color: Colors.black,
+                  Center(
+                    child: CircularPercentIndicator(
+                        radius: 90,
+                        lineWidth: 20,
+                        percent:
+                            (Provider.of<StatisticsProvider>(context).correct /
+                                Provider.of<StatisticsProvider>(context)
+                                    .allQuestions),
+                        progressColor: Color(0xff72479d),
+                        center: Container(
+                            width: 150,
+                            height: 150,
+                            decoration: const BoxDecoration(
+                                color: Color(0xfff1ffe7),
+                                shape: BoxShape.circle),
+                            child: Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    ((Provider.of<StatisticsProvider>(context)
+                                                        .correct /
+                                                    Provider.of<StatisticsProvider>(
+                                                            context)
+                                                        .allQuestions) *
+                                                100)
+                                            .toStringAsFixed(0) +
+                                        '%',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: 30,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                  Text(
+                                    'Correct',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        fontSize: 20, color: Colors.black),
+                                  ),
+                                ],
                               ),
-                            ),
-                            Text(
-                              'Correct',
-                              textAlign: TextAlign.center,
-                              style:
-                                  TextStyle(fontSize: 20, color: Colors.black),
-                            ),
-                          ],
-                        ),
-                      ))
+                            ))),
+                  )
                 ],
               )),
           Container(

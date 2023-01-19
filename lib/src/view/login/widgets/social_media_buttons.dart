@@ -14,6 +14,7 @@ import 'package:queasy/src/view/login/login_provider.dart';
 class SocialMediaButtons extends StatelessWidget {
   const SocialMediaButtons({Key? key}) : super(key: key);
 
+
   @override
   Widget build(BuildContext context) {
     final controller = Provider.of<LoginProvider>(context);
