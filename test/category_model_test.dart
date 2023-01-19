@@ -6,22 +6,21 @@ import 'package:queasy/src.dart';
 
 
 /// Main function for testing the [Category] class.
-///
-/// [instance] is the Fake Firestore instance for mocking of the database
-///
-/// [catName] is the name of the category
-///
-/// [UID] is the UID of the user
-///
-/// [color] is the color of the category
-///
-/// [username] is the username of the user
 void main() async {
+
+  /// Name of the category
   String catName = 'German';
+
+  /// Color of the category
   Color color = Color(12423);
+
+  /// UID of the user
   String UID = 'uid1';
+
+  /// Username of the user
   String username = 'Savo';
 
+  /// Fake Firestore instance for mocking of the database
   var instance = FakeFirebaseFirestore();
 
   await instance.collection('categories').doc('public').set({});
@@ -31,11 +30,13 @@ void main() async {
   await CategoryRepo(instance_: instance, id: UID).createCategory(catName, color, instance: instance, uid: UID);
 
   Category cat = await Category(name: catName, color:color, firestore:instance, UID: UID);
+  /// Test if the category is created
   test('Category is not created properly', () {
     expect({cat.getName(), cat.getColor(), cat.UID}, {catName, color, UID});
   });
 
 
+  /// Test if the category color is updated
   test('Category color is not set properly', () async {
     Color newColor = Color(123);
     await cat.setColor(newColor);
@@ -45,7 +46,7 @@ void main() async {
   });
 
 
-
+  /// Test if the questions are added to the category
   test('Questions are not added', () async {
     String newName = 'English';
     Question q1 = Question(UID: UID, category: newName, text: 'Question1', answers: [Answer('answer1', true), Answer('answer2', true), Answer('answer3', true), Answer('answer4', true)], firestore: instance);
@@ -59,7 +60,7 @@ void main() async {
     expect(list.length, 3);
   });
 
-
+  /// Test if the question is deleted from the category
   test('Question is not deleted', () async {
     List<Question> list = await cat.getAllQuestions();
     Question q = list.firstWhere((element) => element.questionId == 'question0');
@@ -72,7 +73,7 @@ void main() async {
     expect(list.length, 1);
   });
 
-
+  /// Test it the question is updated
   test('Question is not edited', () async {
     List<Question> list = await cat.getAllQuestions();
     Question question0 = list.firstWhere((element) => element.questionId == 'question2');
@@ -100,7 +101,7 @@ void main() async {
     expect({question0.getAnswer(3).text, question0.getAnswer(3).isCorrect}, {'Rome', false});
   });
 
-
+  /// Test if the questions are added to the category
   test('Questions are not added', () async {
     String newName = 'English';
     Question q1 = Question(UID: UID, category: newName, text: 'Question1', answers: [Answer('answer1', true), Answer('answer2', true), Answer('answer3', true), Answer('answer4', true)], firestore: instance);

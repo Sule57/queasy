@@ -302,12 +302,18 @@ class ProfileMobileState extends State<ProfileViewMobile> {
                             padding: EdgeInsets.all(7),
                             child: Text("Quiz Points Graph",
                                 style: TextStyle(fontSize: 20))),
-                        Provider.of<StatisticsProvider>(context).numberQuiz == 0
-                            ? Text(
-                                "Complete a Quiz to Start your Graph!",
-                                style: TextStyle(fontSize: 15),
-                              )
-                            : StatisticsGraph()
+                        Padding(
+                            padding: EdgeInsets.all(30),
+                            child: Center(child:
+                            Provider.of<StatisticsProvider>(context)
+                                .numberQuiz ==
+                                0
+                                ? Text(
+                              "Complete a Quiz to Start your Graph!",
+                              style: TextStyle(fontSize: 15),
+                            )
+                                : StatisticsGraph()
+                            )),
                       ],
                     ),
                   ),

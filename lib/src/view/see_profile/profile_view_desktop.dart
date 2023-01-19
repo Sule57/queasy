@@ -1309,14 +1309,18 @@ class _ProfileDesktopViewContentState extends State<ProfileDesktopViewContent> {
                                         "Quiz Points Graph",
                                         style: TextStyle(fontSize: 20),
                                       )),
+                                  Padding(
+                                      padding: EdgeInsets.all(30),
+                                      child: Center(child:
                                   Provider.of<StatisticsProvider>(context)
-                                              .numberQuiz ==
-                                          0
+                                      .numberQuiz ==
+                                      0
                                       ? Text(
-                                          "Complete a Quiz to Start your Graph!",
-                                          style: TextStyle(fontSize: 15),
-                                        )
+                                    "Complete a Quiz to Start your Graph!",
+                                    style: TextStyle(fontSize: 15),
+                                  )
                                       : StatisticsGraph()
+                                  )),
                                 ],
                               ),
                             ),

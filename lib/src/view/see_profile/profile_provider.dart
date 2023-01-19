@@ -57,16 +57,16 @@ class ProfileProvider with ChangeNotifier {
 
   List<double> getGraphData() {
     List<double> data = [];
-    data.add(0.0);
+    //data.add(0.0);
     for (var value in player.publicScore.values) {
-      data.add(value / 1000);
+      data.add(value + 0.0);
     }
     return data;
   }
 
   List<String> getGraphKeys() {
     List<String> data = [];
-    data.add("");
+    //data.add("");
     for (var value in player.publicScore.keys) {
       data.add(value);
     }

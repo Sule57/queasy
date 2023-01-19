@@ -55,6 +55,8 @@ dependencies:
   firebase_dart: ^1.0.11
   draw_graph: ^1.0.0
   google_sign_in: ^5.4.2
+  flutter_radar_chart: ^0.2.1
+  spider_chart: ^0.2.0
 
 
 
