@@ -190,9 +190,9 @@ Chosen because:
 
 ### Profile
 
-<img src="https://user-images.githubusercontent.com/76959652/212647238-aa50c3a2-55ee-4ef6-a8f8-bf757460405b.png" height=500>
-<img src="https://user-images.githubusercontent.com/76959652/212647358-163360b9-1b57-4197-9a9a-cfaa121f732f.png" height=500>
-<img src="https://user-images.githubusercontent.com/76959652/212647397-eb6ad71d-1f27-497c-b17f-484a55b290eb.png" height=500>
+<img src="https://user-images.githubusercontent.com/76959652/213424831-970cda5a-5651-4a45-8ec5-fa5426f1828c.png" height=500>
+<img src="https://user-images.githubusercontent.com/76959652/213424964-d04458e4-85a2-4db7-8993-8faee2acc4ca.png" height=500>
+<img src="https://user-images.githubusercontent.com/76959652/213425057-27ab60ec-e61c-46d1-bc6a-fa7fb5f143dd.png" height=500>
 
 * The user can view their profile, bio, profile picture, statistics
 * The user can change their profile picture, bio, email, password, First and Last name
