@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:queasy/src/view/widgets/side_navigation.dart';
 import '../../src.dart';
-import 'package:queasy/src/view/play_quiz/quiz_view.dart';
 
 ///This is Category Selection view
 ///
@@ -228,7 +227,7 @@ class _CategorySelectionDesktopViewContentState
                               Navigator.of(context).push(
                                 MaterialPageRoute(
                                   builder: (context) =>
-                                      QuizView(
+                                      PlayQuizView(
                                         category: categoryName,
                                       ),
                                 ),

@@ -9,20 +9,11 @@
 import 'package:flutter/material.dart';
 import 'package:motion_tab_bar_v2/motion-tab-bar.dart';
 import 'package:queasy/constants/app_themes.dart';
-import 'package:provider/provider.dart';
-import 'package:queasy/src/view/play_quiz/quiz_view.dart';
 import 'package:queasy/src/view/see_leaderboard/leaderboard_view.dart';
 import 'package:queasy/src/view/see_profile/profile_view.dart';
-import 'package:queasy/src/view/private_category_selection_view.dart';
 import 'package:queasy/src/view/widgets/side_navigation.dart';
-
 import '../../src.dart';
-import 'category_selection_view.dart';
-import 'see_profile/profile_provider.dart';
 import 'package:queasy/src/view/widgets/join_quiz_popup.dart';
-import 'package:queasy/src/view/widgets/side_navigation.dart';
-
-import '../../src.dart';
 import 'my_quizzes/my_quizzes_view.dart';
 
 /// This is the base view for navigation. It contains the bottom navigation bar

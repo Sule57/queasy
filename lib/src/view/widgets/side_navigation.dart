@@ -11,7 +11,6 @@ import 'package:queasy/src/view/home_view.dart';
 import 'package:queasy/src/view/see_leaderboard/leaderboard_view.dart';
 import 'package:queasy/src/view/see_profile/profile_view.dart';
 import 'package:queasy/src/view/see_profile/profile_view_controller.dart';
-import '../category_selection_view.dart';
 import '../login/login_view.dart';
 import 'package:provider/provider.dart';
 import 'package:queasy/src.dart';

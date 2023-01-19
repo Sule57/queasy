@@ -9,9 +9,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:queasy/src/model/category_repo.dart';
-import 'package:queasy/src/view/play_quiz/quiz_view.dart';
-
 import '../../constants/theme_provider.dart';
+import '../../exports/view_play_quiz.dart';
 
 /// View for selecting a category.
 ///
@@ -138,7 +137,7 @@ class _CategorySelectionViewMobileState extends State<CategorySelectionViewMobil
                     onPressed: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (context) => QuizView(
+                          builder: (context) => PlayQuizView(
                             category: categoryName,
                           ),
                         ),

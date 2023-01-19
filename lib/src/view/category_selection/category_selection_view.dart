@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'category_selection_view_desktop.dart';
-import 'category_selection_view_mobile.dart';
+import '../category_selection_view_desktop.dart';
+import '../category_selection_view_mobile.dart';
 
 ///This is Category Selection View
 ///It displays Mobile or Desktop versions of Category Selection View depending on width of the screen
