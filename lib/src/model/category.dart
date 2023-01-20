@@ -331,9 +331,9 @@ class Category {
     return question;
   }
 
-  /// Calculates the next ID for a question in the current category.
-  ///
-  /// This is used to create a unique ID for a question in the category. It finds the highest ID and adds 1 to it.
+  /// Creates a newID for the question inside of the given category. The
+  /// function doesn't accept any parameters but returns a future string. In a
+  /// format of 'question' + nextInt
   Future<String> getNextID() async {
     if (UID == null) {
       throw UserNotLoggedInException();
