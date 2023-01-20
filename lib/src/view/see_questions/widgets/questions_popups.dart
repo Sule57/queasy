@@ -56,6 +56,7 @@ class _AddOrEditQuestionPopUpState extends State<AddOrEditQuestionPopUp> {
     /// The provider of the class
     CategoryQuestionsProvider controller =
         Provider.of<CategoryQuestionsProvider>(context, listen: true);
+    var theme = Provider.of<ThemeProvider>(context).currentTheme!;
 
     // If the question is not null, the user wants to edit a question, and the popup should
     // show the "old" correct answer as selected when the popup opens
@@ -67,7 +68,7 @@ class _AddOrEditQuestionPopUpState extends State<AddOrEditQuestionPopUp> {
     return AlertDialog(
       scrollable: true,
       insetPadding: EdgeInsets.symmetric(horizontal: 20),
-      backgroundColor: Theme.of(context).colorScheme.primary,
+      backgroundColor: theme.colorScheme.primary,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10.0),
       ),
@@ -552,7 +553,7 @@ class CreateRandomQuizPopup extends StatelessWidget {
       color: theme.colorScheme.onPrimary,
     );
     TextStyle inputTextStyle = theme.textTheme.subtitle2?.copyWith(
-      color: theme.colorScheme.onBackground,
+      color: Colors.black87,
     );
 
     return AlertDialog(
@@ -718,7 +719,7 @@ class CreateCustomQuizPopup extends StatelessWidget {
       color: theme.colorScheme.onPrimary,
     );
     TextStyle inputTextStyle = theme.textTheme.subtitle2?.copyWith(
-      color: theme.colorScheme.onBackground,
+      color: Colors.black87,
     );
 
     return AlertDialog(

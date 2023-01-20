@@ -10,14 +10,22 @@ import 'package:provider/provider.dart';
 import 'package:queasy/src.dart';
 import 'package:queasy/src/view/my_quizzes/widgets/quiz_list_tile.dart';
 
+/// Displays the list of quizzes of the current user.
+///
+/// It uses a [ListView] to display the list of quizzes. It contains a stack
+/// with [MyQuizzesBackground] and [MyQuizzesContent].
 class MyQuizzesView extends StatefulWidget {
+  /// Constructor for the [MyQuizzesView].
   const MyQuizzesView({Key? key}) : super(key: key);
 
+  /// Creates the state for this widget.
   @override
   State<MyQuizzesView> createState() => _MyQuizzesViewState();
 }
 
+/// State for the [MyQuizzesView].
 class _MyQuizzesViewState extends State<MyQuizzesView> {
+  /// Builds the view.
   @override
   Widget build(BuildContext context) {
     final theme = Provider.of<ThemeProvider>(context).currentTheme;

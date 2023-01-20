@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:queasy/src/view/registration/register_view_controller.dart';
 import 'package:queasy/src/view/home_view.dart';
 
+/// This is the register view for mobile.
 class RegisterViewMobile extends StatefulWidget {
   ///[controller] register-view controller
   final RegisterViewController controller = RegisterViewController();
@@ -21,7 +22,6 @@ class RegisterViewMobile extends StatefulWidget {
 /// to sign up. When the registration is over, the user is taken to [HomeView].
 /// It uses colors from [AppThemes].
 class RegisterViewMobileState extends State<RegisterViewMobile> {
-
   ///[controller] register-view controller
   get controller => widget.controller;
 
@@ -252,10 +252,11 @@ class RegisterViewMobileState extends State<RegisterViewMobile> {
                                                   textController[2].text);
                                           if (success) {
                                             Navigator.of(context).pop();
-                                            Navigator.of(context).pushReplacement(
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        const HomeView()));
+                                            Navigator.of(context)
+                                                .pushReplacement(
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            const HomeView()));
                                           } else {
                                             setState(() {
                                               _isLoading = false;
@@ -348,28 +349,29 @@ class RegisterViewMobileState extends State<RegisterViewMobile> {
                         ),
                   _isFacebookSigningIn
                       ? CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(
-                        Theme.of(context).colorScheme.primary),
-                  )
-                  : IconButton(icon: Image.asset('lib/assets/images/facebook.png'),
-                    onPressed: () async {
-                      setState(() {
-                        _isFacebookSigningIn = true;
-                      });
-                      User? user = await controller.signInWithFacebook(
-                          context: context);
-                      setState(() {
-                        _isFacebookSigningIn = false;
-                      });
-                      if (user != null) {
-                        Navigator.of(context).pushReplacement(
-                          MaterialPageRoute(
-                            builder: (context) => HomeView(),
-                          ),
-                        );
-                      }
-                    },
-                  ),
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                              Theme.of(context).colorScheme.primary),
+                        )
+                      : IconButton(
+                          icon: Image.asset('lib/assets/images/facebook.png'),
+                          onPressed: () async {
+                            setState(() {
+                              _isFacebookSigningIn = true;
+                            });
+                            User? user = await controller.signInWithFacebook(
+                                context: context);
+                            setState(() {
+                              _isFacebookSigningIn = false;
+                            });
+                            if (user != null) {
+                              Navigator.of(context).pushReplacement(
+                                MaterialPageRoute(
+                                  builder: (context) => HomeView(),
+                                ),
+                              );
+                            }
+                          },
+                        ),
                   // IconButton(
                   //   icon: Image.asset(
                   //     'lib/assets/images/twitter.png',

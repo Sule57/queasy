@@ -59,7 +59,8 @@ class QuestionsTextField extends StatefulWidget {
 /// State for the [QuestionsTextField].
 class _QuestionsTextFieldState extends State<QuestionsTextField> {
   /// The maximum length of the text field.
-  final int MAX_INPUT_LENGTH = 50;
+  final int MAX_INPUT_LENGTH_ANSWER = 50;
+  final int MAX_INPUT_LENGTH_QUESTION = 140;
 
   get question => widget.question;
   get validatorText => widget.validatorText;
@@ -109,7 +110,9 @@ class _QuestionsTextFieldState extends State<QuestionsTextField> {
             maxLines: isQuestion ? 2 : 1,
             controller: controller..text = controllerText,
             inputFormatters: [
-              LengthLimitingTextInputFormatter(MAX_INPUT_LENGTH)
+              LengthLimitingTextInputFormatter(isQuestion
+                  ? MAX_INPUT_LENGTH_QUESTION
+                  : MAX_INPUT_LENGTH_ANSWER),
             ],
             validator: (value) {
               // If field is null or full of empty spaces
@@ -118,7 +121,9 @@ class _QuestionsTextFieldState extends State<QuestionsTextField> {
               }
               return null;
             },
-            style: theme.textTheme.subtitle2,
+            style: theme.textTheme.subtitle2.copyWith(
+              color: Colors.black87,
+            ),
             decoration: InputDecoration(
               contentPadding: EdgeInsets.only(bottom: 10, left: 20),
               filled: true,

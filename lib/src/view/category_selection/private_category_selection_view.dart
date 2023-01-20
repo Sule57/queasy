@@ -34,7 +34,6 @@ class PrivateCategorySelectionView extends StatefulWidget {
 /// category.
 class _PrivateCategorySelectionViewState
     extends State<PrivateCategorySelectionView> {
-
   /// The provider of the class
   late CategoryQuestionsProvider controller;
 
@@ -88,7 +87,6 @@ class _PrivateCategorySelectionViewState
   /// parameter.
   @override
   Widget build(BuildContext context) {
-
     _categoryList = context.watch<CategoryQuestionsProvider>().categoryList;
 
     /// Widget that is going to be displayed in the screen. If there are no categories, the widget
@@ -115,7 +113,7 @@ class _PrivateCategorySelectionViewState
             child: IconButton(
               icon: Icon(
                 Icons.arrow_back,
-                color: Theme.of(context).colorScheme.onTertiary,
+                color: Colors.white,
               ),
               onPressed: () => Navigator.pop(context),
               iconSize: 30,
@@ -125,8 +123,7 @@ class _PrivateCategorySelectionViewState
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: IconButton(
-                icon: Icon(Icons.add_circle,
-                    color: Theme.of(context).colorScheme.onTertiary),
+                icon: Icon(Icons.add_circle, color: Colors.white54),
                 onPressed: () {
                   // Create an alert dialog to add a new category
                   showDialog(
@@ -208,7 +205,6 @@ class CategoryListEmpty extends StatelessWidget {
 ///
 /// It is called when private categories are found in the database.
 class CategoryList extends StatefulWidget {
-
   /// List of private categories.
   List<String> list;
 
