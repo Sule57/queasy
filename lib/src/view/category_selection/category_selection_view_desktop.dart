@@ -198,52 +198,62 @@ class _CategorySelectionDesktopViewContentState
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SideNavigation(),
-            SizedBox(
+            Container(
               width: MediaQuery.of(context).size.width - SideNavigation.width,
+              padding: EdgeInsets.all(20),
               child: GridView.builder(
-                gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                  maxCrossAxisExtent: 420,
-                  childAspectRatio: 5 / 4,
-                  crossAxisSpacing: 2,
-                  mainAxisSpacing: 20,
-                ),
+                gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                    maxCrossAxisExtent: 420,
+                    crossAxisSpacing: 30,
+                    mainAxisSpacing: 30,
+                    childAspectRatio: 4 / 2),
                 itemCount: list.length,
                 itemBuilder: (BuildContext context, int index) {
                   String categoryName = list[index];
                   return Container(
-                      margin: const EdgeInsets.symmetric(vertical: 50),
-                      alignment: Alignment.center,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Provider.of<ThemeProvider>(context)
-                              .currentTheme
-                              .colorScheme
-                              .background,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                        ),
-                        onPressed: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => PlayQuizView(
-                                category: categoryName,
-                              ),
-                            ),
-                          );
-                        },
-                        child: Text(
-                          categoryName,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 40,
-                            color: Provider.of<ThemeProvider>(context)
+                    // width: 200,
+                    alignment: Alignment.center,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Provider.of<ThemeProvider>(context)
                                 .currentTheme
                                 .colorScheme
-                                .onBackground,
+                                .background,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                          ),
+                          onPressed: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => PlayQuizView(
+                                  category: categoryName,
+                                ),
+                              ),
+                            );
+                          },
+                          child: FittedBox(
+                            fit: BoxFit.fitWidth,
+                            child: Text(
+                              categoryName,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 40,
+                                color: Provider.of<ThemeProvider>(context)
+                                    .currentTheme
+                                    .colorScheme
+                                    .onBackground,
+                              ),
+                            ),
                           ),
                         ),
-                      ));
+                      ],
+                    ),
+                  );
                 },
               ),
             ),
