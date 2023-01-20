@@ -17,18 +17,24 @@ import 'package:queasy/src/view/widgets/rounded_button.dart';
 
 import 'forgot_password_dialog.dart';
 
+/// The widget [LoginInfo] is used to display the Login Information, insluding text form fields and buttons.
+/// Allows user to enter email and password to login.
+/// Also utilizes [ForgotPasswordDialog] and [SocialMediaButtons] to aid in user login.
 class LoginInfo extends StatefulWidget {
   const LoginInfo({Key? key}) : super(key: key);
 
+  /// Creates the state for this widget.
   @override
   State<LoginInfo> createState() => _LoginInfoState();
 }
 
+/// State for [LoginInfo].
 class _LoginInfoState extends State<LoginInfo> {
   ///_isLoading is used to determine whether to allow the user to click the register button.
   ///This prevents double clicking leading to errors due to resubmitting the same data twice
   bool _isLoading = false;
 
+  /// Builds the [LoginInfo] Widget. Returns [CircularProgressIndicator] if [_isLoading] is false, otherwise a [Form].
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;

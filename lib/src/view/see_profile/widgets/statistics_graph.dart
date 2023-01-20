@@ -4,7 +4,10 @@ import 'package:spider_chart/spider_chart.dart';
 
 import '../profile_provider.dart';
 
+/// The widget [StatisticsGraph] is used to display user's statistic information.
+/// Get its data from the [ProfileProvider].
 class StatisticsGraph extends StatelessWidget {
+  /// Builds the [StatisticsGraph] Widget.
   @override
   Widget build(BuildContext context) {
     final List<double> data =
