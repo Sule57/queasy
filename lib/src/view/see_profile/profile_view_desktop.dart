@@ -6,8 +6,6 @@
 /// Software Project on Technische Hochschule Ulm
 /// ****************************************************************************
 
-import 'package:draw_graph/draw_graph.dart';
-import 'package:draw_graph/models/feature.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:queasy/constants/app_themes.dart';
@@ -21,7 +19,6 @@ import '../../../constants/theme_provider.dart';
 import '../registration/register_view.dart';
 import '../statistics/statistics_provider.dart';
 import 'profile_provider.dart';
-import 'widgets/statistics_graph.dart';
 
 ///This is UserProfileDesktop view
 ///It displays web version of the profile page
@@ -63,6 +60,7 @@ class ProfileDesktopViewBackground extends StatelessWidget {
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
+    var theme = Provider.of<ThemeProvider>(context).currentTheme!;
 
     return Scaffold(
       body: Center(
@@ -75,7 +73,7 @@ class ProfileDesktopViewBackground extends StatelessWidget {
                   height: height * .30,
                   width: width / 3,
                   decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.tertiary,
+                      color: theme.colorScheme.tertiary,
                       borderRadius: const BorderRadius.only(
                         bottomLeft: Radius.circular(20),
                       )))),
@@ -90,7 +88,7 @@ class ProfileDesktopViewBackground extends StatelessWidget {
               width: width / 9,
               height: height * .50,
               decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.secondary,
+                  color: theme.colorScheme.secondary,
                   borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(20),
                       bottomLeft: Radius.circular(20))),
@@ -104,7 +102,7 @@ class ProfileDesktopViewBackground extends StatelessWidget {
               height: height * .12,
               width: width / 1.7,
               decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.onTertiary,
+                  color: theme.colorScheme.onTertiary,
                   borderRadius:
                       const BorderRadius.only(topLeft: Radius.circular(20))),
             ),
@@ -1311,16 +1309,18 @@ class _ProfileDesktopViewContentState extends State<ProfileDesktopViewContent> {
                                       )),
                                   Padding(
                                       padding: EdgeInsets.all(30),
-                                      child: Center(child:
-                                  Provider.of<StatisticsProvider>(context)
-                                      .numberQuiz ==
-                                      0
-                                      ? Text(
-                                    "Complete a Quiz to Start your Graph!",
-                                    style: TextStyle(fontSize: 15),
-                                  )
-                                      : StatisticsGraph()
-                                  )),
+                                      child: Center(
+                                          child:
+                                              Provider.of<StatisticsProvider>(
+                                                              context)
+                                                          .numberQuiz ==
+                                                      0
+                                                  ? Text(
+                                                      "Complete a Quiz to Start your Graph!",
+                                                      style: TextStyle(
+                                                          fontSize: 15),
+                                                    )
+                                                  : StatisticsGraph())),
                                 ],
                               ),
                             ),

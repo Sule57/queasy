@@ -81,9 +81,10 @@ class QuizViewBackground extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
+    var theme = Provider.of<ThemeProvider>(context).currentTheme!;
 
     return Container(
-      height: height / 3,
+      height: height / 2.5,
       width: double.infinity,
       alignment: Alignment.topLeft,
       padding: const EdgeInsets.all(20),
@@ -92,7 +93,7 @@ class QuizViewBackground extends StatelessWidget {
           bottomRight: Radius.circular(30.0),
           bottomLeft: Radius.circular(30.0),
         ),
-        color: const Color(0xfff1ffe7),
+        color: theme.colorScheme.tertiary,
       ),
       child: SafeArea(
         child: Image.asset(

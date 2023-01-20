@@ -8,13 +8,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:motion_tab_bar_v2/motion-tab-bar.dart';
-import 'package:queasy/constants/app_themes.dart';
-import 'package:queasy/src/view/see_leaderboard/leaderboard_view.dart';
-import 'package:queasy/src/view/see_profile/profile_view.dart';
+import 'package:provider/provider.dart';
 import 'package:queasy/src/view/widgets/side_navigation.dart';
 import '../../src.dart';
 import 'package:queasy/src/view/widgets/join_quiz_popup.dart';
-import 'my_quizzes/my_quizzes_view.dart';
 
 /// This is the base view for navigation. It contains the bottom navigation bar
 /// and the [pages] that are navigated to when the bottom navigation bar is tapped.
@@ -63,6 +60,7 @@ class _HomeViewState extends State<HomeView> {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
+    var theme = Provider.of<ThemeProvider>(context).currentTheme!;
 
     return width > 700
         ? Scaffold(
@@ -79,7 +77,7 @@ class _HomeViewState extends State<HomeView> {
                       height: height / 4,
                       //alignment: Alignment.bottomLeft,
                       decoration: BoxDecoration(
-                        color: const Color(0xff9fc490),
+                        color: theme.colorScheme.tertiary,
                       ),
                     ),
                   ))
@@ -99,7 +97,7 @@ class _HomeViewState extends State<HomeView> {
                           topLeft: Radius.circular(30),
                           bottomLeft: Radius.circular(30),
                         ),
-                        color: const Color(0xffF19C79),
+                        color: theme.colorScheme.secondary,
                       ),
                     ),
                   ))
@@ -115,7 +113,7 @@ class _HomeViewState extends State<HomeView> {
                         height: height / 6,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(30),
-                          color: const Color(0xfff1ffe7),
+                          color: theme.colorScheme.onTertiary,
                         ),
                       ),
                     ),
@@ -282,6 +280,9 @@ class HomeWidgets extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var theme = Provider.of<ThemeProvider>(context).currentTheme!;
+    Color buttonColor = theme.colorScheme.onTertiary;
+    Color textColor = theme.colorScheme.onBackground;
     double width = MediaQuery.of(context).size.width;
 
     return SafeArea(
@@ -311,12 +312,12 @@ class HomeWidgets extends StatelessWidget {
                       child: Text(
                         'Public Tournaments',
                         style: TextStyle(
-                          color: purple,
+                          color: textColor,
                         ),
                       ),
                       style: ButtonStyle(
                         backgroundColor:
-                            MaterialStateProperty.all<Color>(light),
+                            MaterialStateProperty.all<Color>(buttonColor),
                       ),
                     ),
                     SizedBox(
@@ -325,12 +326,12 @@ class HomeWidgets extends StatelessWidget {
                     ElevatedButton(
                       style: ButtonStyle(
                         backgroundColor:
-                            MaterialStateProperty.all<Color>(light),
+                            MaterialStateProperty.all<Color>(buttonColor),
                       ),
                       child: Text(
                         'Join Quiz',
                         style: TextStyle(
-                          color: purple,
+                          color: textColor,
                         ),
                       ),
                       onPressed: () => showDialog(
@@ -347,12 +348,12 @@ class HomeWidgets extends StatelessWidget {
                       child: Text(
                         'My Categories',
                         style: TextStyle(
-                          color: purple,
+                          color: textColor,
                         ),
                       ),
                       style: ButtonStyle(
                         backgroundColor:
-                            MaterialStateProperty.all<Color>(light),
+                            MaterialStateProperty.all<Color>(buttonColor),
                       ),
                     ),
                     const SizedBox(height: 5),
@@ -363,12 +364,12 @@ class HomeWidgets extends StatelessWidget {
                       child: Text(
                         'My quizzes',
                         style: TextStyle(
-                          color: purple,
+                          color: textColor,
                         ),
                       ),
                       style: ButtonStyle(
                         backgroundColor:
-                            MaterialStateProperty.all<Color>(light),
+                            MaterialStateProperty.all<Color>(buttonColor),
                       ),
                     ),
                   ],
@@ -379,11 +380,5 @@ class HomeWidgets extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  /// Confirms whether the entered key is valid (not yet implemented)
-  bool confirmKey(String text) {
-    /// TODO: implement a communication with Firebase that checks if the key exists
-    return false;
   }
 }
