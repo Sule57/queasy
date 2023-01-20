@@ -5,6 +5,7 @@ import 'package:queasy/src/view/registration/register_view_controller.dart';
 import 'package:queasy/services/auth.dart';
 import 'package:queasy/src/view/home_view.dart';
 
+/// This is the register view for desktop.
 class RegisterViewDesktop extends StatefulWidget {
   ///[controller] register-view controller
   final RegisterViewController controller = RegisterViewController();

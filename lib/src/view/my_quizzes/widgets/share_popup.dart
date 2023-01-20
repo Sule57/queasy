@@ -10,10 +10,18 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:queasy/src.dart';
 
+/// Dialog that is shown when the user clicks on the share button in the
+/// menu shown in the [QuizListTile]. It shows the key and a button to copy it
+/// to clipboard. It takes a parameter when it is created, [quizId], which
+/// is the key that is copied to clipboard.
 class ShareDialog extends StatelessWidget {
+  /// Constructor for the [ShareDialog].
   const ShareDialog({Key? key, required this.quizId}) : super(key: key);
+
+  /// Id of the quiz to share.
   final String quizId;
 
+  /// Builds the widget.
   @override
   Widget build(BuildContext context) {
     final theme = Provider.of<ThemeProvider>(context).currentTheme;

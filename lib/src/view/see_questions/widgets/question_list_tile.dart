@@ -83,12 +83,14 @@ class CorrectAnswerContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var theme = Provider.of<ThemeProvider>(context).currentTheme!;
+
     return Container(
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.tertiary,
+        color: theme.colorScheme.tertiary,
         borderRadius: BorderRadius.circular(10),
         border: Border.all(
-          color: Theme.of(context).colorScheme.tertiary,
+          color: theme.colorScheme.tertiary,
           width: 2.0,
         ),
       ),
@@ -113,6 +115,7 @@ class MobileButtons extends StatelessWidget {
     /// The provider of the class
     CategoryQuestionsProvider controller =
         Provider.of<CategoryQuestionsProvider>(context, listen: true);
+    var theme = Provider.of<ThemeProvider>(context).currentTheme!;
 
     return Column(
       children: [
@@ -121,20 +124,21 @@ class MobileButtons extends StatelessWidget {
           width: 200,
           height: 35,
           fontSize: 13,
-          borderColor: Theme.of(context).colorScheme.tertiary,
-          backgroundColor: Colors.white,
-          textColor: Theme.of(context).colorScheme.tertiary,
+          borderColor: theme.colorScheme.tertiary,
+          backgroundColor: Colors.transparent,
+          textColor: theme.colorScheme.tertiary,
           fontWeight: FontWeight.normal,
           onPressed: () => controller.editQuestion(context, question),
         ),
+        const SizedBox(height: 2),
         RoundedButton(
           buttonName: 'Delete Question',
           width: 200,
           height: 35,
           fontSize: 13,
-          borderColor: Theme.of(context).colorScheme.secondary,
-          backgroundColor: Colors.white,
-          textColor: Theme.of(context).colorScheme.secondary,
+          borderColor: theme.colorScheme.secondary,
+          backgroundColor: Colors.transparent,
+          textColor: theme.colorScheme.secondary,
           fontWeight: FontWeight.normal,
           onPressed: () => controller.deleteQuestion(context, question),
         ),
@@ -156,6 +160,7 @@ class DesktopButtons extends StatelessWidget {
     /// The provider of the class
     CategoryQuestionsProvider controller =
         Provider.of<CategoryQuestionsProvider>(context, listen: true);
+    var theme = Provider.of<ThemeProvider>(context).currentTheme!;
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -165,9 +170,9 @@ class DesktopButtons extends StatelessWidget {
           width: 200,
           height: 35,
           fontSize: 13,
-          borderColor: Theme.of(context).colorScheme.secondary,
-          backgroundColor: Colors.white,
-          textColor: Theme.of(context).colorScheme.secondary,
+          borderColor: theme.colorScheme.secondary,
+          backgroundColor: theme.colorScheme.background,
+          textColor: theme.colorScheme.secondary,
           fontWeight: FontWeight.normal,
           onPressed: () => controller.deleteQuestion(context, question),
         ),
@@ -176,9 +181,9 @@ class DesktopButtons extends StatelessWidget {
           width: 200,
           height: 35,
           fontSize: 13,
-          borderColor: Theme.of(context).colorScheme.tertiary,
-          backgroundColor: Colors.white,
-          textColor: Theme.of(context).colorScheme.tertiary,
+          borderColor: theme.colorScheme.tertiary,
+          backgroundColor: theme.colorScheme.background,
+          textColor: theme.colorScheme.tertiary,
           fontWeight: FontWeight.normal,
           onPressed: () => controller.editQuestion(context, question),
         ),

@@ -109,7 +109,7 @@ class AppThemes {
       onPrimary: Colors.white,
       secondary: const Color(0xff945438),
       onSecondary: dark,
-      tertiary: green,
+      tertiary: const Color(0xff649550),
       onTertiary: const Color(0xff3F4B3B),
       background: Colors.black87,
       onBackground: Colors.white,

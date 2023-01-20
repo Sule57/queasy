@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:queasy/src/view/registration/register_view_desktop.dart';
 import 'package:queasy/src/view/registration/register_view_mobile.dart';
 
+/// Shows the register view when the user is not logged in and wants to
+/// create a new user.
 class RegisterView extends StatefulWidget {
   RegisterView({Key? key}) : super(key: key);
 

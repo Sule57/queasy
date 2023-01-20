@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../constants/theme_provider.dart';
 import '../../../src.dart';
-import '../play_quiz/play_quiz_view.dart';
 
+/// Popup for joining a quiz
+///
+/// This popup is shown when a user tries to join a private quiz when a key
+/// has been shared with them. It allows the user to enter the key and join
+/// the quiz. Before joining, it performs a check to see if the key is valid.
+/// If it is, the user is taken to the quiz. If not, an error message is shown.
 class JoinQuizPopup extends StatelessWidget {
+  /// Constructor for the join quiz popup
   const JoinQuizPopup({Key? key}) : super(key: key);
 
+  /// Builds the join quiz popup
   @override
   Widget build(BuildContext context) {
     final textController = TextEditingController();

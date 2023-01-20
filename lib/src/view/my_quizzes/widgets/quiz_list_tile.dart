@@ -40,7 +40,7 @@ class QuizListTile extends StatelessWidget {
       ),
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: theme.colorScheme.background,
           borderRadius: BorderRadius.circular(10),
         ),
         child: ListTile(
