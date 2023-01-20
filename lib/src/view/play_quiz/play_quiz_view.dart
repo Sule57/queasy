@@ -15,7 +15,6 @@ import 'package:queasy/src/view/play_quiz/widgets/exit_button.dart';
 import 'package:queasy/src/view/play_quiz/widgets/question_container.dart';
 import 'package:queasy/src/view/play_quiz/widgets/score_tracking.dart';
 import 'package:queasy/src/view/statistics/statistics_view.dart';
-import 'package:queasy/src/view/widgets/rounded_button.dart';
 
 /// This is the main quiz view.
 ///
@@ -55,12 +54,21 @@ class _PlayQuizViewState extends State<PlayQuizView> {
   /// [QuizViewContent] on top.
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: [
-          QuizViewBackground(),
-          QuizViewContent(category: category, id: id),
-        ],
+    return WillPopScope(
+      onWillPop: () async {
+        showDialog(
+          context: context,
+          builder: (context) => AreYouSureDialog(),
+        );
+        return false;
+      },
+      child: Scaffold(
+        body: Stack(
+          children: [
+            QuizViewBackground(),
+            QuizViewContent(category: category, id: id),
+          ],
+        ),
       ),
     );
   }
@@ -210,16 +218,11 @@ class QuizViewDesktopContent extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          Container(
+          Align(
             alignment: Alignment.topRight,
-            width: width / 3,
-            child: RoundedButton(
-              buttonName: 'Exit',
-              fontSize: 18,
-              onPressed: () {
-                Navigator.pop(context);
-                Navigator.pop(context);
-              },
+            child: Container(
+              width: width / 10,
+              child: ExitButton(),
             ),
           ),
           Text(
