@@ -7,6 +7,7 @@ import 'package:queasy/src/view/see_leaderboard/widgets/user_tile_desktop.dart';
 
 import '../../../constants/theme_provider.dart';
 
+///This is the view for the leaderboard
 class LeaderboardView extends StatefulWidget {
   const LeaderboardView({Key? key}) : super(key: key);
 
