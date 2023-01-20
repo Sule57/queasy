@@ -87,6 +87,9 @@ class StatisticsViewContent extends StatefulWidget {
   State<StatisticsViewContent> createState() => _StatisticsViewContentState();
 }
 
+/// This is the statistics view.
+/// It displays the correct answers, the seconds spent on the quiz, the
+/// points received and the overall percentage.
 /// State for [StatisticsViewContent].
 class _StatisticsViewContentState extends State<StatisticsViewContent> {
   /// Builds the content.
@@ -111,6 +114,10 @@ class _StatisticsViewContentState extends State<StatisticsViewContent> {
   }
 }
 
+/// It is the mobile version of the statistics view.
+///
+/// It is the view that the user sees when the statistics after a quiz is being
+/// displayed on a screen smaller than 800 points.
 class StatisticsMobileContent extends StatelessWidget {
   StatisticsMobileContent({Key? key}) : super(key: key);
 
@@ -315,6 +322,11 @@ class StatisticsMobileContent extends StatelessWidget {
   }
 }
 
+/// It is the desktop version of the statistics view.
+///
+/// It is the view that the user sees when the statistics after a quiz is being
+/// displayed on a desktop device or a web explorer with a screen greater
+/// than 800 points.
 class StatisticsDesktopContent extends StatelessWidget {
   StatisticsDesktopContent({Key? key}) : super(key: key);
 
