@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 
 import '../../model/profile.dart';
 
-/// This class is responsible for managing the state of the profile view.
+/// This class is responsible for managing the data on the profile view.
 ///
 /// The late field [currentUID] stores the UID of the current player
 /// after the provider is initialized.
