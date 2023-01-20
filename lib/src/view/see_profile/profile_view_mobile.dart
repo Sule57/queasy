@@ -6,21 +6,15 @@
 /// Software Project on Technische Hochschule Ulm
 /// ****************************************************************************
 
-import 'package:draw_graph/models/feature.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_profile_picture/flutter_profile_picture.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:motion_tab_bar_v2/motion-tab-bar.dart';
 import 'package:provider/provider.dart';
 import 'package:queasy/constants/app_themes.dart';
-import 'package:queasy/src/view/home_view.dart';
 import 'package:queasy/src/view/see_profile/widgets/theme_button.dart';
 import 'package:queasy/src/view/login/login_view.dart';
 import 'package:queasy/src/view/see_profile/profile_view_controller.dart';
-import 'package:draw_graph/draw_graph.dart';
 import '../../../constants/theme_provider.dart';
 import '../registration/register_view.dart';
-import '../see_leaderboard/leaderboard_view.dart';
 import '../statistics/statistics_provider.dart';
 import 'profile_provider.dart';
 import 'widgets/statistics_graph.dart';
@@ -92,6 +86,8 @@ class ProfileMobileState extends State<ProfileViewMobile> {
   /// Builds the view
   @override
   Widget build(BuildContext context) {
+    var theme = Provider.of<ThemeProvider>(context).currentTheme!;
+
     return Scaffold(
         body: Stack(children: <Widget>[
       ///[Container] used for design
@@ -101,7 +97,7 @@ class ProfileMobileState extends State<ProfileViewMobile> {
               height: MediaQuery.of(context).size.height * .25,
               width: MediaQuery.of(context).size.width / 5,
               decoration: BoxDecoration(
-                  color: green,
+                  color: theme.colorScheme.tertiary,
                   borderRadius: const BorderRadius.only(
                     bottomLeft: Radius.circular(20),
                   )))),
@@ -117,7 +113,7 @@ class ProfileMobileState extends State<ProfileViewMobile> {
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height * .5,
           decoration: BoxDecoration(
-              color: orange,
+              color: theme.colorScheme.secondary,
               borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(20), topRight: Radius.circular(20))),
         ),
@@ -130,7 +126,7 @@ class ProfileMobileState extends State<ProfileViewMobile> {
           height: MediaQuery.of(context).size.height * .70,
           width: MediaQuery.of(context).size.width * .2,
           decoration: BoxDecoration(
-              color: light,
+              color: theme.colorScheme.onTertiary,
               borderRadius:
                   const BorderRadius.only(topRight: Radius.circular(20))),
         ),
@@ -304,16 +300,15 @@ class ProfileMobileState extends State<ProfileViewMobile> {
                                 style: TextStyle(fontSize: 20))),
                         Padding(
                             padding: EdgeInsets.all(30),
-                            child: Center(child:
-                            Provider.of<StatisticsProvider>(context)
-                                .numberQuiz ==
-                                0
-                                ? Text(
-                              "Complete a Quiz to Start your Graph!",
-                              style: TextStyle(fontSize: 15),
-                            )
-                                : StatisticsGraph()
-                            )),
+                            child: Center(
+                                child: Provider.of<StatisticsProvider>(context)
+                                            .numberQuiz ==
+                                        0
+                                    ? Text(
+                                        "Complete a Quiz to Start your Graph!",
+                                        style: TextStyle(fontSize: 15),
+                                      )
+                                    : StatisticsGraph())),
                       ],
                     ),
                   ),

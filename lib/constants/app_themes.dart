@@ -105,12 +105,12 @@ class AppThemes {
   /// Theme taken by the app if user has selects the dark theme.
   ThemeData darkTheme = ThemeData(
     colorScheme: ColorScheme.dark(
-      primary: purple,
+      primary: const Color(0xff57456e),
       onPrimary: Colors.white,
-      secondary: orange,
+      secondary: const Color(0xff945438),
       onSecondary: dark,
       tertiary: green,
-      onTertiary: light,
+      onTertiary: const Color(0xff3F4B3B),
       background: Colors.black87,
       onBackground: Colors.white,
     ),

@@ -59,6 +59,7 @@ class CategorySelectionDesktopViewBackground extends StatelessWidget {
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
+    var theme = Provider.of<ThemeProvider>(context).currentTheme!;
 
     return Scaffold(
       body: Center(
@@ -74,7 +75,7 @@ class CategorySelectionDesktopViewBackground extends StatelessWidget {
                     height: height / 4,
                     //alignment: Alignment.bottomLeft,
                     decoration: BoxDecoration(
-                      color: const Color(0xfff1ffe7),
+                      color: theme.colorScheme.onTertiary,
                     ),
                   ),
                 ))
@@ -95,7 +96,7 @@ class CategorySelectionDesktopViewBackground extends StatelessWidget {
                         bottomLeft: Radius.circular(30),
                         topRight: Radius.circular(30),
                       ),
-                      color: const Color(0xffF19C79),
+                      color: theme.colorScheme.secondary,
                     ),
                   ),
                 ))
@@ -113,7 +114,7 @@ class CategorySelectionDesktopViewBackground extends StatelessWidget {
                         borderRadius: BorderRadius.only(
                           topLeft: Radius.circular(30),
                         ),
-                        color: const Color(0xffF19C79),
+                        color: theme.colorScheme.secondary,
                       ),
                     ),
                   ),
@@ -132,7 +133,7 @@ class CategorySelectionDesktopViewBackground extends StatelessWidget {
                         borderRadius: BorderRadius.only(
                           topLeft: Radius.circular(30),
                         ),
-                        color: Theme.of(context).colorScheme.primary,
+                        color: theme.colorScheme.primary,
                       ),
                     ),
                   ),

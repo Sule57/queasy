@@ -75,6 +75,7 @@ class _AnswerButtonState extends State<AnswerButton>
   @override
   Widget build(BuildContext context) {
     var provider = Provider.of<PlayQuizProvider>(context);
+    var theme = Provider.of<ThemeProvider>(context).currentTheme!;
     String text = provider.getAnswerText(widget.index);
     bool isCorrect = provider.isAnswerCorrect(widget.index);
     bool isClicked = provider.currentQuestionAnswered;
@@ -113,7 +114,7 @@ class _AnswerButtonState extends State<AnswerButton>
                       });
                     },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white,
+                backgroundColor: theme.colorScheme.background,
                 disabledBackgroundColor: _colorTween.value,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
