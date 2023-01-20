@@ -1,3 +1,9 @@
+/// ****************************************************************************
+/// Created by Endia Clark
+///
+/// This file is part of the project "Qeasy"
+/// Software Project on Technische Hochschule Ulm
+/// ****************************************************************************
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:queasy/src/view/see_profile/profile_view_desktop.dart';
@@ -11,10 +17,9 @@ import 'profile_provider.dart';
 /// Uses a [StatefulWidget] to display questions and answers and update the
 /// text contained in the widgets.
 class ProfileView extends StatefulWidget {
-  const ProfileView({Key? key, this.category, this.id}) : super(key: key);
-
-  final String? category;
-  final String? id;
+  const ProfileView({
+    Key? key,
+  }) : super(key: key);
 
   /// Creates a [ProfileView] state.
   @override
@@ -23,8 +28,13 @@ class ProfileView extends StatefulWidget {
 
 /// State for [ProfileViewContent].
 class _ProfileViewContentState extends State<ProfileView> {
+  /// Used to determine whether the view should display a loading indicator.
   bool isLoading = true;
 
+  /// Called when the view is build for the first time.
+  /// It sets [isLoading] to false once the
+  /// data is loaded from the [ProfileProvider] is loaded
+  /// and waits for [StatisticsProvider] to initialize.
   init() async {
     isLoading = !(await Provider.of<ProfileProvider>(context, listen: false)
         .setProfile());
@@ -33,12 +43,16 @@ class _ProfileViewContentState extends State<ProfileView> {
     setState(() {});
   }
 
+  /// Initializes the view.
+  ///
+  /// Calls [init] to initialize the view.
   @override
   void initState() {
     init();
     super.initState();
   }
 
+  /// Called when the view is disposed.
   @override
   void dispose() {
     super.dispose();

@@ -147,6 +147,4 @@ void main() async {
     Map<String, dynamic> data = json.decode(instance.dump());
     expect(data['users']["mockedyouu"], equals(expectedDataAfterUpdates));
   });
-
-  ///TODO: test update picture, update email, update password, delete account, signout, getprofile from uid, get user statistics, updatescore
 }

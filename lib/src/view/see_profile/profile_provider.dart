@@ -1,11 +1,23 @@
+/// ****************************************************************************
+/// Created by Endia Clark
+///
+/// This file is part of the project "Qeasy"
+/// Software Project on Technische Hochschule Ulm
+/// ****************************************************************************
 import 'package:flutter/material.dart';
 
 import '../../model/profile.dart';
 
+/// This class is responsible for managing the state of the profile view.
+///
+/// The late field [currentUID] stores the UID of the current player
+/// after the provider is initialized.
+///
+/// The parameter [player] is the player that is being displayed by the view.
 class ProfileProvider with ChangeNotifier {
   late String currentUID;
 
-  ///@param [player] For now a dummy data used as a user
+  ///[player] For now a dummy data used as a user
   Profile player = Profile(
       username: "",
       email: "",
@@ -16,6 +28,7 @@ class ProfileProvider with ChangeNotifier {
       birthdayDay: 1,
       profilePicture: "");
 
+  ///getter methods for user data
   Profile get user => player;
   String get username => player.username;
   String get bio => player.bio.toString();
@@ -29,6 +42,8 @@ class ProfileProvider with ChangeNotifier {
 
   ProfileProvider() {}
 
+  ///Sets the [player] parameter with current user information from the [Profile] model.
+  ///Should be called when a view need the [ProfileProvider] is being initialized.
   Future<bool> setProfile() async {
     if (await getCurrentUserID() != null) {
       currentUID = await getCurrentUserID()!;
@@ -42,6 +57,8 @@ class ProfileProvider with ChangeNotifier {
     return false;
   }
 
+  ///Updates the [player] parameter with current user information from the [Profile] model.
+  ///Should be called when a view using the [ProfileProvider] needs to show updated information.
   Future<bool> updateProfile() async {
     if (getCurrentUserID() != null) {
       currentUID = getCurrentUserID()!;
@@ -55,6 +72,7 @@ class ProfileProvider with ChangeNotifier {
     return false;
   }
 
+  ///Returns the graph data of the [player] parameter as a List<double> so that it can be used by Widgets.
   List<double> getGraphData() {
     List<double> data = [];
     //data.add(0.0);
@@ -64,6 +82,7 @@ class ProfileProvider with ChangeNotifier {
     return data;
   }
 
+  ///Returns the graph keys of the [player] parameter as a List<String> so that it can be used by Widgets.
   List<String> getGraphKeys() {
     List<String> data = [];
     //data.add("");
