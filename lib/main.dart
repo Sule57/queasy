@@ -24,6 +24,7 @@ import 'services/firebase_options.dart';
 import 'src/view/see_leaderboard/leaderboard_provider.dart';
 import 'src/view/see_profile/profile_provider.dart';
 
+///[navigator] stores the [GlobalKey] and [NavigatorState] that the entire Qeasy app uses
 final GlobalKey<NavigatorState> navigator = GlobalKey<NavigatorState>();
 
 Future<void> main() async {
@@ -70,9 +71,12 @@ Future<void> main() async {
   }
 }
 
+/// The widget [Qeasy] is used to display the Qeasy app.
+/// Uses the [ThemeProvider] to set the [MaterialApp] theme.
 class Qeasy extends StatelessWidget {
   const Qeasy({super.key});
 
+  /// Builds the [Qeasy] Widget.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

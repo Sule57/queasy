@@ -1,3 +1,9 @@
+/// ****************************************************************************
+/// Created by Endia Clark
+///
+/// This file is part of the project "Qeasy"
+/// Software Project on Technische Hochschule Ulm
+/// ****************************************************************************
 import 'package:flutter/material.dart';
 import 'category_selection_view_desktop.dart';
 import 'category_selection_view_mobile.dart';

@@ -5,6 +5,7 @@
 /// Software Project on Technische Hochschule Ulm
 /// ****************************************************************************
 
+/// Exports for Flutter Documentation
 export 'exports/model.dart';
 export 'exports/view_category_selection.dart';
 export 'exports/view_login.dart';
@@ -20,3 +21,4 @@ export 'exports/themes.dart';
 export 'src/view/home_view.dart';
 export 'src/view/widget_tree.dart';
 export 'utils/exceptions.dart';
+export 'main.dart';
