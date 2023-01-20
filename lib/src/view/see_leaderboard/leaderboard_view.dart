@@ -70,6 +70,7 @@ class LeaderboardDesktopViewBackground extends StatelessWidget {
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
+    var theme = Provider.of<ThemeProvider>(context).currentTheme!;
 
     return width > 700
         ? Scaffold(
@@ -87,7 +88,7 @@ class LeaderboardDesktopViewBackground extends StatelessWidget {
                       //alignment: Alignment.bottomLeft,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(30),
-                        color: const Color(0xff9fc490),
+                        color: theme.colorScheme.tertiary,
                       ),
                     ),
                   ),
@@ -106,7 +107,7 @@ class LeaderboardDesktopViewBackground extends StatelessWidget {
                       //alignment: Alignment.bottomLeft,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(30),
-                        color: const Color(0xffF19C79),
+                        color: theme.colorScheme.secondary,
                       ),
                     ),
                   ),
@@ -124,7 +125,7 @@ class LeaderboardDesktopViewBackground extends StatelessWidget {
                       height: height / 4,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(30),
-                        color: const Color(0xfff1ffe7),
+                        color: theme.colorScheme.onTertiary,
                       ),
                     ),
                   ),
@@ -189,7 +190,8 @@ class LeaderboardMobileContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double statusBarHeight = MediaQuery.of(context).padding.top;
+    var theme = Provider.of<ThemeProvider>(context).currentTheme!;
+
     return Scaffold(
       body: Center(
         child: Stack(
@@ -202,7 +204,7 @@ class LeaderboardMobileContent extends StatelessWidget {
               height: 330,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(30),
-                color: const Color(0xff72479d),
+                color: theme.colorScheme.primary,
               ),
             ),
             //dark green rectangle at the right side of the screen
@@ -216,7 +218,7 @@ class LeaderboardMobileContent extends StatelessWidget {
                       height: 220,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(30),
-                        color: const Color(0xff9fc490),
+                        color: theme.colorScheme.tertiary,
                       ),
                     ),
                   ),
@@ -234,7 +236,7 @@ class LeaderboardMobileContent extends StatelessWidget {
                       height: 220,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(30),
-                        color: const Color(0xfff1ffe7),
+                        color: theme.colorScheme.onTertiary,
                       ),
                     ),
                   ),

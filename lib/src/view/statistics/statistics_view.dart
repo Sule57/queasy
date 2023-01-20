@@ -67,8 +67,10 @@ class StatisticsDesktopViewBackground extends StatelessWidget {
 
     return width > 700
         ? Scaffold(
-            backgroundColor: Color(0xfff1ffe7),
-          )
+            backgroundColor: Provider.of<ThemeProvider>(context)
+                .currentTheme!
+                .colorScheme
+                .tertiary)
         : Container(); //empty container for mobile view
   }
 }
@@ -140,7 +142,10 @@ class StatisticsMobileContent extends StatelessWidget {
                     topRight: Radius.circular(30.0),
                     topLeft: Radius.circular(30.0),
                   ),
-                  color: const Color(0xfff1ffe7),
+                  color: Provider.of<ThemeProvider>(context)
+                      .currentTheme!
+                      .colorScheme
+                      .tertiary,
                 ),
               ),
             ),

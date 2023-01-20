@@ -21,7 +21,7 @@ class ThemeButton extends StatelessWidget {
     _darkTheme = (themeNotifier.currentTheme == AppThemes().darkTheme);
     return ElevatedButton(
         style: ElevatedButton.styleFrom(
-            backgroundColor: purple,
+            backgroundColor: themeNotifier.currentTheme.colorScheme.primary,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(18.0),
             )),

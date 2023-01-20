@@ -33,7 +33,7 @@ class JoinQuizPopup extends StatelessWidget {
                   controller: textController,
                   decoration: InputDecoration(
                     filled: true,
-                    fillColor: theme.colorScheme.onPrimary,
+                    fillColor: theme.colorScheme.background,
                     border: UnderlineInputBorder(
                       borderSide:
                           BorderSide(color: theme.colorScheme.onPrimary),
