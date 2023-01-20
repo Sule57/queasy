@@ -132,55 +132,96 @@ class _HomeViewState extends State<HomeView> {
                         child: Container(
                           width: width / 2.5,
                           height: height / 1.4,
+                          padding: EdgeInsets.all(10),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(30),
                             color: Theme.of(context).colorScheme.primary,
                           ),
+                          constraints: BoxConstraints(
+                            maxWidth: 500,
+                            maxHeight: 500,
+                          ),
                           child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Text('Test Your Knowledge.',textAlign:TextAlign.center, style: TextStyle(fontSize: 45, color: const Color(0xfff1ffe7),),),
+                              Text(
+                                'Test Your Knowledge!',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 40,
+                                  color: const Color(0xfff1ffe7),
+                                ),
+                              ),
                               Row(
                                 children: [
-                                    Expanded(
-                                    child: Text('Play now and compete in fun tournaments with people from all over in your desired category.', textAlign:TextAlign.center,style: TextStyle(fontSize: 25, color: const Color(0xfff1ffe7),),),
+                                  Expanded(
+                                    child: Text(
+                                      'Play now and compete in fun tournaments with people from all over in your desired category.',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        color: const Color(0xfff1ffe7),
+                                      ),
                                     ),
-                                ]
+                                  ),
+                                ],
                               ),
                               Row(
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.only(left: 30),
-                                      child: Icon(Icons.public, color: Colors.yellow,size: 40,),
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Icon(
+                                    Icons.public,
+                                    color: Colors.yellow,
+                                    size: 40,
+                                  ),
+                                  SizedBox(width: 10),
+                                  Expanded(
+                                    child: Text(
+                                      'Compete once per day in the desired category and see your placement in the leaderboard.',
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        color: const Color(0xfff1ffe7),
+                                      ),
                                     ),
-                                    Expanded(
-                                      child: Text('''Compete once per day in the desired category and see your placement in the leaderboard.''',  style: TextStyle(fontSize: 20, color: const Color(0xfff1ffe7),),),
-                                    )
-                                  ]
+                                  )
+                                ],
                               ),
-                              Row(
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.only(left: 30),
-                                      child: Icon(Icons.lock, color: const Color(0xffF19C79),size: 40,),
+                              Row(children: [
+                                Icon(
+                                  Icons.lock,
+                                  color: const Color(0xffF19C79),
+                                  size: 40,
+                                ),
+                                SizedBox(width: 10),
+                                Expanded(
+                                  child: Text(
+                                    '''Have a quiz key? \n Enter it and you can take the private quiz.''',
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      color: const Color(0xfff1ffe7),
                                     ),
-                                    Expanded(
-                                      child: Text('''Have a quiz key? \n Enter it and you can take the private quiz.''',  style: TextStyle(fontSize: 20, color: const Color(0xfff1ffe7),),),
-                                    )
-                                  ]
-                              ),
-                              Row(
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.only(left: 30),
-                                      child: Icon(Icons.list, color: const Color(0xff9fc490),size: 40,),
+                                  ),
+                                )
+                              ]),
+                              Row(children: [
+                                Icon(
+                                  Icons.list,
+                                  color: const Color(0xff9fc490),
+                                  size: 40,
+                                ),
+                                SizedBox(width: 10),
+                                Expanded(
+                                  child: Text(
+                                    '''Create your own quizzes and save them with your selected category.''',
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      color: const Color(0xfff1ffe7),
                                     ),
-                                    Expanded(
-                                      child: Text('''Create your own quizzes and save them with your selected category.''',  style: TextStyle(fontSize: 20,color: const Color(0xfff1ffe7),),),
-                                    )
-                                  ]
-                              ),
+                                  ),
+                                )
+                              ]),
                             ],
                           ),
                         ),
