@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:queasy/src.dart';
 import '../../../utils/exceptions.dart';
 import '../play_quiz/play_quiz_provider.dart';
-
+/// The class provides data from the model to the [StatisticsView]
+/// the field [statistics] is used to get the statistical data from the current playing user
+/// the field [qp] is used to get tha last quizz rezult from the end of the quizz
+/// the field [p] is the current user Profile playing the quizz
+/// the field [_chartData] is used to store the data of each played quizz for the statistics in the profile view
 class StatisticsProvider with ChangeNotifier {
   late UserStatistics statistics;
   PlayQuizProvider qp;
@@ -35,8 +39,11 @@ class StatisticsProvider with ChangeNotifier {
   StatisticsProvider(this.qp) {
     initStatisticsProvider();
   }
-
+  ///initializes  the data to be presented in [StatisticsView]
+  ///returns [true] if successful
   bool setStatisticsView() {
+    //the exception is not needed anymore
+    // but we are in release phase so just in case I will not touch it
     try {
       _lastQuiz = qp.quizResult;
       _quizName = _lastQuiz.quizzName;
@@ -49,7 +56,7 @@ class StatisticsProvider with ChangeNotifier {
       return false;
     }
   }
-
+  ///The method initializes the provider with all the [UserQuizResult] of the current [Profile] for the statistics charts in the [ProfileView]
   Future<void> initStatisticsProvider() async {
     var uid = await getCurrentUserID();
     if (uid != null) {
@@ -84,7 +91,7 @@ class StatisticsProvider with ChangeNotifier {
     }
   }
 }
-
+/// A class for representing the data in a chart in the ProfileView
 class ChartData {
   ChartData(this.quizNumber, this.userStatistic);
   final String quizNumber;
