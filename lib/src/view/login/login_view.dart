@@ -19,8 +19,10 @@ import 'login_provider.dart';
 /// use the app. It shows two fields for the user to fill in, and a button
 /// to sign up. When the login is completed, the user is taken to [HomeView].
 class LoginView extends StatefulWidget {
+  /// Constructor for the [LoginView].
   LoginView({Key? key}) : super(key: key);
 
+  /// Creates the state for this widget.
   @override
   State<LoginView> createState() => _LoginViewState();
 }

@@ -8,7 +8,7 @@
 import 'package:flutter/material.dart';
 import 'package:queasy/src.dart';
 
-class SeeQuizzesProvider with ChangeNotifier {
+class MyQuizzesProvider with ChangeNotifier {
   List<Quiz> quizList = [];
   List<Question> _questionList = [];
   List<Question> get questionList => _questionList;

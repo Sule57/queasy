@@ -10,15 +10,24 @@ import 'package:provider/provider.dart';
 import 'package:queasy/src.dart';
 import 'package:queasy/src/view/my_quizzes/quiz_questions_view.dart';
 
+/// Widget used in the view [MyQuizzesView] as child of the [ListView.builder].
+/// It shows the title of the quiz, the category, and an option menu to delete
+/// or share the quiz.
+///
+/// It takes the [index] as a parameter when it is created, that is used to get
+/// the quiz from the list of quizzes in the [MyQuizzesProvider].
 class QuizListTile extends StatelessWidget {
+  /// Index of the quiz in the list of quizzes in the [MyQuizzesProvider].
   final int index;
 
+  /// Constructor for the [QuizListTile].
   const QuizListTile({Key? key, required this.index}) : super(key: key);
 
+  /// Builds the widget.
   @override
   Widget build(BuildContext context) {
     final theme = Provider.of<ThemeProvider>(context).currentTheme;
-    final provider = Provider.of<SeeQuizzesProvider>(context);
+    final provider = Provider.of<MyQuizzesProvider>(context);
     final quizList = provider.quizList;
 
     TextStyle? quizNameTextStyle = theme.textTheme.headline4;
@@ -68,13 +77,15 @@ class QuizListTile extends StatelessWidget {
     );
   }
 
-  //shows a popup menu with listTiles with the following elements: share, edit and
+  /// Shows a popup menu with the options to delete or share the quiz. It takes
+  /// the [context], the [details] of the tap, and the [quizId] as parameters.
+  /// The menu is shown at the position of the tap using the [details].
   void _showPopupMenu(
       {required BuildContext context,
       required TapDownDetails details,
       required String quizId}) {
-    SeeQuizzesProvider provider =
-        Provider.of<SeeQuizzesProvider>(context, listen: false);
+    MyQuizzesProvider provider =
+        Provider.of<MyQuizzesProvider>(context, listen: false);
     TextStyle? bodyTextStyle =
         Provider.of<ThemeProvider>(context, listen: false)
             .currentTheme

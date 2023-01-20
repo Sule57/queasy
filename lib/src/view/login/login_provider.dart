@@ -80,7 +80,6 @@ class LoginProvider with ChangeNotifier {
   /// [LoginViewMobile] and [LoginViewDesktop].
   ///
   /// Called when the user presses the "Sign in" button. It validates the email
-  ///
   Future<bool> signInWithEmailAndPassword() async {
     try {
       await Auth().signInWithEmailAndPassword(
@@ -96,6 +95,7 @@ class LoginProvider with ChangeNotifier {
     }
   }
 
+  /// Signs in with Google.
   Future<bool> signInWithGoogle() async {
     try {
       await Auth().signInWithGoogle();
@@ -107,6 +107,7 @@ class LoginProvider with ChangeNotifier {
     }
   }
 
+  /// Signs in with Facebook.
   Future<bool> signInWithFacebook() async {
     try {
       await Auth().signInWithFacebook();
@@ -118,17 +119,8 @@ class LoginProvider with ChangeNotifier {
     }
   }
 
-  Future<bool> signInWithTwitter() async {
-    try {
-      await Auth().signInWithTwitter();
-      return true;
-    } on FirebaseAuthException catch (e) {
-      _errorMessage = e.message;
-      notifyListeners();
-      return false;
-    }
-  }
-
+  /// Function to validate email used in the text fields when the form is
+  /// submitted. If the email is not valid, it returns an error message.
   String? validateEmail(String? value) {
     if (value == null || value.isEmpty) {
       return 'Please enter your email';
@@ -141,6 +133,9 @@ class LoginProvider with ChangeNotifier {
     return null;
   }
 
+  /// Function to validate password used in the text fields when the form is
+  /// submitted. If the password is not valid, it returns an error message.
+  /// The password must be at least 6 characters long.
   String? validatePassword(String? value) {
     if (value == null || value.isEmpty) {
       return 'Please enter your password';
@@ -148,6 +143,7 @@ class LoginProvider with ChangeNotifier {
     return null;
   }
 
+  /// Sends an email to the user with a link to reset their password.
   void sendForgotPasswordEmail() {
     Auth().sendPasswordResetEmail(forgotPasswordController.text);
   }

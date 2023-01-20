@@ -21,7 +21,6 @@ import 'questions_text_field.dart';
 /// It shows a [TextFormField] for the question, four [TextFormField]s for the
 /// options, and four [Radio]s for the correct answer.
 class AddOrEditQuestionPopUp extends StatefulWidget {
-
   /// The function that is going to be called when the user confirms the addition or edition of the question.
   final Function() action;
 
@@ -43,8 +42,8 @@ class AddOrEditQuestionPopUp extends StatefulWidget {
   State<AddOrEditQuestionPopUp> createState() => _AddOrEditQuestionPopUpState();
 }
 
+/// The state of the widget [AddOrEditQuestionPopUp].
 class _AddOrEditQuestionPopUpState extends State<AddOrEditQuestionPopUp> {
-
   /// Used to validate the form.
   final _formKey = GlobalKey<FormState>();
 
@@ -55,12 +54,14 @@ class _AddOrEditQuestionPopUpState extends State<AddOrEditQuestionPopUp> {
   @override
   Widget build(BuildContext context) {
     /// The provider of the class
-    CategoryQuestionsProvider controller = Provider.of<CategoryQuestionsProvider>(context, listen: true);
+    CategoryQuestionsProvider controller =
+        Provider.of<CategoryQuestionsProvider>(context, listen: true);
 
     // If the question is not null, the user wants to edit a question, and the popup should
     // show the "old" correct answer as selected when the popup opens
     if (question != null) {
-      controller.selectedRadioAnswer = controller.getCorrectRadioAnswer(question);
+      controller.selectedRadioAnswer =
+          controller.getCorrectRadioAnswer(question);
     }
 
     return AlertDialog(
@@ -253,7 +254,8 @@ class _DeleteQuestionPopUpState extends State<DeleteQuestionPopUp> {
   @override
   Widget build(BuildContext context) {
     /// The provider of the class
-    final CategoryQuestionsProvider controller = Provider.of<CategoryQuestionsProvider>(context, listen: true);
+    final CategoryQuestionsProvider controller =
+        Provider.of<CategoryQuestionsProvider>(context, listen: true);
 
     return AlertDialog(
       title:
@@ -302,6 +304,7 @@ class _DeleteQuestionPopUpState extends State<DeleteQuestionPopUp> {
 
 /// This widget is used to display an [AlertDialog] to add a new category.
 class NewCategoryPopUp extends StatefulWidget {
+  /// Constructor of the class.
   const NewCategoryPopUp({
     Key? key,
   }) : super(key: key);
@@ -310,8 +313,8 @@ class NewCategoryPopUp extends StatefulWidget {
   State<NewCategoryPopUp> createState() => _NewCategoryPopUpState();
 }
 
+/// The state of the widget [NewCategoryPopUp].
 class _NewCategoryPopUpState extends State<NewCategoryPopUp> {
-
   /// The controller of the text field of the category name.
   final TextEditingController newCategoryController = TextEditingController();
 
@@ -324,7 +327,8 @@ class _NewCategoryPopUpState extends State<NewCategoryPopUp> {
   @override
   Widget build(BuildContext context) {
     /// The provider of the class
-    final CategoryQuestionsProvider controller = Provider.of<CategoryQuestionsProvider>(context, listen: true);
+    final CategoryQuestionsProvider controller =
+        Provider.of<CategoryQuestionsProvider>(context, listen: true);
 
     return AlertDialog(
       title: const Text(
@@ -362,21 +366,22 @@ class _NewCategoryPopUpState extends State<NewCategoryPopUp> {
           } else {
             // Add the new category to the database
             try {
-              await controller.addCategoryToDatabase(newCategoryController.text);
+              await controller
+                  .addCategoryToDatabase(newCategoryController.text);
               Navigator.pop(context); // Close the alert dialog
             } on CategoryAlreadyExistsException catch (e) {
-                // Show an alert dialog to inform the user that the category
-                // name already exists
-                Future.delayed(Duration.zero, () {
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return const AlertDialog(
-                        title: Text('Category already exists'),
-                      );
-                    },
-                  );
-                });
+              // Show an alert dialog to inform the user that the category
+              // name already exists
+              Future.delayed(Duration.zero, () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return const AlertDialog(
+                      title: Text('Category already exists'),
+                    );
+                  },
+                );
+              });
             }
           }
         },
@@ -419,7 +424,8 @@ class _NewCategoryPopUpState extends State<NewCategoryPopUp> {
                 } else {
                   // Add the new category to the database
                   try {
-                    await controller.addCategoryToDatabase(newCategoryController.text);
+                    await controller
+                        .addCategoryToDatabase(newCategoryController.text);
                     Navigator.pop(context); // Close the alert dialog
                   } on CategoryAlreadyExistsException catch (e) {
                     // Show an alert dialog to inform the user that the category
@@ -468,7 +474,8 @@ class _DeleteCategoryPopUpState extends State<DeleteCategoryPopUp> {
   @override
   Widget build(BuildContext context) {
     /// The provider of the class
-    final CategoryQuestionsProvider controller = Provider.of<CategoryQuestionsProvider>(context, listen: true);
+    final CategoryQuestionsProvider controller =
+        Provider.of<CategoryQuestionsProvider>(context, listen: true);
 
     return AlertDialog(
       title:
@@ -518,9 +525,21 @@ class _DeleteCategoryPopUpState extends State<DeleteCategoryPopUp> {
   }
 }
 
+/// Popup for creating a random quiz.
+///
+/// It is shown when the user presses the button "Random quiz" in the
+/// [PrivateCategorySelectionView].
+///
+/// It shows an [AlertDialog] with a [TextField] to choose the name of the
+/// quiz and a text field to choose the number of questions.
 class CreateRandomQuizPopup extends StatelessWidget {
+  /// Constructor of the class.
   const CreateRandomQuizPopup({Key? key}) : super(key: key);
 
+  /// Build the view.
+  ///
+  /// Returns an alert dialog that asks the user how many questions he wants to
+  /// include in the quiz and takes only an int in the text-field.
   @override
   Widget build(BuildContext context) {
     final theme = Provider.of<ThemeProvider>(context).currentTheme;
@@ -536,8 +555,6 @@ class CreateRandomQuizPopup extends StatelessWidget {
       color: theme.colorScheme.onBackground,
     );
 
-    // Returns an alert dialog that asks the user how many questions he wants to include in the quiz
-    // and takes only an int in the text-field
     return AlertDialog(
       backgroundColor: theme.colorScheme.primary,
       title: Text(
@@ -638,8 +655,16 @@ class CreateRandomQuizPopup extends StatelessWidget {
     );
   }
 
+  /// Function called when the user confirms the creation of the quiz.
+  ///
+  /// It is called either in the onPressed of the ElevatedButton or when the
+  /// user presses the enter key on the keyboard on the last text field.
+  ///
+  /// It checks if the form is valid and if it is, it creates the quiz and
+  /// navigates to the quiz page.
   _confirm(BuildContext context) async {
-    final CategoryQuestionsProvider controller = Provider.of<CategoryQuestionsProvider>(context, listen: false);
+    final CategoryQuestionsProvider controller =
+        Provider.of<CategoryQuestionsProvider>(context, listen: false);
     String? quizId;
 
     if (controller.formKeyCreateRandomQuiz.currentState!.validate()) {
@@ -665,16 +690,27 @@ class CreateRandomQuizPopup extends StatelessWidget {
   }
 }
 
+/// Popup for creating a custom quiz from a category.
+///
+/// It is shown when the user presses the button "Custom quiz" in the
+/// [PrivateCategorySelectionView].
+///
+/// It shows an [AlertDialog] with a [TextField] to choose the name of the
+/// quiz. It also shows a list of questions from the category that the user can
+/// select with a checkbox to be included in the quiz.
 class CreateCustomQuizPopup extends StatelessWidget {
+  /// Constructor of the class.
   const CreateCustomQuizPopup({Key? key}) : super(key: key);
 
+  /// Build the view.
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
 
     final theme = Provider.of<ThemeProvider>(context).currentTheme;
-    final CategoryQuestionsProvider controller = Provider.of<CategoryQuestionsProvider>(context);
+    final CategoryQuestionsProvider controller =
+        Provider.of<CategoryQuestionsProvider>(context);
     TextStyle? titleStyle = theme.textTheme.headline5!.copyWith(
       color: theme.colorScheme.onPrimary,
     );
@@ -769,8 +805,16 @@ class CreateCustomQuizPopup extends StatelessWidget {
     );
   }
 
+  /// Function called when the user confirms the creation of the quiz.
+  ///
+  /// It is called either in the onPressed of the ElevatedButton or when the
+  /// user presses the enter key on the keyboard on the last text field.
+  ///
+  /// It checks if the form is valid and if it is, it creates the quiz and
+  /// navigates to the quiz page.
   _confirm(BuildContext context) async {
-    final CategoryQuestionsProvider controller = Provider.of<CategoryQuestionsProvider>(context, listen: false);
+    final CategoryQuestionsProvider controller =
+        Provider.of<CategoryQuestionsProvider>(context, listen: false);
 
     if (controller.formKeyCreateCustomQuiz.currentState!.validate()) {
       List<String> questionIds = [];
@@ -780,7 +824,8 @@ class CreateCustomQuizPopup extends StatelessWidget {
         if (controller.isQuestionChecked[i])
           questionIds.add(controller.questionList[i].id);
 
-      quizId = await controller.createAndStoreCustomQuiz(questionIds: questionIds);
+      quizId =
+          await controller.createAndStoreCustomQuiz(questionIds: questionIds);
 
       if (quizId == null) {
         ScaffoldMessenger.of(context).showSnackBar(

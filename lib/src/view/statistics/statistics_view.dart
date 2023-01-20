@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:queasy/src/view/home_view.dart';
 import 'package:queasy/src/view/statistics/statistics_provider.dart';
-import 'package:flutter/foundation.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
 import '../../../constants/theme_provider.dart';

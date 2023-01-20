@@ -7,14 +7,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:queasy/constants/app_themes.dart';
 import 'package:queasy/src.dart';
-import 'package:queasy/src/view/play_quiz/play_quiz_provider.dart';
-import 'package:queasy/src/view/play_quiz/widgets/answer_button.dart';
-import 'package:queasy/src/view/play_quiz/widgets/exit_button.dart';
-import 'package:queasy/src/view/play_quiz/widgets/question_container.dart';
-import 'package:queasy/src/view/play_quiz/widgets/score_tracking.dart';
-import 'package:queasy/src/view/statistics/statistics_view.dart';
 
 /// This is the main quiz view.
 ///

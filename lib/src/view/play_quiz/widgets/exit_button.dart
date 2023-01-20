@@ -11,10 +11,13 @@ import 'package:queasy/src/view/widgets/rounded_button.dart';
 
 /// Widget for the button to exit the quiz
 ///
-///
+/// This widget is used in [PlayQuizView] to exit the quiz, so the user can
+/// return to the home view without finishing the quiz. Before popping the
+/// view, it shows a dialog to confirm the action.
 class ExitButton extends StatelessWidget {
   const ExitButton({Key? key}) : super(key: key);
 
+  /// Builds the view.
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -36,9 +39,16 @@ class ExitButton extends StatelessWidget {
   }
 }
 
+/// Dialog to confirm the exit of the quiz.
+///
+/// This dialog is shown when the user presses the exit button in [PlayQuizView]
+/// or the back button. It asks the user if they are sure they want to exit the
+/// quiz. If the user presses "Accept", the view is popped. If the user presses
+/// "Cancel", the dialog is closed.
 class AreYouSureDialog extends StatelessWidget {
   const AreYouSureDialog({Key? key}) : super(key: key);
 
+  /// Builds the view.
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
