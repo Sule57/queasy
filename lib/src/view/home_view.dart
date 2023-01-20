@@ -1,6 +1,6 @@
 /// ****************************************************************************
 /// Created by Gullu Gasimova
-/// Collaborators: Sophia Soares, Julia Agüero
+/// Collaborators: Sophia Soares, Julia Agüero, Nikol Kreshpoj
 ///
 /// This file is part of the project "Qeasy"
 /// Software Project on Technische Hochschule Ulm
@@ -9,10 +9,11 @@
 import 'package:flutter/material.dart';
 import 'package:motion_tab_bar_v2/motion-tab-bar.dart';
 import 'package:queasy/constants/app_themes.dart';
-import 'package:queasy/src/view/widgets/join_quiz_popup.dart';
+import 'package:queasy/src/view/see_leaderboard/leaderboard_view.dart';
+import 'package:queasy/src/view/see_profile/profile_view.dart';
 import 'package:queasy/src/view/widgets/side_navigation.dart';
-
 import '../../src.dart';
+import 'package:queasy/src/view/widgets/join_quiz_popup.dart';
 import 'my_quizzes/my_quizzes_view.dart';
 
 /// This is the base view for navigation. It contains the bottom navigation bar
@@ -61,18 +62,180 @@ class _HomeViewState extends State<HomeView> {
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
 
     return width > 700
         ? Scaffold(
-            body: Row(
+            body: Center(
+                child: Stack(
             children: [
+              Column(
+                children: [
+                  Expanded(
+                      child: Align(
+                    alignment: FractionalOffset.topRight,
+                    child: Container(
+                      width: width / 3.5,
+                      height: height / 4,
+                      //alignment: Alignment.bottomLeft,
+                      decoration: BoxDecoration(
+                        color: const Color(0xff9fc490),
+                      ),
+                    ),
+                  ))
+                ],
+              ),
+              Column(
+                children: [
+                  Expanded(
+                      child: Align(
+                    alignment: FractionalOffset.topRight,
+                    child: Container(
+                      margin: const EdgeInsets.only(top: 130),
+                      width: width / 9,
+                      height: height / 2,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(30),
+                          bottomLeft: Radius.circular(30),
+                        ),
+                        color: const Color(0xffF19C79),
+                      ),
+                    ),
+                  ))
+                ],
+              ),
+              Column(
+                children: [
+                  Expanded(
+                    child: Align(
+                      alignment: FractionalOffset.bottomRight,
+                      child: Container(
+                        width: width / 1.7,
+                        height: height / 6,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(30),
+                          color: const Color(0xfff1ffe7),
+                        ),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+              Column(
+                children: [
+                  Expanded(
+                    child: Align(
+                      alignment: FractionalOffset.center,
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 200, top: 50),
+                        child: Container(
+                          width: width / 2.5,
+                          height: height / 1.4,
+                          padding: EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(30),
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                          constraints: BoxConstraints(
+                            maxWidth: 500,
+                            maxHeight: 500,
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(
+                                'Test Your Knowledge!',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 40,
+                                  color: const Color(0xfff1ffe7),
+                                ),
+                              ),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      'Play now and compete in fun tournaments with people from all over in your desired category.',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        color: const Color(0xfff1ffe7),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Icon(
+                                    Icons.public,
+                                    color: Colors.yellow,
+                                    size: 40,
+                                  ),
+                                  SizedBox(width: 10),
+                                  Expanded(
+                                    child: Text(
+                                      'Compete once per day in the desired category and see your placement in the leaderboard.',
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        color: const Color(0xfff1ffe7),
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                              Row(children: [
+                                Icon(
+                                  Icons.lock,
+                                  color: const Color(0xffF19C79),
+                                  size: 40,
+                                ),
+                                SizedBox(width: 10),
+                                Expanded(
+                                  child: Text(
+                                    '''Have a quiz key? \n Enter it and you can take the private quiz.''',
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      color: const Color(0xfff1ffe7),
+                                    ),
+                                  ),
+                                )
+                              ]),
+                              Row(children: [
+                                Icon(
+                                  Icons.list,
+                                  color: const Color(0xff9fc490),
+                                  size: 40,
+                                ),
+                                SizedBox(width: 10),
+                                Expanded(
+                                  child: Text(
+                                    '''Create your own quizzes and save them with your selected category.''',
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      color: const Color(0xfff1ffe7),
+                                    ),
+                                  ),
+                                )
+                              ]),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
               SideNavigation(),
               SizedBox(
                 width: width - SideNavigation.width,
-                child: HomeWidgets(),
               ),
             ],
-          ))
+          )))
         : Scaffold(
             bottomNavigationBar: MotionTabBar(
               labels: const ['Home', 'Leaderboard', 'Profile'],
@@ -216,5 +379,11 @@ class HomeWidgets extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  /// Confirms whether the entered key is valid (not yet implemented)
+  bool confirmKey(String text) {
+    /// TODO: implement a communication with Firebase that checks if the key exists
+    return false;
   }
 }
