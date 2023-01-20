@@ -1,5 +1,12 @@
 import 'package:flutter/material.dart';
 
+///This is RoundedButton class that provides template button for other classes to use
+///
+///It has following properties:
+///[buttonName] which is to display the button text and it's a required property
+///[backgroundColor], [textColor], [borderColor] are for specifying colors
+///[width], [height], [fontSize] and [fontWeight]are to determine the size of the button and text
+///[onPressed] is to pass a function that will be called when the button is clicked
 class RoundedButton extends StatelessWidget {
   final String buttonName;
   final Color? backgroundColor;
@@ -24,6 +31,7 @@ class RoundedButton extends StatelessWidget {
     this.onPressed,
   }) : super(key: key);
 
+  /// Builds the RoundedButton
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
