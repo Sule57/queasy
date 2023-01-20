@@ -12,7 +12,7 @@ import 'package:queasy/src/model/profile.dart';
 /// contoller to call methds from the [Profile] model.
 /// the field [success] is a list that collects returned values of edit methods.
 class ProfileViewController {
-  ///@param [player] For now a dummy data used as a user
+  ///[player] For now a dummy data used as a user
   Profile player = Profile(
       username: "",
       email: "",
@@ -90,9 +90,9 @@ class ProfileViewController {
     return await player.signOut();
   }
 
-  ///this is the method that is called in profile views (both mobile and desktop)
-  ///@return true -> edit was successful
-  ///@return false -> edit failed
+  ///This is the method that is called in profile views (both mobile and desktop).
+  ///Returns true if the edit was successful
+  ///and false if the edit failed.
   ///[currentPassword] is required to edit user profile
   bool editAllProfile(String currentPassword) {
     ///if [success] list is empty, editing fails

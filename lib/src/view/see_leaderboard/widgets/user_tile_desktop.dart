@@ -1,16 +1,29 @@
+/// ****************************************************************************
+/// Created by Endia Clark
+///
+/// This file is part of the project "Qeasy"
+/// Software Project on Technische Hochschule Ulm
+/// ****************************************************************************
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:queasy/src/model/leaderboard_entry.dart';
 
 import '../../../../constants/theme_provider.dart';
 
+/// The widget [UserTileDesktop] is used to show one user tile in the leaderboard for the desktop view.
+/// It also allows for toggling the shown category.
+/// An int [index] and List<LeaderboardEntry> [entries] are required for construction.
 class UserTileDesktop extends StatelessWidget {
+  ///[index] stores the tile's index
   final int index;
+
+  ///[entries] stores the 10 entries in the leaderboard for the given category
   final List<LeaderboardEntry> entries;
 
   const UserTileDesktop(
       {super.key, required this.index, required this.entries});
 
+  /// Builds the [UserTileDesktop] Widget.
   @override
   Widget build(BuildContext context) {
     return Column(

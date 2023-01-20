@@ -11,17 +11,18 @@ import '../../model/profile.dart';
 
 ///This is controller for RegisterView
 class RegisterViewController {
+  ///[errorMessage] string parameter to store the error message caused by methods
   String errorMessage = "";
 
   ///constructor
   RegisterViewController();
 
-  ///signUp method creates a new Profile and registers it
-  ///[email] the user's email address
-  ///[username] the user's username
-  ///[password] the user's password
-  ///@return true -> the new user has been successfully entered into the database
-  ///@return false -> registration failed
+  ///The [signUp] method creates a new Profile and registers it. It takes
+  ///an [email], the user's email address,
+  ///a [username], the user's username, and
+  ///a [password], the user's password.
+  ///It returnns true if the new user has been successfully entered into the database
+  ///and returns false if the registration failed.
   Future<bool> signUp(String email, String username, String password) async {
     Profile newUser = Profile(
       username: username,
@@ -34,7 +35,8 @@ class RegisterViewController {
       UserCredential userCredential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
       Auth a = Auth();
-      await a.signInWithEmailAndPassword(email: newUser.email, password: password);
+      await a.signInWithEmailAndPassword(
+          email: newUser.email, password: password);
       return await newUser.registerUser();
     } on FirebaseAuthException catch (e) {
       if (e.code == 'email-already-in-use') {
@@ -54,7 +56,10 @@ class RegisterViewController {
     }
   }
 
-  ///signInWithGoogle method allows the user to register via Google
+  ///The [signInWithGoogle] method allows the user to register via Google.
+  ///It takes the current build [context] as a parameter
+  ///and returns the created [User] object upon completion.
+  ///It authenticates with Google and registers the user with the profile model.
   Future<User?> signInWithGoogle({required BuildContext context}) async {
     FirebaseAuth auth = FirebaseAuth.instance;
     User? user;
@@ -133,7 +138,10 @@ class RegisterViewController {
     return user;
   }
 
-  ///signInWithFacebook method allows the user to register via Facebook
+  ///The [signInWithFacebook] method allows the user to register via Google.
+  ///It takes the current build [context] as a parameter
+  ///and returns the created [User] object upon completion.
+  ///It authenticates with Google and registers the user with the profile model.
   Future<User?> signInWithFacebook({required BuildContext context}) async {
     FirebaseAuth auth = FirebaseAuth.instance;
     User? user;
@@ -143,7 +151,7 @@ class RegisterViewController {
 
       try {
         final UserCredential userCredential =
-        await auth.signInWithPopup(authProvider);
+            await auth.signInWithPopup(authProvider);
 
         user = userCredential.user;
       } catch (e) {
@@ -152,16 +160,17 @@ class RegisterViewController {
     } else {
       final facebookLoginResult = await FacebookAuth.instance.login();
 
-
       if (facebookLoginResult != null) {
         final userData = await FacebookAuth.instance.getUserData();
 
-        final facebookAuthCredential = FacebookAuthProvider.credential(facebookLoginResult.accessToken!.token);
-        await FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
+        final facebookAuthCredential = FacebookAuthProvider.credential(
+            facebookLoginResult.accessToken!.token);
+        await FirebaseAuth.instance
+            .signInWithCredential(facebookAuthCredential);
 
         try {
           final UserCredential userCredential =
-          await auth.signInWithCredential(facebookAuthCredential);
+              await auth.signInWithCredential(facebookAuthCredential);
 
           user = userCredential.user;
         } on FirebaseAuthException catch (e) {
@@ -181,30 +190,29 @@ class RegisterViewController {
     Random rand = Random();
     String? usernamen;
     String? email;
-    if(user != null) {
-      if(user.email != null){
+    if (user != null) {
+      if (user.email != null) {
         usernamen = user.email;
 
         email = user.email;
       }
     }
     String username = "default" + rand.nextInt(10000).toString();
-    if(usernamen != null) {
+    if (usernamen != null) {
       username = usernamen;
       username = username.substring(0, username.indexOf("@"));
     }
-    if(email != null) {
+    if (email != null) {
       Profile newUser = Profile(
         username: username,
         email: email,
       );
       try {
         await newUser.registerUser();
-      }catch(e){
+      } catch (e) {
         print(e);
       }
     }
     return user;
   }
-
 }
