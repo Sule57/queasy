@@ -8,7 +8,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:queasy/src/view/widgets/side_navigation.dart';
-import '../../src.dart';
+import '../../../src.dart';
 
 ///This is Category Selection view
 ///
@@ -194,64 +194,61 @@ class _CategorySelectionDesktopViewContentState
       return Scaffold(
         backgroundColor: Colors.transparent,
         body: Center(
-            child: Row(crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SideNavigation(),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width - SideNavigation.width,
-
-                  child: GridView.builder(
-                    gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                      maxCrossAxisExtent: 420,
-                      childAspectRatio: 5 / 4,
-                      crossAxisSpacing: 2,
-                      mainAxisSpacing: 20,
-                    ),
-                    itemCount: list.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      String categoryName = list[index];
-                      return Container(
-                          margin: const EdgeInsets.symmetric(vertical: 50),
-                          alignment: Alignment.center,
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Provider.of<ThemeProvider>(context)
-                                  .currentTheme
-                                  .colorScheme
-                                  .background,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                            ),
-                            onPressed: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      PlayQuizView(
-                                        category: categoryName,
-                                      ),
-                                ),
-                              );
-                            },
-                            child: Text(
-                              categoryName,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 40,
-                                color: Provider
-                                    .of<ThemeProvider>(context)
-                                    .currentTheme
-                                    .colorScheme
-                                    .onBackground,
-                              ),
-                            ),
-                          ));
-                    },
-                  ),
+            child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SideNavigation(),
+            SizedBox(
+              width: MediaQuery.of(context).size.width - SideNavigation.width,
+              child: GridView.builder(
+                gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                  maxCrossAxisExtent: 420,
+                  childAspectRatio: 5 / 4,
+                  crossAxisSpacing: 2,
+                  mainAxisSpacing: 20,
                 ),
-              ],
-            )
-        ),
+                itemCount: list.length,
+                itemBuilder: (BuildContext context, int index) {
+                  String categoryName = list[index];
+                  return Container(
+                      margin: const EdgeInsets.symmetric(vertical: 50),
+                      alignment: Alignment.center,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Provider.of<ThemeProvider>(context)
+                              .currentTheme
+                              .colorScheme
+                              .background,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                        ),
+                        onPressed: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => PlayQuizView(
+                                category: categoryName,
+                              ),
+                            ),
+                          );
+                        },
+                        child: Text(
+                          categoryName,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 40,
+                            color: Provider.of<ThemeProvider>(context)
+                                .currentTheme
+                                .colorScheme
+                                .onBackground,
+                          ),
+                        ),
+                      ));
+                },
+              ),
+            ),
+          ],
+        )),
       );
     }
   }

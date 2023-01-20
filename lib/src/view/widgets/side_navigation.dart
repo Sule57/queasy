@@ -6,7 +6,6 @@
 /// ****************************************************************************
 
 import 'package:flutter/material.dart';
-import 'package:queasy/src/view/category_selection_view_mobile.dart';
 import 'package:queasy/src/view/home_view.dart';
 import 'package:queasy/src/view/see_leaderboard/leaderboard_view.dart';
 import 'package:queasy/src/view/see_profile/profile_view.dart';

@@ -9,8 +9,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:queasy/src/model/category_repo.dart';
-import '../../constants/theme_provider.dart';
-import '../../exports/view_play_quiz.dart';
+import '../../../constants/theme_provider.dart';
+import '../../../exports/view_play_quiz.dart';
 
 /// View for selecting a category.
 ///
@@ -23,7 +23,8 @@ class CategorySelectionViewMobile extends StatefulWidget {
   CategorySelectionViewMobile({Key? key}) : super(key: key);
 
   @override
-  State<CategorySelectionViewMobile> createState() => _CategorySelectionViewMobileState();
+  State<CategorySelectionViewMobile> createState() =>
+      _CategorySelectionViewMobileState();
 }
 
 /// State for [CategorySelectionViewMobile].
@@ -34,7 +35,8 @@ class CategorySelectionViewMobile extends StatefulWidget {
 /// displayed.
 /// The parameter [_isLoading] is used to determine whether the view should
 /// display a loading indicator or the list of categories.
-class _CategorySelectionViewMobileState extends State<CategorySelectionViewMobile> {
+class _CategorySelectionViewMobileState
+    extends State<CategorySelectionViewMobile> {
   late List<String> list;
   bool _isLoading = true;
 
@@ -121,7 +123,7 @@ class _CategorySelectionViewMobileState extends State<CategorySelectionViewMobil
                 String categoryName = list[index];
                 return Container(
                   padding:
-                  const EdgeInsets.only(left: 30.0, right: 30.0, top: 20.0),
+                      const EdgeInsets.only(left: 30.0, right: 30.0, top: 20.0),
                   width: 70,
                   height: MediaQuery.of(context).size.height / 8,
                   child: ElevatedButton(
