@@ -49,7 +49,7 @@ import '../../model/quiz.dart';
 /// decremented every second. It gets reset to 15 seconds for every new
 /// question.
 ///
-/// The parameter [_quizzResult] stores the result of the quizz and
+/// The parameter [_quizResult] stores the result of the quiz and
 /// later is passed to the StatisticsProvider imp
 ///
 /// The parameter [_timeLeft] is the time left for the user to answer the
@@ -62,7 +62,7 @@ class PlayQuizProvider with ChangeNotifier {
   late String? _quizCategory;
   late String? _quizId;
   late int _totalQuestions = 5;
-  late UserQuizzResult _quizzResult;
+  late UserQuizResult _quizResult;
   int _currentQuestionIndex = 0;
   int _currentPoints = 0;
   int correctAnswers = 0;
@@ -74,7 +74,7 @@ class PlayQuizProvider with ChangeNotifier {
   get quiz => _quiz;
   get timeLeft => _timeLeft.inSeconds.toString();
   get currentPoints => _currentPoints;
-  get quizzResult => _quizzResult;
+  get quizResult => _quizResult;
   get currentQuestionAnswered => _currentQuestionAnswered;
 
 // assign the current user to the app
@@ -87,7 +87,6 @@ class PlayQuizProvider with ChangeNotifier {
     init();
   }
 
-  //player = Profile.getProfilefromUID(getCurrentUserID());
   /// initializes [player] as the current logged in user
   void init() async {
     String? userId = getCurrentUserID();
@@ -100,16 +99,10 @@ class PlayQuizProvider with ChangeNotifier {
         player = profile;
       } else {
         //default player
-
-        //exception is recommended but tests needed
-        //TODO TEST FUNCTIONALITY WITH EXCEPTION
         throw UserDoesNotExistException();
       }
     } else {
       // default player
-
-      //exception is recommended but tests needed
-      //TODO TEST FUNCTIONALITY WITH EXCEPTION
       throw UserNotLoggedInException();
     }
   }
@@ -118,7 +111,7 @@ class PlayQuizProvider with ChangeNotifier {
   ///
   /// This method is called when the user enters the quiz view. It uses the
   /// parameter from the widget to send the category to the model and get
-  /// the correct questions from the quiz. It initailizes the parameters
+  /// the correct questions from the quiz. It initializes the parameters
   /// [_quiz], [_quizCategory], [_totalQuestions], [_currentQuestionIndex],
   /// [_currentPoints] and [_currentQuestionAnswered].
   Future<bool> startQuiz({
@@ -210,8 +203,6 @@ class PlayQuizProvider with ChangeNotifier {
   Future<void> endQuiz() async {
     stopTimer();
 
-    //TODO WHEN QUIZZES NAMES ARE IMPLEMENTED ADD NAME TO THE QUIZZREQULT
-    //TODO GET THE REAL TIME SPENT
     if (_quizCategory != null) {
       UserStatistics? stat = await player.getUserStatistics();
       if (stat != null) {
@@ -219,14 +210,13 @@ class PlayQuizProvider with ChangeNotifier {
 
         //IMPORTANT YOU CANNOT PLAY 2 QUIZZES AT THE SAME TIME OTHERWISE THIS WILL BREAK !!!
         // YOU CANNOT CALL STATISTICS PROVIDER BEFORE QUIZ PROVIDER !!!
-        _quizzResult = UserQuizzResult(
+        _quizResult = UserQuizResult(
             name, correctAnswers, _totalQuestions, _secondsPassed);
-        stat.addUserQuizzResult(_quizzResult);
+        stat.addUserQuizzResult(_quizResult);
         await stat.saveStatistics();
       }
     }
     if (_quiz.isPublic == true) {
-      //TODO check this
       await player.updateScore(_quizCategory!, _currentPoints, true);
     } else {
       await player.updateScore(_quizCategory!, _currentPoints, false);

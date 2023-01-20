@@ -12,15 +12,15 @@ class StatisticsProvider with ChangeNotifier {
   late List<ChartData> _chartData;
   int _overallPercentage = 0;
 
-  late UserQuizzResult _lastQuiz;
-  String _quizzName = "";
-  int _allQestions = 0;
+  late UserQuizResult _lastQuiz;
+  String _quizName = "";
+  int _allQuestions = 0;
   int _correct = 0;
   int _secondsSpent = 0;
 
-  get quizzName => _quizzName;
+  get quizName => _quizName;
 
-  get allQuestions => _allQestions;
+  get allQuestions => _allQuestions;
 
   get correct => _correct;
 
@@ -38,9 +38,9 @@ class StatisticsProvider with ChangeNotifier {
 
   bool setStatisticsView() {
     try {
-      _lastQuiz = qp.quizzResult;
-      _quizzName = _lastQuiz.quizzName;
-      _allQestions = _lastQuiz.allQestions;
+      _lastQuiz = qp.quizResult;
+      _quizName = _lastQuiz.quizzName;
+      _allQuestions = _lastQuiz.allQestions;
       _correct = _lastQuiz.correct;
       _secondsSpent = _lastQuiz.secondsSpent;
       return true;
@@ -64,7 +64,7 @@ class StatisticsProvider with ChangeNotifier {
       //Chart Data
       _resultsCorrect = new List<int>.filled(_numberQuiz, 0, growable: false);
       int n = 0;
-      for (UserQuizzResult r in statistics.userQuizzes) {
+      for (UserQuizResult r in statistics.userQuizzes) {
         _resultsCorrect[n] = r.correct;
         n++;
       }

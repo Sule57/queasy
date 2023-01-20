@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../src.dart';
 import '../../widgets/rounded_button.dart';
-import '../category_questions_provider.dart';
 
 /// The widget [QuestionListTile] is used to show a question and its answers.
 ///
@@ -21,16 +20,19 @@ class QuestionListTile extends StatefulWidget {
   /// Question that is going to be shown.
   final Question question;
 
+  /// Constructor for the [QuestionListTile].
   QuestionListTile({
     Key? key,
     required this.isContainerVisible,
     required this.question,
   }) : super(key: key);
 
+  /// Creates the state for this widget.
   @override
   State<QuestionListTile> createState() => _QuestionListTileState();
 }
 
+/// State for the [QuestionListTile].
 class _QuestionListTileState extends State<QuestionListTile> {
   get isContainerVisible => widget.isContainerVisible;
 
@@ -74,7 +76,6 @@ class _QuestionListTileState extends State<QuestionListTile> {
 
 /// This widget is used to show the correct answer of a question in green.
 class CorrectAnswerContainer extends StatelessWidget {
-
   /// Text of the correct answer.
   final String text;
 
@@ -102,7 +103,6 @@ class CorrectAnswerContainer extends StatelessWidget {
 /// This widget is used to show the buttons to edit or delete a question on a
 /// mobile device. The buttons are displayed on top of each other.
 class MobileButtons extends StatelessWidget {
-
   /// Question that is going to be edited or deleted.
   final Question question;
 
@@ -111,7 +111,8 @@ class MobileButtons extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     /// The provider of the class
-    CategoryQuestionsProvider controller = Provider.of<CategoryQuestionsProvider>(context, listen: true);
+    CategoryQuestionsProvider controller =
+        Provider.of<CategoryQuestionsProvider>(context, listen: true);
 
     return Column(
       children: [
@@ -145,7 +146,6 @@ class MobileButtons extends StatelessWidget {
 /// This widget is used to show the buttons to edit or delete a question on a
 /// desktop device. The buttons are displayed next to each each other.
 class DesktopButtons extends StatelessWidget {
-
   /// Question that is going to be edited or deleted.
   final Question question;
 
@@ -154,7 +154,8 @@ class DesktopButtons extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     /// The provider of the class
-    CategoryQuestionsProvider controller = Provider.of<CategoryQuestionsProvider>(context, listen: true);
+    CategoryQuestionsProvider controller =
+        Provider.of<CategoryQuestionsProvider>(context, listen: true);
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,

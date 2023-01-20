@@ -22,8 +22,10 @@ class AnswerButton extends StatefulWidget {
   /// Index of the answer to display.
   final int index;
 
+  /// Constructor for [AnswerButton].
   const AnswerButton({super.key, required this.index});
 
+  /// Creates an [AnswerButton] state.
   @override
   State<AnswerButton> createState() => _AnswerButtonState();
 }

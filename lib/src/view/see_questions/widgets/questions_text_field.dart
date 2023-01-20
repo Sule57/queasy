@@ -16,7 +16,6 @@ import '../category_questions_provider.dart';
 ///
 /// It is the text field that is used in the [EditQuizView] to edit or add the questions.
 class QuestionsTextField extends StatefulWidget {
-
   /// The controller for the text field.
   final TextEditingController controller;
 
@@ -40,6 +39,7 @@ class QuestionsTextField extends StatefulWidget {
   /// add a question or edit it.
   final Function action;
 
+  /// Constructor for the [QuestionsTextField].
   QuestionsTextField({
     Key? key,
     required this.controller,
@@ -51,12 +51,13 @@ class QuestionsTextField extends StatefulWidget {
     this.question,
   }) : super(key: key);
 
+  /// Creates the state for this widget.
   @override
   State<QuestionsTextField> createState() => _QuestionsTextFieldState();
 }
 
+/// State for the [QuestionsTextField].
 class _QuestionsTextFieldState extends State<QuestionsTextField> {
-
   /// The maximum length of the text field.
   final int MAX_INPUT_LENGTH = 50;
 
@@ -73,10 +74,12 @@ class _QuestionsTextFieldState extends State<QuestionsTextField> {
     widget.controllerText = value;
   }
 
+  /// Builds the widget.
   @override
   Widget build(BuildContext context) {
     /// The provider of the class
-    CategoryQuestionsProvider provider = Provider.of<CategoryQuestionsProvider>(context);
+    CategoryQuestionsProvider provider =
+        Provider.of<CategoryQuestionsProvider>(context);
     final theme = Provider.of<ThemeProvider>(context).currentTheme;
     final _formKey = provider.formKeyAddEditQuestion;
 

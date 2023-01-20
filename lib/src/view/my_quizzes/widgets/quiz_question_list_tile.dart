@@ -21,7 +21,7 @@ class _QuizQuestionListTileState extends State<QuizQuestionListTile> {
   @override
   Widget build(BuildContext context) {
     final theme = Provider.of<ThemeProvider>(context).currentTheme;
-    final provider = Provider.of<SeeQuizzesProvider>(context);
+    final provider = Provider.of<MyQuizzesProvider>(context);
     Question question = provider.quizDisplaying.questions![widget.index];
 
     TextStyle? questionTextStyle = theme.textTheme.headline4.copyWith(

@@ -116,7 +116,7 @@ class _MyQuizzesContentState extends State<MyQuizzesContent> {
 
   init() async {
     // _isLoading = true;
-    await Provider.of<SeeQuizzesProvider>(context, listen: false)
+    await Provider.of<MyQuizzesProvider>(context, listen: false)
         .updateQuizList();
     setState(() {
       _isLoading = false;
@@ -132,7 +132,7 @@ class _MyQuizzesContentState extends State<MyQuizzesContent> {
   @override
   Widget build(BuildContext context) {
     final theme = Provider.of<ThemeProvider>(context).currentTheme;
-    final provider = Provider.of<SeeQuizzesProvider>(context);
+    final provider = Provider.of<MyQuizzesProvider>(context);
     final quizList = provider.quizList;
 
     double width = MediaQuery.of(context).size.width;

@@ -60,7 +60,7 @@ Future<void> main() async {
               create: (_) => ThemeProvider(AppThemes().lightTheme)),
           ChangeNotifierProvider(create: (_) => LoginProvider()),
           ChangeNotifierProvider(create: (_) => CategoryQuestionsProvider()),
-          ChangeNotifierProvider(create: (_) => SeeQuizzesProvider()),
+          ChangeNotifierProvider(create: (_) => MyQuizzesProvider()),
         ],
         child: const Qeasy(),
       ),
