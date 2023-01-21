@@ -1,3 +1,10 @@
+/// ****************************************************************************
+/// Created by Nikol Kreshpaj
+/// Collaborator: Endia Clark
+///
+/// This file is part of the project "Qeasy"
+/// Software Project on Technische Hochschule Ulm
+/// ****************************************************************************
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -7,19 +14,28 @@ import 'package:queasy/src/view/see_leaderboard/widgets/user_tile_desktop.dart';
 
 import '../../../constants/theme_provider.dart';
 
+/// Content for [LeaderboardView].
+///
+/// Uses a [StatefulWidget] to display profile information.
 class LeaderboardView extends StatefulWidget {
   const LeaderboardView({Key? key}) : super(key: key);
 
+  /// Creates a [LeaderboardView] state.
   @override
   State<LeaderboardView> createState() => _LeaderboardViewState();
 }
 
 /// State for [LeaderboardView].
 class _LeaderboardViewState extends State<LeaderboardView> {
+  /// Used to determine whether the view should display a loading indicator.
   bool _isLoading = true;
 
+  /// stores the title of the currently shown category
   String _currentCategory = 'All';
 
+  /// Called when the view is build for the first time.
+  /// It sets [_isLoading] to false once the
+  /// data is loaded from the [LeaderboardProvider] is loaded
   init() async {
     setState(() {
       _isLoading = true;
@@ -33,6 +49,9 @@ class _LeaderboardViewState extends State<LeaderboardView> {
     });
   }
 
+  /// Initializes the view.
+  ///
+  /// Calls [init] to initialize the view.
   @override
   void initState() {
     init();

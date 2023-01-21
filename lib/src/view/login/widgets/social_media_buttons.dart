@@ -11,10 +11,14 @@ import 'package:provider/provider.dart';
 import 'package:queasy/src/view/home_view.dart';
 import 'package:queasy/src/view/login/login_provider.dart';
 
+/// The widget [SocialMediaButtons] is used to display the Google and Facebook buttons.
 class SocialMediaButtons extends StatelessWidget {
   const SocialMediaButtons({Key? key}) : super(key: key);
 
-
+  /// Builds the [SocialMediaButtons] Widget.
+  ///
+  /// On tap, the Google Button calls the [LoginProvider]'s signInWithGoogle method.
+  /// On tap, the Facebook Button calls the [LoginProvider]'s signInWithFacebook method.
   @override
   Widget build(BuildContext context) {
     final controller = Provider.of<LoginProvider>(context);

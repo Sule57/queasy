@@ -1,7 +1,18 @@
+/// ****************************************************************************
+/// Created by Gullu Gasimova
+/// Collaborator: Endia Clark
+///
+/// This file is part of the project "Qeasy"
+/// Software Project on Technische Hochschule Ulm
+/// ****************************************************************************
 import 'package:queasy/src/model/profile.dart';
 
+/// The class provides data from the model to the [ProfileView].
+/// the field [player] is used to store the current player's [Profile]. Allows the
+/// contoller to call methds from the [Profile] model.
+/// the field [success] is a list that collects returned values of edit methods.
 class ProfileViewController {
-  ///@param [player] For now a dummy data used as a user
+  ///[player] For now a dummy data used as a user
   Profile player = Profile(
       username: "",
       email: "",
@@ -79,9 +90,9 @@ class ProfileViewController {
     return await player.signOut();
   }
 
-  ///this is the method that is called in profile views (both mobile and desktop)
-  ///@return true -> edit was successful
-  ///@return false -> edit failed
+  ///This is the method that is called in profile views (both mobile and desktop).
+  ///Returns true if the edit was successful
+  ///and false if the edit failed.
   ///[currentPassword] is required to edit user profile
   bool editAllProfile(String currentPassword) {
     ///if [success] list is empty, editing fails
@@ -102,6 +113,9 @@ class ProfileViewController {
     return false;
   }
 
+  ///Calls the pickProfileImage method in the profile model.
+  ///Returns true if the model's function is successful and
+  ///false otherwise.
   Future<bool> pickProfilePicture() async {
     try {
       await player.pickProfileImage();

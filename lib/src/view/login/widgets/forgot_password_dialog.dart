@@ -11,14 +11,19 @@ import 'package:provider/provider.dart';
 import 'package:queasy/constants/theme_provider.dart';
 import 'package:queasy/src/view/login/login_provider.dart';
 
+/// The widget [ForgotPasswordDialog] is used to display the forgot password dialog.
 class ForgotPasswordDialog extends StatefulWidget {
   const ForgotPasswordDialog({Key? key}) : super(key: key);
 
+  /// Creates the state for this widget.
   @override
   State<ForgotPasswordDialog> createState() => _ForgotPasswordDialogState();
 }
 
+/// State for [ForgotPasswordDialog].
 class _ForgotPasswordDialogState extends State<ForgotPasswordDialog> {
+  /// Builds the [ForgotPasswordDialog] Widget. Uses the [LoginProvider]
+  /// to assist if the user forget's their password.
   @override
   Widget build(BuildContext context) {
     final controller = Provider.of<LoginProvider>(context);
