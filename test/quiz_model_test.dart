@@ -318,6 +318,7 @@ void main() async {
     test('Quiz3 should have the correct questions', () {
       expect(quiz3.questions[0].text, 'What is the capital of France?');
       expect(quiz3.questions[1].text, 'What is the capital of Germany?');
+
     });
 
     /// Tests if the updateQuiz function works properly
