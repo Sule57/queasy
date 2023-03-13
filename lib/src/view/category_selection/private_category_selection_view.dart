@@ -250,7 +250,7 @@ class _CategoryListState extends State<CategoryList> {
                 categoryName,
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: 35,
+                  fontSize: 30,
                   color: Provider.of<ThemeProvider>(context)
                       .currentTheme
                       .colorScheme

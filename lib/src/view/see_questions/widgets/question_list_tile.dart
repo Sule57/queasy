@@ -43,7 +43,7 @@ class _QuestionListTileState extends State<QuestionListTile> {
     bool isMobile = MediaQuery.of(context).size.width < 700;
     return ListTile(
       title: Container(
-        height: isContainerVisible ? 180 : 0,
+        //height: isContainerVisible ? 180 : 0,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
