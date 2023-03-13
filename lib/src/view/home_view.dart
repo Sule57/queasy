@@ -362,7 +362,7 @@ class HomeWidgets extends StatelessWidget {
                           MaterialPageRoute(
                               builder: (context) => MyQuizzesView())),
                       child: Text(
-                        'My quizzes',
+                        'My Quizzes',
                         style: TextStyle(
                           color: textColor,
                         ),
